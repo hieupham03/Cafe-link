@@ -1,0 +1,39 @@
+# Local agent/editor configuration and private cleanup backups.
+/.agents/
+/.cleanup/
+/.vscode/
+/menu/
+
+# Keep the sealed E0 baseline required by tests; runtime/submission bundles stay local.
+/dist/*
+!/dist/CafeLink-Original-1.0.0-Baseline.zip
+
+# Generated build outputs and dependency caches.
+**/target/
+**/node_modules/
+**/.tools/
+**/__pycache__/
+*.py[cod]
+**/test-results/
+**/playwright-report/
+/cafelink-system/web/dist/
+/cafelink-system/web/experiment-dist/
+
+# Runtime profiles, uploaded media, local secrets and backup archives.
+/cafelink-system/data/
+/cafelink-system/backups/
+/cafelink-system/logs/
+.env
+.env.*
+!.env.example
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+*.qr-key
+*.pem
+*.pfx
+*.p12
+*.log
+~$*

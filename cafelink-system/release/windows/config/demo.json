@@ -1,0 +1,6 @@
+{
+  "port": 19088,
+  "tcpPort": 19058,
+  "dataDirectory": "data/local-demo",
+  "publicDataDirectory": "data/public-demo"
+}

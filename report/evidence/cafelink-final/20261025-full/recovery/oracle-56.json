@@ -1,0 +1,39 @@
+{
+  "case": 56,
+  "visit": [
+    {
+      "id": "ddc156c8-8a2d-469f-87bd-b5b4390cc705",
+      "table_id": 1,
+      "active": 1,
+      "state": "OPEN",
+      "payment_mode": "PREPAY",
+      "service_mode": "AUTO"
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "visit_id": "ddc156c8-8a2d-469f-87bd-b5b4390cc705",
+      "status": "SUBMITTED",
+      "payment_state": "UNPAID",
+      "total_vnd": 30000
+    }
+  ],
+  "tickets": [],
+  "receipts": [
+    {
+      "command_id": "8a7bb00d-030c-4ac3-95e5-bff46f093b76",
+      "action": "PLACE_ORDER",
+      "result_json": "{\"orderId\":1,\"totalVnd\":30000,\"paymentRequired\":true}"
+    }
+  ],
+  "payments": [],
+  "events": [
+    {
+      "id": 17,
+      "type": "ORDER_AWAITING_PAYMENT",
+      "entity_id": "1"
+    }
+  ],
+  "schema": 11
+}

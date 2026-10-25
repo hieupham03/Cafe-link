@@ -1,0 +1,19 @@
+{
+  "case": 99,
+  "visit": [
+    {
+      "id": "e73fe755-2971-43bc-aa3e-ae6ebd3ae525",
+      "table_id": 1,
+      "active": 1,
+      "state": "OPEN",
+      "payment_mode": "PREPAY",
+      "service_mode": "AUTO"
+    }
+  ],
+  "orders": [],
+  "tickets": [],
+  "receipts": [],
+  "payments": [],
+  "events": [],
+  "schema": 11
+}

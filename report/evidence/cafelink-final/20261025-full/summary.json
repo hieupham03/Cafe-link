@@ -1,0 +1,10 @@
+﻿{
+    "status":  "FAIL",
+    "quick":  false,
+    "startedAt":  "2026-10-25T20:15:12.4624659+07:00",
+    "physicalLan":  "NOT_RUN",
+    "physicalPhone":  "NOT_RUN",
+    "remoteCi":  "NOT_RUN",
+    "failure":  "Load campaign failed; raw evidence was retained",
+    "finishedAt":  "2026-10-25T20:20:49.5898083+07:00"
+}

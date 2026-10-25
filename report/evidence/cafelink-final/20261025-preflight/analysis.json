@@ -1,0 +1,89 @@
+{
+  "status": "PASS",
+  "percentileMethod": "nearest-rank ceil(p*n), no interpolation",
+  "recoveryCases": 24,
+  "policies": [
+    {
+      "policy": "REPLAY_ALL",
+      "cases": 8,
+      "duplicateOrders": 0,
+      "unconfirmedOrderEffects": 1,
+      "expiredNeedServiceEffects": 2,
+      "wrongVisitEffects": 0,
+      "confirmRequired": 0,
+      "p50RecoveryMs": 38,
+      "p95RecoveryMs": 51.30000000074506,
+      "httpSamples": 47
+    },
+    {
+      "policy": "REVIEW",
+      "cases": 8,
+      "duplicateOrders": 0,
+      "unconfirmedOrderEffects": 0,
+      "expiredNeedServiceEffects": 1,
+      "wrongVisitEffects": 0,
+      "confirmRequired": 3,
+      "p50RecoveryMs": 32.69999999925494,
+      "p95RecoveryMs": 42.40000000037253,
+      "httpSamples": 47
+    },
+    {
+      "policy": "SEMANTIC",
+      "cases": 8,
+      "duplicateOrders": 0,
+      "unconfirmedOrderEffects": 0,
+      "expiredNeedServiceEffects": 0,
+      "wrongVisitEffects": 0,
+      "confirmRequired": 1,
+      "p50RecoveryMs": 37.5,
+      "p95RecoveryMs": 77.5,
+      "httpSamples": 50
+    }
+  ],
+  "loadCases": 2,
+  "measuredFlows": 18,
+  "load": [
+    {
+      "case": 1,
+      "repeat": 1,
+      "clients": 1,
+      "successfulFlows": 3,
+      "errors": 0,
+      "missedSlots": 0,
+      "elapsedMs": 3006.6584,
+      "throughputFlowsPerSecond": 0.9977854484566655,
+      "p50ResponseMs": 45.899999998509884,
+      "p95ResponseMs": 55.5,
+      "p95RenderDetectionMs": 55.59999999962747,
+      "p95OrderPaymentMs": 79.80000000074506,
+      "httpSamples": 26,
+      "httpErrors": 0,
+      "httpDecodedBodyBytes": 24383
+    },
+    {
+      "case": 2,
+      "repeat": 1,
+      "clients": 5,
+      "successfulFlows": 15,
+      "errors": 0,
+      "missedSlots": 0,
+      "elapsedMs": 3006.405200000001,
+      "throughputFlowsPerSecond": 4.989347410655089,
+      "p50ResponseMs": 52.80000000074506,
+      "p95ResponseMs": 145.30000000074506,
+      "p95RenderDetectionMs": 149.19999999925494,
+      "p95OrderPaymentMs": 250,
+      "httpSamples": 136,
+      "httpErrors": 0,
+      "httpDecodedBodyBytes": 122020
+    }
+  ],
+  "limits": [
+    "Loopback on one shared host, not physical LAN/Internet/phone acceptance",
+    "Controlled expired-need service scenario; customer need is assumed ended during outage",
+    "Correlated operations within runs; no confidence interval or significance claim",
+    "DOM detection after receipt is an upper bound on first visible render, not WebSocket transport latency",
+    "Decoded HTTP body bytes exclude headers, WebSocket, TCP, TLS and retransmissions",
+    "Throughput is offered bounded workload, not measured maximum capacity"
+  ]
+}

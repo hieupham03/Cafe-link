@@ -1,0 +1,9 @@
+﻿{
+    "status":  "PASS",
+    "quick":  true,
+    "startedAt":  "2026-10-25T20:11:40.1316289+07:00",
+    "physicalLan":  "NOT_RUN",
+    "physicalPhone":  "NOT_RUN",
+    "remoteCi":  "NOT_RUN",
+    "finishedAt":  "2026-10-25T20:12:29.2368525+07:00"
+}

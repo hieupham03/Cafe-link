@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "checkedAtUtc": "2026-10-25T13:56:59.861729+00:00",
+  "manifestFiles": 1096,
+  "manifestMatchesAllDeliveredFiles": true,
+  "sourceZipMatchesDeliveredSource": true,
+  "outerZipMatchesDeliveredFiles": true,
+  "zipChecks": [
+    {
+      "name": "NhomXX_CafeLink_20261031_RC1.zip",
+      "bytes": 110970004,
+      "sha256": "22849890840D7F24DD04D1443FCDA817D2F234B566873EC5A796BDD8AD4B3D9F",
+      "zipCrc": "PASS"
+    },
+    {
+      "name": "NhomXX_CafeLink_Source.zip",
+      "bytes": 30128721,
+      "sha256": "D011326835F0F89DBE0832F8B1A1BF6CC506702C35B73EF4BFDD3DC26EC6E832",
+      "zipCrc": "PASS"
+    }
+  ],
+  "sourcePrivateDataOrCaches": [],
+  "priorArchivesPreserved": true,
+  "deliveryValidation": {
+    "status": "PASS",
+    "criticalDocuments": 11,
+    "localLinksChecked": 93,
+    "sourceHasLiveData": false,
+    "sourceHasDeveloperCaches": false,
+    "wordPdfPages": 17,
+    "docxTables": 9,
+    "docxImages": 5,
+    "runtimeManifestFiles": 357,
+    "physicalPhone": "NOT_RUN",
+    "compilatio": "PENDING",
+    "groupMetadata": "PENDING",
+    "officialSubmission": "NOT_SUBMITTED"
+  },
+  "physicalPhone": "NOT_RUN",
+  "compilatio": "PENDING",
+  "groupMetadata": "PENDING",
+  "officialSubmission": "NOT_SUBMITTED"
+}

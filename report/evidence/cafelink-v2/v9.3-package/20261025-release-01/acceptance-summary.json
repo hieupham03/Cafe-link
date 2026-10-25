@@ -1,0 +1,30 @@
+{
+  "release": "V9.3",
+  "schema": 11,
+  "patch": "GUEST_ZONES",
+  "includedPatches": [
+    "QR_ENTRY_FIX"
+  ],
+  "status": "PASS",
+  "recordedAtUtc": "2026-10-25T11:53:19.653763+00:00",
+  "javaPass": 142,
+  "chromiumPass": 65,
+  "packageGroupsPass": 21,
+  "pristineManifestFiles": 357,
+  "sourceAndPackageArtifactsMatch": true,
+  "testListenersClosed": true,
+  "zipSha256": "FDCA5E041BCB83F61260056BB8B6DB859BB513EE19A8F626F4BD464F77C83CA6",
+  "preservedArchives": {
+    "CafeLink-Web-V9.zip": "F2A0872A4CA3407451F31CA9603E9A5E6BC28929AF002B892F6985E8B6CC7EA3",
+    "CafeLink-Web-V9.1.zip": "0C31BAD33497DD97A8A76C3CE6446C2F11BF9BB0038C4E264D7F9E2F47EB9A2D",
+    "CafeLink-Original-1.0.0-Baseline.zip": "60A1E6666F4BAC52B2F0B868A9AAFD9024563991AB22777076D639416E8766EB",
+    "CafeLink-Web-V9.2.zip": "A645806C823E1A4074C6324E1813101B297DDBF2E74249A11925C483D47E00A4",
+    "CafeLink-Web-V9.2-QR-Fix.zip": "E700B223B8B3F0FC1F9C4021D522CCDA44654D169ADA5AE111B2D9970580BD5E"
+  },
+  "documentationLocalLinksChecked": 58,
+  "internetBrowserSmoke": "NOT_RUN",
+  "physicalPhone": "NOT_RUN",
+  "physicalLan": "NOT_RUN",
+  "userAcceptance": "PENDING",
+  "newPerformanceCampaign": "NOT_RUN"
+}

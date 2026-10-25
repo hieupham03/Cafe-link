@@ -1,0 +1,17 @@
+{
+  "startedAt": "2026-10-25T13:42:43.905Z",
+  "origin": "https://road-mainland-switches-telling.trycloudflare.com",
+  "status": "PASS",
+  "physicalPhone": "NOT_RUN",
+  "checks": {
+    "secureCookie": true,
+    "publicQrOrigin": true,
+    "secureBrowserRecoveryApis": true,
+    "privateOrdersAndPayment": true,
+    "liveWssAndAutomaticCompletion": true,
+    "rejectWrongOrigin": true,
+    "defaultAdminPasswordRejected": true
+  },
+  "failedResources": [],
+  "finishedAt": "2026-10-25T13:43:04.243Z"
+}

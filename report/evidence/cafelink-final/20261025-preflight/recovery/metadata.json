@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "seed": 20261023,
+  "repetitions": 1,
+  "cases": 24,
+  "topology": "One machine; Chromium -> HTTP Gateway -> real TCP Core -> SQLite",
+  "fault": "HTTP abort before forward or after successful forward; ordered late command delivery, not physical packet loss",
+  "policyOrder": "Seeded shuffle",
+  "batchSize": 12,
+  "physicalLan": "NOT_RUN",
+  "physicalPhone": "NOT_RUN",
+  "startedAt": "2026-10-25T13:11:51.772Z",
+  "failed": 0,
+  "completedCases": 24,
+  "finishedAt": "2026-10-25T13:12:09.709Z"
+}

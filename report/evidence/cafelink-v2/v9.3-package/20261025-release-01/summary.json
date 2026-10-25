@@ -1,0 +1,15 @@
+﻿{
+    "phase":  "V9",
+    "status":  "PASS",
+    "runId":  "20261025-185149-fa2cfcc9",
+    "startedAt":  "2026-10-25T18:51:49.1929753+07:00",
+    "archiveSha256":  "FDCA5E041BCB83F61260056BB8B6DB859BB513EE19A8F626F4BD464F77C83CA6",
+    "packageSmoke":  "PASS",
+    "internetBrowserSmoke":  "NOT_RUN",
+    "physicalLan":  "NOT_RUN",
+    "physicalPhone":  "NOT_RUN",
+    "remoteCi":  "NOT_RUN",
+    "release":  "V9.3",
+    "schema":  11,
+    "finishedAt":  "2026-10-25T18:52:32.7798286+07:00"
+}

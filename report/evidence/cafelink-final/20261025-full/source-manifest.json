@@ -1,0 +1,686 @@
+﻿[
+    {
+        "path":  "pom.xml",
+        "sha256":  "CA113950AA9E90A7635BECB344B578D73950FC1658B57A7AEB774ECBA4C026D5"
+    },
+    {
+        "path":  "scripts\\benchmark.ps1",
+        "sha256":  "7CED9223C8784B06E5CD8CA43CE59C2FDC775FA64468A2B7810DAA32D6191D13"
+    },
+    {
+        "path":  "scripts\\build.ps1",
+        "sha256":  "961FBE8B6582853B8C984C45899266279F53D8C35AA3DA2BE4107B47DA4E906E"
+    },
+    {
+        "path":  "scripts\\build-web.ps1",
+        "sha256":  "7F639E1C24ED9EB8061B5B8584437576175DED4AE1984E17E876A972D1032BA9"
+    },
+    {
+        "path":  "scripts\\demo.ps1",
+        "sha256":  "33A6BBCFF340598C4D3F9C0AF824F8EB28CA2DAA7A45EB0E399DC575B4D4A290"
+    },
+    {
+        "path":  "scripts\\experiment-web.ps1",
+        "sha256":  "4DF49BE6259520A5CB12F0C19443CA15979C2D6E5ADC10A8FEE027E54D3FCC9C"
+    },
+    {
+        "path":  "scripts\\lan-check.ps1",
+        "sha256":  "1F92620EB098E971251B51160837453CFC68E98B971781450D4A29694025B142"
+    },
+    {
+        "path":  "scripts\\maven.ps1",
+        "sha256":  "0C0D16CC71CD2602DBF5719D7C6D24AF1BACB903C018D89B073AE9E601368E42"
+    },
+    {
+        "path":  "scripts\\package-original.ps1",
+        "sha256":  "2D6C9074AA7041E67DA38798FA5E95DE59DB9AF7A6E5A7618BFF6195676757B2"
+    },
+    {
+        "path":  "scripts\\package-web.ps1",
+        "sha256":  "9681A80CFE61EFD6BD003F6EAD70AC7FD21F7A1B4355BD5518FA8A03A9CF5F73"
+    },
+    {
+        "path":  "scripts\\public-demo.ps1",
+        "sha256":  "ECC7ED47EB5A8BB52C3685A7B50E78C761EC848F3FF3E72D3F83D770878230D4"
+    },
+    {
+        "path":  "scripts\\recovery-experiment.ps1",
+        "sha256":  "A9BB6BAEC5EFA7677BD595B06E674582C611F4F46FFE7457A90580923493176E"
+    },
+    {
+        "path":  "scripts\\run-client.ps1",
+        "sha256":  "B0920A44E2CD0D50734A71BBD8E936E36CFEDD96E6D25AF9F469E985D7AC58D1"
+    },
+    {
+        "path":  "scripts\\run-server.ps1",
+        "sha256":  "66E94E4EA55135F035836687446F4463422FBFBDE462D9120C6889AF155667BA"
+    },
+    {
+        "path":  "scripts\\runtime.ps1",
+        "sha256":  "4F161B27A78F068D14DF8CC2C1E5DB66A101D79DD9DE0B89B306F9765A1940F6"
+    },
+    {
+        "path":  "scripts\\run-web.ps1",
+        "sha256":  "CD6560E8240B03BFF280982F3BDB4FBCC788580355ECB693022D2CB85EA269DE"
+    },
+    {
+        "path":  "scripts\\smoke.ps1",
+        "sha256":  "72CC05C642A7E8EA264826240FEB7E964C4085776C9E7F25F4B80D683CB77D1B"
+    },
+    {
+        "path":  "scripts\\test-v8.ps1",
+        "sha256":  "AB524117D02684F78C1735F8BF2B5D226381ACA9C048A50E506275B88AB400C2"
+    },
+    {
+        "path":  "scripts\\test-web.ps1",
+        "sha256":  "CBF39C18DC9442B3FE953DC8C8A66D90DE09033844128287DF98071B1EDAAD5D"
+    },
+    {
+        "path":  "scripts\\verify-package.ps1",
+        "sha256":  "38DCCAE5F7A8F96DFB7EC538B275035C24D4F806C162C36091768C27A3B43A02"
+    },
+    {
+        "path":  "scripts\\verify-web-package.ps1",
+        "sha256":  "A7678AC18DAA8F9E4F42D6C296C2A08940C91515912DD47A4BE7DC25D811F5FE"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\client\\BenchmarkClientMain.java",
+        "sha256":  "F5126264356DAFD39754F642DEB61756BFC784B6FEADE661CFF5E0B738C07B4E"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\client\\ClientMain.java",
+        "sha256":  "EC86FDAAFCE7B604C2A3495D6CD1EECAA9FF78714AB125F28420B62484DF1E19"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\client\\DemoSmokeMain.java",
+        "sha256":  "A2207CB069F27456C02725218A2705F3E20DA97A202BDC9149101D0C51FE5B5F"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\client\\NetworkClient.java",
+        "sha256":  "9F1DDDBB785BB49D289F74A717782E1AA9AFEB74774C8F7C05C0F10096BB2078"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\client\\Outbox.java",
+        "sha256":  "BA80C9E11996B4F90158B9DCE2314973F0261A04D305109470482C2B726706DE"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\client\\RecoveryExperimentMain.java",
+        "sha256":  "8ED3EE20B36C9EA4ED66F4CBF45DDE1FFA19DC01145F49801C3F8FC91F9F4218"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\client\\RecoverySmokeMain.java",
+        "sha256":  "646EEC9AC676DFF417B477C292FCB75E38578431DEDD5E8BFC1C82FBF12ECF88"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\client\\RemoteException.java",
+        "sha256":  "7BDED5464ED9C41EDFC8486D7B1A0F310DBB259DF244A39E66DF785ADF94CD46"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\client\\ui\\AdminFrame.java",
+        "sha256":  "79A323953A8C353725569150664FEF243741FEEBDD03E3B1782213F6470FB233"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\client\\ui\\DashboardFrame.java",
+        "sha256":  "9CFA927AF794E552CFBE9B15B2CC9F9AEE01B049C3B17252FEA17AAC80158AEE"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\client\\ui\\Dialogs.java",
+        "sha256":  "ACD2AA813160A86F4D1AC37DBE2A78E1F9F40C914EA5ABC79419288BAF46797E"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\client\\ui\\GuestFrame.java",
+        "sha256":  "97AB2C7699064AC6D286D7F40CFE0A6D4D05E3638E9DA8B5B335608F46AF7B66"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\client\\ui\\LoginFrame.java",
+        "sha256":  "C5EBD9D3B41B22891E7C46F436741EE07A6BC35F1D2153E8D578C5C6F2F5DB30"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\client\\ui\\Ui.java",
+        "sha256":  "6A5BEBF17DBDF440F09BB3645BC3BCD169E11E46756FD96EE8C4FFAE40A4C2BD"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\common\\Arguments.java",
+        "sha256":  "D6CF70A94AFFE83982683B2CB770CEF5F727508FC28A29C4001D125AC23CBE29"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\common\\Commands.java",
+        "sha256":  "1D390283B6804AC0F152F54BFECEC81B96ED934DF9D9B90472045F621A816449"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\common\\FrameCodec.java",
+        "sha256":  "C87D0255E0ED10CB01D5E325BCDB802CF40889FA9D227EE5D6998654B0611832"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\common\\Json.java",
+        "sha256":  "70CC44016D6C26A10A1E7B7EE42EDADFEF0D7092F8545FA054C584503AAD48D9"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\common\\Message.java",
+        "sha256":  "89198A6C2CCFE4A761996D4738F425BA684EAF8A16EB1A97DB935CE1D8B7F0B0"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\common\\Models.java",
+        "sha256":  "2788CF42266ED0BF6B8D4F1475A22BADA8F7837E7A1066B33536B4F7705F4617"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\BackupCheckMain.java",
+        "sha256":  "4306C1C4DC741B3CABA4EEDFDAC3388407876B137CA8356918832AEAD9D8F085"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\BusinessException.java",
+        "sha256":  "0E89FFAD2F25012A8336DB560E7E3FA05F07451800DA01791251CD3C005DF752"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\CafeServer.java",
+        "sha256":  "26696317831077107B71F462A6C63DCF59399CB2A4B8998C5D667268F35794AC"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\CafeService.java",
+        "sha256":  "6458343794943AE817B189A257DD590DAB274924619B4DA5452646716317C1CF"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\CheckoutFlow.java",
+        "sha256":  "33003F168DB09588D477874F5C2DC1F832AD80D4047BBA1E122041D6D5C8D931"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\Database.java",
+        "sha256":  "D5BC97703D3D0E1E902CF03C02297F6846735B0939B3728541227D81E5D445F0"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\EventFeed.java",
+        "sha256":  "B565A8222B0368D7E55E8020C36BB52D0E1BF754F2CF8F07C353A36F5BF2B1C4"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\FaultInjector.java",
+        "sha256":  "AFA7D08A44FE8DD62BAA48547460FC100A50A499A673DE7AF230AFA4930CF631"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\MenuCatalog.java",
+        "sha256":  "7B0650D9A5D6EC5BFED51404F10F1933D1A009C439D9C691C575B0C3D21ECECC"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\OrderPayments.java",
+        "sha256":  "FF61B391169D141C54E42410143478635BA58DB72EBCA77A720861729987BFAD"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\OrderResolutions.java",
+        "sha256":  "C445B0DF90687CE9A202DD5D2DB9C21087B8B941019082D4C2D0249F9F6A19EF"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\PasswordHash.java",
+        "sha256":  "85BC53A0AF06C988998588F991E630A15CEF705538455E3A628632782DF9BC2E"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\QrAccess.java",
+        "sha256":  "433489A2258497D7FA803E72225EB7BA154DFBC6EF7E90B411A555393C6E9F6A"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\QrConfig.java",
+        "sha256":  "9283021CF6F4E1DA6FD22A245182230E937324AC4CBB98D2934D06B8B63F567C"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\ServerMain.java",
+        "sha256":  "BCBB0D32CBDE8E90319CC31694BCE8688E841C0EE1A069D0FAE3C8F5C00211FA"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\SupportActions.java",
+        "sha256":  "6FA3D20924111A80AE21F05E1B7CA584234E71600341810431976F5F4359F74B"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\server\\TableOrdering.java",
+        "sha256":  "6F61EA76EE6C54EC4A9B37281BD40E20A892C52404C87D015C9A93D1172311D7"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\web\\MenuImages.java",
+        "sha256":  "F4419D5C5FE1421188B46EF3EFF765684FFE6D82E3C0D4E9D3E39DEF5367FDD1"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\web\\SessionBridge.java",
+        "sha256":  "9BC9960CD132A04E7F84D31F8E2915C943017EA45F7729CEC88E835D9874DEB1"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\web\\WebGateway.java",
+        "sha256":  "DDDA12DBC2A3B3D9890FDEFED59832D72222AD187286FAB116F8669C501FE2BC"
+    },
+    {
+        "path":  "src\\main\\java\\com\\cafelink\\web\\WebMain.java",
+        "sha256":  "8F2417883DF327CCFA3E64F6B155033C5D86B6F8E3BBA4AA0F7DB46D7E9A6A5E"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\client\\OutboxTest.java",
+        "sha256":  "820539F495180F5DD9FF0A63D4FB0708B7442ED03E13C6225E48D10668E66EA9"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\client\\ui\\UiWorkflowTest.java",
+        "sha256":  "4128A44B9AAD3EE6D281910904F3CCE4B70E0197B28512353FA36E2240FD1C4C"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\common\\FrameCodecTest.java",
+        "sha256":  "9EAEFAA9349EA6D2E91A1CAB6CAF5059F28494A1D7FD9F0F9ED1BA50DF2CED81"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\AutomaticTablesTest.java",
+        "sha256":  "740E5A20B830702368E8C348C4CD81A1A4636F91F923119BAE1427CEA704019B"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\BackupCheckTest.java",
+        "sha256":  "280916055A369968D56C3A6F4BE7B299033A14AEAF8E4FBF1283B7406F5FF2A4"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\BenchmarkWorkflowTest.java",
+        "sha256":  "8853DCDF4415391A1354935D49211DEC369709B008B959237917A32C5392EE41"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\BusinessWorkflowTest.java",
+        "sha256":  "54B5CC88B6742A1659D7644BCFCE6569A7A8EF3347205BF9059E1F3CB60CB37D"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\CafeServiceTest.java",
+        "sha256":  "8DF8928A46734E3F536B1227563C6EC7D840E5100AA15CEA6DAC2102B8BEAE43"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\CheckoutFlowTest.java",
+        "sha256":  "FBEBA64D80EC4BDBE7C204E23156837CE43ACBA1865FB8BFE3A57A185F88B201"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\CheckoutMigrationTest.java",
+        "sha256":  "407708B8BD117FD0B4AA26D60A8775237D91C2603164A5B50E7E15F021A6AB6D"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\CommandReceiptTest.java",
+        "sha256":  "2A0D731F6F149DD1949CA1157D6B72E256FEDAF3429089FAA08775071624F5E7"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\ConvenienceTest.java",
+        "sha256":  "1995F45DEBB7AE25EEBC8C0BC8772F1E46F6DB2E793BA3824D4041B48CD6F149"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\EventFeedTest.java",
+        "sha256":  "E7214E6D8425321B6878E77F5FF62D436F197825248209D8407570B12100BB84"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\GuestSessionTest.java",
+        "sha256":  "A2C01CF20FBA269C78304939223F35322CB0988EF1D5D0290BC1079C28D5F5CB"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\MenuCatalogTest.java",
+        "sha256":  "5B85986046CBA0C369A6DBE856FE73D1AEDB214145E763A9596DF3C856703F51"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\MigrationFixtures.java",
+        "sha256":  "6BD1F2AEA738AF329A1756CAD244D89942B363D1C912AC270355586E4454E864"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\NetworkIntegrationTest.java",
+        "sha256":  "20330CD9E852A72273DDAE891AE2A2931AB6BCD052052BD41A70AB91A333BE59"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\PaymentAcceptanceTest.java",
+        "sha256":  "3D9A0C807EBCAE75F9B77E2237A773ADD1A10B4308B0265E384D9674A81BDC59"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\PrepaidFlowTest.java",
+        "sha256":  "BD94E6CD9073B2094BE054FEB7C94B546AEFFA4B3D11466AEAA483CC00B07FB5"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\QrAccessTest.java",
+        "sha256":  "57C04A13F5C29E587B2F08027B2722CAF7E3E1C92D62A2FCA04FF369D09F0828"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\QrMigrationTest.java",
+        "sha256":  "717618BD72C1B89E90FF72F8FE0BA077168E11FA3DE612FAB615837AE9ECD59B"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\QrNetworkTest.java",
+        "sha256":  "C268E9F28C83A8C285DC1BDE312454B887828EE21A19674AB260A8217680A23E"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\RecoveryCampaignTest.java",
+        "sha256":  "72EAD17DD0DF56FE9B700463F3A0FE5FF70B6BBA97EF8DD0C5B227707913FF92"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\RecoveryIntegrationTest.java",
+        "sha256":  "9317B664AFBDA20DBC49932907B839F67A9802D577E6426FFE7116ABD54587FC"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\server\\UpgradeMigrationTest.java",
+        "sha256":  "E1166F30E5FB49B07800A5180A67358E51D2A660DA962D9AAD56CC37EF4D8160"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\web\\MenuImageIntegrationTest.java",
+        "sha256":  "F1E6708AA5A1A2060621944AB0635A0F47FE84B612B9BBD91A6C196268C2E0B4"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\web\\ProxyGatewayTest.java",
+        "sha256":  "9297E303CFC182D588C1C739CC6FB3AA05B0FB62D683C0CE1279F8343AE77116"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\web\\QrWebIntegrationTest.java",
+        "sha256":  "3DB7D61C00EFAED19E5C701215B3099DBC9E26F39A39B1FFED8C969E83AE1C74"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\web\\WebGatewayIntegrationTest.java",
+        "sha256":  "31A6A5FAEC5AB50727B88049D90BB471E3269B4F37C4A4554A9134AF2A37015A"
+    },
+    {
+        "path":  "src\\test\\java\\com\\cafelink\\web\\WebGatewayTlsTest.java",
+        "sha256":  "B0DC6A30F7FD68F33385B463877DE51606766F2D28AB576503D832BC0E34C8CF"
+    },
+    {
+        "path":  "tools\\analyze_web.py",
+        "sha256":  "4F29DDE4008ADC8C2AEFF4655B789D40B00161EB97E22D78E264230F5B91AAA8"
+    },
+    {
+        "path":  "tools\\package_attack_fixtures.py",
+        "sha256":  "2A452A14AE7BB8703376C3C5C8BFA2B21B0D7540B4242BFDC27C7925EE9A9EC2"
+    },
+    {
+        "path":  "tools\\requirements-v8.txt",
+        "sha256":  "A7193EDBC40BF3DA5CCC9FEDA321A90428DD8844F12B9DFD14C109E2B4AA5E40"
+    },
+    {
+        "path":  "tools\\test_web_analysis.py",
+        "sha256":  "09639FD19F23B882E35D5397311CB9108105C76BDF2E4FC5043254D159C78979"
+    },
+    {
+        "path":  "tools\\verify_v8_workflow.py",
+        "sha256":  "FF2D313A817DAD89A8C0A0715CB79D80EDD50ECC14F87BCF75FA1DD3792C1D66"
+    },
+    {
+        "path":  "tools\\web_oracle.py",
+        "sha256":  "DEF69021EA8D6EF75C2625B89C48AD5216283DB26D2A788B4A9D49E2F48F5E47"
+    },
+    {
+        "path":  "web\\dist\\assets\\index-D2ZqY7Zd.css",
+        "sha256":  "3C13E3BD11276BD06587BF5773E613DA058724FCCD79DBBF51ED3AE4C2E0E79F"
+    },
+    {
+        "path":  "web\\dist\\assets\\index-RluE7A2H.js",
+        "sha256":  "8AF9C4BFCB340F5D5FE6654B42C2C8B84BDC9D18A52D98274EF82341AE76FE8C"
+    },
+    {
+        "path":  "web\\dist\\index.html",
+        "sha256":  "7C831991D6C5EABBE69AA1D4D7BA0C63427AD612627D4DE03D83B4DE7A169B53"
+    },
+    {
+        "path":  "web\\experiment-dist\\assets\\app-D2ZqY7Zd.css",
+        "sha256":  "3C13E3BD11276BD06587BF5773E613DA058724FCCD79DBBF51ED3AE4C2E0E79F"
+    },
+    {
+        "path":  "web\\experiment-dist\\assets\\app-DESjCJ6w.js",
+        "sha256":  "A2882919EFE5DABA969EDF2FDB6D06BE1CD39C07B910A9A1651FFE93DFD1F86A"
+    },
+    {
+        "path":  "web\\experiment-dist\\assets\\experiment-GjyfHGns.js",
+        "sha256":  "AEB2370A168BD7B52CA69A754FD0BB03EC639CEA51153E9BFAB9669B55C63C79"
+    },
+    {
+        "path":  "web\\experiment-dist\\assets\\orderRecovery-BH5V2QMD.js",
+        "sha256":  "553FB2548E5E4E9BE064E6A37A5EA7F58203C710FB7DDCAB7568135F35AF5242"
+    },
+    {
+        "path":  "web\\experiment-dist\\experiment.html",
+        "sha256":  "88FBF395DE6B57ABE6C11F97E6935C42D4F351A84A8D8AE10BA08AC12475BFE7"
+    },
+    {
+        "path":  "web\\experiment-dist\\index.html",
+        "sha256":  "18FFC3F2ED1CCF34EDD21D87F766F9E777093FB1BE36D4CA39688109ECA8DA70"
+    },
+    {
+        "path":  "web\\experiments\\campaign.mjs",
+        "sha256":  "95D956F95E52F6760B2C2F532C1BB1AB00F716A643AAF8368C6170993C74CF20"
+    },
+    {
+        "path":  "web\\experiments\\harness.ts",
+        "sha256":  "2858AF9255D4E022F8366681EB1655754824CDE7B26255980FCA3DDC03CF4D59"
+    },
+    {
+        "path":  "web\\experiments\\load.mjs",
+        "sha256":  "9AE3A4AAF4CEF822842884D21C26382ED344EA6EAA4EADBF4A0FF6A291A896BA"
+    },
+    {
+        "path":  "web\\experiments\\server.mjs",
+        "sha256":  "3E49AF2D79CCA3D53A1EDEFF65BAC21F6B80D7AC78E480D0FDC680600743DB56"
+    },
+    {
+        "path":  "web\\package.json",
+        "sha256":  "CC98F15F801C00B1D11EDF93BBFE663978643D7E4E0DDD89C493EC8BBAC6841F"
+    },
+    {
+        "path":  "web\\package-lock.json",
+        "sha256":  "B1C0E0BFFF289812642AE5B5C166F40C9123792D11B9458A5F9270D2FAEEBF6C"
+    },
+    {
+        "path":  "web\\playwright.config.ts",
+        "sha256":  "2F4FC3654DAEC1103DCBDAA47CBECF044A74CDDF563F7B8EC0BAD0A3BF5C9416"
+    },
+    {
+        "path":  "web\\src\\api.ts",
+        "sha256":  "733D05E472840949A8A5B9CE30476EEA8D29A9F5006D55256D8A879167E3C97C"
+    },
+    {
+        "path":  "web\\src\\App.tsx",
+        "sha256":  "C22878254DE94494644BE9A39473E0A1A21A936B274D4D9B4F6D5E8CCF487624"
+    },
+    {
+        "path":  "web\\src\\Assistance.tsx",
+        "sha256":  "46F2672B02CB3A26EC2EBA41D8765DCD475388AC0A2EB2C1CF76BD425F421F54"
+    },
+    {
+        "path":  "web\\src\\AutomaticTablePanel.tsx",
+        "sha256":  "ABBC2ABC78FD93E2B7E100552A1D82FCE74CC4F44430CEBE84E032F4415B15AD"
+    },
+    {
+        "path":  "web\\src\\CartNote.tsx",
+        "sha256":  "7C0DA1867C3A07844C6EEB6A1A86935CD565BF10F055FD49F603554D3C5B0FD7"
+    },
+    {
+        "path":  "web\\src\\CheckoutControls.tsx",
+        "sha256":  "BB6480BE0BB8FD2E8374283EA6E3EAC153D00A324F0A794428A73DC748388BF0"
+    },
+    {
+        "path":  "web\\src\\Dialog.tsx",
+        "sha256":  "0DC95A8E48EA3884237B01F99E414A8D3DBC8280BC56EF28B2BD1940811E0AAA"
+    },
+    {
+        "path":  "web\\src\\DrinkArt.tsx",
+        "sha256":  "D8C7F89D0B604862319D9D351B3631B11EA53C2F6DB090962643D8FE01938922"
+    },
+    {
+        "path":  "web\\src\\Guest.tsx",
+        "sha256":  "C60BDF6D78C9BA2646C3E11B9E1646DD0C5F6225341410EA86D463CAE6E9AF69"
+    },
+    {
+        "path":  "web\\src\\GuestEntryConflict.tsx",
+        "sha256":  "119B389833C85CEEFAAE39A1BCFA02CDBE63C7F8B2527D292D041284187752EC"
+    },
+    {
+        "path":  "web\\src\\GuestLink.tsx",
+        "sha256":  "173766982364DF367FC9EAA59DF0809DFA75350B09602A7A26B5F2BE898C09C4"
+    },
+    {
+        "path":  "web\\src\\GuestMenu.tsx",
+        "sha256":  "E02BF05B568DF93761DC269DEDFBC5F53A061C6D81CE0AEE64ED067EB6222C55"
+    },
+    {
+        "path":  "web\\src\\GuestOrders.tsx",
+        "sha256":  "93E6FFC6F424F0E2A9A30F4A7DB3E86275C71E551C74D8624F83E11901DE4128"
+    },
+    {
+        "path":  "web\\src\\GuestPayments.tsx",
+        "sha256":  "AC00C0C772B616F589BE317634B3A8CFFE0CA01022F0DE8DDA137F4EFD70C43C"
+    },
+    {
+        "path":  "web\\src\\GuestSectionHeading.tsx",
+        "sha256":  "71C7CCD1E10369EC47C3468F51ADB10CDFFEBB8CD4E605C8BD363D397339ECD8"
+    },
+    {
+        "path":  "web\\src\\GuestSupport.tsx",
+        "sha256":  "49E50DFEC0A5370CC5F2DFE1107E6205A16F83A08736CE71040F84B1DCE92F5A"
+    },
+    {
+        "path":  "web\\src\\GuestWorkspace.tsx",
+        "sha256":  "15F4117FC824661A686B0460AC33AA2168E5B03DB7B36FFC7797D1EBC98B2B29"
+    },
+    {
+        "path":  "web\\src\\guest-zones.css",
+        "sha256":  "B6FB871BCA7E6EE7E4A175A05AA43E9EC859D4AD2B126BAA204F6DAD0032BAC5"
+    },
+    {
+        "path":  "web\\src\\Icons.tsx",
+        "sha256":  "F6F45FB34D201C1F526153A5C166E6104C5BE77F000C9EA07DB0CB7B3FC50A68"
+    },
+    {
+        "path":  "web\\src\\journal.ts",
+        "sha256":  "B76A253D6BC3AB4F923534E79F2CD8069F2DECDA42DFC3202504996F1D69380B"
+    },
+    {
+        "path":  "web\\src\\main.tsx",
+        "sha256":  "C8FED7CBC46EE4546C559019F20C6E51AC80CB0526D0B7E3CAFA870EB1724745"
+    },
+    {
+        "path":  "web\\src\\MenuAdmin.tsx",
+        "sha256":  "8169165B55D2299AA19BE5FD647A9C1A09068872267CDC99B861966F9E28A0FE"
+    },
+    {
+        "path":  "web\\src\\models.ts",
+        "sha256":  "F558E3CC9A550F4E0D148BB00972F50715FB02A3882641DD7AD4BE913075F4C6"
+    },
+    {
+        "path":  "web\\src\\Notifications.tsx",
+        "sha256":  "BDFBD2F6B5EECA3FB181DD3DB16E92F54A4648F45F52CCE8ED3FBF06E3956D26"
+    },
+    {
+        "path":  "web\\src\\orderRecovery.ts",
+        "sha256":  "D90FBCDC479DDBBAB18387CEFF67B3D6A6610F285B502188490CC2C03941E644"
+    },
+    {
+        "path":  "web\\src\\OrderResolution.tsx",
+        "sha256":  "6D2336CE4397DE9053A0C5C2795F8CF3A0AA4E60C072ED9DD20B23F27A544F48"
+    },
+    {
+        "path":  "web\\src\\PrepaidClose.tsx",
+        "sha256":  "2B9E714691DF1B0BB3663DAB85678363F761322493349CE3C3919F6B44EB65B8"
+    },
+    {
+        "path":  "web\\src\\SalesHistory.tsx",
+        "sha256":  "9D4909888878D616A25A60B6D51818F54F3A8E6734D0B544006A17373F6798FF"
+    },
+    {
+        "path":  "web\\src\\shop.css",
+        "sha256":  "D10FF2C5D35A95D125DE209A78FE13ED7E09374FBA87AD11DC4C84560BB717D2"
+    },
+    {
+        "path":  "web\\src\\staffJournal.ts",
+        "sha256":  "A68BDFF623B77BF4F40910F8E1AE341D03B725F50A165FC0ADF876CCE9C8E6C2"
+    },
+    {
+        "path":  "web\\src\\StaffRecovery.tsx",
+        "sha256":  "24B87F129C83E79D77003D5F6BA2B8AE9A0FC22D9D20D44722AD7350F17106EE"
+    },
+    {
+        "path":  "web\\src\\style.css",
+        "sha256":  "853F300F74ECFC25000FEC8841FC072BFDB5BFE91B2B98DB6FA9D9694B19CDC3"
+    },
+    {
+        "path":  "web\\src\\ui.tsx",
+        "sha256":  "69D1D5EF84256FBBC181E736E01DF62DEC293FF7781AEB363B2613F029C01213"
+    },
+    {
+        "path":  "web\\src\\useGuestConnection.ts",
+        "sha256":  "C5C79392E2D1599A293F16239AB473B7835EB6317D10A0D95266FB5EAE62BB19"
+    },
+    {
+        "path":  "web\\src\\v5.css",
+        "sha256":  "B840BE82DDC146FFAE78345BE6DD5BBC9729EEEF9ACFC241F80D4A729B374FC5"
+    },
+    {
+        "path":  "web\\src\\v7.css",
+        "sha256":  "AC55E0CA8DCCC70CB41012ABC4B98762D8B46C8CBC60FE1168DA3E08547F586B"
+    },
+    {
+        "path":  "web\\src\\VisitQrPanel.tsx",
+        "sha256":  "17227A6E157BED69392EC2C0ADB8316752996763F301EA6D5A9F1DE6945BB451"
+    },
+    {
+        "path":  "web\\src\\Worklists.tsx",
+        "sha256":  "A344FF970110DD1C951E8C6D9733C4B54AE77DA2A4D674AC627B28EEA539E7E4"
+    },
+    {
+        "path":  "web\\tests\\automatic.spec.ts",
+        "sha256":  "5AF84E480E953938CB18D5F87533F1F98893B599B99D230E26B3A05429FE91C7"
+    },
+    {
+        "path":  "web\\tests\\business-experience-audit.mjs",
+        "sha256":  "237269D99FE1613158226B16C0C388EFE8D7A25E9DE3D94E82274E88BA184F51"
+    },
+    {
+        "path":  "web\\tests\\convenience.spec.ts",
+        "sha256":  "B101E5A59F929305BE511A49C23356AAA30EC168F9D932D8CA1A3A02CD7551AF"
+    },
+    {
+        "path":  "web\\tests\\dashboard.spec.ts",
+        "sha256":  "C77AB86024D69D987323CBCD5943C58BE6D73F9CDF909E819AECFFD1E2FDDD88"
+    },
+    {
+        "path":  "web\\tests\\orders.spec.ts",
+        "sha256":  "4A844BF2AA109F51DA738225763FA9432AC234B28802D1C081A8DB8366652E1A"
+    },
+    {
+        "path":  "web\\tests\\public-smoke.mjs",
+        "sha256":  "2A8C32F1ADA5AB498DF0A9DA296EDADDDE9286FBAF39986394395DB35F80E6B3"
+    },
+    {
+        "path":  "web\\tests\\qr.spec.ts",
+        "sha256":  "2F418F5376B898619F285C16F40621DC883CA4A3712A95C5A5F26038FBFB2FA9"
+    },
+    {
+        "path":  "web\\tests\\recovery-policy.spec.ts",
+        "sha256":  "9115BBB3189D60DA4D1B60684170F3E16F4E29AEDD9550B2891E9E9592F8FE4C"
+    },
+    {
+        "path":  "web\\tests\\release-public-smoke.mjs",
+        "sha256":  "5512FD1E2F851BFDB01F78604ECC8738014EC9158AF27AB7FCA143983B0538BB"
+    },
+    {
+        "path":  "web\\tests\\release-smoke.mjs",
+        "sha256":  "9703918A02CF46434E1F0D78758F7D5CA5FC93487415B7A02859107A0110AA79"
+    },
+    {
+        "path":  "web\\tests\\run-e2e.mjs",
+        "sha256":  "C1B678DCA36BD373C772A90BB7DA5A6DE9443F9B1355529CF6CFE00A025130D4"
+    },
+    {
+        "path":  "web\\tests\\shop.spec.ts",
+        "sha256":  "9D74D1FBBB3DC711A114EE0E030FBC0F9C41A9ED80C0666EA55EC241875CF8FC"
+    },
+    {
+        "path":  "web\\tests\\start-server.mjs",
+        "sha256":  "61BBD96167299737EC65F5E7325704653B88476FF04D5B134251B3B04FDF8E16"
+    },
+    {
+        "path":  "web\\tests\\tcp-peer.ts",
+        "sha256":  "62EC06187BD36101114A5DFB6D769DC46BB4DEE4C1C567B18CC3BD986B6EFDFC"
+    },
+    {
+        "path":  "web\\tests\\ux.spec.ts",
+        "sha256":  "36C04392C4BC43AB2BF258392E7483567D6DC7071258E3A41EADDEDB0ECAE4C7"
+    },
+    {
+        "path":  "web\\tests\\v7.spec.ts",
+        "sha256":  "E443405F074EFA40150082919545EDF1975B34E13A4BED12E642A3247F17FE09"
+    },
+    {
+        "path":  "web\\tests\\workflow.spec.ts",
+        "sha256":  "B6728CD24A38C06B4AAB297740AF8A5EC0C276F4542E78484FEBE9FE70451D76"
+    },
+    {
+        "path":  "web\\tsconfig.json",
+        "sha256":  "F4340E61B0D04ECDB682270B8692368EDB080DFB4EC780D939ABB19B260E7D87"
+    },
+    {
+        "path":  "web\\vite.config.ts",
+        "sha256":  "55D788FB9BB0FF9FC9D6CEB8C05F8D04A9D388A4EFFA40C4B5C19323C82DAC18"
+    }
+]

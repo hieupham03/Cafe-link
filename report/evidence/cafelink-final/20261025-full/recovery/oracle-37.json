@@ -1,0 +1,25 @@
+{
+  "case": 37,
+  "visit": [
+    {
+      "id": "b1c60289-4ea6-4a3c-8eca-d9a723ef8198",
+      "table_id": 1,
+      "active": 1,
+      "state": "OPEN",
+      "payment_mode": "PREPAY",
+      "service_mode": "AUTO"
+    }
+  ],
+  "orders": [],
+  "tickets": [],
+  "receipts": [
+    {
+      "command_id": "e13ba7e3-1d07-41a3-8bd7-c51be7c80f48",
+      "action": "CALL_SERVICE",
+      "result_json": "{\"cancelledBeforeAcceptance\":true}"
+    }
+  ],
+  "payments": [],
+  "events": [],
+  "schema": 11
+}

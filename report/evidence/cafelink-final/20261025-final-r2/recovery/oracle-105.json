@@ -1,0 +1,48 @@
+{
+  "case": 105,
+  "visit": [
+    {
+      "id": "b452dc19-6fb2-4105-b4bf-96a4f0aca9a1",
+      "table_id": 1,
+      "active": 0,
+      "state": "CLOSED",
+      "payment_mode": "PREPAY",
+      "service_mode": "AUTO"
+    }
+  ],
+  "orders": [],
+  "tickets": [
+    {
+      "id": 4,
+      "visit_id": "b452dc19-6fb2-4105-b4bf-96a4f0aca9a1",
+      "type": "CALL_SERVICE",
+      "status": "HANDLED"
+    }
+  ],
+  "receipts": [
+    {
+      "command_id": "eb12d137-579c-488b-b071-d7c52c5cbd90",
+      "action": "CALL_SERVICE",
+      "result_json": "{\"ticketId\":4}"
+    }
+  ],
+  "payments": [],
+  "events": [
+    {
+      "id": 19,
+      "type": "CALL_SERVICE",
+      "entity_id": "4"
+    },
+    {
+      "id": 20,
+      "type": "HANDLE_TICKET",
+      "entity_id": "4"
+    },
+    {
+      "id": 21,
+      "type": "AUTO_COMPLETE",
+      "entity_id": "b452dc19-6fb2-4105-b4bf-96a4f0aca9a1"
+    }
+  ],
+  "schema": 11
+}

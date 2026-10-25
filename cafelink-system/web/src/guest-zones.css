@@ -1,0 +1,302 @@
+/* Five guest tasks share the same visible landmarks in navigation and content. */
+.guest-home [data-guest-zone] {
+  --zone-color: #24573d;
+  --zone-tint: #edf4e8;
+}
+.guest-home [data-guest-zone="orders"] {
+  --zone-color: #315b79;
+  --zone-tint: #eaf2fa;
+}
+.guest-home [data-guest-zone="cart"] {
+  --zone-color: #83571a;
+  --zone-tint: #fff4dc;
+}
+.guest-home [data-guest-zone="payment"] {
+  --zone-color: #23635b;
+  --zone-tint: #e6f4ef;
+}
+.guest-home [data-guest-zone="support"] {
+  --zone-color: #67517f;
+  --zone-tint: #f1edf8;
+}
+.guest-home .guest-nav {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  padding: 8px;
+  top: 6px;
+  border: 1px solid #ccd7c9;
+  border-radius: 20px;
+  background: #f7f9f3f5;
+  margin-bottom: 24px;
+}
+.guest-home .guest-nav a {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: 7px;
+  min-width: 0;
+  min-height: 112px;
+  padding: 12px;
+  white-space: normal;
+  border: 1px solid #ced9cc;
+  border-radius: 14px;
+  color: #253f32;
+  background: #fffefa;
+  text-align: left;
+}
+.guest-nav-icon,
+.guest-zone-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--zone-tint);
+  color: var(--zone-color);
+  flex: 0 0 auto;
+}
+.guest-home .guest-nav .ui-icon {
+  width: 20px;
+  height: 20px;
+}
+.guest-nav-title {
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: 750;
+}
+.guest-nav-description {
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 400;
+  color: #57675d;
+}
+.guest-nav-count {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 5px;
+  border-radius: 8px;
+  background: var(--zone-tint);
+  color: var(--zone-color);
+  font-size: 12px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+.guest-home .guest-nav a:hover {
+  border-color: var(--zone-color);
+  background: var(--zone-tint);
+}
+.guest-home .guest-nav a[aria-current="location"] {
+  background: var(--zone-color);
+  border-color: var(--zone-color);
+  color: white;
+  box-shadow: 0 4px 12px #153c2920;
+}
+.guest-home .guest-nav a[aria-current="location"] .guest-nav-icon,
+.guest-home .guest-nav a[aria-current="location"] .guest-nav-count {
+  background: #ffffff24;
+  color: white;
+}
+.guest-home .guest-nav a[aria-current="location"] .guest-nav-description {
+  color: #fff;
+}
+.guest-home .guest-layout {
+  gap: 24px;
+}
+.guest-home .guest-main {
+  display: grid;
+  gap: 22px;
+}
+.guest-home .guest-service-note {
+  margin: 0;
+}
+.guest-home .guest-rail {
+  position: static;
+  max-height: none;
+  overflow: visible;
+  padding: 0;
+}
+.guest-home .guest-ordering {
+  display: grid;
+  gap: 22px;
+  margin: 12px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.guest-home .guest-zone {
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid #c7d4c6;
+  border-top: 4px solid var(--zone-color);
+  border-radius: 20px;
+  background: #fffefa;
+  box-shadow: 0 5px 18px #25402c08;
+}
+.guest-home .guest-ordering > .guest-zone {
+  padding: 20px;
+  margin: 0;
+}
+.guest-home .guest-zone.guest-services,
+.guest-home .guest-zone.checkout-panel {
+  padding-top: 20px !important;
+}
+.guest-home .guest-zone:target {
+  outline: 2px solid var(--zone-color);
+  outline-offset: 3px;
+}
+#guest-menu,
+#guest-orders,
+#guest-previous-orders,
+#guest-cart,
+#guest-checkout,
+#guest-support {
+  scroll-margin-top: 160px;
+}
+.guest-zone-header {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #dce4d7;
+}
+.guest-zone-title {
+  flex: 1;
+  min-width: 130px;
+}
+.guest-home .guest-zone-title h2 {
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 750;
+  letter-spacing: -0.5px;
+  line-height: 1.3;
+  margin: 0 0 5px;
+  color: #253f32;
+}
+.guest-zone-title p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #57675d;
+}
+.guest-zone-meta {
+  padding: 5px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 650;
+  background: var(--zone-tint);
+  color: var(--zone-color);
+}
+.guest-zone-meta .menu-result-count {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+.guest-zone-actions {
+  flex-basis: 100%;
+  text-align: right;
+}
+.guest-zone-actions button {
+  min-height: 40px;
+  padding: 5px 10px;
+  border: 1px solid #d6dfce;
+  border-radius: 8px;
+  background: #f5f7f0;
+  font-size: 11px;
+}
+.guest-home .guest-zone > .table-order:last-child {
+  margin-bottom: 0;
+}
+@media (max-width: 850px) {
+  .guest-home .guest-rail {
+    margin-top: 22px;
+  }
+}
+@media (max-width: 720px) {
+  .guest-home .guest-nav {
+    gap: 5px;
+    padding: 5px;
+    border-radius: 14px;
+    top: 5px;
+    margin-bottom: 18px;
+  }
+  .guest-home .guest-nav a {
+    min-height: 83px;
+    padding: 9px 2px 7px;
+    gap: 6px;
+    border-radius: 10px;
+    justify-items: center;
+    text-align: center;
+  }
+  .guest-home .guest-nav .guest-nav-title {
+    font-size: 11px;
+    line-height: 1.3;
+    max-width: 65px;
+  }
+  .guest-nav-description {
+    display: none;
+  }
+  .guest-nav-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+  }
+  .guest-home .guest-nav .ui-icon {
+    width: 19px;
+    height: 19px;
+  }
+  .guest-nav-count {
+    top: 3px;
+    right: 2px;
+    min-width: 17px;
+    height: 17px;
+    border-radius: 6px;
+    padding: 0 3px;
+    font-size: 10px;
+  }
+  .guest-home .guest-zone,
+  .guest-home .guest-ordering > .guest-zone {
+    padding: 16px 14px;
+    border-radius: 16px;
+  }
+  .guest-home .guest-zone.guest-services,
+  .guest-home .guest-zone.checkout-panel {
+    padding-top: 16px !important;
+  }
+  .guest-zone-header {
+    gap: 8px;
+    padding-bottom: 13px;
+    margin-bottom: 15px;
+  }
+  .guest-zone-icon {
+    width: 31px;
+    height: 31px;
+  }
+  .guest-home .guest-zone-title h2 {
+    font-size: 18px;
+  }
+  .guest-zone-title p {
+    font-size: 12px;
+  }
+  .guest-home .menu-grid {
+    gap: 10px;
+  }
+  #guest-menu,
+  #guest-orders,
+  #guest-previous-orders,
+  #guest-cart,
+  #guest-checkout,
+  #guest-support {
+    scroll-margin-top: 120px;
+  }
+}

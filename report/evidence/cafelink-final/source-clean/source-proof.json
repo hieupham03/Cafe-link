@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "freshSource": "D:\\BTL-LTM\\dist\\_final-check\\Fresh Source",
+  "java": {
+    "tests": 142,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "startTime": "2026-10-25T13:35:44.501Z",
+    "duration": 140944.46399999998,
+    "expected": 65,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 0
+  },
+  "testListenersClosed": true,
+  "frontendMatchesFrozenV93": true,
+  "javaClassBytesMatchFrozenV93": true,
+  "jarArchiveShaMayDifferBecauseOfZipMetadata": true,
+  "hostDependencyCachesMayBeReused": true,
+  "physicalPhone": "NOT_RUN",
+  "currentCodeFilesMatchCleanTestedSource": 158
+}

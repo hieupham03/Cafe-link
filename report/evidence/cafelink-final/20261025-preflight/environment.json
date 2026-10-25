@@ -1,0 +1,13 @@
+﻿{
+    "os":  "Microsoft Windows NT 10.0.26200.0",
+    "cpu":  "12th Gen Intel(R) Core(TM) i7-12700H",
+    "logicalProcessors":  20,
+    "memoryBytes":  16907980800,
+    "node":  "v22.20.0",
+    "python":  "Python 3.13.6",
+    "javaVersion":  "24.0.2",
+    "jarSha256":  "A23AF57611E6160C56D9E6BF728BBF20AE5AA7073E05CEAD902C9CADF73E6644",
+    "productionManifestSha256":  "7C831991D6C5EABBE69AA1D4D7BA0C63427AD612627D4DE03D83B4DE7A169B53",
+    "experimentManifestSha256":  "88FBF395DE6B57ABE6C11F97E6935C42D4F351A84A8D8AE10BA08AC12475BFE7",
+    "topology":  "Chromium -\u003e HTTP Gateway -\u003e TCP Core -\u003e SQLite, all on loopback"
+}

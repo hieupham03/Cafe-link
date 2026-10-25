@@ -1,0 +1,7702 @@
+[
+  {
+    "case": 1,
+    "repeat": 1,
+    "scenario": "LOST_ORDER_ACK",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 35.19999999925494,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2092
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.5,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 232
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2092
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 2,
+    "repeat": 2,
+    "scenario": "DISCARD_WINS_LATE_SERVICE",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 42.19999999925494,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "CANCELLED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "DISCARD_COMMAND",
+        "status": 200,
+        "durationMs": 7.899999998509884,
+        "requestBodyBytes": 433,
+        "responseBodyBytes": 214
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "COMMAND_DISCARDED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 3,
+    "repeat": 4,
+    "scenario": "DISCARD_WINS_LATE_SERVICE",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 27.59999999962747,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      }
+    ],
+    "lateResult": {
+      "ok": true,
+      "result": {
+        "ticketId": 1
+      }
+    },
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 1,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 4,
+    "repeat": 1,
+    "scenario": "VISIT_ENDED",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 31.09999999962747,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "REJECTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      },
+      {
+        "action": "PLACE_ORDER",
+        "status": 409,
+        "durationMs": 6,
+        "requestBodyBytes": 414,
+        "responseBodyBytes": 93
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "SESSION_CLOSED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 5,
+    "repeat": 3,
+    "scenario": "NORMAL_ORDER",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "NONE",
+    "recoveryMs": 45.5,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 8.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 7.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 10,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 10.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 6,
+    "repeat": 4,
+    "scenario": "ACCEPT_WINS_LATE_SERVICE",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 32.19999999925494,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 7,
+    "repeat": 2,
+    "scenario": "UNACCEPTED_ORDER",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 28.09999999962747,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.300000000745058,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 8,
+    "repeat": 5,
+    "scenario": "UNACCEPTED_SERVICE",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 30.299999998882413,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.099999999627471,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.100000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 9,
+    "repeat": 3,
+    "scenario": "LOST_ORDER_ACK",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 33.69999999925494,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "PLACE_ORDER",
+        "status": 200,
+        "durationMs": 6.300000000745058,
+        "requestBodyBytes": 414,
+        "responseBodyBytes": 53
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.100000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 10,
+    "repeat": 1,
+    "scenario": "VISIT_ENDED",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 29,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "REJECTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.300000000745058,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "SESSION_CLOSED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 11,
+    "repeat": 2,
+    "scenario": "ACCEPT_WINS_LATE_SERVICE",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 29.299999998882413,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 5.400000000372529,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 12,
+    "repeat": 5,
+    "scenario": "NORMAL_ORDER",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "NONE",
+    "recoveryMs": 23.5,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2090
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.399999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2090
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 13,
+    "repeat": 2,
+    "scenario": "DISCARD_WINS_LATE_SERVICE",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 50.5,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 15.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 7.599999999627471,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 9.100000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      }
+    ],
+    "lateResult": {
+      "ok": true,
+      "result": {
+        "ticketId": 1
+      }
+    },
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 1,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 14,
+    "repeat": 1,
+    "scenario": "UNACCEPTED_ORDER",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 39,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.700000001117587,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 15,
+    "repeat": 3,
+    "scenario": "UNACCEPTED_ORDER",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 60.600000001490116,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.399999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 9.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      },
+      {
+        "action": "PLACE_ORDER",
+        "status": 200,
+        "durationMs": 18.300000000745058,
+        "requestBodyBytes": 414,
+        "responseBodyBytes": 53
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 9.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2092
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 1,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 16,
+    "repeat": 2,
+    "scenario": "UNACCEPTED_SERVICE",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 47.40000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 6,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 9.400000000372529,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2018
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 1,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 17,
+    "repeat": 3,
+    "scenario": "NORMAL_ORDER",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "NONE",
+    "recoveryMs": 23.90000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 18,
+    "repeat": 5,
+    "scenario": "LOST_SERVICE_ACK_HANDLED",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 25,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 3.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 19,
+    "repeat": 3,
+    "scenario": "LOST_SERVICE_ACK_HANDLED",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 25.800000000745058,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 3.799999998882413,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 20,
+    "repeat": 5,
+    "scenario": "UNACCEPTED_SERVICE",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 34.40000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "CANCELLED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.700000001117587,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "DISCARD_COMMAND",
+        "status": 200,
+        "durationMs": 6.200000001117587,
+        "requestBodyBytes": 433,
+        "responseBodyBytes": 214
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 21,
+    "repeat": 2,
+    "scenario": "UNACCEPTED_SERVICE",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 23,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.300000000745058,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.100000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 22,
+    "repeat": 4,
+    "scenario": "UNACCEPTED_SERVICE",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 47,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "CANCELLED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.199999999254942,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "DISCARD_COMMAND",
+        "status": 200,
+        "durationMs": 11.200000001117587,
+        "requestBodyBytes": 433,
+        "responseBodyBytes": 214
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 23,
+    "repeat": 5,
+    "scenario": "LOST_SERVICE_ACK_HANDLED",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 32.19999999925494,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.099999999627471,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 24,
+    "repeat": 4,
+    "scenario": "VISIT_ENDED",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 33.09999999962747,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "CANCELLED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.300000000745058,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "DISCARD_COMMAND",
+        "status": 200,
+        "durationMs": 5.900000000372529,
+        "requestBodyBytes": 504,
+        "responseBodyBytes": 213
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "COMMAND_DISCARDED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 25,
+    "repeat": 2,
+    "scenario": "VISIT_ENDED",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 39.5,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "REJECTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 8.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1753
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 6.5,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 8.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1753
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "SESSION_CLOSED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 26,
+    "repeat": 5,
+    "scenario": "UNACCEPTED_SERVICE",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 35.79999999888241,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 8.199999999254942,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2017
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 1,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 27,
+    "repeat": 4,
+    "scenario": "NORMAL_ORDER",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "NONE",
+    "recoveryMs": 33.600000001490116,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.100000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 8.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 28,
+    "repeat": 4,
+    "scenario": "UNACCEPTED_ORDER",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 29.09999999962747,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.399999998509884,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 29,
+    "repeat": 5,
+    "scenario": "LOST_SERVICE_ACK_HANDLED",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 27.59999999962747,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.100000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 30,
+    "repeat": 4,
+    "scenario": "LOST_ORDER_ACK",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 23.600000001490116,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.600000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 232
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 31,
+    "repeat": 3,
+    "scenario": "UNACCEPTED_ORDER",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 23.399999998509884,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 3.900000000372529,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 32,
+    "repeat": 2,
+    "scenario": "NORMAL_ORDER",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "NONE",
+    "recoveryMs": 22.699999999254942,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 33,
+    "repeat": 2,
+    "scenario": "UNACCEPTED_ORDER",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 34.70000000111759,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "PLACE_ORDER",
+        "status": 200,
+        "durationMs": 7.700000001117587,
+        "requestBodyBytes": 414,
+        "responseBodyBytes": 53
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.100000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 1,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 34,
+    "repeat": 2,
+    "scenario": "UNACCEPTED_SERVICE",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 50.29999999888241,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "CANCELLED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.900000000372529,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "DISCARD_COMMAND",
+        "status": 200,
+        "durationMs": 11.400000000372529,
+        "requestBodyBytes": 433,
+        "responseBodyBytes": 214
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 35,
+    "repeat": 2,
+    "scenario": "NORMAL_ORDER",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "NONE",
+    "recoveryMs": 25.59999999962747,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 36,
+    "repeat": 4,
+    "scenario": "VISIT_ENDED",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 22.799999998882413,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "REJECTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 3.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 3.900000000372529,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "SESSION_CLOSED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 37,
+    "repeat": 3,
+    "scenario": "DISCARD_WINS_LATE_SERVICE",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 56.29999999888241,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "CANCELLED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 6.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 14.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 6.600000001490116,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "DISCARD_COMMAND",
+        "status": 200,
+        "durationMs": 7.5,
+        "requestBodyBytes": 433,
+        "responseBodyBytes": 214
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 8.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "COMMAND_DISCARDED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 38,
+    "repeat": 3,
+    "scenario": "LOST_ORDER_ACK",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 31.800000000745058,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2092
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.900000000372529,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 232
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2092
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 39,
+    "repeat": 4,
+    "scenario": "LOST_SERVICE_ACK_HANDLED",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 39.80000000074506,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2023
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 7.100000001490116,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2023
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 40,
+    "repeat": 1,
+    "scenario": "ACCEPT_WINS_LATE_SERVICE",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 34.59999999962747,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.800000000745058,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 41,
+    "repeat": 2,
+    "scenario": "LOST_SERVICE_ACK_HANDLED",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 27,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.399999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 42,
+    "repeat": 4,
+    "scenario": "LOST_ORDER_ACK",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 34,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 6.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 3.699999999254942,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 232
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 43,
+    "repeat": 1,
+    "scenario": "NORMAL_ORDER",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "NONE",
+    "recoveryMs": 22,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 44,
+    "repeat": 1,
+    "scenario": "DISCARD_WINS_LATE_SERVICE",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 31.100000001490116,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "CANCELLED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 3.799999998882413,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "DISCARD_COMMAND",
+        "status": 200,
+        "durationMs": 6,
+        "requestBodyBytes": 433,
+        "responseBodyBytes": 214
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "COMMAND_DISCARDED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 45,
+    "repeat": 1,
+    "scenario": "UNACCEPTED_SERVICE",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 23.700000001117587,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.100000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 3.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 3.600000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 46,
+    "repeat": 1,
+    "scenario": "NORMAL_ORDER",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "NONE",
+    "recoveryMs": 17.199999999254942,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 3.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 3.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 47,
+    "repeat": 3,
+    "scenario": "ACCEPT_WINS_LATE_SERVICE",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 24.799999998882413,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 3.400000000372529,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 3.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 48,
+    "repeat": 1,
+    "scenario": "DISCARD_WINS_LATE_SERVICE",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 25.40000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 3.600000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 5.299999998882413,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 3.399999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2018
+      }
+    ],
+    "lateResult": {
+      "ok": true,
+      "result": {
+        "ticketId": 5
+      }
+    },
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 1,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 49,
+    "repeat": 5,
+    "scenario": "DISCARD_WINS_LATE_SERVICE",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 54.5,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "CANCELLED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 12.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 8.400000000372529,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "DISCARD_COMMAND",
+        "status": 200,
+        "durationMs": 7.799999998882413,
+        "requestBodyBytes": 433,
+        "responseBodyBytes": 214
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 8.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "COMMAND_DISCARDED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 50,
+    "repeat": 2,
+    "scenario": "DISCARD_WINS_LATE_SERVICE",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 59.19999999925494,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 7.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 6.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 10.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 16.5,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2017
+      }
+    ],
+    "lateResult": {
+      "ok": true,
+      "result": {
+        "ticketId": 1
+      }
+    },
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 1,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 51,
+    "repeat": 5,
+    "scenario": "ACCEPT_WINS_LATE_SERVICE",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 30.899999998509884,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2023
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 4.399999998509884,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2023
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 52,
+    "repeat": 2,
+    "scenario": "ACCEPT_WINS_LATE_SERVICE",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 28.799999998882413,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2021
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2021
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 53,
+    "repeat": 1,
+    "scenario": "LOST_SERVICE_ACK_HANDLED",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 26.09999999962747,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.100000001490116,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.399999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 54,
+    "repeat": 4,
+    "scenario": "VISIT_ENDED",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 30.600000001490116,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "REJECTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      },
+      {
+        "action": "PLACE_ORDER",
+        "status": 409,
+        "durationMs": 6.300000000745058,
+        "requestBodyBytes": 414,
+        "responseBodyBytes": 93
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "SESSION_CLOSED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 55,
+    "repeat": 5,
+    "scenario": "UNACCEPTED_ORDER",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 31.09999999962747,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 56,
+    "repeat": 5,
+    "scenario": "UNACCEPTED_ORDER",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 34.5,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "PLACE_ORDER",
+        "status": 200,
+        "durationMs": 9.400000000372529,
+        "requestBodyBytes": 414,
+        "responseBodyBytes": 53
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 7.399999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 1,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 57,
+    "repeat": 3,
+    "scenario": "UNACCEPTED_SERVICE",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 29.800000000745058,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "CANCELLED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 3.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 3.800000000745058,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "DISCARD_COMMAND",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 433,
+        "responseBodyBytes": 214
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 58,
+    "repeat": 2,
+    "scenario": "NORMAL_ORDER",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "NONE",
+    "recoveryMs": 19.299999998882413,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 59,
+    "repeat": 1,
+    "scenario": "LOST_SERVICE_ACK_HANDLED",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 28.40000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.600000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 60,
+    "repeat": 5,
+    "scenario": "VISIT_ENDED",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 28.5,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "REJECTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.100000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      },
+      {
+        "action": "PLACE_ORDER",
+        "status": 409,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 414,
+        "responseBodyBytes": 93
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "SESSION_CLOSED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 61,
+    "repeat": 3,
+    "scenario": "NORMAL_ORDER",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "NONE",
+    "recoveryMs": 33.40000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 8.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2092
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 9.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2092
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 62,
+    "repeat": 5,
+    "scenario": "LOST_ORDER_ACK",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 33.40000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2092
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 7.099999999627471,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 232
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.399999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2092
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 63,
+    "repeat": 4,
+    "scenario": "NORMAL_ORDER",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "NONE",
+    "recoveryMs": 27.40000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2092
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2092
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 64,
+    "repeat": 3,
+    "scenario": "LOST_SERVICE_ACK_HANDLED",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 31.90000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.900000000372529,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 65,
+    "repeat": 1,
+    "scenario": "LOST_ORDER_ACK",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 44,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 6.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 9,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 6.5,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 232
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 8.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 66,
+    "repeat": 2,
+    "scenario": "LOST_ORDER_ACK",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 33.69999999925494,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.800000000745058,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 232
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 67,
+    "repeat": 4,
+    "scenario": "LOST_SERVICE_ACK_HANDLED",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 39.90000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 6.900000000372529,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 8,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 68,
+    "repeat": 2,
+    "scenario": "LOST_ORDER_ACK",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 31.5,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.399999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.099999999627471,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 232
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 69,
+    "repeat": 2,
+    "scenario": "ACCEPT_WINS_LATE_SERVICE",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 32.59999999962747,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.100000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 70,
+    "repeat": 1,
+    "scenario": "UNACCEPTED_ORDER",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 33.79999999888241,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.399999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "PLACE_ORDER",
+        "status": 200,
+        "durationMs": 7.5,
+        "requestBodyBytes": 414,
+        "responseBodyBytes": 53
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2090
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 1,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 71,
+    "repeat": 3,
+    "scenario": "UNACCEPTED_SERVICE",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 38.90000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 8.299999998882413,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2015
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 1,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 72,
+    "repeat": 5,
+    "scenario": "ACCEPT_WINS_LATE_SERVICE",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 33.80000000074506,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.699999999254942,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 73,
+    "repeat": 5,
+    "scenario": "DISCARD_WINS_LATE_SERVICE",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 59.5,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 6.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.100000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 15.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 13.599999999627471,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 6.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 8.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2014
+      }
+    ],
+    "lateResult": {
+      "ok": true,
+      "result": {
+        "ticketId": 1
+      }
+    },
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 1,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 74,
+    "repeat": 4,
+    "scenario": "NORMAL_ORDER",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "NONE",
+    "recoveryMs": 27.300000000745058,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.600000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2089
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2089
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 75,
+    "repeat": 4,
+    "scenario": "LOST_SERVICE_ACK_HANDLED",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 37.600000001490116,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2021
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 6.900000000372529,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2021
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 76,
+    "repeat": 1,
+    "scenario": "ACCEPT_WINS_LATE_SERVICE",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 35.80000000074506,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 6.5,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 77,
+    "repeat": 1,
+    "scenario": "UNACCEPTED_SERVICE",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 40.79999999888241,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 9.800000000745058,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2018
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 1,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 78,
+    "repeat": 1,
+    "scenario": "LOST_ORDER_ACK",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 35.399999998509884,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "PLACE_ORDER",
+        "status": 200,
+        "durationMs": 6.300000000745058,
+        "requestBodyBytes": 414,
+        "responseBodyBytes": 53
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.399999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 79,
+    "repeat": 4,
+    "scenario": "UNACCEPTED_SERVICE",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 34.90000000037253,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 6,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 80,
+    "repeat": 4,
+    "scenario": "ACCEPT_WINS_LATE_SERVICE",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 33.5,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.699999999254942,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.399999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 81,
+    "repeat": 1,
+    "scenario": "DISCARD_WINS_LATE_SERVICE",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 38.59999999962747,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.900000000372529,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "lateResult": {
+      "ok": true,
+      "result": {
+        "ticketId": 6
+      }
+    },
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 1,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 82,
+    "repeat": 1,
+    "scenario": "UNACCEPTED_ORDER",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 30.300000000745058,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 83,
+    "repeat": 5,
+    "scenario": "VISIT_ENDED",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 28.899999998509884,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "REJECTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.799999998882413,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "SESSION_CLOSED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 84,
+    "repeat": 4,
+    "scenario": "UNACCEPTED_ORDER",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 42.70000000111759,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 8.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "PLACE_ORDER",
+        "status": 200,
+        "durationMs": 9.300000000745058,
+        "requestBodyBytes": 414,
+        "responseBodyBytes": 53
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 1,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 85,
+    "repeat": 1,
+    "scenario": "ACCEPT_WINS_LATE_SERVICE",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 36.79999999888241,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2023
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.900000000372529,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2023
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 86,
+    "repeat": 2,
+    "scenario": "LOST_ORDER_ACK",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 42.5,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2092
+      },
+      {
+        "action": "PLACE_ORDER",
+        "status": 200,
+        "durationMs": 7.599999999627471,
+        "requestBodyBytes": 414,
+        "responseBodyBytes": 53
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.399999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2092
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 87,
+    "repeat": 3,
+    "scenario": "ACCEPT_WINS_LATE_SERVICE",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 37.40000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 7.300000000745058,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 88,
+    "repeat": 5,
+    "scenario": "ACCEPT_WINS_LATE_SERVICE",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 32.100000001490116,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.699999999254942,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.399999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 89,
+    "repeat": 3,
+    "scenario": "VISIT_ENDED",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 44.40000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "REJECTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 8.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      },
+      {
+        "action": "PLACE_ORDER",
+        "status": 409,
+        "durationMs": 8.900000000372529,
+        "requestBodyBytes": 414,
+        "responseBodyBytes": 93
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 6,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "SESSION_CLOSED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 90,
+    "repeat": 5,
+    "scenario": "VISIT_ENDED",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 46.69999999925494,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "CANCELLED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.900000000372529,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "DISCARD_COMMAND",
+        "status": 200,
+        "durationMs": 10.400000000372529,
+        "requestBodyBytes": 504,
+        "responseBodyBytes": 213
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "COMMAND_DISCARDED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 91,
+    "repeat": 3,
+    "scenario": "ACCEPT_WINS_LATE_SERVICE",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 36.40000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.800000000745058,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 92,
+    "repeat": 2,
+    "scenario": "UNACCEPTED_ORDER",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 35.69999999925494,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 6,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.600000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 93,
+    "repeat": 2,
+    "scenario": "VISIT_ENDED",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 31.90000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "REJECTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      },
+      {
+        "action": "PLACE_ORDER",
+        "status": 409,
+        "durationMs": 5.399999998509884,
+        "requestBodyBytes": 414,
+        "responseBodyBytes": 93
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "SESSION_CLOSED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 94,
+    "repeat": 1,
+    "scenario": "NORMAL_ORDER",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "NONE",
+    "recoveryMs": 27.300000000745058,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 95,
+    "repeat": 5,
+    "scenario": "LOST_ORDER_ACK",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 35.19999999925494,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "PLACE_ORDER",
+        "status": 200,
+        "durationMs": 5.599999999627471,
+        "requestBodyBytes": 414,
+        "responseBodyBytes": 53
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 96,
+    "repeat": 4,
+    "scenario": "DISCARD_WINS_LATE_SERVICE",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 42.5,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 8,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 10.300000000745058,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2015
+      }
+    ],
+    "lateResult": {
+      "ok": true,
+      "result": {
+        "ticketId": 5
+      }
+    },
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 1,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 97,
+    "repeat": 5,
+    "scenario": "NORMAL_ORDER",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "NONE",
+    "recoveryMs": 31,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 8.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2092
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 8.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2092
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 98,
+    "repeat": 2,
+    "scenario": "LOST_SERVICE_ACK_HANDLED",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 33.30000000074506,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2023
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.799999998882413,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2023
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 99,
+    "repeat": 3,
+    "scenario": "UNACCEPTED_ORDER",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 29.40000000037253,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.800000000745058,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 100,
+    "repeat": 4,
+    "scenario": "UNACCEPTED_SERVICE",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 34.80000000074506,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.600000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 7.700000001117587,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.399999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2018
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 1,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 101,
+    "repeat": 2,
+    "scenario": "LOST_SERVICE_ACK_HANDLED",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 34,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.799999998882413,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 194
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 102,
+    "repeat": 5,
+    "scenario": "LOST_ORDER_ACK",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 35.59999999962747,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 6.300000000745058,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 232
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 103,
+    "repeat": 1,
+    "scenario": "VISIT_ENDED",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 38,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "CANCELLED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.300000000745058,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "DISCARD_COMMAND",
+        "status": 200,
+        "durationMs": 5.900000000372529,
+        "requestBodyBytes": 504,
+        "responseBodyBytes": 213
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "COMMAND_DISCARDED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 104,
+    "repeat": 4,
+    "scenario": "LOST_ORDER_ACK",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 41.40000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "PLACE_ORDER",
+        "status": 200,
+        "durationMs": 7.900000000372529,
+        "requestBodyBytes": 414,
+        "responseBodyBytes": 53
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 105,
+    "repeat": 3,
+    "scenario": "LOST_SERVICE_ACK_HANDLED",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 34.59999999962747,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 5.5,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 106,
+    "repeat": 1,
+    "scenario": "UNACCEPTED_SERVICE",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 40.5,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "CANCELLED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.200000001117587,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "DISCARD_COMMAND",
+        "status": 200,
+        "durationMs": 6.800000000745058,
+        "requestBodyBytes": 433,
+        "responseBodyBytes": 214
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.100000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 107,
+    "repeat": 3,
+    "scenario": "DISCARD_WINS_LATE_SERVICE",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 32.5,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.900000000372529,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.600000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "lateResult": {
+      "ok": true,
+      "result": {
+        "ticketId": 5
+      }
+    },
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 1,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 108,
+    "repeat": 3,
+    "scenario": "DISCARD_WINS_LATE_SERVICE",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 33.09999999962747,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.900000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 6.900000000372529,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2018
+      }
+    ],
+    "lateResult": {
+      "ok": true,
+      "result": {
+        "ticketId": 6
+      }
+    },
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 1,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 109,
+    "repeat": 4,
+    "scenario": "ACCEPT_WINS_LATE_SERVICE",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 37.90000000037253,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2023
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 5.300000000745058,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 9.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2023
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 110,
+    "repeat": 5,
+    "scenario": "DISCARD_WINS_LATE_SERVICE",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 49.100000001490116,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 6.600000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 11.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.800000000745058,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 10.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      }
+    ],
+    "lateResult": {
+      "ok": true,
+      "result": {
+        "ticketId": 2
+      }
+    },
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 1,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 111,
+    "repeat": 4,
+    "scenario": "DISCARD_WINS_LATE_SERVICE",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 39.30000000074506,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "CANCELLED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "DISCARD_COMMAND",
+        "status": 200,
+        "durationMs": 7.099999999627471,
+        "requestBodyBytes": 433,
+        "responseBodyBytes": 214
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1795
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "COMMAND_DISCARDED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 112,
+    "repeat": 3,
+    "scenario": "UNACCEPTED_SERVICE",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 39.40000000037253,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 5.699999999254942,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 5.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 7.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 113,
+    "repeat": 5,
+    "scenario": "NORMAL_ORDER",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "NONE",
+    "recoveryMs": 29.699999999254942,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 9.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.300000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 114,
+    "repeat": 3,
+    "scenario": "VISIT_ENDED",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 32.80000000074506,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "REJECTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.800000000745058,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "SESSION_CLOSED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 115,
+    "repeat": 4,
+    "scenario": "UNACCEPTED_ORDER",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 31.699999999254942,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.799999998882413,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 116,
+    "repeat": 3,
+    "scenario": "VISIT_ENDED",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 30.299999998882413,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "CANCELLED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.800000000745058,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "DISCARD_COMMAND",
+        "status": 200,
+        "durationMs": 5.900000000372529,
+        "requestBodyBytes": 504,
+        "responseBodyBytes": 213
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.599999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "COMMAND_DISCARDED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 117,
+    "repeat": 1,
+    "scenario": "LOST_SERVICE_ACK_HANDLED",
+    "policy": "REPLAY_ALL",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 34.899999998509884,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.200000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.299999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      },
+      {
+        "action": "CALL_SERVICE",
+        "status": 200,
+        "durationMs": 5.800000000745058,
+        "requestBodyBytes": 343,
+        "responseBodyBytes": 14
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.699999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.799999998882413,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2024
+      }
+    ],
+    "orders": 0,
+    "tickets": 1,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 118,
+    "repeat": 5,
+    "scenario": "UNACCEPTED_ORDER",
+    "policy": "REVIEW",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 30.799999998882413,
+    "confirmRequired": 1,
+    "journalStatuses": [
+      "CONFIRM_REQUIRED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 4.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.800000000745058,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.099999999627471,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.899999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1796
+      }
+    ],
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 119,
+    "repeat": 2,
+    "scenario": "VISIT_ENDED",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "BEFORE_FORWARD",
+    "recoveryMs": 33.20000000111759,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "CANCELLED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.100000001490116,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 4.199999999254942,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 66
+      },
+      {
+        "action": "DISCARD_COMMAND",
+        "status": 200,
+        "durationMs": 6.800000000745058,
+        "requestBodyBytes": 504,
+        "responseBodyBytes": 213
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 2.700000001117587,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 1754
+      }
+    ],
+    "lateResult": {
+      "ok": false,
+      "code": "COMMAND_DISCARDED"
+    },
+    "orders": 0,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  },
+  {
+    "case": 120,
+    "repeat": 3,
+    "scenario": "LOST_ORDER_ACK",
+    "policy": "SEMANTIC",
+    "status": "PASS",
+    "fault": "AFTER_COMMIT",
+    "recoveryMs": 30.200000001117587,
+    "confirmRequired": 0,
+    "journalStatuses": [
+      "ACCEPTED"
+    ],
+    "http": [
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.399999998509884,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 5.400000000372529,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      },
+      {
+        "action": "GET_OUTCOME",
+        "status": 200,
+        "durationMs": 4.5,
+        "requestBodyBytes": 297,
+        "responseBodyBytes": 232
+      },
+      {
+        "action": "/api/session",
+        "status": 200,
+        "durationMs": 3.5,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 324
+      },
+      {
+        "action": "/api/state",
+        "status": 200,
+        "durationMs": 6,
+        "requestBodyBytes": 0,
+        "responseBodyBytes": 2093
+      }
+    ],
+    "orders": 1,
+    "tickets": 0,
+    "duplicateOrders": 0,
+    "unconfirmedOrderEffects": 0,
+    "expiredNeedServiceEffects": 0,
+    "wrongVisitEffects": 0
+  }
+]

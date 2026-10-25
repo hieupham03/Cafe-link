@@ -1,0 +1,8 @@
+/target/
+/.tools/
+/data/
+/logs/
+*.db
+*.db-shm
+*.db-wal
+*.qr-key

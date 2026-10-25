@@ -1,0 +1,33 @@
+﻿{
+    "name":  "CafeLink Web",
+    "release":  "V9.3",
+    "patch":  "GUEST_ZONES",
+    "includedPatches":  [
+                            "QR_ENTRY_FIX"
+                        ],
+    "schema":  11,
+    "platform":  "Windows x64",
+    "createdAtUtc":  "2026-10-25T11:51:00.6913030Z",
+    "artifactVersion":  "1.0.0",
+    "javaRuntime":  [
+                        "openjdk 17.0.20.1 2026-08-18",
+                        "OpenJDK Runtime Environment Temurin-17.0.20.1+1 (build 17.0.20.1+1)",
+                        "OpenJDK 64-Bit Server VM Temurin-17.0.20.1+1 (build 17.0.20.1+1, mixed mode, sharing)"
+                    ],
+    "runtimeSource":  {
+                          "vendor":  "Eclipse Temurin",
+                          "featureVersion":  17,
+                          "archive":  "OpenJDK17U-jre_x64_windows_hotspot_17.0.20.1_1.zip",
+                          "url":  "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.20.1%2B1/OpenJDK17U-jre_x64_windows_hotspot_17.0.20.1_1.zip",
+                          "sha256":  "bc21a93923103cdaac93ee337b0ae4365e739fde36df823dd456bc67c8a9d352",
+                          "source":  "https://api.adoptium.net/v3/assets/latest/17/hotspot?architecture=x64\u0026image_type=jre\u0026os=windows\u0026vendor=eclipse",
+                          "checkedOn":  "2026-10-23"
+                      },
+    "jarSha256":  "A23AF57611E6160C56D9E6BF728BBF20AE5AA7073E05CEAD902C9CADF73E6644",
+    "frontendManifestSha256":  "7C831991D6C5EABBE69AA1D4D7BA0C63427AD612627D4DE03D83B4DE7A169B53",
+    "gateSummary":  "summary.json",
+    "realPayment":  "LOCAL_SIMULATOR",
+    "physicalPhone":  "NOT_RUN",
+    "physicalLan":  "NOT_RUN",
+    "remoteCi":  "NOT_RUN"
+}
