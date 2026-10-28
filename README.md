@@ -6,11 +6,23 @@ Hệ thống gọi món tại quán café: khách quét QR, đặt món và than
 
 - **Source, build và test:** [cafelink-system/README.md](cafelink-system/README.md).
 - **Chạy local/public và demo:** [FINAL_RUNBOOK.md](cafelink-system/docs/FINAL_RUNBOOK.md).
-- **Báo cáo mốc RC1 được giữ nguyên:** [Markdown](report/CafeLink_Final_Report.md), [Word](report/NhomXX_CafeLink_Report.docx), [PDF](report/NhomXX_CafeLink_Report.pdf).
 - **Báo cáo hiện tại — 45 trang, chữ 13:** [Word](report/NhomXX_CafeLink_Report_Refined13_20261028.docx), [PDF](report/NhomXX_CafeLink_Report_Refined13_20261028.pdf), [Markdown](report/CafeLink_Technical_Paper_Refined13.md). Trình bày bài toán, kiến trúc/giao thức, implementation, contribution và thực nghiệm; chưa tự thay ZIP RC1.
-- **Căn cứ hiện tại:** [bộ yêu cầu đầy đủ](final-project-2/final-project/README.md), [phân tích/đối chiếu](report/CafeLink_Requirements_Alignment.md), [đặc tả CafeLink](cafelink-system/docs/PROJECT_SPECIFICATION.md). SPECIFICATION trong bộ mẫu là đề tài IoT khác, được tham khảo về cách đặc tả.
+- **Chọn đúng báo cáo và evidence:** [report/README.md](report/README.md). Báo cáo RC1 cũ được giữ để đối chiếu.
+- **Căn cứ hiện tại:** [chỉ mục tài liệu môn](final-project-2/README.md), [phân tích/đối chiếu](report/CafeLink_Requirements_Alignment.md), [đặc tả CafeLink](cafelink-system/docs/PROJECT_SPECIFICATION.md). SPECIFICATION trong bộ mẫu là đề tài IoT khác, được tham khảo về cách đặc tả.
 - **Bộ RC1 chuẩn bị hạn 31/10:** [hướng dẫn bàn giao](report/CafeLink_Final_Handoff.md), [trạng thái còn chờ](report/SUBMISSION_READINESS.md). ZIP đầy đủ được giữ riêng tại workspace, không đưa vào Git.
 - **Nghiệm thu người dùng:** [WEB_USER_ACCEPTANCE.md](cafelink-system/docs/WEB_USER_ACCEPTANCE.md). Thử điện thoại/camera/mạng thực tế do người dùng thực hiện sau.
+
+## Chạy từ bản clone GitHub
+
+Trên Windows, chuẩn bị PowerShell, JDK 17+, Node.js theo [yêu cầu môi trường](cafelink-system/README.md#4-yêu-cầu-môi-trường) và Internet cho lần build đầu. Mở PowerShell tại thư mục gốc repo:
+
+```powershell
+cd cafelink-system
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-web.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-web.ps1 -Port 8088 -TcpPort 5058 -DatabasePath data/local-demo/cafelink.db
+```
+
+Mở `http://127.0.0.1:8088/admin`, đăng nhập `admin / CafeLink@123`. Giữ terminal Server mở. Bấm **Mở tất cả bàn → Bàn 1 → Sao chép link đặt món** và dán nguyên link vào browser/profile khác để làm khách. DB/schema/menu mẫu tự tạo. [Demo public từ source](cafelink-system/README.md#7-demo-public-https) và [kiểm thử](cafelink-system/README.md#8-kiểm-thử-tự-động) dùng các script trong repo.
 
 ## Những thư mục được giữ
 
@@ -18,11 +30,11 @@ Hệ thống gọi món tại quán café: khách quét QR, đặt món và than
 |---|---|
 | `cafelink-system/` | Source, test, script, tài liệu hiện hành và môi trường build |
 | `report/` | Báo cáo hiện tại, hình/sơ đồ và bằng chứng kiểm thử/thực nghiệm |
-| `dist/` | V9.3, bộ RC1, source ZIP và baseline E0 cần cho kiểm hash |
-| `final-project-2/final-project/` | Bộ yêu cầu đầy đủ hiện dùng, gồm Instruction, Topics, README, SPECIFICATION và Submission |
-| `final-project/` | Bộ ban đầu được giữ để đối chiếu |
+| `dist/` | [Baseline E0 niêm phong](dist/README.md) cần cho kiểm hash; Git không kèm runtime V9.3/RC1/source ZIP |
+| `final-project-2/` | [Bộ yêu cầu đầy đủ hiện dùng](final-project-2/README.md), gồm Instruction, Topics, README mẫu, SPECIFICATION mẫu và Submission |
+| `final-project/` | [Bộ ban đầu](final-project/README.md), giữ đường dẫn tương thích cho hồ sơ RC1; dùng final-project-2 khi đọc yêu cầu hiện tại |
 
-Đã loại các báo cáo pha cũ, cache khảo sát, gói phát hành cũ và fixture kiểm thử có thể tạo lại. Trong workspace gốc, bộ RC1 và V9.3 đang chạy được giữ nguyên. Dữ liệu runtime, backup riêng tư và gói Windows/RC1 không được đưa lên GitHub; repository chỉ giữ source, báo cáo/evidence đã chọn và ZIP baseline E0 cần cho kiểm hash. Clone repository rồi build theo README source; không cần tải bộ RC1 để chạy từ source.
+Trong workspace gốc có thể có bộ RC1, gói V9.3 và các ZIP xuất riêng; chúng không phải file tải kèm khi clone GitHub. Dữ liệu runtime và backup riêng tư cũng không đưa lên Git. Để chạy từ repo, dùng quy trình build/run phía trên; gói portable nếu được cung cấp riêng có [hướng dẫn riêng](cafelink-system/docs/FINAL_RUNBOOK.md#6-gói-portable-được-cung-cấp-riêng).
 
 ## Phạm vi hồ sơ dự án
 

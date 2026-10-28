@@ -56,3 +56,9 @@ Không cần mở rộng sang ngân hàng/kho/nhiều chi nhánh để hoàn th�
 Toàn bộ: `NhomXX_CafeLink_20261031_RC1.zip`. Source riêng: `NhomXX_CafeLink_Source.zip`. Báo cáo nộp: `Report/NhomXX_CafeLink_Report.docx`; PDF là bản đọc/so bố cục. Chỉ nộp một file báo cáo trên Compilatio. Run chứa gói Windows chạy sẵn, Source vẫn chứa đầy đủ mã build được.
 
 Manifest SHA-256 ở gốc bộ bàn giao bao phủ source/report/runtime; giữ cùng bộ. DB/menu demo mới tự tạo khi chạy. Không đưa DB đã vận hành, `.qr-key`, cookie/journal/backup có quyền phiên vào thư mục nộp. File bìa/phân công, kết quả Compilatio và kiểm điện thoại mới chỉ được coi hoàn tất khi có dữ liệu thật.
+
+## 5. Cập nhật GitHub ngày 28/10/2026
+
+Các hàng mục 1 ghi nhận mốc RC1 ngày 25/10; trạng thái remote CI ở mốc đó được giữ để truy vết. Sau mốc RC1, đã xác minh Success của [run 40206552643, commit e059123](https://github.com/hieupham03/Cafe-link/actions/runs/40206552643) và [run 40726262804, commit fd1b431](https://github.com/hieupham03/Cafe-link/actions/runs/40726262804). Mỗi kết quả chỉ áp dụng đúng commit được dẫn, không tự bao gồm các chỉnh sửa tiếp theo.
+
+[Chỉ mục báo cáo](README.md) phân biệt bản 45 trang hiện tại và hồ sơ RC1. GitHub kèm source chạy được, tài liệu, báo cáo và evidence; không kèm gói portable/ZIP RC1. [Runbook](../cafelink-system/docs/FINAL_RUNBOOK.md) hướng dẫn riêng chạy từ source và chạy gói được cung cấp ngoài repo. Bản báo cáo biên tập chưa có kết quả Compilatio, chưa tự thay gói RC1 đã niêm phong hoặc hoàn tất nghiệm thu thiết bị thật.

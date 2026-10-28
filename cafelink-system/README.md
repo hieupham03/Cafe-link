@@ -2,9 +2,9 @@
 
 CafeLink là bài tập lớn môn Lập trình mạng cho một quán café. Khách quét QR bàn để vào website, chọn đồ uống có ảnh/ghi chú từng phần, đặt và thanh toán giả lập trước khi quầy pha chế. Chủ quán quản lý menu, nhận đơn/thông báo, xử lý hỗ trợ, theo dõi tiến độ và lịch sử hóa đơn. Mỗi browser/profile có phiên riêng; bàn là địa chỉ giao đồ, không phải một tài khoản/hóa đơn chung cho tất cả khách.
 
-**Mốc chốt: V9.3, schema 11.** Báo cáo chính: [CafeLink_Final_Report.md](../report/CafeLink_Final_Report.md). Trạng thái bàn giao và các việc còn chờ: [SUBMISSION_READINESS.md](../report/SUBMISSION_READINESS.md). Workspace đã bỏ báo cáo pha cũ; không dùng số liệu E0/V8 thay cho kết quả bản cuối.
+**Mốc chốt: V9.3, schema 11.** Báo cáo hiện tại: [CafeLink_Technical_Paper_Refined13.md](../report/CafeLink_Technical_Paper_Refined13.md). [Chỉ mục báo cáo](../report/README.md) phân biệt bản hiện tại với bản RC1 cũ; các việc còn chờ ở [SUBMISSION_READINESS.md](../report/SUBMISSION_READINESS.md). Không dùng số liệu E0/V8 thay cho kết quả bản cuối.
 
-Bộ yêu cầu đầy đủ hiện dùng nằm ở [final-project-2](../final-project-2/final-project/README.md), gồm Instruction, Topics, README mẫu, SPECIFICATION và Submission. Xem [đặc tả áp dụng riêng cho CafeLink](docs/PROJECT_SPECIFICATION.md) và [đối chiếu yêu cầu](../report/CafeLink_Requirements_Alignment.md). SPECIFICATION trong bộ môn mô tả đề tài IoT khác; các thông số của nó không được gán cho CafeLink.
+Bộ yêu cầu đầy đủ hiện dùng được phân loại tại [final-project-2](../final-project-2/README.md), gồm Instruction, Topics, README mẫu, SPECIFICATION và Submission. Xem [đặc tả áp dụng riêng cho CafeLink](docs/PROJECT_SPECIFICATION.md) và [đối chiếu yêu cầu](../report/CafeLink_Requirements_Alignment.md). SPECIFICATION trong bộ môn mô tả đề tài IoT khác; các thông số của nó không được gán cho CafeLink.
 
 Bản báo cáo hiện tại có 45 trang, chữ nội dung 13: [Word](../report/NhomXX_CafeLink_Report_Refined13_20261028.docx), [PDF](../report/NhomXX_CafeLink_Report_Refined13_20261028.pdf), [Markdown](../report/CafeLink_Technical_Paper_Refined13.md). Nội dung giải thích kiến trúc/giao thức, nghiệp vụ, contribution và bằng chứng thực nghiệm; bản RC1 được giữ riêng để đối chiếu. Compilatio và nghiệm thu điện thoại vẫn chờ kết quả thật.
 
@@ -121,7 +121,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/experiment-web.ps1 -
 
 Chọn thư mục output mới. Trước khi đo phải có JAR và assets từ source hiện tại; script build assets nhưng không thay Java verify. Full: tám tình huống × ba policy × năm lần = 120 ca phục hồi; tải 1/5/10/14 guest × ba lần = 12 lượt, warmup 3 giây/đo 15 giây. Driver chờ màn khách sẵn sàng trước warmup, không retry để che lỗi thao tác. Số 14 là mức tải chọn cho thực nghiệm, không phải hạn mức guest hiện tại.
 
-Giữ raw/metadata/CSV/oracle/biểu đồ, cả lần FAIL và slot lỡ. Không gọi loopback là LAN/điện thoại thật hoặc throughput đo được là công suất tối đa. README không cộng dồn số test giữa các phiên bản. Kết quả cuối, phương pháp và giới hạn nằm trong [báo cáo chính](../report/CafeLink_Final_Report.md).
+Giữ raw/metadata/CSV/oracle/biểu đồ, cả lần FAIL và slot lỡ. Không gọi loopback là LAN/điện thoại thật hoặc throughput đo được là công suất tối đa. README không cộng dồn số test giữa các phiên bản. Kết quả cuối, phương pháp và giới hạn nằm trong [báo cáo hiện tại](../report/CafeLink_Technical_Paper_Refined13.md).
 
 Hai contribution là tích hợp/đánh giá **phục hồi theo loại yêu cầu** và **barrier/phạm vi phiên chống yêu cầu cũ hồi sinh hoặc tác động sai lượt**. R0 REPLAY_ALL, R1 REVIEW, R2 SEMANTIC cùng giữ receipt, fingerprint, idempotency và quyền/scope. Không gọi ACK/retry/TCP/QR là thuật toán mới; không gán toàn bộ lợi ích chống trùng riêng cho R2 hoặc tuyên bố vượt các POS thương mại.
 
@@ -136,7 +136,7 @@ Hai contribution là tích hợp/đánh giá **phục hồi theo loại yêu c�
 
 ## 11. Tài liệu và nguồn
 
-- [Báo cáo kỹ thuật cuối](../report/CafeLink_Final_Report.md), [trạng thái chuẩn bị nộp](../report/SUBMISSION_READINESS.md).
+- [Báo cáo hiện tại](../report/CafeLink_Technical_Paper_Refined13.md), [chỉ mục bản Word/PDF và evidence](../report/README.md), [trạng thái chuẩn bị nộp](../report/SUBMISSION_READINESS.md).
 - [Kiến trúc bản chốt](docs/FINAL_ARCHITECTURE.md), [giao thức bản chốt](docs/FINAL_PROTOCOL.md).
 - [Hướng dẫn V9.3](docs/WEB_V9_3.md), [phục hồi](docs/WEB_RECOVERY.md), [dữ liệu demo](docs/WEB_RELEASE.md).
 - [RFC 9293 — TCP](https://www.rfc-editor.org/rfc/rfc9293.html), [RFC 6455 — WebSocket](https://www.rfc-editor.org/rfc/rfc6455.html), [RFC 9110 — HTTP](https://www.rfc-editor.org/rfc/rfc9110.html).
