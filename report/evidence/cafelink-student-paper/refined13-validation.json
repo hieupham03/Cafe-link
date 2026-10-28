@@ -1,0 +1,108 @@
+{
+  "status": "PASS",
+  "pages": 45,
+  "mainPages": 39,
+  "bodySizePt": 13,
+  "lineSpacing": 1.5,
+  "marginsCm": {
+    "top": 3,
+    "bottom": 3,
+    "left": 3.5,
+    "right": 2
+  },
+  "mainSections": 16,
+  "narrativeBlocksChecked": 120,
+  "pdfTableCellsChecked": 416,
+  "originalTablesPreserved": 9,
+  "unalteredOriginalTables": 8,
+  "extendedOriginalTables": 1,
+  "paperTables": 17,
+  "paperFigures": 12,
+  "coverLogo": 1,
+  "gradingSheet": "EDITABLE_ON_PAGE_2",
+  "references": 15,
+  "localLinksChecked": 33,
+  "requirementsFilesChecked": 7,
+  "formattingReferenceRecords": 2,
+  "offPageText": 0,
+  "blankPages": [],
+  "newExperimentRun": false,
+  "compilatio": "NOT_RUN",
+  "contentPriority": true,
+  "reviewItemsChecked": [
+    "A_RECOVERY_BRANCHES_AND_PERSISTENCE",
+    "B_BARRIER_CASE_RESULTS",
+    "C_LIBRARIES",
+    "D_REPRODUCIBILITY",
+    "E_PREPAY_FLOW",
+    "F_MESSAGE_AND_CONCURRENCY"
+  ],
+  "editorialReviewItemsChecked": [
+    "CONCRETE_MOTIVATION",
+    "SCOPED_GAP",
+    "METHOD_RATIONALE",
+    "RQ_METHOD_EVIDENCE",
+    "DRIVER_CORRECTION_TRACE",
+    "PENDING_ROLE_BASED_UAT"
+  ],
+  "archivalInputs": [
+    {
+      "path": "final-project-2/3. Thể thức trình bày KLTN (QĐ-612 ĐHHN) (1) (1).pdf",
+      "status": "HASH_CHECKED",
+      "requiredForCurrentReport": false
+    },
+    {
+      "path": "final-project-2/final-project/sau bia chinh.pdf",
+      "status": "HASH_CHECKED",
+      "requiredForCurrentReport": false
+    },
+    {
+      "path": "report/NhomXX_CafeLink_Report_Compact13_Form20261028.docx",
+      "status": "HASH_CHECKED",
+      "requiredForCurrentReport": false
+    },
+    {
+      "path": "report/NhomXX_CafeLink_Report_Compact13_Form20261028.pdf",
+      "status": "HASH_CHECKED",
+      "requiredForCurrentReport": false
+    },
+    {
+      "path": "report/NhomXX_CafeLink_Report_Expanded_20261028.docx",
+      "status": "HASH_CHECKED",
+      "requiredForCurrentReport": false
+    },
+    {
+      "path": "report/NhomXX_CafeLink_Report_Expanded_20261028.pdf",
+      "status": "HASH_CHECKED",
+      "requiredForCurrentReport": false
+    },
+    {
+      "path": "report/NhomXX_CafeLink_Report_Reviewed13_20261028.docx",
+      "status": "HASH_CHECKED",
+      "requiredForCurrentReport": false
+    },
+    {
+      "path": "report/NhomXX_CafeLink_Report_Reviewed13_20261028.pdf",
+      "status": "HASH_CHECKED",
+      "requiredForCurrentReport": false
+    },
+    {
+      "path": "report/NhomXX_CafeLink_Report_Academic13_20261028.docx",
+      "status": "HASH_CHECKED",
+      "requiredForCurrentReport": false
+    },
+    {
+      "path": "report/NhomXX_CafeLink_Report_Academic13_20261028.pdf",
+      "status": "HASH_CHECKED",
+      "requiredForCurrentReport": false
+    },
+    {
+      "path": "final-project/Group23_RMT_AContextAwareVirtualConversationEnvironmentForEnglishLanguagePracticeAStudyOfEnglishLanguageStudentsAtHanoiUniversity.docx",
+      "status": "HASH_CHECKED",
+      "requiredForCurrentReport": false
+    }
+  ],
+  "docxSha256": "706FED281CFD88F7E3AE5F269412AFD5F19D4D88F616B35A1EAAAA4DAF5B4A54",
+  "pdfSha256": "0B7EAE7AFA72D4D7F06A34F247A24B4EE3A0116CE59B4402555EA851726E3BA2",
+  "failures": []
+}
