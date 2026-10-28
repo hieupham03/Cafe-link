@@ -75,3 +75,6 @@
 !/report/evidence/cafelink-student-paper/refined13-visual-review.json
 !/report/evidence/cafelink-student-paper/refined13-word-render.json
 !/report/evidence/cafelink-student-paper/submission-scope-check.json
+/report/assets/cafelink-student-paper/business-flow.*
+/report/assets/cafelink-student-paper/recovery-decision.*
+/report/assets/cafelink-student-paper/ptit-logo-reference.png

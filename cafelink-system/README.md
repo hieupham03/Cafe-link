@@ -4,6 +4,10 @@ CafeLink là bài tập lớn môn Lập trình mạng cho một quán café. Kh
 
 **Mốc chốt: V9.3, schema 11.** Báo cáo chính: [CafeLink_Final_Report.md](../report/CafeLink_Final_Report.md). Trạng thái bàn giao và các việc còn chờ: [SUBMISSION_READINESS.md](../report/SUBMISSION_READINESS.md). Workspace đã bỏ báo cáo pha cũ; không dùng số liệu E0/V8 thay cho kết quả bản cuối.
 
+Bộ yêu cầu đầy đủ hiện dùng nằm ở [final-project-2](../final-project-2/final-project/README.md), gồm Instruction, Topics, README mẫu, SPECIFICATION và Submission. Xem [đặc tả áp dụng riêng cho CafeLink](docs/PROJECT_SPECIFICATION.md) và [đối chiếu yêu cầu](../report/CafeLink_Requirements_Alignment.md). SPECIFICATION trong bộ môn mô tả đề tài IoT khác; các thông số của nó không được gán cho CafeLink.
+
+Bản báo cáo hiện tại có 45 trang, chữ nội dung 13: [Word](../report/NhomXX_CafeLink_Report_Refined13_20261028.docx), [PDF](../report/NhomXX_CafeLink_Report_Refined13_20261028.pdf), [Markdown](../report/CafeLink_Technical_Paper_Refined13.md). Nội dung giải thích kiến trúc/giao thức, nghiệp vụ, contribution và bằng chứng thực nghiệm; bản RC1 được giữ riêng để đối chiếu. Compilatio và nghiệm thu điện thoại vẫn chờ kết quả thật.
+
 ## 1. Kiến trúc và trọng tâm môn học
 
 ```text
