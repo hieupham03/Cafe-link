@@ -2,7 +2,9 @@
 
 ## Tóm tắt — Abstract
 
-Khi phản hồi đặt món bị mất, khách không biết quán chưa nhận đơn hay đã nhận nhưng chưa báo lại. Tự gửi lại còn có thể khôi phục một lời gọi nhân viên mà khách không còn cần. CafeLink cung cấp website QR cho khách và màn điều phối cho quầy; Browser dùng HTTP/WebSocket tới Java Gateway, còn Gateway trao đổi với Core qua TCP và frame JSON có tiền tố độ dài. Giải pháp kết hợp nhật ký ý định ở Client, bản ghi kết quả cùng transaction ở Core và quyết định phục hồi theo loại yêu cầu. Hai đóng góp là giữ quyền xác nhận đối với đơn chưa được nhận và lưu dấu bỏ yêu cầu để chặn lệnh đến muộn trong đúng phạm vi phiên. Bằng chứng phần mềm của V9.3 gồm 142 kiểm thử Java, 65 ca Chromium và 21 nhóm kiểm gói chạy đạt. Run thực nghiệm đã lưu có 120 ca phục hồi và 12 lượt tải: số lời gọi ngoài nhu cầu quy định của ba policy lần lượt là 10/5/0; tải hoàn tất 1.348/1.350 slot, còn hai slot lỡ. Kết quả hỗ trợ thiết kế tích hợp trong tập kịch bản đã kiểm; chưa chứng minh thuật toán mới hoặc hiệu quả vận hành tại quán thật.
+Sau khi mất phản hồi đặt món, khách không biết quán đã nhận đơn hay cần gửi lại. Việc gửi lại còn có thể tạo một lời gọi nhân viên khi nhu cầu đã hết. CafeLink cung cấp website gọi món QR và màn điều phối tại quầy. Browser giao tiếp HTTP/WebSocket với Gateway; Gateway gửi frame JSON có tiền tố độ dài tới Core qua TCP. Hệ thống lưu nhật ký ý định ở Client và kết quả xử lý tại Core: đơn chưa được nhận chờ khách xác nhận, còn lời gọi hỗ trợ ngắn hạn chưa nhận được ghi dấu bỏ để chặn lệnh tới muộn.
+
+Trong 120 ca phục hồi, ba chính sách R0 (gửi lại), R1 (chờ xem xét) và R2 (theo loại yêu cầu) tạo lần lượt 10, 5 và 0 ticket khi kịch bản quy định nhu cầu đã hết. Mười hai lượt tải trên một host hoàn tất 1.348/1.350 slot; p95 phản hồi đặt món tăng từ 54,00–63,20 ms ở một Client giả lập lên 488,80–540,00 ms ở 14 Client giả lập, còn hai slot lỡ. Đóng góp của đề tài là tích hợp quyết định phục hồi theo loại yêu cầu với dấu bỏ lưu bền trong phạm vi phiên. Kết quả kiểm chứng thiết kế ở các kịch bản đã chọn; chưa đánh giá hiệu quả vận hành tại quán thật.
 
 **Từ khóa — Keywords:** TCP Socket; Client/Server; semantic recovery; idempotency; session fencing; QR ordering.
 
@@ -17,7 +19,7 @@ CafeLink chọn phạm vi một quán nhỏ, sáu bàn và tám món mẫu. QR c
 - **RQ1:** Phục hồi theo loại yêu cầu kết hợp dấu bỏ bền có giảm tác dụng ngoài ý muốn so với replay/review trong các kịch bản đã định nghĩa không?
 - **RQ2:** Độ trễ, thông lượng và lỗi thay đổi thế nào khi tăng workload gọi món/thanh toán trên cùng host?
 
-C1 đánh giá quyết định theo loại yêu cầu; C2 đánh giá việc giữ quyết định bỏ trước lệnh đến muộn và bảo toàn công việc đã nhận. Mục 8 nối hai câu hỏi với phép kiểm và dữ liệu; mục 9 trình bày kết quả để trả lời trong phạm vi thực nghiệm.
+C1 là cơ chế phục hồi phân biệt đơn cần khách xác nhận với lời gọi ngắn hạn chưa được nhận. C2 là dấu bỏ lưu tại Core, được quyết định trong cùng ranh giới transaction với việc tiếp nhận lệnh và giữ phạm vi phiên. Mục 8 xác định cách đánh giá; mục 9 đối chiếu kết quả với hai câu hỏi nghiên cứu.
 
 ## 2. Kiến thức nền và công trình liên quan
 
@@ -36,7 +38,7 @@ Bảng: Phạm vi nguồn liên quan và câu hỏi CafeLink đánh giá
 | Square offline payments (Square, không năm-c) | Lưu và xử lý thanh toán sau gián đoạn, có rủi ro cần quản lý | Ví dụ nhu cầu khôi phục thực tế ở lớp tiền; không phải baseline thực thi của nhóm |
 | IndexedDB, SQLite và Web Locks (W3C, 2025a; SQLite, không năm-b; W3C, 2025b) | Transaction cục bộ và phối hợp truy cập | Công cụ xây journal/receipt/khóa tab; policy nghiệp vụ vẫn do CafeLink xác định |
 
-IndexedDB lưu journal có transaction ở Browser; SQLite lưu trạng thái và receipt của Core (W3C, 2025a; SQLite, không năm-b). Không có transaction phân tán nguyên tử bao trùm hai nơi, nên cần đối chiếu sau lỗi. Web Locks giúp các tab cùng origin phối hợp việc phục hồi (W3C, 2025b). Những nền tảng này hỗ trợ giải pháp, nhưng không thay quyết định nghiệp vụ.
+IndexedDB lưu journal có transaction ở Browser; SQLite lưu trạng thái và receipt của Core (W3C, 2025a; SQLite, không năm-b). Không có transaction phân tán nguyên tử bao trùm hai nơi, nên cần đối chiếu sau lỗi. Web Locks giúp các tab dùng chung vùng lưu trữ trong cùng trình duyệt phối hợp việc phục hồi (W3C, 2025b). Những nền tảng này hỗ trợ giải pháp, nhưng không thay quyết định nghiệp vụ.
 
 Từ các cơ chế trên, bài toán cần phân biệt hai quyết định: nhận lại kết quả của lệnh đã commit và có tiếp nhận ý định chưa có kết quả hay không. ID chống trùng hỗ trợ quyết định thứ nhất. Với quyết định thứ hai, việc lookup chưa thấy receipt vẫn không loại trừ lệnh gốc sẽ tới sau. CafeLink bổ sung policy theo loại yêu cầu và dấu bỏ bền để xử lý khoảng hở này trong luồng gọi món QR.
 
@@ -156,7 +158,7 @@ Reader pool tối đa 64 và outbound queue 64 message/peer là giới hạn c�
 
 ![Hình 5. Đường đọc, xử lý trạng thái và ghi socket được tách bằng queue giới hạn](assets/cafelink-student-paper/server-concurrency.png)
 
-Hình 5 thể hiện ranh giới reader, service và writer. Web Locks ở Browser giải quyết phối hợp tab **cùng origin**; synchronized ở Core bảo vệ trạng thái **giữa nhiều kết nối**. Hai khóa ở hai máy/lớp khác nhau, không hợp thành transaction phân tán. Bridge/connection nhàn rỗi có thể được thu hồi để giải phóng tài nguyên, nhưng credential/receipt và nghĩa vụ đã nhận không bị xóa theo số connection.
+Hình 5 thể hiện ranh giới reader, service và writer. Web Locks ở Browser phối hợp các tab **dùng chung vùng lưu trữ trong trình duyệt**; synchronized ở Core bảo vệ trạng thái **giữa nhiều kết nối**. Hai khóa ở hai máy/lớp khác nhau, không hợp thành transaction phân tán. Bridge/connection nhàn rỗi có thể được thu hồi để giải phóng tài nguyên, nhưng credential/receipt và nghĩa vụ đã nhận không bị xóa theo số connection.
 
 ![Hình 6. Quan hệ rút gọn của bàn, phiên riêng, đơn và giao dịch thanh toán](assets/cafelink-student-paper/entity-relations.png)
 
@@ -263,7 +265,7 @@ Bảng: Module triển khai và trách nhiệm
 | Browser | `journal`, `orderRecovery`, `GuestWorkspace`, `staffJournal` | Write-before-send, phục hồi, giữ giỏ và thao tác tiền của quầy |
 | Kiểm chứng | `web/experiments`, `web_oracle.py`, `analyze_web.py` | Fault có kiểm soát, policy comparison, tải và oracle read-only |
 
-Maven target 17, gói JRE 17 giúp chạy demo không cần cài JDK/Node. React/TypeScript tạo website; IndexedDB giữ journal và Web Locks phối hợp các tab. SQLite schema 11 lưu bền, giữ receipt gốc và lịch sử xử lý tiền/hỗ trợ. Sao lưu khi đang ghi cần xét WAL; chỉ sao chép tệp `.db` có thể bỏ sót trạng thái chưa checkpoint.
+Maven target 17, gói JRE 17 giúp chạy demo không cần cài JDK/Node. React/TypeScript tạo website; IndexedDB giữ journal và Web Locks phối hợp các tab. SQLite schema 11 lưu bền, giữ receipt gốc và lịch sử xử lý tiền/hỗ trợ. Sao lưu khi đang ghi cần xét WAL; chỉ sao chép tệp `.db` có thể bỏ sót trạng thái chưa checkpoint (SQLite, không năm-b).
 
 Bảng: Thư viện chính và vai trò trong implementation
 
@@ -303,7 +305,7 @@ Bảng: Môi trường thực nghiệm
 | Dữ liệu / payment | Sáu bàn, tám món seed, private visits; LOCAL_SIMULATOR |
 | Seed / lặp | 20261023; recovery 5 lần, tải 3 lần/mức |
 
-Số liệu được ghi ngày 25/10/2026 cho V9.3/schema 11. Browser, Gateway, Core và SQLite chạy cùng host qua loopback. JAR và manifest được định danh trong [environment/hash](evidence/cafelink-final/20261025-final-r2/environment.json). Mode experiment build từ cùng source, thêm harness vào assets riêng; runtime chính không phục vụ experiment.html. Fixture dùng sáu bàn/tám món và thanh toán giả lập, không chứa dữ liệu khách thật.
+Số liệu được ghi ngày 25/10/2026 cho V9.3/schema 11, từ run `20261025-final-r2`. Browser, Gateway, Core và SQLite chạy cùng host qua loopback. JAR và manifest được định danh trong [environment/hash](evidence/cafelink-final/20261025-final-r2/environment.json). Bản experiment thêm harness vào assets riêng; runtime chính không phục vụ experiment.html. Fixture dùng sáu bàn/tám món và thanh toán giả lập, không chứa dữ liệu khách thật. Lần biên tập ngày 29/10/2026 sử dụng lại dữ liệu này, không chạy thí nghiệm mới; run lỗi trước đó được giữ ở Phụ lục C.
 
 ### 8.2. Đối chứng và ranh giới lỗi
 
@@ -334,9 +336,11 @@ Các case được trộn theo seed 20261023. Mỗi case gia nhập bằng brows
 
 Tải dùng 1/5/10/14 guest, ba lượt mỗi mức, warmup 3 giây và cửa sổ đo 15 giây. Mỗi guest phát tối đa một flow/giây; flow nối tiếp gồm đặt món và trả thử. Slot không kịp phát được ghi missedSlots. Oracle đọc DB kiểm đơn, tiền và scope; không chỉ dùng HTTP 200 làm bằng chứng đúng.
 
-`recoveryMs` đo phân loại/đối chiếu, không gồm chờ người xác nhận. `responseMs` gồm session/state, IndexedDB và phản hồi đặt món, không phải độ trễ TCP. p50/p95 dùng nearest rank trên mẫu hợp lệ. `renderMs` phát hiện DOM sau khi biết ID, có thể là cận trên nếu push đã đến trước; không gọi là commit→render chính xác. Throughput chia flow hoàn tất cho cửa sổ thực. HTTP bytes là body giải mã, chưa gồm header/TCP/TLS/WS/retransmission.
+`recoveryMs` đo từ lúc bắt đầu lấy session để đối chiếu đến khi đọc lại journal/state; không gồm thời gian người dùng cân nhắc xác nhận. p50/p95 phục hồi tính trên 40 thời lượng ca của mỗi policy. `responseMs` đo từ đầu thao tác tải đến khi Client đọc được receipt đặt món đã ghi journal, gồm session/state và IndexedDB; bước thanh toán diễn ra sau thời điểm này. Do đó, p95 response trong bảng tải là p95 phản hồi đặt món, không phải độ trễ TCP hoặc toàn bộ flow đặt món–trả tiền. Hai ranh giới timer nằm trong `harness.ts` (CafeLink, 2026b).
 
-Không chạy chồng campaign khi đo; lưu seed, raw, CSV, environment và oracle theo run. Toàn bộ số liệu dưới đây được tái sử dụng từ run đã lưu; biên tập báo cáo không tạo một lần đo mới.
+Mỗi flow tiếp tục trả thử sau khi có đơn; throughput đếm flow hoàn tất trong cửa sổ đo thực. p50/p95 dùng nearest rank trên mẫu hợp lệ. `renderMs` phát hiện DOM sau khi biết ID, có thể là cận trên nếu push đã đến trước. Số mẫu HTTP được thống kê riêng với số ca/flow; HTTP bytes chỉ tính body giải mã, chưa gồm header/TCP/TLS/WS/retransmission.
+
+Khi đo, campaign chạy riêng; seed, raw, CSV, environment và oracle được lưu theo run để đối chiếu.
 
 ### 8.4. Dữ liệu cố định, oracle và tính tái lập
 
@@ -360,7 +364,7 @@ Bảng: Câu hỏi nghiên cứu, phép đánh giá và bằng chứng
 | RQ1b / C2: lệnh giao muộn | Điều khiển bỏ-trước và nhận-trước; kiểm receipt và DB | Ticket và receipt có dấu bỏ, mục 9.3 | Chặn tác dụng mới khi bỏ thắng; giữ kết quả khi nhận thắng; chưa kiểm hết interleaving |
 | RQ2: phản hồi dưới tải | Tăng 1/5/10/14 guest, ba lượt mỗi mức | p95, throughput, lỗi và missedSlots, mục 9.4 | Mô tả cấu hình/workload trên loopback; chưa xác định công suất cực đại |
 
-Số liệu policy là kết quả của từng phương án tích hợp. Các ca lựa chọn giúp giải thích vai trò C1/C2, nhưng không tách riêng chi phí mỗi thành phần bằng một nghiên cứu ablation. Bằng chứng sử dụng cùng run đã lưu, không phát sinh một campaign mới từ bảng truy vết này.
+Số liệu policy là kết quả của từng phương án tích hợp. Các ca lựa chọn giúp giải thích vai trò C1/C2, nhưng chưa có thí nghiệm loại từng thành phần (ablation) để tách riêng hiệu quả và chi phí của mỗi cơ chế.
 
 ## 9. Kết quả
 
@@ -398,7 +402,7 @@ Mỗi policy có 40 ca. Cả ba không sinh đơn trùng/sai lượt trong tập
 
 ![Hình 11. Tác dụng ngoài ý muốn trong tập ca đã định nghĩa; mỗi policy có 40 ca](assets/cafelink-student-paper/recovery-results.png)
 
-So với R1, R2 giảm số lời gọi ngoài nhu cầu quy định từ 5 xuống 0 và số ý định chờ xác nhận từ 15 xuống 5 trên cùng tập kịch bản. R2 có 250 mẫu HTTP phục hồi, R1 có 235; p95 đối chiếu lần lượt là 37,00 ms và 28,60 ms. Đây là số mô tả của campaign, không phải ước lượng thời gian tiết kiệm cho khách thật hoặc bằng chứng R2 nhanh hơn. Việc giảm lời nhắc chỉ có ý nghĩa khi quán chấp nhận policy bỏ nhu cầu ngắn hạn chưa nhận.
+So với R1, R2 giảm số lời gọi ngoài nhu cầu quy định từ 5 xuống 0 và số ý định chờ xác nhận từ 15 xuống 5 trên cùng tập kịch bản. p95 đối chiếu trên 40 ca mỗi policy lần lượt là 37,00 ms với R2 và 28,60 ms với R1; số mẫu HTTP phát sinh tương ứng là 250 và 235. Hai loại mẫu được đếm riêng. R2 vì thế giảm việc thừa theo giả định của ca kiểm nhưng không cho kết quả đối chiếu nhanh hơn R1 trong run này. Việc giảm lời nhắc phụ thuộc quán chấp nhận quy tắc bỏ lời gọi ngắn hạn chưa nhận.
 
 ### 9.3. Kết quả từng kịch bản và bằng chứng barrier
 
@@ -415,7 +419,7 @@ Bảng: Đối chiếu từng kịch bản trên năm lần lặp mỗi policy
 | DISCARD_WINS_LATE_SERVICE | 0/5/0 | 0/5/5 | 0/0/0 |
 | ACCEPT_WINS_LATE_SERVICE | 0/5/0 | 0/5/0 | 0/5/0 |
 
-O/T/C trong bảng lần lượt là số order, ticket và ý định cần xác nhận, cộng qua **năm ca mỗi policy**. Các cột không phải tỷ lệ phần trăm; năm ticket ở một ô không có nghĩa một khách bị tạo năm ticket. Bảng được tổng hợp từ raw đã lưu, không phải số liệu nhập mới khi biên tập.
+O/T/C trong bảng lần lượt là số order, ticket và ý định cần xác nhận, cộng qua **năm ca mỗi policy**. Các cột không phải tỷ lệ phần trăm; năm ticket ở một ô là tổng của năm ca độc lập.
 
 Nguồn kiểm lại từng ô: [raw recovery](evidence/cafelink-final/20261025-final-r2/recovery/results.json). Các file oracle đi kèm quan sát dữ liệu thật sau từng case; kết quả PASS của harness không thay nội dung quan sát này.
 
@@ -429,11 +433,11 @@ VISIT_ENDED có 0 tác dụng sang lượt mới ở cả ba policy do guard sco
 
 ### 9.4. Tải gọi món và thanh toán giả lập
 
-![Hình 12. p95 response theo từng lượt tải; không phải độ trễ TCP hoặc công suất tối đa](assets/cafelink-student-paper/load-results.png)
+![Hình 12. p95 phản hồi đặt món theo từng lượt tải; ranh giới timer được định nghĩa ở mục 8.3](assets/cafelink-student-paper/load-results.png)
 
 Bảng: Kết quả từng lượt tải
 
-| Guest | Lượt | Flow | p95 response, ms | Slot lỡ | Flow/s |
+| Guest | Lượt | Flow | p95 đặt món, ms | Slot lỡ | Flow/s |
 |---|---|---|---|---|---|
 | 1 | 1 | 15 | 63,20 | 0 | 1,00 |
 | 5 | 1 | 75 | 111,70 | 0 | 5,00 |
@@ -450,7 +454,9 @@ Bảng: Kết quả từng lượt tải
 
 Tổng 1.348/1.350 flow-slot hoàn tất, hai slot lỡ, không flow báo lỗi. Phần tải có 15.635 mẫu HTTP, không HTTP error; tổng body giải mã 31.988.315 byte không phải băng thông trên dây. Oracle kiểm cả warmup: 1.618 đơn và payment PAID, tổng 48.540.000đ giả lập. Số HTTP sample, flow, slot và order gồm warmup là các mẫu số khác nhau.
 
-Giữ riêng p95 từng lượt, không gộp thành công suất tối đa hoặc độ tin cậy thống kê. Dữ liệu gốc: [summary](evidence/cafelink-final/20261025-final-r2/summary.json), [analysis](evidence/cafelink-final/20261025-final-r2/analysis.json), [policy CSV](evidence/cafelink-final/20261025-final-r2/policy-summary.csv), [load CSV](evidence/cafelink-final/20261025-final-r2/load-summary.csv).
+Khi tăng từ 1 lên 14 guest, p95 phản hồi đặt món tăng từ 54,00–63,20 ms lên 488,80–540,00 ms qua ba lượt; thông lượng ở mức 14 guest đạt 13,90–13,93 flow/s. Hai slot lỡ đều ở mức này. Workload giới hạn một flow/guest/giây và chưa tìm điểm bão hòa, nên bảng mô tả mức tải đã phát chứ chưa xác định công suất tối đa. Giữ riêng p95 từng lượt, không lấy trung bình thành p95 chung.
+
+Dữ liệu gốc: [summary](evidence/cafelink-final/20261025-final-r2/summary.json), [analysis](evidence/cafelink-final/20261025-final-r2/analysis.json), [policy CSV](evidence/cafelink-final/20261025-final-r2/policy-summary.csv), [load CSV](evidence/cafelink-final/20261025-final-r2/load-summary.csv).
 
 ## 10. Thảo luận
 
@@ -492,15 +498,15 @@ Nghiệm thu trải nghiệm cần quan sát cả khách và quầy: khách qué
 
 ## 14. Kết luận
 
-CafeLink hiện thực website QR với TCP Core, framing rõ, xử lý nhiều connection và lưu transaction. Journal/receipt phục hồi kết quả đã nhận; policy ngữ nghĩa và barrier gắn phiên xử lý ý định chưa nhận hoặc đến muộn. Run đã lưu có 120 ca phục hồi và 12 lượt tải, hoàn tất 1.348/1.350 slot. Kết quả hỗ trợ hai contribution trong phạm vi kiểm, chưa chứng minh khả năng vận hành thương mại.
+CafeLink hiện thực website QR cho khách và màn điều phối cho quầy, với TCP Core xử lý frame, nhiều connection và transaction. Journal/receipt lấy lại kết quả đã nhận; policy theo loại yêu cầu và dấu bỏ bền xử lý ý định chưa nhận hoặc tới muộn. Thiết kế được kiểm qua 120 ca phục hồi và 12 lượt tải, hoàn tất 1.348/1.350 slot.
 
-Với RQ1, bằng chứng phân biệt được lời gọi chưa nhận/giao muộn với công việc đã tiếp nhận, giảm tác dụng ngoài ý muốn trong kịch bản và giữ quyền xác nhận mua. Với RQ2, p95 response tăng khi workload tăng; các flow đo hoàn tất không báo lỗi nhưng vẫn có hai slot lỡ. Kết quả mô tả pipeline ở cấu hình đã đo, chưa xác định công suất tối đa hoặc trải nghiệm của nhiều điện thoại qua Internet.
+Với RQ1, R2 giữ quyền xác nhận mua cho đơn chưa nhận, chặn lời gọi ngắn hạn tới muộn khi quyết định bỏ thắng và bảo toàn kết quả khi accept thắng. Với RQ2, p95 phản hồi đặt món tăng theo workload đã phát; các flow hoàn tất không báo lỗi nhưng vẫn có hai slot lỡ. Kết quả hỗ trợ đóng góp tích hợp trong cấu hình và giả định đã kiểm; nghiệm thu điện thoại/quầy thật và đo công suất còn là bước tiếp theo.
 
 ## 15. Tài liệu tham khảo
 
 CafeLink. (2026a). *Publish CafeLink V9.3 source, final report and validation evidence* [GitHub Actions, run 40206552643, commit e059123; Success được đối chiếu 28/10/2026]. [Bản ghi CI](https://github.com/hieupham03/Cafe-link/actions/runs/40206552643).
 
-CafeLink. (2026b). *Source CafeLink V9.3* [Mã nguồn; các module protocol, server, web và thực nghiệm]. [Repository](https://github.com/hieupham03/Cafe-link). Bản biên tập báo cáo cục bộ có manifest riêng, không gán cho commit ứng dụng đã công bố.
+CafeLink. (2026b). *Source CafeLink V9.3* [Mã nguồn; các module protocol, server, web và thực nghiệm, commit e059123]. [Phiên bản mã được lưu](https://github.com/hieupham03/Cafe-link/tree/e059123fbb1be40b9289d04da7ddc8b82a96751f). Nguồn và dữ liệu đo được định danh bằng manifest; ngày biên tập báo cáo không phải ngày chạy thí nghiệm.
 
 Cloudflare. (không năm). *Quick Tunnels*. Truy cập 28/10/2026 từ [tài liệu chính thức](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/).
 
@@ -522,7 +528,7 @@ Square. (không năm-b). *Idempotency*. Truy cập 28/10/2026 từ [tài liệu 
 
 Square. (không năm-c). *Process offline payments*. Truy cập 28/10/2026 từ [hướng dẫn POS chính thức](https://squareup.com/help/us/en/article/7777-process-card-payments-with-offline-mode).
 
-*Tài liệu học phần Lập trình mạng*. (2026). [Hồ sơ do người dùng cung cấp](../final-project-2/final-project/README.md): Instruction, Topics, README, SPECIFICATION và Submission. SPECIFICATION là mẫu đề tài IoT khác; quy trình nộp đối chiếu Submission.
+*Tài liệu học phần Lập trình mạng*. (2026). [Bộ yêu cầu do giảng viên cung cấp](../final-project-2/README.md): Instruction, Topics, README, SPECIFICATION và Submission. SPECIFICATION là mẫu đề tài IoT khác; quy trình nộp đối chiếu Submission.
 
 W3C. (2025a, 13 tháng 8). *Indexed Database API 3.0* [Working Draft]. [Đặc tả](https://www.w3.org/TR/2025/WD-IndexedDB-3-20250813/).
 
@@ -546,9 +552,9 @@ Muốn lặp thí nghiệm: cài `tools/requirements-v8.txt`, dùng `scripts/exp
 
 ### B. Trách nhiệm và hoàn tất hồ sơ
 
-AI được dùng hỗ trợ phát triển/biên tập; sinh viên chịu trách nhiệm kiểm nguồn, số liệu và hiểu code khi bảo vệ. Sơ đồ mô tả implementation, biểu đồ lấy từ run của CafeLink. Báo cáo khóa trước được tham khảo hình thức; mẫu Group23 được tham khảo cách nối câu hỏi, phương pháp và bằng chứng. Chưa có căn cứ để khai phần việc cá nhân hoặc khảo sát khách hàng thay cho nhóm.
+AI được sử dụng để hỗ trợ phát triển phần mềm, tìm tài liệu và biên tập báo cáo. Người nộp chịu trách nhiệm kiểm nguồn, số liệu và giải thích code khi bảo vệ; công cụ AI không thay trách nhiệm tác giả. Sơ đồ mô tả implementation, biểu đồ lấy từ run của CafeLink. Báo cáo khóa trước được tham khảo hình thức; mẫu Group23 được tham khảo cách nối câu hỏi, phương pháp và bằng chứng. Phần việc cá nhân và thông tin tác giả cần do thành viên xác nhận trước khi nộp.
 
-Trước nộp: điền tên/MSSV/email/lớp/giảng viên và phần việc thực tế; nghiệm thu điện thoại; kiểm Compilatio và lưu kết quả theo ngưỡng lớp; đổi tên thành `NhomXX_CafeLink_Report.docx`. [Readiness](SUBMISSION_READINESS.md) vẫn để chờ các bước chưa có bằng chứng. Bản biên tập học thuật này giữ các snapshot trước để đối chiếu, không tự thay RC1 đã niêm phong.
+Trước nộp: điền tên/MSSV/email/lớp/giảng viên và phần việc thực tế; nghiệm thu điện thoại; kiểm Compilatio và lưu kết quả theo ngưỡng lớp; đổi tên thành `NhomXX_CafeLink_Report.docx`. [Readiness](SUBMISSION_READINESS.md) theo dõi các việc chưa có bằng chứng. Các bản báo cáo trước được giữ để đối chiếu.
 
 ### C. Điều chỉnh công cụ thực nghiệm và kiểm lại
 

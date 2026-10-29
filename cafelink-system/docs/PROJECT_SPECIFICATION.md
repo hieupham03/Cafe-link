@@ -69,6 +69,6 @@ Oracle mở DB read-only, đối chiếu dữ liệu thật. Các phép đo chư
 
 ## 9. Sản phẩm và trạng thái bàn giao
 
-Source có README build/run/test, script runtime/maintenance, test, experiment và dependency pin. Báo cáo technical paper có Word/PDF, ảnh/sơ đồ chỉnh sửa được và evidence. Xem [runbook](FINAL_RUNBOOK.md), [checklist người dùng](WEB_USER_ACCEPTANCE.md) và [báo cáo](../../report/CafeLink_Technical_Paper_Refined13.md).
+Source có README build/run/test, script runtime/maintenance, test, experiment và dependency pin. Báo cáo technical paper có Word/PDF, ảnh/sơ đồ chỉnh sửa được và evidence. Xem [runbook](FINAL_RUNBOOK.md), [checklist người dùng](WEB_USER_ACCEPTANCE.md) và [báo cáo](../../report/CafeLink_Technical_Paper_Evidence13_20261029.md).
 
 Chờ nghiệm thu điện thoại/camera/mạng vật lý, thông tin nhóm và phần việc thật, Compilatio, chốt tên/bộ nộp và bàn giao chính thức. Nộp theo Submission của bộ mới: một DOCX theo tên nhóm và bộ Source/Report; GitHub không thay quy trình nộp môn học.

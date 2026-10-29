@@ -1,6 +1,6 @@
 # CafeLink — Trạng thái chuẩn bị nộp ngày 31/10/2026
 
-**Báo cáo hiện tại:** [Word](NhomXX_CafeLink_Report_Refined13_20261028.docx), [PDF](NhomXX_CafeLink_Report_Refined13_20261028.pdf), [Markdown](CafeLink_Technical_Paper_Refined13.md). Các bảng bên dưới ghi nhận mốc phần mềm/bộ RC1 ngày 25/10; bản báo cáo biên tập ngày 28/10 chưa thay ZIP RC1. Thông tin nhóm, Compilatio và nghiệm thu điện thoại vẫn chờ.
+**Báo cáo hiện tại:** [Word](NhomXX_CafeLink_Report_Evidence13_20261029.docx), [PDF](NhomXX_CafeLink_Report_Evidence13_20261029.pdf), [Markdown](CafeLink_Technical_Paper_Evidence13_20261029.md). Các bảng bên dưới ghi nhận mốc phần mềm/bộ RC1 ngày 25/10; bản báo cáo biên tập ngày 29/10 chưa thay ZIP RC1. Thông tin nhóm, Compilatio và nghiệm thu điện thoại vẫn chờ.
 
 **Mốc chốt phần mềm:** V9.3/schema 11. **Bộ bàn giao:** `NhomXX_CafeLink_20261031_RC1`. Đây là release candidate chuẩn bị nộp, chưa phải xác nhận đã nộp hoặc được giảng viên phê duyệt. Ngày chuẩn bị/thực nghiệm: 25/10/2026; hạn theo tài liệu môn học: 23:59 ngày 31/10/2026.
 

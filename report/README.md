@@ -4,18 +4,20 @@
 
 | Định dạng | File |
 |---|---|
-| Word chỉnh sửa được | [NhomXX_CafeLink_Report_Refined13_20261028.docx](NhomXX_CafeLink_Report_Refined13_20261028.docx) |
-| PDF đọc/kiểm bố cục | [NhomXX_CafeLink_Report_Refined13_20261028.pdf](NhomXX_CafeLink_Report_Refined13_20261028.pdf) |
-| Nội dung Markdown | [CafeLink_Technical_Paper_Refined13.md](CafeLink_Technical_Paper_Refined13.md) |
+| Word chỉnh sửa được | [NhomXX_CafeLink_Report_Evidence13_20261029.docx](NhomXX_CafeLink_Report_Evidence13_20261029.docx) |
+| PDF đọc/kiểm bố cục | [NhomXX_CafeLink_Report_Evidence13_20261029.pdf](NhomXX_CafeLink_Report_Evidence13_20261029.pdf) |
+| Nội dung Markdown | [CafeLink_Technical_Paper_Evidence13_20261029.md](CafeLink_Technical_Paper_Evidence13_20261029.md) |
 
-Đây là bản biên tập ngày 28/10/2026, 45 trang, nội dung chữ 13, 17 bảng và 12 hình. Số liệu dùng run CafeLink đã lưu; việc biên tập không phải chạy một experiment mới. Khi nộp, điền thông tin nhóm/phân công thật và đổi tên DOCX thành `NhomXX_CafeLink_Report.docx` với số nhóm đã chốt. Chỉ nộp một báo cáo trên Compilatio theo [Submission](../final-project-2/final-project/Submission.md).
+Đây là bản biên tập ngày 29/10/2026, 45 trang, nội dung chữ 13, 17 bảng và 12 hình. Số liệu dùng run CafeLink đã lưu; việc biên tập không phải chạy một experiment mới. Khi nộp, điền thông tin nhóm/phân công thật và đổi tên DOCX thành `NhomXX_CafeLink_Report.docx` với số nhóm đã chốt. Chỉ nộp một báo cáo trên Compilatio theo [Submission](../final-project-2/final-project/Submission.md).
+
+Bản này làm rõ cách đo p95 phục hồi/phản hồi đặt món, phạm vi Web Locks và quyết định phục hồi. Số liệu thực nghiệm giữ nguyên từ ngày 25/10; các chỉnh sửa không tạo thêm lượt đo hoặc kết quả Compilatio.
 
 ## Bằng chứng và hướng dẫn liên quan
 
 - [Đối chiếu yêu cầu môn](CafeLink_Requirements_Alignment.md), [trạng thái chuẩn bị nộp](SUBMISSION_READINESS.md).
 - [Run phục hồi/tải bản cuối](evidence/cafelink-final/20261025-final-r2/summary.json), [phân tích số liệu](evidence/cafelink-final/20261025-final-r2/analysis.json), [môi trường/hash](evidence/cafelink-final/20261025-final-r2/environment.json).
 - [Kiểm phần mềm V9.3](evidence/cafelink-v2/v9.3-gate/20261025-184703-1bdff3d4/summary.json), [kiểm source sạch](evidence/cafelink-final/source-clean/source-proof.json), [kiểm gói chạy](evidence/cafelink-v2/v9.3-package/20261025-release-01/summary.json).
-- [Kiểm nội dung Word/PDF](evidence/cafelink-student-paper/refined13-validation.json), [kiểm bố cục](evidence/cafelink-student-paper/refined13-visual-review.json). Các file này ghi nhận lần kiểm và hash của bản xuất tương ứng.
+- [Kiểm nội dung Word/PDF](evidence/cafelink-student-paper/evidence13-validation.json), [kiểm bố cục](evidence/cafelink-student-paper/evidence13-visual-review.json). Các file này ghi nhận lần kiểm và hash của bản xuất tương ứng.
 - [Kiến trúc](../cafelink-system/docs/FINAL_ARCHITECTURE.md), [giao thức](../cafelink-system/docs/FINAL_PROTOCOL.md), [chạy/demo](../cafelink-system/docs/FINAL_RUNBOOK.md), [nghiệm thu người dùng](../cafelink-system/docs/WEB_USER_ACCEPTANCE.md).
 
 Raw/oracle và lượt FAIL được giữ để truy vết; các ảnh mobile Chromium không thay nghiệm thu điện thoại thật. Hình trong `assets/` và biểu đồ thực nghiệm mô tả implementation/dữ liệu CafeLink.

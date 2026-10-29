@@ -38,11 +38,11 @@ So hash cho thấy Instruction, Topics và Submission giống bộ trước. Hai
 10. Thảo luận đánh đổi, giá trị thực tế, đe dọa tính đúng, lập luận contribution và hướng phát triển có thứ tự.
 11. Phụ lục mapping đủ bộ yêu cầu, lệnh chạy/test/experiment, bằng chứng và trách nhiệm kiểm của tác giả.
 
-Nội dung hiện tại nằm trong [báo cáo CafeLink](CafeLink_Technical_Paper_Refined13.md). Hình mô tả implementation và biểu đồ dùng số liệu đã có của CafeLink; không dựng ảnh bằng chứng hoặc số đo giả.
+Nội dung hiện tại nằm trong [báo cáo CafeLink](CafeLink_Technical_Paper_Evidence13_20261029.md). Hình mô tả implementation và biểu đồ dùng số liệu đã có của CafeLink; không dựng ảnh bằng chứng hoặc số đo giả.
 
 ## 4. Sản phẩm và phần còn chờ
 
-- **Bản hiện tại:** [Word](NhomXX_CafeLink_Report_Refined13_20261028.docx), [PDF](NhomXX_CafeLink_Report_Refined13_20261028.pdf), [Markdown](CafeLink_Technical_Paper_Refined13.md); 45 trang, 17 bảng/12 hình nội dung. [Validation đã ghi nhận](evidence/cafelink-student-paper/refined13-validation.json) kiểm nội dung Word/PDF, các hàng bảng gốc, dữ liệu thực nghiệm và thể thức; công cụ biên soạn báo cáo không thuộc source cần chạy dự án.
+- **Bản hiện tại:** [Word](NhomXX_CafeLink_Report_Evidence13_20261029.docx), [PDF](NhomXX_CafeLink_Report_Evidence13_20261029.pdf), [Markdown](CafeLink_Technical_Paper_Evidence13_20261029.md); 45 trang, 17 bảng/12 hình nội dung. [Validation đã ghi nhận](evidence/cafelink-student-paper/evidence13-validation.json) kiểm nội dung Word/PDF, các hàng bảng gốc, dữ liệu thực nghiệm và thể thức; công cụ biên soạn báo cáo không thuộc source cần chạy dự án.
 - Các bản nháp và tài liệu mẫu giữ local. Git giữ báo cáo hiện tại, số liệu thực nghiệm, hình/sơ đồ và kết quả kiểm phục vụ đánh giá dự án.
 - Đặc tả áp dụng: [PROJECT_SPECIFICATION](../cafelink-system/docs/PROJECT_SPECIFICATION.md).
 - Vẫn cần nhóm cung cấp: khoa/lớp/nhóm, tên/MSSV/email, giảng viên, phần việc và tỷ lệ thật.

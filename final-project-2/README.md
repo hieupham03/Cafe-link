@@ -10,6 +10,6 @@
 | [README mẫu](final-project/README.md) | Mẫu bố cục hồ sơ dự án, có chỗ để điền; không phải README đã hoàn tất của CafeLink |
 | [SPECIFICATION mẫu](final-project/SPECIFICATION.md) | Ví dụ đặc tả IoTRPCBroker; không phải protocol, thông số hoặc kết quả CafeLink |
 
-Các file gốc được giữ nguyên. Đường ảnh `statics/results/demo.png` trong README mẫu là ví dụ cú pháp chèn ảnh, không phải ảnh bị thiếu của CafeLink. Ảnh/sơ đồ của sản phẩm nằm ở `report/assets/` và được dẫn từ [báo cáo hiện tại](../report/CafeLink_Technical_Paper_Refined13.md).
+Các file gốc được giữ nguyên. Đường ảnh `statics/results/demo.png` trong README mẫu là ví dụ cú pháp chèn ảnh, không phải ảnh bị thiếu của CafeLink. Ảnh/sơ đồ của sản phẩm nằm ở `report/assets/` và được dẫn từ [báo cáo hiện tại](../report/CafeLink_Technical_Paper_Evidence13_20261029.md).
 
 [final-project ban đầu](../final-project/README.md) chỉ giữ ba đường dẫn cũ cho hồ sơ RC1. Khi dùng mẫu với CafeLink, xem [đối chiếu yêu cầu](../report/CafeLink_Requirements_Alignment.md) và [đặc tả dự án](../cafelink-system/docs/PROJECT_SPECIFICATION.md); không nhận các yêu cầu riêng của ví dụ IoT thành tính năng đã làm.

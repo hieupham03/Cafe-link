@@ -6,7 +6,7 @@ Hệ thống gọi món tại quán café: khách quét QR, đặt món và than
 
 - **Source, build và test:** [cafelink-system/README.md](cafelink-system/README.md).
 - **Chạy local/public và demo:** [FINAL_RUNBOOK.md](cafelink-system/docs/FINAL_RUNBOOK.md).
-- **Báo cáo hiện tại — 45 trang, chữ 13:** [Word](report/NhomXX_CafeLink_Report_Refined13_20261028.docx), [PDF](report/NhomXX_CafeLink_Report_Refined13_20261028.pdf), [Markdown](report/CafeLink_Technical_Paper_Refined13.md). Trình bày bài toán, kiến trúc/giao thức, implementation, contribution và thực nghiệm; chưa tự thay ZIP RC1.
+- **Báo cáo hiện tại — 45 trang, chữ 13:** [Word](report/NhomXX_CafeLink_Report_Evidence13_20261029.docx), [PDF](report/NhomXX_CafeLink_Report_Evidence13_20261029.pdf), [Markdown](report/CafeLink_Technical_Paper_Evidence13_20261029.md). Trình bày bài toán, kiến trúc/giao thức, implementation, contribution và thực nghiệm; chưa tự thay ZIP RC1.
 - **Chọn đúng báo cáo và evidence:** [report/README.md](report/README.md). Báo cáo RC1 cũ được giữ để đối chiếu.
 - **Căn cứ hiện tại:** [chỉ mục tài liệu môn](final-project-2/README.md), [phân tích/đối chiếu](report/CafeLink_Requirements_Alignment.md), [đặc tả CafeLink](cafelink-system/docs/PROJECT_SPECIFICATION.md). SPECIFICATION trong bộ mẫu là đề tài IoT khác, được tham khảo về cách đặc tả.
 - **Bộ RC1 chuẩn bị hạn 31/10:** [hướng dẫn bàn giao](report/CafeLink_Final_Handoff.md), [trạng thái còn chờ](report/SUBMISSION_READINESS.md). ZIP đầy đủ được giữ riêng tại workspace, không đưa vào Git.
