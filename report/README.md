@@ -18,6 +18,7 @@ Bản này làm rõ cách đo p95 phục hồi/phản hồi đặt món, phạm 
 - [Run phục hồi/tải bản cuối](evidence/cafelink-final/20261025-final-r2/summary.json), [phân tích số liệu](evidence/cafelink-final/20261025-final-r2/analysis.json), [môi trường/hash](evidence/cafelink-final/20261025-final-r2/environment.json).
 - [Kiểm phần mềm V9.3](evidence/cafelink-v2/v9.3-gate/20261025-184703-1bdff3d4/summary.json), [kiểm source sạch](evidence/cafelink-final/source-clean/source-proof.json), [kiểm gói chạy](evidence/cafelink-v2/v9.3-package/20261025-release-01/summary.json).
 - [Kiểm nội dung Word/PDF](evidence/cafelink-student-paper/evidence13-validation.json), [kiểm bố cục](evidence/cafelink-student-paper/evidence13-visual-review.json). Các file này ghi nhận lần kiểm và hash của bản xuất tương ứng.
+- [Kiểm bộ file công bố ngày 29/10](evidence/cafelink-student-paper/publication-20261029-check.json): đối chiếu Word/PDF với Markdown, hash và liên kết từ bản xuất Git.
 - [Kiến trúc](../cafelink-system/docs/FINAL_ARCHITECTURE.md), [giao thức](../cafelink-system/docs/FINAL_PROTOCOL.md), [chạy/demo](../cafelink-system/docs/FINAL_RUNBOOK.md), [nghiệm thu người dùng](../cafelink-system/docs/WEB_USER_ACCEPTANCE.md).
 
 Raw/oracle và lượt FAIL được giữ để truy vết; các ảnh mobile Chromium không thay nghiệm thu điện thoại thật. Hình trong `assets/` và biểu đồ thực nghiệm mô tả implementation/dữ liệu CafeLink.
