@@ -11,6 +11,20 @@ export interface SessionInfo {
   csrfToken: string;
   connected: boolean;
 }
+export interface DiagnosticsSnapshot {
+  version: string;
+  sampledAt: string;
+  readiness: { status: "READY" | "NOT_READY"; gateway: string; core: string; database: string; checkedAt: string; reason: string };
+  gateway: { sessions: number; adminSessions: number; guestSessions: number; webSockets: number; inFlight: number; sessionLimit: number };
+  jvm: { heapUsedBytes: number; heapMaxBytes: number; threads: number };
+  core: {
+    uptimeMs: number; requests: number; errors: number; averageDispatchMs: number; maxDispatchMs: number;
+    connections: number; authenticatedConnections: number; readerActive: number; readerLimit: number;
+    outboundQueuedMessages: number; outboundQueueLimitPerConnection: number; slowDisconnects: number;
+    readFailures: number; traceCapacity: number;
+    recent: { at: string; requestId: string; action: string; role: string; outcome: string; durationMs: number }[];
+  };
+}
 export interface GuestScope {
   storeId: string;
   visitId: string;

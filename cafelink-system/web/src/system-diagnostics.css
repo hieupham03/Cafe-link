@@ -1,0 +1,29 @@
+.system-diagnostics { display: grid; gap: 20px; min-width: 0; margin-block: 24px; }
+.diagnostic-toolbar { display: flex; gap: 16px; align-items: center; justify-content: space-between; }
+.diagnostic-toolbar h2, .diagnostic-details h3, .diagnostic-trace h3 { margin: 0 0 10px; }
+.diagnostic-toolbar p { margin: 0; }
+.diagnostic-alert, .diagnostic-readiness { padding: 18px 20px; border: 1px solid var(--border, #d7dfd7); border-radius: 14px; }
+.diagnostic-readiness { display: grid; gap: 7px; background: #f0f7ee; border-color: #b6ceb4; }
+.diagnostic-readiness.not-ready, .diagnostic-readiness.stale { background: #fff7df; border-color: #e6cf8c; }
+.diagnostic-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.diagnostic-cards article, .diagnostic-details article, .diagnostic-trace { padding: 20px; border: 1px solid #d7dfd7; border-radius: 16px; background: #fff; min-width: 0; }
+.diagnostic-cards article { display: grid; gap: 10px; }
+.diagnostic-cards strong { font-size: 1.7rem; color: #174b3d; }
+.diagnostic-cards small { color: #59695e; }
+.diagnostic-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.diagnostic-details dl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 16px; }
+.diagnostic-details dt, .diagnostic-details dd { margin: 0; }
+.diagnostic-details dd { text-align: right; font-weight: 600; }
+.diagnostic-trace label { display: block; margin-block: 12px 6px; }
+.diagnostic-trace input { width: 100%; max-width: 560px; box-sizing: border-box; }
+.diagnostic-table-scroll { overflow-x: auto; max-width: 100%; border: 1px solid #d7dfd7; border-radius: 10px; }
+.diagnostic-table-scroll table { width: 100%; min-width: 760px; border-collapse: collapse; margin: 0; }
+.diagnostic-table-scroll th, .diagnostic-table-scroll td { text-align: left; padding: 12px; border-bottom: 1px solid #e6ebe5; white-space: nowrap; }
+.diagnostic-table-scroll th { background: #f4f6ef; }
+.diagnostic-table-scroll code { font-size: .82rem; }
+@media (max-width: 1000px) { .diagnostic-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) {
+  .diagnostic-toolbar { align-items: flex-start; flex-direction: column; }
+  .diagnostic-details, .diagnostic-cards { grid-template-columns: minmax(0, 1fr); }
+  .diagnostic-readiness span, .diagnostic-readiness small { overflow-wrap: anywhere; }
+}

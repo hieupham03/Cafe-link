@@ -24,6 +24,8 @@ Gateway xác thực cookie/Origin/CSRF rồi chuyển lệnh qua TCP; Core quy�
 
 Các nội dung lập trình mạng: framing và đọc đủ byte, nhiều connection, request/response có correlation ID, server push snapshot/revision, queue giới hạn, timeout/disconnect, xác thực, đồng bộ dữ liệu và phục hồi khi kết quả lệnh chưa rõ. Core có tối đa 64 reader; queue outbound 64 message/peer. Gateway tối đa 32 bridge, tối đa 30 guest và 16 admin cùng chia sẻ tổng 32. Thu hồi guest nhàn rỗi giữ credential/receipt để resume; đây là giới hạn cấu hình, không phải công suất đã đo tối đa.
 
+Trong `/admin`, mục **Chẩn đoán hệ thống** cho quản lý xem trạng thái TCP/DB, số kết nối, hàng đợi, lỗi và tra mã yêu cầu gần đây. Trang báo rõ khi số liệu đã cũ vì mất kết nối; khách không được truy cập. [Giới hạn và cách đọc số liệu](docs/WEB_HARDENING.md#chẩn-đoán-dành-cho-quản-lý).
+
 ## 2. Công nghệ và thư viện
 
 | Thành phần | Công nghệ/phiên bản ghim |

@@ -1,4 +1,4 @@
-﻿param([switch]$SkipInstall, [switch]$SkipBrowserInstall,[ValidateSet('V8','V9','V9.1','V9.2','V9.3')][string]$Phase='V9.3')
+﻿param([switch]$SkipInstall, [switch]$SkipBrowserInstall,[ValidateSet('V8','V9','V9.1','V9.2','V9.3','V9.4')][string]$Phase='V9.4')
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path $PSScriptRoot -Parent
 $workspaceRoot = Split-Path $projectRoot -Parent
@@ -6,7 +6,7 @@ $runId = (Get-Date -Format 'yyyyMMdd-HHmmss') + '-' + [guid]::NewGuid().ToString
 $evidenceRoot = Join-Path $workspaceRoot ("report\evidence\cafelink-v2\"+$Phase.ToLower()+'-gate')
 $runRoot = Join-Path $evidenceRoot $runId
 New-Item -ItemType Directory -Path $runRoot -Force | Out-Null
-$summary = [ordered]@{ phase=$Phase; includedPhases=@('V5a','V6','V7','prepaid-simulator','automatic-private-visits','trusted-loopback-proxy','storefront-ui','web-policy-experiment'); runId=$runId; startedAt=(Get-Date).ToString('o'); status='RUNNING'; gates=@(); physicalLan='NOT_RUN'; physicalPhone='NOT_RUN'; realPaymentProvider='NOT_INTEGRATED' }
+$summary = [ordered]@{ phase=$Phase; includedPhases=@('V5a','V6','V7','prepaid-simulator','automatic-private-visits','trusted-loopback-proxy','storefront-ui','web-policy-experiment','readiness-and-admin-diagnostics'); runId=$runId; startedAt=(Get-Date).ToString('o'); status='RUNNING'; gates=@(); physicalLan='NOT_RUN'; physicalPhone='NOT_RUN'; realPaymentProvider='NOT_INTEGRATED' }
 
 function Invoke-Gate([string]$Name, [scriptblock]$Action) {
     $timer = [Diagnostics.Stopwatch]::StartNew()
@@ -49,12 +49,12 @@ try {
                 Copy-Item -LiteralPath 'test-results\results.json' -Destination (Join-Path $runRoot 'playwright-results.json')
                 $summary.browser = (Get-Content -LiteralPath 'test-results\results.json' -Raw | ConvertFrom-Json).stats
             }
-            foreach($groupName in @('regression','recovery','ux','v7','automatic','convenience','workflow','shop','policy')) {
+            foreach($groupName in @('regression','recovery','ux','v7','automatic','convenience','workflow','shop','policy','diagnostics')) {
                 $groupResult = "test-results\$groupName-results.json"
                 if(Test-Path -LiteralPath $groupResult) {Copy-Item -LiteralPath $groupResult -Destination (Join-Path $runRoot "playwright-$groupName.json")}
             }
         }
-        foreach ($name in @('dashboard-desktop.png','dashboard-mobile.png','guest-qr-menu.png','admin-visit-qr.png','guest-order-cart.png','guest-order-recovery.png','guest-checkout.png','staff-payment-recovery.png','ux-guest-mobile.png','ux-admin-desktop.png','v7-guest-prepaid.png','v7-sales-history.png','v5a-notifications.png','auto-table-qr.png','auto-private-mobile.png','auto-completed.png','shop-guest-desktop.png','shop-guest-mobile.png','shop-product-dialog.png','shop-mobile-cart.png','shop-mobile-viewport.png')) {
+        foreach ($name in @('dashboard-desktop.png','dashboard-mobile.png','guest-qr-menu.png','admin-visit-qr.png','guest-order-cart.png','guest-order-recovery.png','guest-checkout.png','staff-payment-recovery.png','ux-guest-mobile.png','ux-admin-desktop.png','v7-guest-prepaid.png','v7-sales-history.png','v5a-notifications.png','auto-table-qr.png','auto-private-mobile.png','auto-completed.png','shop-guest-desktop.png','shop-guest-mobile.png','shop-product-dialog.png','shop-mobile-cart.png','shop-mobile-viewport.png','diagnostics-desktop.png','diagnostics-mobile.png')) {
             Copy-Item -LiteralPath (Join-Path 'test-results' $name) -Destination (Join-Path $runRoot $name)
         }
         $browserResults = Get-Content -LiteralPath 'test-results\results.json' -Raw | ConvertFrom-Json

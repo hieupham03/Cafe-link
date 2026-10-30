@@ -25,6 +25,7 @@ public final class CafeServer implements AutoCloseable {
     private ServerSocket listener;
     private Thread acceptThread;
     private final FaultInjector faults;
+    private final CoreMetrics metrics = new CoreMetrics();
     public CafeServer(CafeService service, String bind, int port, Consumer<String> logger) {
         this(service, bind, port, logger, FaultInjector.NONE);
     }
@@ -42,6 +43,16 @@ public final class CafeServer implements AutoCloseable {
     }
     public int port() { return listener.getLocalPort(); }
     public int connectionCount() { return peers.size(); }
+    private JsonObject diagnostics() {
+        JsonObject value = Json.object(metrics.snapshot());
+        value.addProperty("connections", peers.size());
+        value.addProperty("authenticatedConnections", peers.stream().filter(p -> p.identity != null && !p.closed.get()).count());
+        value.addProperty("readerActive", readers.getActiveCount());
+        value.addProperty("readerLimit", readers.getMaximumPoolSize());
+        value.addProperty("outboundQueuedMessages", peers.stream().mapToInt(p -> p.outgoing.size()).sum());
+        value.addProperty("outboundQueueLimitPerConnection", 64);
+        return value;
+    }
     private void acceptLoop() {
         while (running) {
             try {
@@ -85,10 +96,13 @@ public final class CafeServer implements AutoCloseable {
                     if (!"REQUEST".equals(request.kind())) throw new IOException("Client must send REQUEST");
                     dispatch(request);
                 }
-            } catch (IOException e) { if (!closed.get()) log("Connection ended: " + e.getClass().getSimpleName()); }
+            } catch (IOException e) { if (!closed.get()) { metrics.readFailures.incrementAndGet(); log("Connection ended: " + e.getClass().getSimpleName()); } }
             finally { close(); }
         }
         private void dispatch(Message request) {
+            long started = System.nanoTime();
+            String outcome = "OK";
+            Message response;
             boolean changed = false;
             boolean faultable = Commands.mutation(request.action()) || request.action().equals("DISCARD_COMMAND");
             try {
@@ -109,10 +123,15 @@ public final class CafeServer implements AutoCloseable {
                     if (identity == null) throw new BusinessException("UNAUTHENTICATED", "Vui lòng đăng nhập.");
                     service.checkIdentity(identity);
                     if (faultable && faults.disconnect(FaultInjector.Point.BEFORE_ACCEPT, identity, request)) {
+                        metrics.record(request, identity.role(), "DISCONNECTED_BEFORE_ACCEPT", started);
                         log("FAULT BEFORE_ACCEPT " + request.action() + " id=" + request.requestId()); close(); return;
                     }
                     result = switch (request.action()) {
                         case "PING" -> new JsonObject();
+                        case "GET_DIAGNOSTICS" -> {
+                            if (!identity.role().equals("ADMIN")) throw new BusinessException("FORBIDDEN", "Chỉ quản lý được xem chẩn đoán hệ thống.");
+                            yield diagnostics();
+                        }
                         case "VERIFY_JOIN_GRANT" -> { service.confirmJoinGrant(identity, CafeService.text(request.data(), "grant", 100, true)); yield new JsonObject(); }
                         case "VERIFY_TABLE_GRANT" -> { service.confirmTableGrant(identity, CafeService.text(request.data(), "grant", 100, true)); yield new JsonObject(); }
                         case "ROTATE_SESSION" -> { identity = service.rotateSession(identity); yield Json.object(identity); }
@@ -129,17 +148,21 @@ public final class CafeServer implements AutoCloseable {
                     };
                 }
                 if (faultable && faults.disconnect(FaultInjector.Point.AFTER_COMMIT, identity, request)) {
+                    metrics.record(request, identity.role(), "DISCONNECTED_AFTER_COMMIT", started);
                     log("FAULT AFTER_COMMIT " + request.action() + " id=" + request.requestId()); close(); return;
                 }
-                send(Message.success(request, result));
-                if (identity != null && !request.action().equals("PING") && !request.action().equals("LOGIN")) log(identity.username() + " " + request.action() + " OK id=" + request.requestId());
-            } catch (BusinessException e) { send(Message.error(request, e.code(), e.getMessage())); }
-            catch (SQLException e) { log("Database operation failed: " + e.getClass().getSimpleName()); send(Message.error(request, "DATABASE_ERROR", "Không thể lưu dữ liệu. Vui lòng kiểm tra trạng thái trước khi thử lại.")); }
-            catch (RuntimeException e) { log("Request rejected: " + e.getClass().getSimpleName()); send(Message.error(request, "INVALID_INPUT", "Yêu cầu không hợp lệ.")); }
+                response = Message.success(request, result);
+                if (identity != null && !Set.of("PING", "LOGIN", "GET_DIAGNOSTICS").contains(request.action())) log(identity.username() + " " + request.action() + " OK id=" + request.requestId());
+            } catch (BusinessException e) { outcome = e.code(); response = Message.error(request, e.code(), e.getMessage()); }
+            catch (SQLException e) { outcome = "DATABASE_ERROR"; log("Database operation failed: " + e.getClass().getSimpleName()); response = Message.error(request, outcome, "Không thể lưu dữ liệu. Vui lòng kiểm tra trạng thái trước khi thử lại."); }
+            catch (RuntimeException e) { outcome = "INVALID_INPUT"; log("Request rejected: " + e.getClass().getSimpleName()); response = Message.error(request, outcome, "Yêu cầu không hợp lệ."); }
+            // Record before enqueueing the response so a completed request is already observable.
+            metrics.record(request, identity == null ? "ANONYMOUS" : identity.role(), outcome, started);
+            send(response);
             if (changed) publish();
         }
         private void send(Message message) {
-            if (!closed.get() && !outgoing.offer(message)) { log("Slow client disconnected: outbound queue full"); close(); }
+            if (!closed.get() && !outgoing.offer(message)) { metrics.slowDisconnects.incrementAndGet(); log("Slow client disconnected: outbound queue full"); close(); }
         }
         private void writeLoop() {
             try { while (!closed.get()) FrameCodec.write(socket.getOutputStream(), outgoing.take()); }

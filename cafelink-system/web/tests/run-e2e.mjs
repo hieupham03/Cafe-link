@@ -15,6 +15,7 @@ const groups = [
   { name: "workflow", files: ["tests/workflow.spec.ts"] },
   { name: "shop", files: ["tests/shop.spec.ts"] },
   { name: "policy", files: ["tests/recovery-policy.spec.ts"] },
+  { name: "diagnostics", files: ["tests/diagnostics.spec.ts"] },
 ];
 let failed = false;
 const results = [];

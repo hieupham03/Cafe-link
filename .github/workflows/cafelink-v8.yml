@@ -1,4 +1,4 @@
-name: CafeLink V8 verification
+name: CafeLink verification
 on:
   push:
     paths: ['cafelink-system/**', '.github/workflows/cafelink-v8.yml', 'dist/CafeLink-Original-1.0.0-Baseline.zip']
@@ -63,5 +63,6 @@ jobs:
             report/evidence/cafelink-v2/v8/**
             report/evidence/cafelink-v2/v8-gate/**
             report/evidence/cafelink-v2/v9.3-gate/**
+            report/evidence/cafelink-v2/v9.4-gate/**
           if-no-files-found: warn
           retention-days: 14

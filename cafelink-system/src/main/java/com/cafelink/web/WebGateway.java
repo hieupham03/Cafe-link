@@ -12,6 +12,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.server.WebSocketUpgradeHandler;
 import java.io.*;
 import java.net.*;
+import java.lang.management.ManagementFactory;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
@@ -312,6 +313,21 @@ public final class WebGateway implements AutoCloseable {
                     }
                     case "POST /api/guest/continue" -> respond(response, callback, 200, continueGuest(request,response,bridge,body(request)).info());
                     case "GET /api/session" -> respond(response, callback, 200, bridge.info());
+                    case "GET /api/admin/diagnostics" -> {
+                        if (!bridge.client.identity().role().equals("ADMIN")) throw new HttpFailure(403,"FORBIDDEN","Chỉ quản lý được xem chẩn đoán hệ thống.");
+                        JsonObject core = bridge.command(UUID.randomUUID().toString(), "GET_DIAGNOSTICS", new JsonObject());
+                        var heap = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+                        respond(response, callback, 200, Map.of("version", ApplicationInfo.VERSION,
+                                "sampledAt", java.time.Instant.now().toString(), "core", core,
+                                "readiness", healthProbe.check().payload(ApplicationInfo.VERSION),
+                                "gateway", Map.of("sessions", sessions.size(),
+                                        "adminSessions", sessions.values().stream().filter(s -> s.client.identity().role().equals("ADMIN")).count(),
+                                        "guestSessions", sessions.values().stream().filter(s -> s.client.identity().role().equals("GUEST")).count(),
+                                        "webSockets", sessions.values().stream().mapToInt(SessionBridge::subscriberCount).sum(),
+                                        "inFlight", sessions.values().stream().mapToInt(SessionBridge::inFlightCount).sum(), "sessionLimit", 32),
+                                "jvm", Map.of("heapUsedBytes", heap.getUsed(), "heapMaxBytes", heap.getMax(),
+                                        "threads", ManagementFactory.getThreadMXBean().getThreadCount())));
+                    }
                     case "GET /api/state" -> respond(response, callback, 200, bridge.client.refresh());
                     case "POST /api/logout" -> {
                         if (bridge.client.identity().membershipId() != null) bridge.client.request("LEAVE_VISIT", new JsonObject());

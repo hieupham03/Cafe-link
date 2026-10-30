@@ -1,4 +1,4 @@
-import type { GuestScope, SessionInfo, Snapshot } from "./models";
+import type { DiagnosticsSnapshot, GuestScope, SessionInfo, Snapshot } from "./models";
 
 export class ApiError extends Error {
   constructor(
@@ -13,6 +13,7 @@ async function http<T>(
   path: string,
   body?: unknown,
   csrf?: string,
+  signal?: AbortSignal,
 ): Promise<T> {
   let response: Response;
   try {
@@ -24,7 +25,7 @@ async function http<T>(
         ...(csrf ? { "X-CSRF-Token": csrf } : {}),
       },
       body: body === undefined ? undefined : JSON.stringify(body),
-      signal: AbortSignal.timeout(8000),
+      signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(8000)]) : AbortSignal.timeout(8000),
     });
   } catch {
     throw new ApiError(
@@ -52,6 +53,7 @@ export const api = {
     http<SessionInfo>("/api/login", { username, password }),
   logout: (csrf: string) => http("/api/logout", {}, csrf),
   state: () => http<Snapshot>("/api/state"),
+  diagnostics: (signal?: AbortSignal) => http<DiagnosticsSnapshot>("/api/admin/diagnostics", undefined, undefined, signal),
   command: <T>(
     csrf: string,
     action: string,

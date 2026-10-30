@@ -17,6 +17,7 @@ import { SalesHistory } from "./SalesHistory";
 import { Notifications } from "./Notifications";
 import { PrepaidClose } from "./PrepaidClose";
 import { Assistance } from "./Assistance";
+import { SystemDiagnosticsPanel } from "./SystemDiagnostics";
 import { OrderResolution } from "./OrderResolution";
 import { Brand, Icon } from "./Icons";
 import type { IconName } from "./Icons";
@@ -441,6 +442,7 @@ export function App() {
             ["menu", "menu", "Thực đơn"],
             ["history", "receipt", "Lịch sử hóa đơn"],
             ["assistance", "help", "Tra cứu hỗ trợ"],
+            ["system", "grid", "Chẩn đoán hệ thống"],
           ].map(([id, icon, title]) => (
             <button
               key={id}
@@ -502,7 +504,7 @@ export function App() {
                       ? "Thu ngân"
                       : view === "history"
                         ? "Lịch sử hóa đơn"
-                        : view==='assistance'?'Tra cứu hỗ trợ':"Thực đơn của quán"}
+                        : view==='assistance'?'Tra cứu hỗ trợ':view==='system'?'Chẩn đoán hệ thống':"Thực đơn của quán"}
             </h1>
             <p className="muted">
               Cùng một trạng thái, trên mọi màn hình của quán.
@@ -830,6 +832,7 @@ export function App() {
         )}
         {view === "history" && <SalesHistory session={session} />}
         {view === "assistance" && <Assistance session={session}/>}
+        {view === "system" && <SystemDiagnosticsPanel />}
         {view === "requests" && (
           <SupportQueue
             state={state}

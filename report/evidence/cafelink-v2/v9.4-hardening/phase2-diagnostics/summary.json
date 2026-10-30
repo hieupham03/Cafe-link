@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "date": "2026-10-30",
+  "scope": "Admin-only in-memory TCP diagnostics and responsive web UI",
+  "fullGate": "../../v9.4-gate/20261030-193429-a27ec3d4/summary.json",
+  "java": {
+    "tests": 154,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "chromium": {
+    "tests": 69,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 0
+  },
+  "newTests": {
+    "java": 4,
+    "chromium": 4
+  },
+  "privacyChecks": [
+    "No payloads, passwords, QR grants, cookies, credentials or database paths",
+    "Non-UUID request IDs hashed",
+    "Unknown action names replaced",
+    "Guest and anonymous access denied by HTTP and TCP authorization"
+  ],
+  "visualReview": [
+    "Desktop 1280px screenshot inspected",
+    "Mobile 390px screenshot inspected; scroll bounded to trace table"
+  ],
+  "metricsLimits": [
+    "RAM only, reset on Core restart",
+    "Dispatch time excludes transmission, enqueue and snapshot broadcast",
+    "Rejected requests also count as errors",
+    "Approximate live connection counts, not an atomic whole-system snapshot"
+  ],
+  "physicalPhone": "NOT_RUN",
+  "physicalLan": "NOT_RUN",
+  "realPaymentProvider": "NOT_INTEGRATED"
+}

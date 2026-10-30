@@ -25,7 +25,7 @@ def verify():
             snippets.append({'label': step['name'], 'text': step['run']})
         if step.get('name') == 'Upload allowlisted results even after failure':
             assert step['if'] == 'always()'
-            assert set(step['with']['path'].splitlines()) == {'report/evidence/cafelink-v2/v8/**', 'report/evidence/cafelink-v2/v8-gate/**', 'report/evidence/cafelink-v2/v9.3-gate/**'}
+            assert set(step['with']['path'].splitlines()) == {'report/evidence/cafelink-v2/v8/**', 'report/evidence/cafelink-v2/v8-gate/**', 'report/evidence/cafelink-v2/v9.3-gate/**', 'report/evidence/cafelink-v2/v9.4-gate/**'}
     for script in ['experiment-web.ps1', 'test-v8.ps1', 'test-web.ps1', 'run-web.ps1']:
         snippets.append({'label': script, 'text': (PROJECT / 'scripts' / script).read_text(encoding='utf-8-sig')})
     parse = r"""$items=([Console]::In.ReadToEnd() | ConvertFrom-Json); $failed=$false

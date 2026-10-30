@@ -2,7 +2,7 @@
 
 ## 1. Hai lớp giao tiếp
 
-Bổ sung vận hành V9.4: `GET /api/health` kiểm Gateway còn trả lời; `GET /api/ready` kiểm đường TCP và đọc metadata DB. Gateway dùng bản tin `HEALTH_CHECK` không mang credential, không tạo dữ liệu nghiệp vụ. Readiness có thời hạn chung và cache ngắn, trả 200/503 cùng trạng thái tổng quát. Xem [chi tiết nâng cấp](WEB_HARDENING.md). Hợp đồng gọi món/phiên/thanh toán bên dưới giữ nguyên schema 11.
+Bổ sung vận hành V9.4: `GET /api/health` kiểm Gateway còn trả lời; `GET /api/ready` kiểm đường TCP và đọc metadata DB. Gateway dùng bản tin `HEALTH_CHECK` không mang credential, không tạo dữ liệu nghiệp vụ. Readiness có thời hạn chung và cache ngắn, trả 200/503 cùng trạng thái tổng quát. `GET /api/admin/diagnostics` yêu cầu ADMIN ở cả hai tầng, dùng lệnh TCP `GET_DIAGNOSTICS` để đọc bộ đếm và tối đa 100 trace không có payload; không ghi bền hoặc thay receipt nghiệp vụ. Xem [chi tiết nâng cấp](WEB_HARDENING.md). Hợp đồng gọi món/phiên/thanh toán bên dưới giữ nguyên schema 11.
 
 Browser → Gateway dùng HTTP/HTTPS JSON để gửi lệnh, WebSocket/WSS để nhận trạng thái. Gateway → Core dùng TCP Socket với application framing riêng. `WebMain` khởi động các thành phần nhưng dữ liệu nghiệp vụ vẫn đi qua TCP; không biến bài tập thành browser CRUD trực tiếp SQLite.
 

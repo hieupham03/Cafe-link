@@ -81,6 +81,8 @@ final class SessionBridge implements AutoCloseable {
         return true;
     }
     void unsubscribe(Consumer<String> listener) { listeners.remove(listener); }
+    int subscriberCount() { return listeners.size(); }
+    int inFlightCount() { return flights.size(); }
     private void broadcast(String message) { for (var listener : listeners) listener.accept(message); }
     @Override public void close() {
         if (!closed.compareAndSet(false, true)) return;
