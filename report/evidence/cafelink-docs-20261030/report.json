@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "date": "2026-10-30",
+  "scope": "Publication copy of latest user-saved report; content was preserved, Word fields refreshed and PDF regenerated",
+  "sourceSnapshotSha256": "EAC617A0B2CBB0584FF272A0D854DA75E3F83D7C87583CA5ABD4EBEF732A029E",
+  "sourceOriginalPreserved": true,
+  "docx": "report/NhomXX_CafeLink_Report_Current_20261030.docx",
+  "docxSha256": "9A9163A605FF8C7F7AFD3DB33FF9F8FC2BCF490ED77259A7EC9C835C6BEF0C48",
+  "pdf": "report/NhomXX_CafeLink_Report_Current_20261030.pdf",
+  "pdfSha256": "BA47D4DD32BAD758687F513E1875497A0B86EF936408AF0B3B946B8BF85114D3",
+  "pages": 41,
+  "tables": 20,
+  "images": 15,
+  "bodySizePt": 13,
+  "userTextAndTablesPreserved": true,
+  "noMissingPdfText": true,
+  "noOffPageText": true,
+  "visualReview": {
+    "status": "PASS",
+    "pages": [
+      1,
+      3,
+      4,
+      5,
+      6,
+      27,
+      28,
+      29,
+      30,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41
+    ]
+  },
+  "newApplicationExperiment": false,
+  "compilatio": "NOT_RUN"
+}
