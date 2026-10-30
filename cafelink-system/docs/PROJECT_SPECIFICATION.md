@@ -1,6 +1,6 @@
-# CafeLink — Đặc tả dự án theo bộ yêu cầu đầy đủ
+# CafeLink - Đặc tả dự án theo bộ yêu cầu đầy đủ
 
-Ngày đối chiếu: 28/10/2026. Mốc ứng dụng V9.3/schema 11. Căn cứ là năm tệp trong `final-project-2/final-project/`; không sửa hoặc thay nội dung bộ yêu cầu do người dùng cung cấp.
+Đặc tả nghiệp vụ được đối chiếu ngày 28/10/2026 tại mốc V9.3/schema 11. Source hiện hành V9.4 giữ phạm vi nghiệp vụ đó; phần vận hành mới được mô tả trong [WEB_HARDENING](WEB_HARDENING.md). Căn cứ là năm tệp trong `final-project-2/final-project/`; không sửa hoặc thay nội dung bộ yêu cầu do người dùng cung cấp.
 
 ## 1. Thông tin và phạm vi
 
@@ -69,6 +69,6 @@ Oracle mở DB read-only, đối chiếu dữ liệu thật. Các phép đo chư
 
 ## 9. Sản phẩm và trạng thái bàn giao
 
-Source có README build/run/test, script runtime/maintenance, test, experiment và dependency pin. Báo cáo technical paper có Word/PDF, ảnh/sơ đồ chỉnh sửa được và evidence. Xem [runbook](FINAL_RUNBOOK.md), [checklist người dùng](WEB_USER_ACCEPTANCE.md) và [báo cáo](../../report/CafeLink_Technical_Paper_Evidence13_20261029.md).
+Source có README build/run/test, script runtime/maintenance, test, experiment và dependency pin. Báo cáo technical paper có Word/PDF, ảnh/sơ đồ chỉnh sửa được và evidence. Xem [runbook](FINAL_RUNBOOK.md), [checklist người dùng](WEB_USER_ACCEPTANCE.md) và [báo cáo hiện tại](../../report/README.md).
 
-Chờ nghiệm thu điện thoại/camera/mạng vật lý, thông tin nhóm và phần việc thật, Compilatio, chốt tên/bộ nộp và bàn giao chính thức. Nộp theo Submission của bộ mới: một DOCX theo tên nhóm và bộ Source/Report; GitHub không thay quy trình nộp môn học.
+Nhóm đã xác nhận hoàn thành kiểm thao tác thực tế. Phần việc/tỷ lệ thực tế, Compilatio, chốt tên/bộ nộp và bàn giao chính thức được xác nhận riêng. Nộp theo Submission của bộ mới: một DOCX theo tên nhóm và bộ Source/Report; GitHub không thay quy trình nộp môn học.

@@ -1,149 +1,217 @@
-# CafeLink V9.4 - Gọi món và điều phối phục vụ qua mạng
+# CafeLink - Hướng dẫn source
 
-CafeLink là bài tập lớn môn Lập trình mạng cho một quán café. Khách quét QR bàn để vào website, chọn đồ uống có ảnh/ghi chú từng phần, đặt và thanh toán giả lập trước khi quầy pha chế. Chủ quán quản lý menu, nhận đơn/thông báo, xử lý hỗ trợ, theo dõi tiến độ và lịch sử hóa đơn. Mỗi browser/profile có phiên riêng; bàn là địa chỉ giao đồ, không phải một tài khoản/hóa đơn chung cho tất cả khách.
+Source **V9.4 / schema 11**. Gói chạy đã kiểm: **RC4**. Tài liệu này dành cho người build, chạy và kiểm lại dự án; [README gốc](../README.md) giới thiệu chức năng và kết quả tổng quan.
 
-**Source hiện tại: V9.4, schema 11.** [Nâng cấp vận hành và kiểm thử](docs/WEB_HARDENING.md) ghi các thay đổi sau mốc V9.3. Báo cáo [Evidence13](../report/CafeLink_Technical_Paper_Evidence13_20261029.md) và số liệu ngày 25/10 mô tả snapshot V9.3, chưa tự trở thành kết quả của mã mới. [Chỉ mục báo cáo](../report/README.md) phân biệt báo cáo với bản RC1 cũ; các việc còn chờ ở [SUBMISSION_READINESS.md](../report/SUBMISSION_READINESS.md).
+## Mục lục
 
-[Báo cáo nâng cấp ngày 30/10](../report/CafeLink_Hardening_20261030.md) ghi kết quả Java/Chromium/Firefox/WebKit, gói portable, phép đo mới và giới hạn. Dữ liệu kiểm hiện tại gồm 164 Java, 71 Chromium và 20 ca trên mỗi engine Firefox/WebKit; xem run/hash trong báo cáo thay vì cộng dồn với các mốc cũ.
+- [Yêu cầu môi trường](#yêu-cầu-môi-trường)
+- [Cài đặt và build](#cài-đặt-và-build)
+- [Chạy Server và Client](#chạy-server-và-client)
+- [Cấu hình và dữ liệu](#cấu-hình-và-dữ-liệu)
+- [Demo public HTTPS](#demo-public-https)
+- [Kiểm thử](#kiểm-thử)
+- [Thực nghiệm](#thực-nghiệm)
+- [Đóng gói](#đóng-gói)
+- [Kiến trúc và source](#kiến-trúc-và-source)
+- [Công nghệ và thư viện](#công-nghệ-và-thư-viện)
+- [Tài liệu và giới hạn](#tài-liệu-và-giới-hạn)
 
-Trước khi cập nhật tính năng, dùng [checkpoint và trạng thái chuẩn bị](../report/CafeLink_PreFeature_Readiness_20261030.md). [Bộ nghiệm thu thiết bị](docs/WEB_DEVICE_ACCEPTANCE.md) được tạo bằng `scripts/prepare-device-acceptance.ps1` từ ZIP RC4 đã kiểm; dùng profile riêng và mẫu kết quả còn trống. Kit được tạo ở workspace local, không tải kèm khi clone repo.
+## Yêu cầu môi trường
 
-Bộ yêu cầu đầy đủ hiện dùng được phân loại tại [final-project-2](../final-project-2/README.md), gồm Instruction, Topics, README mẫu, SPECIFICATION và Submission. Xem [đặc tả áp dụng riêng cho CafeLink](docs/PROJECT_SPECIFICATION.md) và [đối chiếu yêu cầu](../report/CafeLink_Requirements_Alignment.md). SPECIFICATION trong bộ môn mô tả đề tài IoT khác; các thông số của nó không được gán cho CafeLink.
-
-Bản báo cáo hiện tại có 45 trang, chữ nội dung 13: [Word](../report/NhomXX_CafeLink_Report_Evidence13_20261029.docx), [PDF](../report/NhomXX_CafeLink_Report_Evidence13_20261029.pdf), [Markdown](../report/CafeLink_Technical_Paper_Evidence13_20261029.md). Nội dung giải thích kiến trúc/giao thức, nghiệp vụ, contribution và bằng chứng thực nghiệm; bản RC1 được giữ riêng để đối chiếu. Compilatio và nghiệm thu điện thoại vẫn chờ kết quả thật.
-
-## 1. Kiến trúc và trọng tâm môn học
-
-```text
-Browser khách/quản lý + IndexedDB journal
-    | HTTP/HTTPS (lệnh), WebSocket/WSS (trạng thái)
-Java Jetty Gateway
-    | TCP Socket: 4-byte big-endian length + UTF-8 JSON
-Java TCP Core / CafeService
-    | JDBC, transaction
-SQLite + file khóa QR + thư mục ảnh
-```
-
-Gateway xác thực cookie/Origin/CSRF rồi chuyển lệnh qua TCP; Core quyết định quyền, scope, giá và trạng thái, ghi SQLite. Gateway không ghi tắt DB nghiệp vụ. Browser không mở TCP socket thô trực tiếp. Public demo thêm Cloudflare Quick Tunnel phía trước Gateway loopback; Core vẫn loopback.
-
-Các nội dung lập trình mạng: framing và đọc đủ byte, nhiều connection, request/response có correlation ID, server push snapshot/revision, queue giới hạn, timeout/disconnect, xác thực, đồng bộ dữ liệu và phục hồi khi kết quả lệnh chưa rõ. Core có tối đa 64 reader; queue outbound 64 message/peer. Gateway tối đa 32 bridge, tối đa 30 guest và 16 admin cùng chia sẻ tổng 32. Thu hồi guest nhàn rỗi giữ credential/receipt để resume; đây là giới hạn cấu hình, không phải công suất đã đo tối đa.
-
-Trong `/admin`, mục **Chẩn đoán hệ thống** cho quản lý xem trạng thái TCP/DB, số kết nối, hàng đợi, lỗi và tra mã yêu cầu gần đây. Trang báo rõ khi số liệu đã cũ vì mất kết nối; khách không được truy cập. [Giới hạn và cách đọc số liệu](docs/WEB_HARDENING.md#chẩn-đoán-dành-cho-quản-lý).
-
-## 2. Công nghệ và thư viện
-
-| Thành phần | Công nghệ/phiên bản ghim |
+| Mục đích | Phần mềm |
 |---|---|
-| Core/Gateway | Java, bytecode target 17; Jetty WebSocket 12.0.40 |
-| Serialization | Gson 2.11.0 |
-| Persistence | SQLite JDBC 3.50.3.0; schema tự tạo/migrate |
-| Logging | SLF4J Simple 2.0.16 |
-| Java tests | JUnit Jupiter 5.11.4 |
-| Frontend | React 19.3.1, TypeScript 5.9.3, Vite 8.3.5 |
-| QR / browser tests | qrcode.react 4.2.0; Playwright 1.64.1 |
-| Build / analysis | Maven 3.9.11 bootstrap; Node.js/npm; Python, Matplotlib |
+| Build source trên Windows x64 | PowerShell 5.1+, JDK 17+ có `java`/`javac`, Node.js 22.12+ và npm |
+| Kiểm Java và Browser | Môi trường build; Playwright tự tải Chromium trong script test |
+| Thực nghiệm, kiểm toàn workflow | Python 3.13; `tools/requirements-v8.txt` |
+| Chạy gói portable được cấp riêng | Windows x64; JRE có sẵn trong gói, không cần JDK/Node |
+| Khách/quầy | Trình duyệt; điện thoại dùng URL HTTPS khi demo public |
 
-Phiên bản đầy đủ nằm ở `pom.xml`, `web/package.json`, `web/package-lock.json` và `tools/requirements-v8.txt`. Năm ô trên màn khách: Thực đơn, Đơn đã gọi, Hỗ trợ, Thanh toán, Giỏ hàng. Luồng MANUAL/POSTPAY cũ được giữ cho tương thích/hồi quy, không phải luồng demo chính.
+Node cũng chấp nhận nhánh 20 từ 20.19 theo `web/package.json`; các lệnh Windows và CI dùng Node 22. Maven bootstrap trong script nên không cần cài Maven riêng. Lần build đầu cần Internet tải dependency. Linux/macOS chưa có runbook tương đương đã nghiệm thu.
 
-## 3. Cấu trúc source
-
-```text
-cafelink-system/
-  src/main/java/com/cafelink/
-    common/       frame, message, model, command classification
-    server/       TCP, xác thực, nghiệp vụ, SQLite
-    web/          HTTP/WebSocket Gateway, session bridge
-    client/       TCP client và desktop lịch sử
-  src/test/       Java integration/unit/UI regression
-  web/src/        website khách/quản lý và journal
-  web/tests/      Chromium E2E và kiểm gói
-  web/experiments/  driver phục hồi/đo tải có kiểm soát
-  scripts/        build/run/test/experiment/package
-  tools/          oracle SQLite, phân tích số liệu
-  release/        launcher Windows, runtime pin
-  docs/           protocol, kiến trúc, demo, nghiệm thu
-```
-
-`target/`, `.tools/`, `web/node_modules/`, DB/khóa/cookie/log phiên chạy không phải source cần nộp. Chúng được tạo khi build/run. Gói bàn giao kèm một bản E0 ZIP niêm phong ở thư mục `dist/` cấp trên để script test kiểm hash baseline; không tái tạo E0 từ source V9.3.
-
-## 4. Yêu cầu môi trường
-
-Build/kiểm thử chuẩn trên Windows x64: PowerShell 5.1+, JDK 17+, Node.js 20.19+ hoặc 22.12+, npm. Đo thực nghiệm cần Python 3.13 và dependencies trong requirements. Cần Internet lần đầu để tải Maven/dependency npm/Maven/Chromium. Đặt source trong đường dẫn ASCII, ví dụ `D:\CafeLink-Source\`; khoảng trắng được kiểm, đường dẫn có dấu chưa được nghiệm thu đầy đủ.
-
-Gói chạy sẵn trong `Run/CafeLink-Web-V9.3/` của bộ bàn giao có JRE 17, không cần JDK/Node để chạy. Gói demo thanh toán **LOCAL_SIMULATOR**, không thu tiền thật hoặc yêu cầu thông tin ngân hàng.
-
-## 5. Build từ source
-
-Mở terminal tại thư mục có README này:
+Kiểm công cụ trước khi build:
 
 ```powershell
+java -version
+javac -version
+node --version
+npm.cmd --version
+```
+
+## Cài đặt và build
+
+Clone tại một thư mục của bạn, rồi chạy:
+
+```powershell
+git clone https://github.com/hieupham03/Cafe-link.git
+cd Cafe-link\cafelink-system
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-web.ps1
 ```
 
-Script cài npm theo lock, typecheck/build frontend rồi package Java. Maven được bootstrap vào `.tools` và kiểm SHA-512 khi tải. Output: `target/cafelink-1.0.0.jar`, `target/lib/`, `web/dist/`. Tên Maven artifact `1.0.0` là tên nội bộ giữ tương thích, không phải đang chạy nhầm bản desktop cũ. Mốc phát hành/ảnh giao diện trong gói chạy xác định bằng `RELEASE.json` và hash.
+Nếu đã clone, mở PowerShell tại **`cafelink-system/`**. Tất cả lệnh còn lại trong README dùng thư mục này, trừ khi ghi khác.
 
-## 6. Tạo dữ liệu và chạy local
+Build dùng `npm ci`, typecheck/build frontend và Maven package Java. Output:
+
+```text
+target/cafelink-1.0.0.jar     Java Gateway/Core
+target/lib/                 Dependency Java
+web/dist/                   Website production
+```
+
+Tên Maven artifact `1.0.0` giữ để tương thích script; phiên bản ứng dụng là V9.4, không phải đang chạy nhầm desktop cũ. Build không thay thế kiểm thử đầy đủ. Sau khi code hoặc lockfile đổi, build lại; `-SkipInstall` chỉ dùng khi npm dependencies đã khớp lock.
+
+## Chạy Server và Client
+
+### Khởi động Server
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-web.ps1 -Port 8088 -TcpPort 5058 -DatabasePath data/local-demo/cafelink.db
 ```
 
-Mở `http://127.0.0.1:8088/admin`, tài khoản `admin`, mật khẩu demo `CafeLink@123`. DB mới tự tạo schema, admin, sáu bàn và tám đồ uống. Không cần cài database server hoặc nhập SQL thủ công. Seed không ghi đè mật khẩu/dữ liệu DB đã có.
+Terminal in URL và cổng Core; giữ terminal mở. `WebMain` khởi động Gateway và Core trong cùng tiến trình, kết nối bằng TCP loopback thật. Nhấn **Ctrl+C** để dừng.
 
-Admin bấm **Mở tất cả bàn → Bàn 1 → Sao chép link đặt món**. Khách dán nguyên link vào browser/profile khác, hoặc InPrivate/Ẩn danh (`Ctrl+Shift+N` trên Edge/Chrome), bấm **Vào bàn của tôi**. Các tab thường dùng chung cookie admin; các cửa sổ ẩn danh đang mở cũng có thể cùng một phiên riêng tư. Hai khách độc lập cần hai browser/profile/thiết bị độc lập.
+### Mở Client quản lý và khách
 
-Link phải chứa mã `#table=...` lấy từ màn QR. App đọc mã rồi ẩn khỏi thanh địa chỉ; copy `/join` sau khi đã mở có thể thiếu mã. Không cần đăng nhập admin trên trang khách.
+1. Quản lý vào **http://127.0.0.1:8088/admin**, đăng nhập **`admin` / `CafeLink@123`**.
+2. Chọn **Mở tất cả bàn**, vào **Bàn 1**, lấy **Sao chép link đặt món**.
+3. Khách dùng browser/profile khác mở nguyên link. Link có mã bàn trong fragment `#table=...`; trang chỉ có `/join` không đủ thông tin.
+4. Khách chọn món, gửi đơn và thanh toán thử; quầy nhận việc, pha chế rồi giao.
+5. Mở thêm một Client độc lập cùng QR để kiểm hai khách cùng bàn có đơn riêng.
 
-Giữ terminal Server mở; Ctrl+C dừng đúng demo. Nếu cổng bận, đổi cả HTTP/TCP sang cặp khác. Script không tự dừng tiến trình khác. Không xóa DB khi đang chạy.
+Không cần chạy thêm app Java phía khách. Tab thường dùng chung cookie; các cửa sổ ẩn danh cùng mở cũng có thể dùng chung phiên riêng tư. Hai khách độc lập nên dùng hai browser/profile/thiết bị khác nhau.
 
-## 7. Demo public HTTPS
+## Cấu hình và dữ liệu
 
-Từ source sau build, dùng profile public riêng:
+### Tham số chạy
+
+| Tham số `run-web.ps1` | Mặc định của script | Ý nghĩa |
+|---|---|---|
+| `-Port` | `8080` | HTTP/WebSocket của Gateway; ví dụ README chọn 8088 |
+| `-TcpPort` | `5051` | TCP Core; ví dụ README chọn 5058 |
+| `-DatabasePath` | `data/v2/cafelink.db` | File SQLite; dùng profile riêng theo mục đích |
+| `-BindAddress` | `127.0.0.1` | HTTP phát triển chỉ trên loopback; LAN trực tiếp cần TLS |
+| `-OrderingMode` | `prepay` | Luồng QR trả trước; `postpay` giữ cho tương thích |
+| `-AssetsPath` | `web/dist` | Thư mục website production |
+| `-QrKeyFile` | File cạnh DB khi không chỉ định | Khóa ký quyền QR |
+| `-PublicOrigin`, `-TrustedProxy` | Không bật | Public HTTPS qua proxy; dùng launcher public để cấu hình đồng bộ |
+| `-KeyStore` | Không bật | Keystore cho TLS trực tiếp; đọc mật khẩu từ biến môi trường |
+
+Các đường dẫn dữ liệu tương đối được giải theo project `cafelink-system`. Luồng web hiện tại không tự đọc file `.env`. `CAFELINK_KEYSTORE_PASSWORD` dùng khi cấu hình TLS; `CAFELINK_QR_KEY` là lựa chọn cấp khóa từ môi trường. Public launcher tự cấu hình mật khẩu demo tạm, không cần điền secret để chạy Quick Tunnel.
+
+### Khởi tạo và giữ dữ liệu
+
+SQLite tự tạo/migrate schema 11, tài khoản demo, sáu bàn và tám món khi mở DB mới; không cần cài database server hoặc nhập SQL. Seed không reset DB cũ.
+
+Profile local trong ví dụ chứa DB, khóa QR cạnh DB và thư mục ảnh. Browser giữ cookie và IndexedDB riêng theo origin. Chạy lại cùng profile còn dữ liệu là hành vi lưu bền có chủ đích. Muốn thử sạch, dùng một `DatabasePath` mới và browser/profile khách mới. Không xóa DB đang chạy hoặc chỉ chép file DB khi còn ghi WAL.
+
+[Backup/reset/restore](docs/WEB_RELEASE.md) áp dụng cho gói portable; [runbook](docs/FINAL_RUNBOOK.md) phân biệt dữ liệu Client và Server.
+
+## Demo public HTTPS
+
+Dừng local trước khi đổi chế độ. Sau build:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/public-demo.ps1 -SkipBuild -Port 19088 -TcpPort 19058
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/public-demo.ps1 -SkipBuild -Port 19088 -TcpPort 19058 -DurationSeconds 1800
 ```
 
-Dùng địa chỉ HTTPS và **mật khẩu tạm in trong terminal**; không dùng mật khẩu local. Mở tất cả bàn rồi cho điện thoại quét QR. Hostname Quick Tunnel có thể đổi khi chạy lại; lúc đó lấy QR mới. Cookie/IndexedDB theo origin không tự chuyển sang hostname mới. Không mở port TCP Core ra Internet.
+Script dùng Cloudflare Quick Tunnel đã ghim checksum, tạo profile public và mật khẩu quản lý tạm, in HTTPS để demo. Đăng nhập bằng mật khẩu vừa in; mở các bàn rồi lấy QR mới. Điện thoại không cần chung Wi-Fi với máy chủ.
 
-Nếu dùng gói chạy sẵn, chạy `Start-Local.ps1` hoặc `Start-Public.ps1` trong gói; xem [WEB_V9_3](docs/WEB_V9_3.md). Gói portable chỉ cho một launcher tại một thời điểm. Local/public là profile DB riêng; dừng launcher cũ trước khi chuyển chế độ. Backup/reset/restore offline: [WEB_RELEASE](docs/WEB_RELEASE.md).
+Máy chủ phải bật và có Internet. Tunnel đổi hostname khi chạy lại; cookie/IndexedDB ở hostname cũ không tự chuyển sang hostname mới. Core vẫn loopback, không mở cổng TCP ra Internet. Xem [public demo](docs/WEB_PUBLIC_DEMO.md) hoặc [LAN có TLS](docs/LAN_ACCEPTANCE.md). Cổng bận thì chọn cặp trống; launcher không tự dừng tiến trình đang chiếm cổng.
 
-## 8. Kiểm thử tự động
+## Kiểm thử
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V9.4
-```
+| Lệnh | Phạm vi |
+|---|---|
+| `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maven.ps1 -B test` | Java: protocol, TCP, service, DB, Gateway và hồi quy desktop |
+| `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V9.4` | Java verify + build production/experiment + Chromium E2E |
+| `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-browser-compatibility.ps1` | Các nhóm chọn lọc trên Firefox và WebKit |
+| `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-v8.ps1 -Quick` | Bộ workflow: cấu hình, guard, test Java/web, analyzer và campaign ngắn |
 
-Lệnh chạy Java verify, typecheck/build production + experiment, cài Chromium và chạy các nhóm E2E bằng Core/Gateway/SQLite thật. `-SkipInstall -SkipBrowserInstall` chỉ dùng khi dependencies/browser đã có. Cổng test 18080/18081 phải trống; không tái sử dụng demo đang chạy. Kết quả có JUnit XML, Playwright JSON, ảnh và hash trong `../report/evidence/cafelink-v2/v9.4-gate/<run>/`. Kiểm Firefox/WebKit riêng bằng `scripts/test-browser-compatibility.ps1`; đây vẫn là engine trên Windows, chưa phải điện thoại thật.
+Lệnh cuối cần Python và requirements thực nghiệm. `test-v8.ps1` là tên giữ từ pha V8, hiện kiểm V9.4. `-Quick` giảm campaign, không bỏ bộ hồi quy Java/Chromium.
 
-Mốc V9.3 đã lưu: **142 Java + 65 Chromium PASS**, không lỗi/bỏ qua/flaky; **21 nhóm kiểm gói sạch PASS** bằng JRE đi kèm. Các lần kiểm mới khi chạy lại có thư mục riêng, không ghi đè evidence đã chốt. Xem báo cáo chính để biết run/hash chính xác và kiểm từ source sạch.
+Cổng test **18080/18081** phải trống. Script tạo DB và tiến trình riêng, không dùng lại demo của bạn. Evidence mới nằm trong `../report/evidence/cafelink-v2/v9.4-gate/<run>/`; các bản đã chốt được giữ riêng. Chỉ thêm `-SkipInstall -SkipBrowserInstall` khi dependencies/browser đã có.
 
-## 9. Thực nghiệm và contribution
+Kiểm cuối RC4 đã ghi nhận **164 Java, 71 Chromium, 20 Firefox, 20 WebKit, 23 nhóm kiểm gói và 8 kiểm public**. [TESTING](docs/TESTING.md) nối kết quả với nhóm hành vi và nguồn bằng chứng; [CI](docs/CI.md) ghi đúng commit/run đã kiểm. Test engine trên Windows và xác nhận thao tác thực tế được phân biệt với số đo hiệu năng.
+
+## Thực nghiệm
+
+Sau build/kiểm hồi quy, cài dependency và chọn thư mục kết quả mới:
 
 ```powershell
 python -m pip install -r tools/requirements-v8.txt
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/experiment-web.ps1 -OutputPath ..\report\evidence\cafelink-final\my-new-run
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/experiment-web.ps1 -OutputPath ..\report\evidence\cafelink-runs\my-new-run
 ```
 
-Chọn thư mục output mới. Trước khi đo phải có JAR và assets từ source hiện tại; script build assets nhưng không thay Java verify. Full: tám tình huống × ba policy × năm lần = 120 ca phục hồi; tải 1/5/10/14 guest × ba lần = 12 lượt, warmup 3 giây/đo 15 giây. Driver chờ màn khách sẵn sàng trước warmup, không retry để che lỗi thao tác. Số 14 là mức tải chọn cho thực nghiệm, không phải hạn mức guest hiện tại.
+Chạy lại với tên output khác; script từ chối ghi đè thư mục đã có dữ liệu. Full campaign gồm 120 ca phục hồi và 12 lượt tải, warmup 3 giây/đo 15 giây, các mức 1/5/10/14 khách. Có thể dùng `-Quick` cho lượt kiểm ngắn.
 
-Giữ raw/metadata/CSV/oracle/biểu đồ, cả lần FAIL và slot lỡ. Không gọi loopback là LAN/điện thoại thật hoặc throughput đo được là công suất tối đa. README không cộng dồn số test giữa các phiên bản. Kết quả cuối, phương pháp và giới hạn nằm trong [báo cáo hiện tại](../report/CafeLink_Technical_Paper_Evidence13_20261029.md).
+R0 gửi lại, R1 chờ xem xét, R2 xử lý theo loại yêu cầu. Các phương án cùng giữ chống trùng và quyền/phiên. Sản phẩm dùng R2; harness không phục vụ trong website production. [Phương pháp, metric và dữ liệu](docs/WEB_EXPERIMENTS.md) giải thích timer, mẫu số, slot chưa phát và oracle.
 
-Hai contribution là tích hợp/đánh giá **phục hồi theo loại yêu cầu** và **barrier/phạm vi phiên chống yêu cầu cũ hồi sinh hoặc tác động sai lượt**. R0 REPLAY_ALL, R1 REVIEW, R2 SEMANTIC cùng giữ receipt, fingerprint, idempotency và quyền/scope. Không gọi ACK/retry/TCP/QR là thuật toán mới; không gán toàn bộ lợi ích chống trùng riêng cho R2 hoặc tuyên bố vượt các POS thương mại.
+Số đo gần nhất thuộc **V9.4/RC3 ngày 30/10**: 120 ca phục hồi; tải hoàn tất **1.256/1.350** lượt, **94 lượt chưa phát** ở 14 khách, không ghi lỗi flow/HTTP đã gửi. Đây là đo cùng máy qua loopback; không gán kết quả đó cho RC4 hoặc coi giới hạn cấu hình là công suất tối đa.
 
-## 10. Giới hạn và bảo vệ dữ liệu demo
+## Đóng gói
 
-- Thanh toán/hoàn tiền giả lập; không có tích hợp ngân hàng, kho nguyên liệu hoặc nhiều chi nhánh.
-- QR là quyền vào/địa chỉ bàn, không xác minh hiện diện vật lý. Browser mất cookie/storage hoặc đổi origin cần hỗ trợ đối chiếu, không tự lấy lại danh tính từ QR chung.
-- Giới hạn queue/session/rate được giữ khi đo. Chưa có SLA/công suất tối đa hoặc kết luận kiểm toán an toàn production.
-- Nghiệm thu điện thoại/camera/mạng vật lý và đánh giá người dùng thật **chờ người dùng kiểm sau**; không đánh dấu đạt thay người dùng. [Checklist](docs/WEB_USER_ACCEPTANCE.md).
-- Không đưa DB, `.qr-key`, journal/cookie, backup phiên thật, `target` private hoặc mật khẩu public vào bộ source chia sẻ. Dữ liệu runtime nằm ngoài manifest pristine.
-- Source có workflow Windows; remote CI chỉ được coi đã chạy khi có URL/run evidence thực tế. Hướng dẫn nộp và Compilatio không tự hoàn thành bởi test tự động.
+Git có source và baseline E0, không kèm gói RC4 có JRE. Máy có source đã kiểm có thể tạo một gói tại đường dẫn mới:
 
-## 11. Tài liệu và nguồn
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-web.ps1
+```
 
-- [Báo cáo hiện tại](../report/CafeLink_Technical_Paper_Evidence13_20261029.md), [chỉ mục bản Word/PDF và evidence](../report/README.md), [trạng thái chuẩn bị nộp](../report/SUBMISSION_READINESS.md).
-- [Kiến trúc bản chốt](docs/FINAL_ARCHITECTURE.md), [giao thức bản chốt](docs/FINAL_PROTOCOL.md).
-- [Hướng dẫn V9.3](docs/WEB_V9_3.md), [phục hồi](docs/WEB_RECOVERY.md), [dữ liệu demo](docs/WEB_RELEASE.md).
-- [RFC 9293 — TCP](https://www.rfc-editor.org/rfc/rfc9293.html), [RFC 6455 — WebSocket](https://www.rfc-editor.org/rfc/rfc6455.html), [RFC 9110 — HTTP](https://www.rfc-editor.org/rfc/rfc9110.html).
-- [W3C IndexedDB](https://www.w3.org/TR/IndexedDB/), [SQLite WAL](https://www.sqlite.org/wal.html), [Square idempotency](https://developer.squareup.com/docs/build-basics/common-api-patterns/idempotency).
+Để ràng buộc đúng JAR/frontend với gate đã chạy, chỉ định `-GateSummary` tới `summary.json` của chính build đó; guard từ chối hash hoặc tập assets không khớp. `-SkipBuild` chỉ dùng khi build hiện tại đã sẵn sàng. ZIP/thư mục đích không được tồn tại trước.
+
+Gói mới có `START-LOCAL.cmd`, `START-PUBLIC.cmd`, JRE, JAR, assets và manifest. [Runbook gói portable](docs/FINAL_RUNBOOK.md#6-gói-portable-được-cung-cấp-riêng) và [phát hành/dữ liệu](docs/WEB_RELEASE.md) mô tả kiểm gói, backup/reset/restore. Các file launcher riêng trong `release/windows` không phải một gói chạy hoàn chỉnh.
+
+## Kiến trúc và source
+
+```text
+Browser -- HTTP/WS --> WebGateway / SessionBridge
+                            |
+                    NetworkClient: TCP
+                            |
+                       CafeServer
+                            |
+                       CafeService
+                            |
+                    SQLite transaction
+```
+
+```text
+src/main/java/com/cafelink/
+  common/        FrameCodec, Message, model và lệnh
+  client/        NetworkClient; desktop cũ cho hồi quy
+  server/        TCP, xác thực, nghiệp vụ và SQLite
+  web/           HTTP/WebSocket, phiên web và chẩn đoán
+src/test/        Java tests
+web/src/         Giao diện khách/quầy và nhật ký
+web/tests/       Browser E2E, kiểm portable/public
+web/experiments/ Phục hồi có kiểm soát và phát tải
+scripts/         Build, chạy, test, đo và đóng gói
+tools/           Đọc DB, phân tích số đo, kiểm workflow
+release/         Launcher, runtime pin và UAT kit
+docs/            Tài liệu kỹ thuật
+```
+
+Core tách đọc socket, xử lý trạng thái và writer/hàng đợi. `CafeService` đồng bộ quyết định nghiệp vụ; transaction ghi dữ liệu và receipt. `NetworkClient` dùng một reader, `pending/requestId` và khóa ghi để phân biệt phản hồi/sự kiện, tránh xen byte giữa frame. [Kiến trúc](docs/FINAL_ARCHITECTURE.md) và [protocol](docs/FINAL_PROTOCOL.md) có mô tả đầy đủ.
+
+## Công nghệ và thư viện
+
+| Thành phần | Phiên bản ghim | Mục đích |
+|---|---|---|
+| Java / Maven | Target 17 / bootstrap 3.9.11 | Core, TCP, Gateway, build và dependency |
+| Jetty WebSocket | 12.0.40 | HTTP/API và WebSocket phía Browser |
+| Gson | 2.11.0 | JSON của bản tin và DTO |
+| SQLite JDBC | 3.50.3.0 | Dữ liệu nhúng và transaction |
+| SLF4J Simple | 2.0.16 | Logging |
+| React / TypeScript / Vite | 19.3.1 / 5.9.3 / 8.3.5 | UI, kiểm kiểu và build |
+| qrcode.react | 4.2.0 | Hiển thị QR |
+| JUnit / Playwright | 5.11.4 / 1.64.1 | Kiểm Java và Browser |
+| Python / Matplotlib | Theo `tools/requirements-v8.txt` | Đối chiếu DB, số liệu và biểu đồ |
+
+Manifest gốc: [pom.xml](pom.xml), [package.json](web/package.json), [lockfile](web/package-lock.json), [requirements](tools/requirements-v8.txt). JDK đo local, target bytecode và JRE trong gói là ba khái niệm riêng.
+
+## Tài liệu và giới hạn
+
+- [Chỉ mục kỹ thuật](docs/README.md): giao thức, kiến trúc, demo, lỗi, thực nghiệm và CI.
+- [Báo cáo hiện tại](../report/README.md): Word/PDF mới và dữ liệu theo từng phiên bản.
+- [Yêu cầu học phần](../final-project-2/README.md): căn cứ ưu tiên để đối chiếu nội dung.
+- [Đặc tả CafeLink](docs/PROJECT_SPECIFICATION.md): phạm vi và điều kiện nghiệp vụ.
+
+Thanh toán/hoàn tiền giả lập, QR có thể chia sẻ và không chứng minh hiện diện. Phục hồi cần quyền/storage còn phù hợp. Chưa có ngân hàng thật, nhiều chi nhánh hoặc công suất tối đa đã chứng minh. Nghiệm thu thao tác thực tế đã được người dùng xác nhận hoàn tất; các phiếu tự động cũ giữ nguyên phạm vi và thời điểm của chúng.

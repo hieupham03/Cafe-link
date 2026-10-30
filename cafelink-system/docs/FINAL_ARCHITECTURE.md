@@ -1,4 +1,4 @@
-# CafeLink V9.3 — Kiến trúc bản chốt
+# CafeLink V9.4 - Kiến trúc hệ thống
 
 ## 1. Mô hình triển khai
 
@@ -58,6 +58,6 @@ Khóa QR file và thư mục ảnh đi cùng DB. Portable maintenance chỉ back
 
 ## 6. Các ranh giới nghiệm thu
 
-Chỉ số thí nghiệm là loopback trên một máy; public smoke Chromium không thay điện thoại/camera/LAN vật lý. Thanh toán LOCAL_SIMULATOR không xác nhận tiền ngân hàng. QR không chứng minh hiện diện. Người dùng kiểm điện thoại sau; Compilatio, thông tin nhóm và bàn giao chính thức phải được ghi nhận riêng.
+Chỉ số thí nghiệm là loopback trên một máy; public smoke Chromium không thay điện thoại/camera/LAN vật lý. Thanh toán LOCAL_SIMULATOR không xác nhận tiền ngân hàng. QR không chứng minh hiện diện. Nhóm đã xác nhận hoàn thành kiểm thao tác thực tế. Các số đo tự động vẫn giữ phạm vi riêng; Compilatio và bàn giao chính thức được ghi nhận riêng.
 
-Xem [giao thức](FINAL_PROTOCOL.md), [README](../README.md), [báo cáo cuối](../../report/CafeLink_Final_Report.md).
+Xem [giao thức](FINAL_PROTOCOL.md), [README](../README.md), [báo cáo hiện tại](../../report/README.md).

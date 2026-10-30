@@ -1,4 +1,6 @@
-# V8 — Kiểm thử và thực nghiệm web
+# CafeLink - Thực nghiệm phục hồi và tải
+
+Source hiện hành V9.4. Tên script/thư mục V8 giữ cho tương thích công cụ. [Kết quả gần nhất](../../report/evidence/cafelink-v2/v9.4-hardening/measurements-20261030/analysis.json) thuộc V9.4/RC3 ngày 30/10; kiểm cuối RC4 nằm ở [TESTING](TESTING.md). Các lần chạy tạo thư mục mới, không ghi đè dữ liệu đã chốt.
 
 Đây là công cụ đo phục vụ báo cáo CafeLink. Demo khách/quản lý tiếp tục dùng `scripts/public-demo.ps1` hoặc `scripts/run-web.ps1`; không cần bật trang thực nghiệm.
 

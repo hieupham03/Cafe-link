@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "date": "2026-10-30",
+  "scope": "Documentation commands, links and publication; no runtime changes or new performance campaign",
+  "authoritativeRequirements": "final-project-2/final-project/Instruction.md and Submission.md",
+  "referenceRepositories": [
+    "https://github.com/nvbangg/JumpKing-Multiplayer",
+    "https://github.com/Thai-DM/lap_trinh_mang",
+    "https://github.com/AnhTaizz/Toeic-Monitoring-Realtime"
+  ],
+  "changedMarkdownFiles": 16,
+  "localLinksChecked": 186,
+  "anchorsChecked": 17,
+  "powershellExamplesParsed": 25,
+  "cleanSourceBuild": "PASS",
+  "sourceRuntimeCommit": "8a68304969e675240c9c2f6c091e8ac2a587d073",
+  "smoke": {
+    "status": "PASS",
+    "scope": "Documented source startup and isolated browser/API walkthrough; not a new performance campaign",
+    "checks": [
+      "Documented run-web launcher starts Gateway and ready TCP Core",
+      "Fresh database accepts the documented local administrator account",
+      "SQLite creates six tables and eight seeded menu items without manual SQL",
+      "Open-all and complete table join URL match the documented workflow",
+      "Administrator dashboard loads from the clean frontend build",
+      "Two independent clients use one table QR but receive private visits",
+      "Customer website loads seeded menu after joining the table",
+      "Order travels through HTTP and TCP and is private to its customer"
+    ],
+    "sourceRuntimeCommit": "8a68304969e675240c9c2f6c091e8ac2a587d073",
+    "ownedListenersClosed": true
+  },
+  "smokeFixtureNotes": "Two prior local fixture requests omitted required scope and expectedVersion; server rejected them as designed. Fixture corrected against existing protocol/source; no application code was changed. Failed local attempts retained privately.",
+  "reportEvidence": "report.json",
+  "userEditedEvidenceDocx": "PRESERVED_NOT_STAGED",
+  "courseSources": "UNCHANGED",
+  "sealedE0": "UNCHANGED",
+  "runtimeChanges": false,
+  "ci": "PENDING_PUBLICATION",
+  "issues": []
+}

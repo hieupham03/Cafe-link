@@ -1,8 +1,8 @@
-# CafeLink — Trạng thái chuẩn bị nộp ngày 31/10/2026
+# CafeLink - Trạng thái chuẩn bị nộp và hồ sơ lịch sử
 
-**Cập nhật source ngày 30/10:** V9.4/RC3 đã có [báo cáo kiểm mới](CafeLink_Hardening_20261030.md) và [mốc chuẩn bị trước tính năng tiếp theo](CafeLink_PreFeature_Readiness_20261030.md). Các bảng RC1/V9.3 bên dưới giữ kết quả lịch sử. Checklist người kiểm đã cập nhật V9.4; điện thoại/LAN/loa/usability vẫn chờ thực hiện thật. Báo cáo DOCX đang được người dùng sửa được giữ nguyên.
+**Cập nhật hiện hành:** source V9.4, gói đã kiểm RC4; [báo cáo mới](README.md) là bản Current ngày 30/10, 41 trang. Nhóm đã xác nhận hoàn thành kiểm thao tác thực tế. Compilatio và nộp chính thức vẫn cần kết quả riêng. Các bảng và trạng thái RC1/V9.3 bên dưới là snapshot lịch sử, không phải danh sách còn chờ hiện tại. Bản Word người dùng sửa được giữ nguyên.
 
-**Báo cáo hiện tại:** [Word](NhomXX_CafeLink_Report_Evidence13_20261029.docx), [PDF](NhomXX_CafeLink_Report_Evidence13_20261029.pdf), [Markdown](CafeLink_Technical_Paper_Evidence13_20261029.md). Các bảng bên dưới ghi nhận mốc phần mềm/bộ RC1 ngày 25/10; bản báo cáo biên tập ngày 29/10 chưa thay ZIP RC1. Thông tin nhóm, Compilatio và nghiệm thu điện thoại vẫn chờ.
+**Báo cáo ngày 29/10 trong hồ sơ lịch sử:** [Word](NhomXX_CafeLink_Report_Evidence13_20261029.docx), [PDF](NhomXX_CafeLink_Report_Evidence13_20261029.pdf), [Markdown](CafeLink_Technical_Paper_Evidence13_20261029.md). Các bảng bên dưới ghi nhận mốc phần mềm/bộ RC1 ngày 25/10; bản báo cáo biên tập ngày 29/10 chưa thay ZIP RC1. Ở mốc cũ này, thông tin nhóm, Compilatio và nghiệm thu điện thoại còn chờ.
 
 **Mốc chốt phần mềm:** V9.3/schema 11. **Bộ bàn giao:** `NhomXX_CafeLink_20261031_RC1`. Đây là release candidate chuẩn bị nộp, chưa phải xác nhận đã nộp hoặc được giảng viên phê duyệt. Ngày chuẩn bị/thực nghiệm: 25/10/2026; hạn theo tài liệu môn học: 23:59 ngày 31/10/2026.
 
@@ -43,7 +43,7 @@ Runtime V9.3 ZIP niêm phong giữ SHA-256 `FDCA5E041BCB83F61260056BB8B6DB859BB5
 | Limitations/Future Work/Conclusion | Mục 12/13/14 |
 | References/Appendix | Mục 15/16 |
 
-## 3. Các việc chủ động giữ chờ
+## 3. Các việc giữ chờ tại mốc hồ sơ cũ
 
 1. **Điện thoại/camera/mạng vật lý, usability:** người dùng kiểm sau theo yêu cầu; không tự đổi UAT thành Đạt. Dùng checklist của source, đặc biệt P01–P03 và U24.
 2. **Thông tin nhóm, lớp, MSSV, giảng viên, phân công:** chưa cung cấp; không tạo tên/mức đóng góp giả. Khi có thông tin, cập nhật bìa/phân công và đổi `XX` trong tên file/thư mục thành số nhóm thật.
@@ -63,4 +63,4 @@ Manifest SHA-256 ở gốc bộ bàn giao bao phủ source/report/runtime; giữ
 
 Các hàng mục 1 ghi nhận mốc RC1 ngày 25/10; trạng thái remote CI ở mốc đó được giữ để truy vết. Sau mốc RC1, đã xác minh Success của [run 40206552643, commit e059123](https://github.com/hieupham03/Cafe-link/actions/runs/40206552643) và [run 40726262804, commit fd1b431](https://github.com/hieupham03/Cafe-link/actions/runs/40726262804). Mỗi kết quả chỉ áp dụng đúng commit được dẫn, không tự bao gồm các chỉnh sửa tiếp theo.
 
-[Chỉ mục báo cáo](README.md) phân biệt bản 45 trang hiện tại và hồ sơ RC1. GitHub kèm source chạy được, tài liệu, báo cáo và evidence; không kèm gói portable/ZIP RC1. [Runbook](../cafelink-system/docs/FINAL_RUNBOOK.md) hướng dẫn riêng chạy từ source và chạy gói được cung cấp ngoài repo. Bản báo cáo biên tập chưa có kết quả Compilatio, chưa tự thay gói RC1 đã niêm phong hoặc hoàn tất nghiệm thu thiết bị thật.
+[Chỉ mục báo cáo](README.md) phân biệt bản hiện hành với các bản 45 trang ngày 29/10 và RC1. GitHub kèm source chạy được, tài liệu, báo cáo và evidence; không kèm gói portable/ZIP RC1. [Runbook](../cafelink-system/docs/FINAL_RUNBOOK.md) hướng dẫn riêng chạy từ source và chạy gói được cung cấp ngoài repo. Việc biên tập báo cáo không tự thay gói RC1 đã niêm phong hoặc cung cấp kết quả Compilatio; trạng thái thao tác thực tế hiện hành nằm ở đầu tài liệu.

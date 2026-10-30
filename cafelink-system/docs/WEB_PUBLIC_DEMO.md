@@ -2,7 +2,7 @@
 
 > **Bản hiện tại V9.4:** gói đã kiểm tại workspace là `dist/CafeLink-Web-V9.4-RC4.zip`; giải nén rồi chạy START-PUBLIC.cmd, không cần build/JDK/Node. ZIP giữ local, không tải kèm khi clone GitHub. [Bộ nghiệm thu thiết bị](WEB_DEVICE_ACCEPTANCE.md) tạo bản sao/profile riêng từ RC4 để thử điện thoại mà không đổi dữ liệu đang dùng. Khi clone source, chạy các lệnh bên dưới.
 
-Màn khách chia năm vùng: Thực đơn, Đơn đã gọi, Hỗ trợ, Thanh toán và Giỏ hàng. Kết quả public/phiên bản/hash mới nằm trong [báo cáo nâng cấp V9.4](../../report/CafeLink_Hardening_20261030.md); [báo cáo RC1](../../report/CafeLink_Final_Report.md) giữ kết quả cũ để đối chiếu. Điện thoại/camera thật vẫn cần người kiểm theo [checklist](WEB_USER_ACCEPTANCE.md).
+Màn khách chia năm vùng: Thực đơn, Đơn đã gọi, Hỗ trợ, Thanh toán và Giỏ hàng. Kết quả public/phiên bản/hash mới nằm trong [báo cáo nâng cấp V9.4](../../report/CafeLink_Hardening_20261030.md); [báo cáo RC1](../../report/CafeLink_Final_Report.md) giữ kết quả cũ để đối chiếu. Nhóm đã xác nhận hoàn tất kiểm thao tác thực tế; [checklist](WEB_USER_ACCEPTANCE.md) được giữ cho lần kiểm lại.
 
 **Luồng mới:** mở nhận khách cho toàn quán một lần → khách quét QR bàn → tạo phiên riêng trên trình duyệt → gọi món, thanh toán giả lập → quầy pha chế/giao đồ → phiên tự hoàn tất. Nhân viên không phải quan sát khách rời đi để đóng bàn hoặc chờ khách mới để mở lượt.
 
@@ -101,9 +101,9 @@ Mở `http://127.0.0.1:19088/admin`, đăng nhập `admin / CafeLink@123`, bấm
 ## 7. Kiểm thử và phạm vi đã xác minh
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V9.3 -SkipInstall -SkipBrowserInstall
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V9.4 -SkipInstall -SkipBrowserInstall
 ```
 
-Gate V9.3 có 142 Java + 65 Chromium PASS. [Evidence gate](../../report/evidence/cafelink-v2/v9.3-gate/20261025-184703-1bdff3d4/summary.json) và [báo cáo cuối](../../report/CafeLink_Final_Report.md) ghi rõ run/phạm vi. Smoke Internet chạy tách trên DB fixture qua `web/tests/public-smoke.mjs`, nhận origin/mật khẩu bằng biến môi trường và không ghi mật khẩu vào kết quả. Không chạy smoke tạo đơn trên profile khách đang dùng.
+Kết quả lịch sử V9.3 có 142 Java + 65 Chromium PASS; kiểm hiện hành V9.4/RC4 gồm 164 Java và 71 Chromium, xem [TESTING](TESTING.md). [Evidence gate](../../report/evidence/cafelink-v2/v9.3-gate/20261025-184703-1bdff3d4/summary.json) và [báo cáo cuối](../../report/CafeLink_Final_Report.md) ghi rõ run/phạm vi. Smoke Internet chạy tách trên DB fixture qua `web/tests/public-smoke.mjs`, nhận origin/mật khẩu bằng biến môi trường và không ghi mật khẩu vào kết quả. Không chạy smoke tạo đơn trên profile khách đang dùng.
 
-Đã thử đường Internet bằng Chromium trên một máy. **Camera điện thoại thật, Android/iOS thực tế, hai thiết bị trên hai mạng và LAN vật lý chưa nghiệm thu**; cần thử trực tiếp trước buổi bảo vệ. WebSocket qua Cloudflare được hỗ trợ theo [FAQ chính thức](https://developers.cloudflare.com/cloudflare-one/faq/cloudflare-tunnels-faq/).
+Các run tự động lưu tại repo thử đường Internet bằng Chromium trên một máy; chúng không cung cấp số đo camera, Android/iOS hoặc LAN vật lý. Nhóm đã xác nhận hoàn thành kiểm thao tác thực tế riêng, không quy đổi xác nhận đó thành số đo tự động. WebSocket qua Cloudflare được hỗ trợ theo [FAQ chính thức](https://developers.cloudflare.com/cloudflare-one/faq/cloudflare-tunnels-faq/).

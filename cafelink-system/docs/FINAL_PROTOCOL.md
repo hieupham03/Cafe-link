@@ -1,4 +1,4 @@
-# CafeLink V9.3 — Hợp đồng giao tiếp bản chốt
+# CafeLink V9.4 - Hợp đồng giao tiếp
 
 ## 1. Hai lớp giao tiếp
 
@@ -27,7 +27,7 @@ Message TCP minh họa (không chứa credential thật):
   "data": {
     "visitId": "demo-visit",
     "items": [{"menuId": 2, "quantity": 1,
-      "expectedPurchaseVersion": 1, "expectedPriceVnd": 30000,
+      "expectedVersion": 1, "expectedPurchaseVersion": 1, "expectedPriceVnd": 30000,
       "note": "Ít đá"}]
   }
 }
@@ -45,7 +45,7 @@ Ví dụ `POST /api/command`, cookie phiên kèm Origin và `X-CSRF-Token` hợp
   "action": "PLACE_ORDER",
   "scope": {"storeId": "demo-store", "visitId": "demo-visit", "membershipId": "demo-member"},
   "data": {"visitId": "demo-visit", "items": [{"menuId": 2, "quantity": 1,
-    "expectedPurchaseVersion": 1, "expectedPriceVnd": 30000, "note": "Ít đá"}]}
+    "expectedVersion": 1, "expectedPurchaseVersion": 1, "expectedPriceVnd": 30000, "note": "Ít đá"}]}
 }
 ```
 
@@ -83,4 +83,4 @@ Mã lỗi tiêu biểu: UNAUTHENTICATED/FORBIDDEN, SCOPE_CHANGED/SESSION_CLOSED,
 
 Proxy mode chỉ chấp nhận public origin HTTPS cấu hình; WebSocket kiểm Origin, cookie public Secure/HttpOnly. Core không tin forwarded headers để cấp quyền. JS/CSS có gzip khi browser chấp nhận, không cache công khai API/cookie/journal. Mã QR được tiêu thụ khỏi fragment thanh địa chỉ, không lưu grant vào localStorage.
 
-Các API không hứa exactly-once delivery, rollback mọi side effect vật lý hoặc ngân hàng thật. Bảo đảm được kiểm là không áp lại tác dụng nghiệp vụ đã có receipt trong các tình huống/phạm vi đã xét. [Báo cáo cuối](../../report/CafeLink_Final_Report.md) ghi raw, baseline và giới hạn đo.
+Các API không hứa exactly-once delivery, rollback mọi side effect vật lý hoặc ngân hàng thật. Bảo đảm được kiểm là không áp lại tác dụng nghiệp vụ đã có receipt trong các tình huống/phạm vi đã xét. [Báo cáo và dữ liệu](../../report/README.md) ghi raw, baseline và giới hạn đo.

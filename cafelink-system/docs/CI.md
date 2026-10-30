@@ -1,45 +1,35 @@
-# CafeLink V9.3 — CI Windows
+# CafeLink V9.4 - CI Windows
 
-Workflow ở [`.github/workflows/cafelink-v8.yml`](../../.github/workflows/cafelink-v8.yml). Tên file, tên workflow và script `test-v8.ps1` được giữ từ pha V8; workflow hiện kiểm cả regression V9.3. Tên cũ không có nghĩa source web hiện tại chỉ ở V8.
+Workflow: [cafelink-v8.yml](../../.github/workflows/cafelink-v8.yml). Tên file và `scripts/test-v8.ps1` giữ từ pha V8; nội dung hiện kiểm V9.4.
 
-Đã xác minh GitHub Actions thành công cho các commit sau vào ngày 28/10/2026:
+## Pipeline
 
-| Commit | Nhánh tại lần chạy | Kết quả | Bằng chứng |
+Windows runner dùng Temurin 17, Node 22 và Python 3.13. Actions ghim SHA, quyền `contents: read`. Pipeline kiểm cấu hình/baseline và guard → Java verify → npm/build production/experiment → Chromium E2E → analyzer → campaign phục hồi/tải.
+
+Push/PR dùng campaign Quick; chạy thủ công có thể chọn full. Quick giảm số lần/thời lượng campaign, không bỏ bộ regression Java/Chromium. [Workflow](../../.github/workflows/cafelink-v8.yml) là nguồn chính xác của trigger, dependency và artifact.
+
+## Bằng chứng đã xác minh
+
+| Commit | Nhánh | Kết quả | Run |
 |---|---|---|---|
-| `e059123` | `main` | Success | [Run 40206552643](https://github.com/hieupham03/Cafe-link/actions/runs/40206552643) |
-| `fd1b431` | `submission/cafelink` | Success | [Run 40726262804](https://github.com/hieupham03/Cafe-link/actions/runs/40726262804) |
+| `87b7150` | `main` | Success | [41077881036](https://github.com/hieupham03/Cafe-link/actions/runs/41077881036) |
+| `87b7150` | `submission/cafelink` | Success | [41077881762](https://github.com/hieupham03/Cafe-link/actions/runs/41077881762) |
 
-Kết luận gắn với đúng commit/run trong bảng. Sửa hoặc push commit mới cần đọc kết quả của lần chạy mới; không gán kết quả cũ cho commit chưa kiểm. [Danh sách run hiện tại](https://github.com/hieupham03/Cafe-link/actions/workflows/cafelink-v8.yml). Kiểm local không thay bằng chứng runner GitHub, và CI không thay nghiệm thu điện thoại.
+Artifact mới của mỗi lượt xác nhận 164 Java, 71 Chromium, không fail/error/skip/flaky và đóng listener test. [Gate main đã lưu](../../report/evidence/cafelink-v2/pre-feature-20261030/ci-publication-gates/main.json), [gate submission](../../report/evidence/cafelink-v2/pre-feature-20261030/ci-publication-gates/submission.json).
 
-## Nội dung
+Kết quả chỉ áp dụng đúng commit/run. Các lần cập nhật tiếp theo phải xem [Actions](https://github.com/hieupham03/Cafe-link/actions/workflows/cafelink-v8.yml) của chính commit đó; không coi bảng trên là trạng thái live của HEAD.
 
-Workflow dùng Windows, Temurin 17, Node 22 và Python 3.13, cache Maven/npm/pip theo manifest. Cách khai báo distribution/cache dựa trên tài liệu chính thức của [setup-java](https://github.com/actions/setup-java/blob/main/README.md) và [setup-node](https://github.com/actions/setup-node/blob/main/docs/advanced-usage.md). Các action được ghim commit SHA, chỉ cấp `contents: read`.
+## Chạy tương đương tại local
 
-Entry point `scripts/test-v8.ps1`: kiểm cấu hình/baseline → Java verify → npm ci → production build → experiment build → cài Chromium → toàn bộ E2E → kiểm bộ phân tích → recovery/load campaign → CSV/plot. Push/PR chạy Quick; `workflow_dispatch` cho chọn full experiment. Quick giảm số lần/thời lượng **campaign**, vẫn chạy đầy đủ bộ regression.
-
-Artifact dùng bước `always()` để giữ lỗi, retention 14 ngày và allowlist ba cây: `report/evidence/cafelink-v2/v8/**`, `report/evidence/cafelink-v2/v8-gate/**`, `report/evidence/cafelink-v2/v9.3-gate/**`. Cấu hình theo [upload-artifact](https://github.com/actions/upload-artifact/blob/main/README.md). Không upload `data`, `target/v8-private`, khóa, database hoặc browser storage. Kết quả đo local không được chép vào remote rồi gọi là run remote.
-
-## Khi đưa dự án lên GitHub
-
-Giữ cấu trúc repository: `.github/`, `cafelink-system/`, `dist/CafeLink-Original-1.0.0-Baseline.zip` cùng cấp. ZIP E0 phải giữ SHA256:
-
-```text
-60A1E6666F4BAC52B2F0B868A9AAFD9024563991AB22777076D639416E8766EB
-```
-
-Workflow sẽ fail rõ nếu thiếu ZIP; không dựng lại baseline từ source V8. Đây là điều kiện chuẩn bị repository, không yêu cầu nhập secret/merchant/tunnel. Dependencies Maven/npm/Python/Chromium cần tải từ mạng trên runner. Không đưa DB demo hay tài khoản sử dụng thật lên repository.
-
-Khi dẫn bằng chứng CI, ghi URL, run ID, commit SHA, kết luận và artifact của **run đó**. Hiệu năng runner khác máy local nên báo riêng, không gộp trung vị/p95 hai máy. Nếu workflow lỗi, xem artifact trước khi sửa; không bỏ kiểm thử hoặc tăng rate limit để lấy trạng thái xanh.
-
-## Chạy local
+Tại `cafelink-system`:
 
 ```powershell
-cd D:\BTL-LTM\cafelink-system
 python -m pip install -r tools/requirements-v8.txt
-python tools/verify_v8_workflow.py
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-v8.ps1 -Quick
 ```
 
-`verify_v8_workflow.py` kiểm cấu trúc YAML, SHA action, cú pháp PowerShell của script/bước inline, artifact path và hash E0. Nó không mô phỏng service GitHub, không kiểm cam kết SLA tải dependencies và không tuyên bố action sẽ chạy thành công trên runner chưa thử.
+Artifact được tải lên kể cả khi lỗi, theo allowlist của workflow, retention 14 ngày. Java thất bại vẫn giữ JUnit nếu được sinh; lỗi biên dịch không có XML không được ghi thành zero-test PASS. Không upload DB, key, cookie, browser storage hoặc profile private.
 
-Trường `remoteCi: NOT_RUN` mà công cụ kiểm local trả về mô tả phạm vi của chính lần kiểm local đó; công cụ không gọi GitHub API. Trạng thái này không phủ nhận các run Success đã ghi nhận trong bảng phía trên.
+Giữ ZIP E0 cạnh source như [README dist](../../dist/README.md); workflow kiểm hash, không tạo baseline lại từ source mới. `remoteCi: NOT_RUN` trong phiếu local chỉ mô tả công cụ đó không gọi GitHub API, không phủ nhận các run remote đã xác minh riêng.
+
+[Kiểm thử](TESTING.md) · [Thực nghiệm](WEB_EXPERIMENTS.md) · [Báo cáo](../../report/README.md).
