@@ -36,6 +36,66 @@
   "courseSources": "UNCHANGED",
   "sealedE0": "UNCHANGED",
   "runtimeChanges": false,
-  "ci": "PENDING_PUBLICATION",
-  "issues": []
+  "ci": {
+    "status": "PASS",
+    "testedCommit": "e90e74cd57627c88c694673fd88bb353abc45943",
+    "workflow": "CafeLink verification",
+    "mode": "Default Quick verification; no new full performance campaign",
+    "runs": [
+      {
+        "id": 41095281848,
+        "head_sha": "e90e74cd57627c88c694673fd88bb353abc45943",
+        "head_branch": "main",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/hieupham03/Cafe-link/actions/runs/41095281848",
+        "updated_at": "2026-10-30T17:10:19Z"
+      },
+      {
+        "id": 41095281189,
+        "head_sha": "e90e74cd57627c88c694673fd88bb353abc45943",
+        "head_branch": "submission/cafelink",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/hieupham03/Cafe-link/actions/runs/41095281189",
+        "updated_at": "2026-10-30T17:10:31Z"
+      }
+    ],
+    "publishedContentCommit": "2ce7232a26a9e9de1708f66a5cdffaa7c81bd1bb",
+    "onlyReadmeAndReportChangesAfterTestedCommit": true
+  },
+  "issues": [],
+  "completedDateLocal": "2026-10-31",
+  "latestReportPages": 42,
+  "confirmedMemberIdentity": {
+    "name": "Nguyễn Đình Quang Huy",
+    "studentId": "B23DCCN393",
+    "authority": "User confirmation on 2026-10-31"
+  },
+  "finalLinkValidation": {
+    "status": "PASS",
+    "markdownFiles": 17,
+    "localLinks": 186,
+    "anchors": 17,
+    "issues": []
+  },
+  "remoteFiles": [
+    {
+      "path": "report/NhomXX_CafeLink_Report_Current_20261030.docx",
+      "remoteMatchesLocal": true
+    },
+    {
+      "path": "report/NhomXX_CafeLink_Report_Current_20261030.pdf",
+      "remoteMatchesLocal": true
+    },
+    {
+      "path": "README.md",
+      "remoteMatchesLocal": true
+    },
+    {
+      "path": "report/README.md",
+      "remoteMatchesLocal": true
+    }
+  ],
+  "privateFilesOrAiSkillsPublished": false
 }
