@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "scope": "Test-only selectors: disambiguate live toast and persistent support/checkout status",
+  "productionRuntimeChanged": false,
+  "failedCiRun": "https://github.com/hieupham03/Cafe-link/actions/runs/41063763749",
+  "preservedFailure": "ci-failure.json",
+  "focusedChromiumPassed": 25,
+  "unexpected": 0,
+  "flaky": 0,
+  "skipped": 0,
+  "typescript": "PASS",
+  "remoteCi": "PENDING"
+}

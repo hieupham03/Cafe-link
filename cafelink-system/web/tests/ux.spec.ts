@@ -206,7 +206,9 @@ test("quản lý có hàng đợi hỗ trợ và thu ngân, giữ nháp phản h
     await adminPage
       .getByRole("button", { name: "Đã xử lý", exact: true })
       .click();
-    await expect(page.getByText(/Nhân viên đang chuẩn bị nước/)).toBeVisible();
+    await expect(page.getByRole("region", { name: "Hỗ trợ tại bàn", exact: true })
+      .getByRole("status").filter({ hasText: `Yêu cầu #${ticket.ticketId} · Nhân viên đã phản hồi:` }))
+      .toContainText("Nhân viên đang chuẩn bị nước");
     const snapshot = await state(),
       table = snapshot.tables.find(
         (t: { visitId: string }) => t.visitId === visitId,

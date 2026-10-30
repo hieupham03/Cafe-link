@@ -43,6 +43,12 @@
       "https://github.com/hieupham03/Cafe-link/actions/runs/41061881251",
       "https://github.com/hieupham03/Cafe-link/actions/runs/41061881317"
     ],
-    "publicationStatus": "PENDING"
+    "publicationStatus": "PENDING",
+    "publicationPreviousFailure": "https://github.com/hieupham03/Cafe-link/actions/runs/41063763749"
+  },
+  "selectorFix": {
+    "scope": "Test-only, runtime RC3 unchanged",
+    "focusedChromiumPassed": 25,
+    "remoteCi": "PENDING"
   }
 }

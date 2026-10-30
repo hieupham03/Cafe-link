@@ -200,7 +200,9 @@ test("SEMANTIC: lời gọi đã nhận và đã phản hồi vẫn giữ đúng
     reply: "Đang mang nước ra",
   });
   await page.reload();
-  await expect(page.getByText(/Đang mang nước ra/)).toBeVisible();
+  await expect(page.getByRole("region", { name: "Hỗ trợ tại bàn", exact: true })
+    .getByRole("status").filter({ hasText: `Yêu cầu #${tickets[0].id} · Nhân viên đã phản hồi:` }))
+    .toContainText("Đang mang nước ra");
   await expect(page.getByText(/Quán đã nhận lời gọi/)).toBeVisible();
   expect(
     (await state()).tickets.filter(
@@ -292,7 +294,8 @@ test("checkout web mất ACK: reload cùng đối tượng, sau ACK nhiều ID v
     (c: { visitId: string }) => c.visitId === visitId,
   );
   await command("ACK_CHECKOUT", await checkoutVersions());
-  await expect(page.getByText(/Quán đã tiếp nhận tính tiền/)).toBeVisible();
+  await expect(page.getByRole("region", { name: "Tính tiền tại bàn", exact: true })
+    .getByRole("status")).toContainText("Quán đã tiếp nhận tính tiền");
   const duplicate = await guestCommand("REQUEST_CHECKOUT", {
     visitId,
     expectedVisitVersion: 1,

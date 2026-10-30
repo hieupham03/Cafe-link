@@ -38,6 +38,8 @@ Các mốc trước: phần 1 đạt 150 Java; phần 2 đạt 154 Java/69 Chrom
 
 Các test mới có ca đỏ trước sửa: phản hồi readiness nhỏ giọt; năm ca hạn thanh toán; bốn ca guard đóng gói; hai ca lỗi âm thanh. Lỗi test Swing có bằng chứng CI và fixture kiểm lại thứ tự phản hồi. Test clipboard được điều chỉnh theo khả năng tự động hóa của engine, không bỏ kiểm sao chép/nhánh từ chối.
 
+CI khi công bố hồ sơ còn phát hiện một assertion tìm lời phản hồi trên toàn trang, nên khớp đồng thời toast và trạng thái hỗ trợ. Bài test được sửa để kiểm đúng vùng hỗ trợ, số ticket và trạng thái đã phản hồi; các assertion tương tự ở phục hồi/tính tiền được giới hạn vào vùng nghiệp vụ tương ứng. [Bằng chứng và kết quả sửa selector](evidence/cafelink-v2/v9.4-hardening/phase8-e2e-selectors/summary.json) giữ lượt CI thất bại. Đây là sửa bài test, không thay runtime/gói RC3 hoặc xóa thông báo đang hoạt động đúng.
+
 ### Kiểm gói và đường public
 
 **Gói mới nhất được kiểm: `dist/CafeLink-Web-V9.4-RC3.zip`.** Gói này chứa frontend sau sửa âm thanh và được ghép đúng gate 20:11. SHA-256:
@@ -80,6 +82,10 @@ Cả ba policy cùng có receipt/idempotency và guard quyền/phiên. Bảng ch
 Ở mức 14 khách, một số vòng đặt món/thanh toán kéo dài qua mốc lịch kế tiếp; driver ghi slot lỡ rồi bỏ lượt chưa phát, không dồn gửi bù. **94 slot này chưa phát thành yêu cầu, không phải 94 đơn đã nhận bị mất.** Kết quả PASS của campaign chỉ xác nhận các thao tác đã chạy và oracle đúng, không nói đạt đủ nhịp nguồn phát. Mức 14 khách với một flow mỗi người mỗi giây đã bộc lộ giới hạn trong điều kiện đo; không xem giới hạn 30 guest cấu hình là công suất đã chứng minh.
 
 Số liệu V9.3 ngày 25/10 là run riêng. Chưa có đối chứng cùng điều kiện để kết luận tốc độ thay đổi do từng bản sửa. Mẫu có tương quan trong một lượt chạy; các phép đo trên cùng máy không thay nghiệm thu mạng vật lý hoặc thiết bị thật.
+
+![Tác dụng ngoài ý định của từng policy và p95 phản hồi ở các mức tải](evidence/cafelink-v2/v9.4-hardening/measurements-20261030/results.png)
+
+Biểu đồ sinh từ raw của run này. Đường p95 chỉ dùng các flow đã hoàn tất; cần đọc cùng bảng slot lỡ phía trên để đánh giá mức tải 14 khách.
 
 ## 3. Tự chạy lại
 

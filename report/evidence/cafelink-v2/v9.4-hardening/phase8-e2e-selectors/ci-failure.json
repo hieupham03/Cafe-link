@@ -1,0 +1,24 @@
+{
+  "ciRun": "https://github.com/hieupham03/Cafe-link/actions/runs/41063763749",
+  "status": "FAIL",
+  "java": {
+    "tests": 162,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "startTime": "2026-10-30T13:33:19.677Z",
+    "duration": 151957.565,
+    "expected": 70,
+    "unexpected": 1,
+    "flaky": 0,
+    "skipped": 0
+  },
+  "failures": [
+    {
+      "title": "quản lý có hàng đợi hỗ trợ và thu ngân, giữ nháp phản hồi qua điều hướng/push",
+      "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Nhân viên đang chuẩn bị nước/)\nExpected: visible\nError: strict mode violation: getByText(/Nhân viên đang chuẩn bị nước/) resolved to 2 elements:\n    1) <button class=\"text-button\">Bàn 1 · Nhân viên phản hồi: Nhân viên đang chuẩn …</button> aka getByRole('button', { name: 'Bàn 1 · Nhân viên phản hồi:' })\n    2) <p role=\"status\">…</p> aka getByText('Yêu cầu #1 · Nhân viên đã phả')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByText(/Nhân viên đang chuẩn bị nước/) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Nhân viên đang chuẩn bị nước/)\u001b[22m\n"
+    }
+  ]
+}
