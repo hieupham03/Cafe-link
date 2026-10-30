@@ -1,0 +1,102 @@
+{
+  "status": "PASS",
+  "dateLocal": "2026-10-31",
+  "sourceCommit": "8db1e512a854b1bc6ef4505e72412eed1a1910f4",
+  "scope": "Published source snapshot and portable documentation; user Word edits excluded",
+  "resolvedFindings": [
+    "Removed current-looking instructions for older release candidates",
+    "Separated historical/manual acceptance notes from current status",
+    "Replaced portable links that depended on files outside the bundle",
+    "Aligned frontend version labels with V9.4 without dependency updates",
+    "Added one shared documentation policy and CI publication regressions"
+  ],
+  "source": {
+    "status": "PASS",
+    "mode": "source",
+    "version": "V9.4",
+    "documents": 36,
+    "localLinks": 257,
+    "anchors": 18,
+    "reportPair": [
+      "report/NhomXX_CafeLink_Report_Current_20261030.docx",
+      "report/NhomXX_CafeLink_Report_Current_20261030.pdf"
+    ],
+    "errors": []
+  },
+  "sourceArchiveSha256": "D9160ACCF5DB25FECD1CF3BB6AD4347A35B156B85CC7DEAA3D012BE754B10956",
+  "cleanBuild": {
+    "status": "PASS",
+    "cleanBuild": "BUILD SUCCESS",
+    "frontendLabel": "9.4.0",
+    "portableFrontendMatchesCleanBuild": true,
+    "frontendFiles": 3
+  },
+  "buildInputs": {
+    "status": "PASS",
+    "filesCompared": 124,
+    "scope": "All published Java/test and frontend sources, build entry points and dependency manifests match the clean build export"
+  },
+  "publicationRegressions": {
+    "status": "PASS",
+    "tests": 37,
+    "includesRealGuideCopyToPortable": true
+  },
+  "portableDocumentation": {
+    "status": "PASS",
+    "mode": "package",
+    "documents": 7,
+    "localLinks": 8,
+    "anchors": 0,
+    "errors": []
+  },
+  "packageSmoke": {
+    "status": "PASS",
+    "checks": 23,
+    "scope": "Real packaged JRE, UI, ordering, diagnostics and maintenance through existing release-smoke.mjs"
+  },
+  "negativeOldGuideReintroduction": {
+    "status": "PASS",
+    "counterexample": "An old guide is manually reintroduced without a manifest entry",
+    "oldGuideRejected": true,
+    "pristinePackageRestored": true
+  },
+  "applicationBusinessSources": "UNCHANGED",
+  "frontendDependencyGraph": "UNCHANGED",
+  "originalCourseDocuments": "UNCHANGED",
+  "sealedBaseline": "UNCHANGED",
+  "userReportEdits": "PRESERVED_UNSTAGED",
+  "ci": {
+    "status": "PASS",
+    "mode": "Default Quick verification, including publication regressions, Java/web checks, analyzer and the short campaign; not a new full benchmark",
+    "runs": [
+      {
+        "id": 41106121779,
+        "head_sha": "8db1e512a854b1bc6ef4505e72412eed1a1910f4",
+        "head_branch": "submission/cafelink",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/hieupham03/Cafe-link/actions/runs/41106121779",
+        "run_attempt": 1,
+        "updated_at": "2026-10-30T18:27:34Z"
+      },
+      {
+        "id": 41106121568,
+        "head_sha": "8db1e512a854b1bc6ef4505e72412eed1a1910f4",
+        "head_branch": "main",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/hieupham03/Cafe-link/actions/runs/41106121568",
+        "run_attempt": 1,
+        "updated_at": "2026-10-30T18:27:39Z"
+      }
+    ]
+  },
+  "checkedAtUtc": "2026-10-30T18:30:12.069672+00:00",
+  "remotePublication": {
+    "status": "PASS",
+    "trackedFiles": 1168,
+    "policyAndToolsMatchPublishedCommit": true,
+    "oldGuideAbsent": true,
+    "privateAuthoringToolsAbsent": true
+  }
+}

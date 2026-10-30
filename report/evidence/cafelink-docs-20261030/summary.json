@@ -119,16 +119,17 @@
     "sealedBaseline": "PRESERVED_REQUIRED_BY_CI",
     "aiSkillsAndAuthoringTools": "LOCAL_ONLY",
     "ci": {
-      "status": "IN_PROGRESS",
+      "status": "HISTORICAL_RUNS_SUPERSEDED",
       "testedCommit": "f6c99db3b28e9c8dbdafdee1cc273f10d57e71ba",
       "runs": [
         {
           "id": 41099022311,
           "head_sha": "f6c99db3b28e9c8dbdafdee1cc273f10d57e71ba",
           "head_branch": "submission/cafelink",
-          "status": "in_progress",
-          "conclusion": null,
-          "html_url": "https://github.com/hieupham03/Cafe-link/actions/runs/41099022311"
+          "status": "completed",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/hieupham03/Cafe-link/actions/runs/41099022311",
+          "run_attempt": 1
         },
         {
           "id": 41099022315,
@@ -136,9 +137,11 @@
           "head_branch": "main",
           "status": "completed",
           "conclusion": "success",
-          "html_url": "https://github.com/hieupham03/Cafe-link/actions/runs/41099022315"
+          "html_url": "https://github.com/hieupham03/Cafe-link/actions/runs/41099022315",
+          "run_attempt": 1
         }
-      ]
+      ],
+      "currentVerification": "repository-audit.json"
     }
   },
   "obsoleteGuideCleanup": {
@@ -196,5 +199,14 @@
     },
     "applicationSources": "UNCHANGED",
     "userReportRename": "PRESERVED_UNSTAGED"
+  },
+  "currentPublicationVerification": {
+    "status": "PASS",
+    "testedCommit": "8db1e512a854b1bc6ef4505e72412eed1a1910f4",
+    "evidence": "repository-audit.json",
+    "ciRuns": [
+      "https://github.com/hieupham03/Cafe-link/actions/runs/41106121779",
+      "https://github.com/hieupham03/Cafe-link/actions/runs/41106121568"
+    ]
   }
 }
