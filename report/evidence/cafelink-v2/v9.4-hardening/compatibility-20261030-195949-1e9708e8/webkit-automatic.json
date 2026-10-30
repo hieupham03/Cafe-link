@@ -1,0 +1,350 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "D:\\BTL-LTM\\cafelink-system\\web\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "tests/automatic.spec.ts"
+    ],
+    "configFile": "D:\\BTL-LTM\\cafelink-system\\web\\playwright.config.ts",
+    "rootDir": "D:/BTL-LTM/cafelink-system/web/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/BTL-LTM/cafelink-system/web/test-results/artifacts-automatic",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "D:/BTL-LTM/cafelink-system/web/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\BTL-LTM\\cafelink-system\\web\\test-results\\artifacts-automatic",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "webkit",
+        "testDir": "D:\\BTL-LTM\\cafelink-system\\web\\tests",
+        "snapshotDir": "D:\\BTL-LTM\\cafelink-system\\web\\tests",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:18080",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Safari/605.1.15",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1792,
+            "height": 1120
+          },
+          "deviceScaleFactor": 2,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "webkit"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "webkit"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/automatic-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "node tests/start-server.mjs",
+      "url": "http://127.0.0.1:18080/api/health",
+      "reuseExistingServer": false,
+      "timeout": 30000
+    }
+  },
+  "suites": [
+    {
+      "title": "automatic.spec.ts",
+      "file": "automatic.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "QR cố định, mở toàn quán và hai khách cùng bàn có đơn riêng",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6178,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-30T13:02:11.816Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0e34768627f75eada7bc-a0afc1536325b54087a7",
+          "file": "automatic.spec.ts",
+          "line": 78,
+          "column": 1
+        },
+        {
+          "title": "Đặt, thanh toán, giao đồ và tự kết thúc; đặt tiếp không cần nhân viên mở bàn",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6222,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-30T13:02:18.329Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0e34768627f75eada7bc-362b49837e9fda0844ad",
+          "file": "automatic.spec.ts",
+          "line": 125,
+          "column": 1
+        },
+        {
+          "title": "Tạm dừng chỉ chặn khách mới; phiên đang dùng vẫn gọi món",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2559,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-30T13:02:24.568Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0e34768627f75eada7bc-eb0486139d09cdca0a57",
+          "file": "automatic.spec.ts",
+          "line": 175,
+          "column": 1
+        },
+        {
+          "title": "Link đặt món mở cùng hồ sơ quản lý giải thích đổi trình duyệt và giữ nguyên phiên",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 1942,
+                  "error": {
+                    "message": "Error: browserContext.grantPermissions: Unknown permission: clipboard-write",
+                    "stack": "Error: browserContext.grantPermissions: Unknown permission: clipboard-write\n    at D:\\BTL-LTM\\cafelink-system\\web\\tests\\automatic.spec.ts:192:15",
+                    "location": {
+                      "file": "D:\\BTL-LTM\\cafelink-system\\web\\tests\\automatic.spec.ts",
+                      "column": 15,
+                      "line": 192
+                    },
+                    "snippet": "  190 |\n  191 | test(\"Link đặt món mở cùng hồ sơ quản lý giải thích đổi trình duyệt và giữ nguyên phiên\", async ({ browserName }) => {\n> 192 |   // Playwright supports these permission names only in Chromium. For other\n      |               ^\n  193 |   // engines observe the argument only after the real browser write succeeds.\n  194 |   if (browserName === \"chromium\") await owner.grantPermissions([\"clipboard-read\", \"clipboard-write\"]);\n  195 |   async function observeClipboard(current: Page) {"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\BTL-LTM\\cafelink-system\\web\\tests\\automatic.spec.ts",
+                        "column": 15,
+                        "line": 192
+                      },
+                      "message": "Error: browserContext.grantPermissions: Unknown permission: clipboard-write\n\n  190 |\n  191 | test(\"Link đặt món mở cùng hồ sơ quản lý giải thích đổi trình duyệt và giữ nguyên phiên\", async ({ browserName }) => {\n> 192 |   // Playwright supports these permission names only in Chromium. For other\n      |               ^\n  193 |   // engines observe the argument only after the real browser write succeeds.\n  194 |   if (browserName === \"chromium\") await owner.grantPermissions([\"clipboard-read\", \"clipboard-write\"]);\n  195 |   async function observeClipboard(current: Page) {\n    at D:\\BTL-LTM\\cafelink-system\\web\\tests\\automatic.spec.ts:192:15"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-30T13:02:27.143Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\BTL-LTM\\cafelink-system\\web\\test-results\\artifacts-automatic\\automatic-Link-đặt-món-mở--db392-h-duyệt-và-giữ-nguyên-phiên-webkit\\test-failed-2.png"
+                    },
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\BTL-LTM\\cafelink-system\\web\\test-results\\artifacts-automatic\\automatic-Link-đặt-món-mở--db392-h-duyệt-và-giữ-nguyên-phiên-webkit\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\BTL-LTM\\cafelink-system\\web\\test-results\\artifacts-automatic\\automatic-Link-đặt-món-mở--db392-h-duyệt-và-giữ-nguyên-phiên-webkit\\error-context.md"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\BTL-LTM\\cafelink-system\\web\\test-results\\artifacts-automatic\\automatic-Link-đặt-món-mở--db392-h-duyệt-và-giữ-nguyên-phiên-webkit\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\BTL-LTM\\cafelink-system\\web\\test-results\\artifacts-automatic\\automatic-Link-đặt-món-mở--db392-h-duyệt-và-giữ-nguyên-phiên-webkit\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\BTL-LTM\\cafelink-system\\web\\tests\\automatic.spec.ts",
+                    "column": 15,
+                    "line": 192
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "0e34768627f75eada7bc-239c3ddd45ea71d65c8a",
+          "file": "automatic.spec.ts",
+          "line": 191,
+          "column": 1
+        },
+        {
+          "title": "Mất phản hồi đặt món ở phiên riêng vẫn đối chiếu được, không tạo đơn trùng",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3870,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-30T13:02:30.287Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0e34768627f75eada7bc-d5180c045fbbe5699985",
+          "file": "automatic.spec.ts",
+          "line": 239,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-30T13:02:09.064Z",
+    "duration": 25801.108,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

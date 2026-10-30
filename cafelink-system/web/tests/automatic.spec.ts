@@ -188,8 +188,24 @@ test("Tạm dừng chỉ chặn khách mới; phiên đang dùng vẫn gọi mó
   expect((await join(other)).identity.visitId).toBeTruthy();
 });
 
-test("Link đặt món mở cùng hồ sơ quản lý giải thích đổi trình duyệt và giữ nguyên phiên", async () => {
-  await owner.grantPermissions(["clipboard-read", "clipboard-write"]);
+test("Link đặt món mở cùng hồ sơ quản lý giải thích đổi trình duyệt và giữ nguyên phiên", async ({ browserName }) => {
+  // Playwright supports these permission names only in Chromium. For other
+  // engines observe the argument only after the real browser write succeeds.
+  if (browserName === "chromium") await owner.grantPermissions(["clipboard-read", "clipboard-write"]);
+  async function observeClipboard(current: Page) {
+    if (browserName === "chromium") return;
+    await current.evaluate(() => {
+      const write = navigator.clipboard.writeText.bind(navigator.clipboard);
+      Object.defineProperty(navigator.clipboard, "writeText", { configurable: true, value: async (text: string) => {
+        await write(text);
+        (window as Window & { copiedLink?: string }).copiedLink = text;
+      } });
+    });
+  }
+  async function copiedLink(current: Page) {
+    return browserName === "chromium" ? current.evaluate(() => navigator.clipboard.readText())
+      : current.evaluate(() => (window as Window & { copiedLink?: string }).copiedLink);
+  }
   const before = await (await owner.request.get("/api/session")).json();
   const beforeTables = (await state()).tables;
   await admin.getByRole("button", { name: "Xem Bàn 1", exact: true }).click();
@@ -200,14 +216,16 @@ test("Link đặt món mở cùng hồ sơ quản lý giải thích đổi trìn
   try {
     await expect(popup.getByRole("heading", { name: "Bạn đang đăng nhập quản lý", exact: true })).toBeVisible();
     await expect(popup.getByRole("button", { name: "Mở tất cả bàn", exact: true })).toHaveCount(0);
+    await observeClipboard(admin);
     await admin.getByRole("button", { name: "Sao chép link đặt món", exact: true }).click();
-    expect(await admin.evaluate(() => navigator.clipboard.readText())).toBe(qr.joinUrl);
+    await expect.poll(() => copiedLink(admin)).toBe(qr.joinUrl);
     await expect(popup.getByText(/Ctrl\+Shift\+N/)).toBeVisible();
     await expect(popup).toHaveURL(origin + "/join");
     await expect(popup.getByLabel("Link đặt món", { exact: true })).toHaveValue(qr.joinUrl);
+    await observeClipboard(popup);
     await popup.getByRole("button", { name: "Sao chép link đặt món", exact: true }).click();
-    const copied = await popup.evaluate(() => navigator.clipboard.readText());
-    expect(copied).toBe(qr.joinUrl);
+    await expect.poll(() => copiedLink(popup)).toBe(qr.joinUrl);
+    const copied = (await copiedLink(popup))!;
     expect(await popup.evaluate(() => Object.values(localStorage).some(v => v.includes("#table=")))).toBe(false);
     await popup.evaluate(() => {
       Object.defineProperty(navigator.clipboard, "writeText", { configurable: true, value: () => Promise.reject(new Error("Permission denied")) });

@@ -2,11 +2,13 @@
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path $PSScriptRoot -Parent
 $workspaceRoot = Split-Path $projectRoot -Parent
+$previousEngine=$env:CAFELINK_E2E_ENGINE
+$env:CAFELINK_E2E_ENGINE='chromium'
 $runId = (Get-Date -Format 'yyyyMMdd-HHmmss') + '-' + [guid]::NewGuid().ToString('N').Substring(0, 8)
 $evidenceRoot = Join-Path $workspaceRoot ("report\evidence\cafelink-v2\"+$Phase.ToLower()+'-gate')
 $runRoot = Join-Path $evidenceRoot $runId
 New-Item -ItemType Directory -Path $runRoot -Force | Out-Null
-$summary = [ordered]@{ phase=$Phase; includedPhases=@('V5a','V6','V7','prepaid-simulator','automatic-private-visits','trusted-loopback-proxy','storefront-ui','web-policy-experiment','readiness-and-admin-diagnostics'); runId=$runId; startedAt=(Get-Date).ToString('o'); status='RUNNING'; gates=@(); physicalLan='NOT_RUN'; physicalPhone='NOT_RUN'; realPaymentProvider='NOT_INTEGRATED' }
+$summary = [ordered]@{ phase=$Phase; includedPhases=@('V5a','V6','V7','prepaid-simulator','automatic-private-visits','trusted-loopback-proxy','storefront-ui','web-policy-experiment','readiness-and-admin-diagnostics','bounded-audio'); browserEngine='chromium'; runId=$runId; startedAt=(Get-Date).ToString('o'); status='RUNNING'; gates=@(); physicalLan='NOT_RUN'; physicalPhone='NOT_RUN'; realPaymentProvider='NOT_INTEGRATED' }
 
 function Invoke-Gate([string]$Name, [scriptblock]$Action) {
     $timer = [Diagnostics.Stopwatch]::StartNew()
@@ -49,7 +51,7 @@ try {
                 Copy-Item -LiteralPath 'test-results\results.json' -Destination (Join-Path $runRoot 'playwright-results.json')
                 $summary.browser = (Get-Content -LiteralPath 'test-results\results.json' -Raw | ConvertFrom-Json).stats
             }
-            foreach($groupName in @('regression','recovery','ux','v7','automatic','convenience','workflow','shop','policy','diagnostics')) {
+            foreach($groupName in @('regression','recovery','ux','v7','automatic','convenience','workflow','shop','policy','diagnostics','audio')) {
                 $groupResult = "test-results\$groupName-results.json"
                 if(Test-Path -LiteralPath $groupResult) {Copy-Item -LiteralPath $groupResult -Destination (Join-Path $runRoot "playwright-$groupName.json")}
             }
@@ -74,6 +76,7 @@ try {
     $summary.status = 'FAIL'; $summary.failure = $_.Exception.Message
     Write-Host $summary.failure
 } finally {
+    $env:CAFELINK_E2E_ENGINE=$previousEngine
     $summary.finishedAt = (Get-Date).ToString('o')
     $summary | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath (Join-Path $runRoot 'summary.json') -Encoding UTF8
     [ordered]@{runId=$runId;status=$summary.status;summary="$runId/summary.json"} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $evidenceRoot 'latest.json') -Encoding UTF8

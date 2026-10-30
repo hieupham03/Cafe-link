@@ -81,3 +81,20 @@ Launcher public chờ `/api/ready` ở local, chờ Cloudflare báo đã nối e
 Gói thử được giải nén vào đường dẫn có khoảng trắng; chạy bằng JRE đi kèm khi PATH của tiến trình không có Java/Node/npm máy phát triển. Bộ kiểm bao gồm manifest/tamper, UI, ảnh menu, quyền khách, phục hồi, thanh toán, restart, backup/restore, khóa dữ liệu, path escape và cổng đã dùng. Bằng chứng gồm cả lượt public thất bại ban đầu; không sửa kết quả cũ thành PASS khi thử lại.
 
 Gói RC2 tại workspace: `dist/CafeLink-Web-V9.4-RC2.zip`, SHA-256 `F51EBDF8A64512BB8A909FEF8F5F15D883208EEE11294031DE718505264633D5`. **23 nhóm kiểm gói PASS**, **8 kiểm public HTTPS/WSS PASS**, tiến trình/listener do test tạo đã đóng. [Kết quả RC2](../../report/evidence/cafelink-v2/v9.4-hardening/phase5-release-rc2/summary.json); [lượt public thất bại trước sửa](../../report/evidence/cafelink-v2/v9.4-hardening/phase5-release/summary.json). Đây là Chromium đi qua Internet từ máy phát triển, chưa phải điện thoại hoặc hai máy LAN vật lý. URL thử nghiệm đã hết sau khi dọn tiến trình.
+
+## Trình duyệt khác và lỗi âm thanh
+
+`playwright.config.ts` mặc định vẫn Chromium, có thể chọn engine bằng `CAFELINK_E2E_ENGINE=firefox` hoặc `webkit`. Script riêng kiểm luồng menu/trả trước, QR/phiên riêng, chẩn đoán và tình huống âm thanh trên hai engine. Mỗi nhóm mở Core/Gateway/DB riêng và từ chối dùng cổng đã có tiến trình. Kết quả, số skip/flaky, hash JAR/giao diện và việc đóng listener được lưu riêng.
+
+Lượt đầu phát hiện test clipboard đang cấp quyền bằng tên chỉ Playwright Chromium hỗ trợ. Bản sửa giữ kiểm clipboard thật ở Chromium; với Firefox/WebKit, quan sát nội dung ghi **sau khi `writeText` thật hoàn thành**, không thay kết quả thành công giả. Test vẫn kiểm nhánh bị từ chối quyền và trường link sao chép thủ công. Không bỏ ca kiểm này khi đổi engine.
+
+WebKit trên Windows cũng cho thấy `AudioContext.resume()` có thể chờ mãi. Bản sửa giới hạn kích hoạt trong 2,5 giây, chặn bấm lặp trong lúc chờ, đóng context lỗi và cho thử lại. Cảnh báo âm thanh tách khỏi lỗi tải thông báo để polling không tự xóa cảnh báo. Khi đăng xuất/unmount, hủy lượt kích hoạt và đóng context; kết quả đến muộn không bật lại trạng thái trên component đã rời. Thông báo chữ và hàng đợi tiếp tục hoạt động khi âm thanh không dùng được.
+
+`audio.spec.ts` dùng fixture cho promise không hoàn tất/từ chối quyền để kiểm timeout, cảnh báo bền, thử lại và đóng context sau đăng xuất. Hai ca đã đỏ trước sửa rồi đạt sau sửa. Ca thông báo nhiều tab vẫn dùng AudioContext thật, ghi annotation phân biệt kích hoạt được với fallback bằng chữ. Các ca này không đo âm thanh phát ra loa.
+
+```powershell
+cd D:\BTL-LTM\cafelink-system
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-browser-compatibility.ps1
+```
+
+Đây là engine Firefox/WebKit chạy trên Windows và các viewport nhỏ, chưa phải nghiệm thu Safari/iPhone, Android, camera QR hoặc loa thật. Không thay kết quả thiết bị vật lý bằng tên engine.

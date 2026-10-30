@@ -1,0 +1,99 @@
+﻿{
+    "status":  "FAIL",
+    "runId":  "20261030-195949-1e9708e8",
+    "startedAt":  "2026-10-30T19:59:49.1220584+07:00",
+    "platform":  "Windows browser engines, including 390px viewport tests",
+    "physicalPhone":  "NOT_RUN",
+    "physicalLan":  "NOT_RUN",
+    "gates":  [
+                  {
+                      "engine":  "firefox",
+                      "group":  "v7",
+                      "exitCode":  0,
+                      "status":  "PASS",
+                      "stats":  {
+                                    "startTime":  "2026-10-30T12:59:52.734Z",
+                                    "duration":  33029.236000000004,
+                                    "expected":  9,
+                                    "skipped":  0,
+                                    "unexpected":  0,
+                                    "flaky":  0
+                                }
+                  },
+                  {
+                      "engine":  "firefox",
+                      "group":  "automatic",
+                      "exitCode":  1,
+                      "status":  "FAIL",
+                      "stats":  {
+                                    "startTime":  "2026-10-30T13:00:28.748Z",
+                                    "duration":  22321.144,
+                                    "expected":  4,
+                                    "skipped":  0,
+                                    "unexpected":  1,
+                                    "flaky":  0
+                                }
+                  },
+                  {
+                      "engine":  "firefox",
+                      "group":  "diagnostics",
+                      "exitCode":  0,
+                      "status":  "PASS",
+                      "stats":  {
+                                    "startTime":  "2026-10-30T13:00:53.942Z",
+                                    "duration":  14208.608,
+                                    "expected":  4,
+                                    "skipped":  0,
+                                    "unexpected":  0,
+                                    "flaky":  0
+                                }
+                  },
+                  {
+                      "engine":  "webkit",
+                      "group":  "v7",
+                      "exitCode":  1,
+                      "status":  "FAIL",
+                      "stats":  {
+                                    "startTime":  "2026-10-30T13:01:11.192Z",
+                                    "duration":  54386.972,
+                                    "expected":  8,
+                                    "skipped":  0,
+                                    "unexpected":  1,
+                                    "flaky":  0
+                                }
+                  },
+                  {
+                      "engine":  "webkit",
+                      "group":  "automatic",
+                      "exitCode":  1,
+                      "status":  "FAIL",
+                      "stats":  {
+                                    "startTime":  "2026-10-30T13:02:09.064Z",
+                                    "duration":  25801.108,
+                                    "expected":  4,
+                                    "skipped":  0,
+                                    "unexpected":  1,
+                                    "flaky":  0
+                                }
+                  },
+                  {
+                      "engine":  "webkit",
+                      "group":  "diagnostics",
+                      "exitCode":  0,
+                      "status":  "PASS",
+                      "stats":  {
+                                    "startTime":  "2026-10-30T13:02:38.130Z",
+                                    "duration":  14295.109,
+                                    "expected":  4,
+                                    "skipped":  0,
+                                    "unexpected":  0,
+                                    "flaky":  0
+                                }
+                  }
+              ],
+    "failedGroups":  3,
+    "jarSha256":  "E6351AB6D99FC452104B62A49CFD288E064439B0587DDF4546C934AA0663A864",
+    "frontendManifestSha256":  "286E2D29EBF50D262F50E89ED232FBFC3308AB3A4151C22E68BB78E71319F53C",
+    "testListenersClosed":  true,
+    "finishedAt":  "2026-10-30T20:02:53.2505800+07:00"
+}

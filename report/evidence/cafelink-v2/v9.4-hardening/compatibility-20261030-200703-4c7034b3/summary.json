@@ -1,0 +1,127 @@
+﻿{
+    "status":  "PASS",
+    "runId":  "20261030-200703-4c7034b3",
+    "startedAt":  "2026-10-30T20:07:03.4144059+07:00",
+    "platform":  "Windows browser engines, including 390px viewport tests",
+    "physicalPhone":  "NOT_RUN",
+    "physicalLan":  "NOT_RUN",
+    "gates":  [
+                  {
+                      "engine":  "firefox",
+                      "group":  "v7",
+                      "exitCode":  0,
+                      "status":  "PASS",
+                      "stats":  {
+                                    "startTime":  "2026-10-30T13:07:07.003Z",
+                                    "duration":  32196.171,
+                                    "expected":  9,
+                                    "skipped":  0,
+                                    "unexpected":  0,
+                                    "flaky":  0
+                                }
+                  },
+                  {
+                      "engine":  "firefox",
+                      "group":  "automatic",
+                      "exitCode":  0,
+                      "status":  "PASS",
+                      "stats":  {
+                                    "startTime":  "2026-10-30T13:07:42.196Z",
+                                    "duration":  22262.242000000002,
+                                    "expected":  5,
+                                    "skipped":  0,
+                                    "unexpected":  0,
+                                    "flaky":  0
+                                }
+                  },
+                  {
+                      "engine":  "firefox",
+                      "group":  "diagnostics",
+                      "exitCode":  0,
+                      "status":  "PASS",
+                      "stats":  {
+                                    "startTime":  "2026-10-30T13:08:07.557Z",
+                                    "duration":  14298.465,
+                                    "expected":  4,
+                                    "skipped":  0,
+                                    "unexpected":  0,
+                                    "flaky":  0
+                                }
+                  },
+                  {
+                      "engine":  "firefox",
+                      "group":  "audio",
+                      "exitCode":  0,
+                      "status":  "PASS",
+                      "stats":  {
+                                    "startTime":  "2026-10-30T13:08:25.027Z",
+                                    "duration":  13346.522,
+                                    "expected":  2,
+                                    "skipped":  0,
+                                    "unexpected":  0,
+                                    "flaky":  0
+                                }
+                  },
+                  {
+                      "engine":  "webkit",
+                      "group":  "v7",
+                      "exitCode":  0,
+                      "status":  "PASS",
+                      "stats":  {
+                                    "startTime":  "2026-10-30T13:08:41.526Z",
+                                    "duration":  46202.995,
+                                    "expected":  9,
+                                    "skipped":  0,
+                                    "unexpected":  0,
+                                    "flaky":  0
+                                }
+                  },
+                  {
+                      "engine":  "webkit",
+                      "group":  "automatic",
+                      "exitCode":  0,
+                      "status":  "PASS",
+                      "stats":  {
+                                    "startTime":  "2026-10-30T13:09:31.012Z",
+                                    "duration":  34561.452000000005,
+                                    "expected":  5,
+                                    "skipped":  0,
+                                    "unexpected":  0,
+                                    "flaky":  0
+                                }
+                  },
+                  {
+                      "engine":  "webkit",
+                      "group":  "diagnostics",
+                      "exitCode":  0,
+                      "status":  "PASS",
+                      "stats":  {
+                                    "startTime":  "2026-10-30T13:10:08.764Z",
+                                    "duration":  14330.939,
+                                    "expected":  4,
+                                    "skipped":  0,
+                                    "unexpected":  0,
+                                    "flaky":  0
+                                }
+                  },
+                  {
+                      "engine":  "webkit",
+                      "group":  "audio",
+                      "exitCode":  0,
+                      "status":  "PASS",
+                      "stats":  {
+                                    "startTime":  "2026-10-30T13:10:26.203Z",
+                                    "duration":  13126.495,
+                                    "expected":  2,
+                                    "skipped":  0,
+                                    "unexpected":  0,
+                                    "flaky":  0
+                                }
+                  }
+              ],
+    "failedGroups":  0,
+    "jarSha256":  "E6351AB6D99FC452104B62A49CFD288E064439B0587DDF4546C934AA0663A864",
+    "frontendManifestSha256":  "D2123872EFE8191D697ACE1BA854D662E5F84921E680C906236C6CFA544DA754",
+    "testListenersClosed":  true,
+    "finishedAt":  "2026-10-30T20:10:40.0494777+07:00"
+}

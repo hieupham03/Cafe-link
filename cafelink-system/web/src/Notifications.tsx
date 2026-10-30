@@ -59,10 +59,11 @@ export function Notifications({
     [sound, setSound] = useState(()=>preference(session).sound),
     [volume, setVolume] = useState(()=>preference(session).volume);
   const [unlocked,setUnlocked]=useState(false);
+  const [activating,setActivating]=useState(false), [soundError,setSoundError]=useState("");
+  const activation=useRef<{generation:number;cancel?:()=>void}>({generation:0});
   const settingsKey=`cafelink-sound:${session.identity.storeId}:${session.identity.username}`;
   useEffect(()=>{const sync=(event:StorageEvent)=>{if(event.key===settingsKey){const value=preference(session);setSound(value.sound);setVolume(value.volume);}};window.addEventListener('storage',sync);return()=>window.removeEventListener('storage',sync);},[settingsKey]);
   useEffect(()=>{if(session.identity.role==='ADMIN')try{localStorage.setItem(settingsKey,JSON.stringify({sound,volume}));}catch{setError('Không lưu được tùy chọn âm thanh; hãy kiểm tra lại sau khi tải trang.');}},[sound,volume,settingsKey]);
-  async function activate(){try{audio.current??=new AudioContext();await audio.current.resume();if(audio.current.state!=='running')throw Error();setSound(true);setUnlocked(true);}catch{setUnlocked(false);setError('Trình duyệt chưa cho phép phát âm. Thông báo chữ vẫn được cập nhật.');}}
   const cursor = useRef(0),
     first = useRef(true),
     working = useRef(false),
@@ -70,6 +71,38 @@ export function Notifications({
     latest = useRef({ sound, volume }),
     lastSync = useRef(0);
   latest.current = { sound:sound&&unlocked, volume };
+  useEffect(()=>()=>{
+    ++activation.current.generation;
+    activation.current.cancel?.(); activation.current.cancel=undefined;
+    const context=audio.current; audio.current=null;
+    if(context)void context.close().catch(()=>{});
+  },[]);
+  async function activate(){
+    if(activation.current.cancel)return;
+    const own=++activation.current.generation;
+    let timer:number|undefined;
+    setActivating(true);setSoundError("");
+    try{
+      const context=audio.current??new AudioContext();audio.current=context;
+      await new Promise<void>((resolve,reject)=>{
+        activation.current.cancel=()=>reject(new Error("Audio activation cancelled"));
+        timer=window.setTimeout(()=>reject(new Error("Audio activation timeout")),2500);
+        context.resume().then(resolve,reject);
+      });
+      if(own!==activation.current.generation)return;
+      if(context.state!=="running")throw new Error("Audio unavailable");
+      setSound(true);setUnlocked(true);
+    }catch{
+      if(own===activation.current.generation){
+        setUnlocked(false);setSoundError("Trình duyệt chưa cho phép phát âm. Thông báo chữ vẫn được cập nhật. Bạn có thể thử kích hoạt lại.");
+        const context=audio.current;audio.current=null;
+        if(context)void context.close().catch(()=>{});
+      }
+    }finally{
+      if(timer!==undefined)window.clearTimeout(timer);
+      if(own===activation.current.generation){activation.current.cancel=undefined;setActivating(false);}
+    }
+  }
   const [syncMessage, setSyncMessage] = useState("");
   const [extra, setExtra] = useState(0);
   const synchronize = useRef<() => Promise<void>>(async () => {});
@@ -99,7 +132,7 @@ export function Notifications({
       oscillator.start();
       oscillator.stop(ctx.currentTime + 0.12);
     } catch {
-      setError(
+      setUnlocked(false);setSoundError(
         "Âm thanh chưa hoạt động; thông báo bằng chữ vẫn được cập nhật.",
       );
     }
@@ -245,7 +278,8 @@ export function Notifications({
   }
   return (
     <div className="notification-shell">
-      {session.identity.role==='ADMIN'&&<div className="sound-controls" aria-label="Trạng thái âm thanh quầy"><span role="status">{!sound?'Âm thanh quầy: đã tắt':unlocked?'Âm thanh quầy: đang bật':'Âm thanh quầy: cần kích hoạt sau tải lại'}</span><button className="secondary" onClick={()=>{if(sound&&unlocked){setSound(false);setUnlocked(false);}else void activate();}}>{sound&&unlocked?'Tắt chuông quầy':'Kích hoạt chuông quầy'}</button></div>}
+      {session.identity.role==='ADMIN'&&<div className="sound-controls" aria-label="Trạng thái âm thanh quầy"><span role="status">{activating?'Âm thanh quầy: đang kích hoạt':!sound?'Âm thanh quầy: đã tắt':unlocked?'Âm thanh quầy: đang bật':'Âm thanh quầy: cần kích hoạt sau tải lại'}</span><button className="secondary" disabled={activating} onClick={()=>{if(sound&&unlocked){setSound(false);setUnlocked(false);}else void activate();}}>{activating?'Đang bật âm...':sound&&unlocked?'Tắt chuông quầy':'Kích hoạt chuông quầy'}</button></div>}
+      {!open&&soundError&&<p className="warning" role="status" aria-label="Cảnh báo âm thanh">{soundError}</p>}
       <button
         className="secondary"
         onClick={() => setOpen(true)}
@@ -320,6 +354,7 @@ export function Notifications({
             <div className="sound-controls">
               <button
                 className="secondary"
+                disabled={activating}
                 onClick={async () => {
                   if (sound&&unlocked) {
                     setSound(false);
@@ -332,7 +367,7 @@ export function Notifications({
                   }
                 }}
               >
-                {sound&&unlocked ? "Tắt âm thanh tại quầy" : "Bật âm thanh tại quầy"}
+                {activating ? "Đang bật âm..." : sound&&unlocked ? "Tắt âm thanh tại quầy" : "Bật âm thanh tại quầy"}
               </button>
               <label>
                 Âm lượng{" "}
@@ -355,6 +390,7 @@ export function Notifications({
               {error}
             </p>
           )}
+          {soundError&&<p className="warning" role="status" aria-label="Cảnh báo âm thanh">{soundError}</p>}
           <div className="notification-list">
             {rows
               .filter(

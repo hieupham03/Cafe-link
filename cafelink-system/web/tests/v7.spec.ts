@@ -455,15 +455,17 @@ test("V5a hai tab cùng tài khoản chỉ hiện một toast và tắt âm vẫ
     await center
       .getByRole("button", { name: "Bật âm thanh tại quầy", exact: true })
       .click();
-    await expect(
-      center.getByRole("button", {
-        name: "Tắt âm thanh tại quầy",
-        exact: true,
-      }),
-    ).toBeVisible();
-    await center
-      .getByRole("button", { name: "Tắt âm thanh tại quầy", exact: true })
-      .click();
+    const mute = center.getByRole("button", { name: "Tắt âm thanh tại quầy", exact: true });
+    const unavailable = center.getByRole("status", { name: "Cảnh báo âm thanh" });
+    await expect(mute.or(unavailable)).toBeVisible();
+    if (await mute.isVisible()) {
+      test.info().annotations.push({ type: "audioOutcome", description: "Real AudioContext resumed; audible output not measured" });
+      await mute.click();
+    } else {
+      test.info().annotations.push({ type: "audioOutcome", description: "Browser audio unavailable; bounded visual fallback verified" });
+      await expect(unavailable).toContainText("Thông báo chữ vẫn được cập nhật");
+      await expect(center.getByRole("button", { name: "Bật âm thanh tại quầy", exact: true })).toBeEnabled();
+    }
     await expect(
       center.getByRole("button", { name: new RegExp(note) }),
     ).toBeVisible();

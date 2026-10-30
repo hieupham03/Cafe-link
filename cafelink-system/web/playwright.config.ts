@@ -1,5 +1,11 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const engine = process.env.CAFELINK_E2E_ENGINE ?? "chromium";
+if (engine !== "chromium" && engine !== "firefox" && engine !== "webkit")
+  throw new Error("CAFELINK_E2E_ENGINE must be chromium, firefox or webkit");
+const profile = engine === "firefox" ? devices["Desktop Firefox"]
+  : engine === "webkit" ? devices["Desktop Safari"] : devices["Desktop Chrome"];
+
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: false,
@@ -12,7 +18,7 @@ export default defineConfig({
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [{ name: engine, use: { ...profile } }],
   webServer: {
     command: "node tests/start-server.mjs",
     url: "http://127.0.0.1:18080/api/health",

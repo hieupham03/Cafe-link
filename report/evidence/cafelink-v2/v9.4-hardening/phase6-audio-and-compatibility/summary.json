@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "fullGate": "../../v9.4-gate/20261030-201106-19bc860f/summary.json",
+  "compatibility": "../compatibility-20261030-200703-4c7034b3/summary.json",
+  "previousCompatibilityDiagnostic": "../compatibility-20261030-195949-1e9708e8/summary.json",
+  "java": {
+    "tests": 162,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "chromium": {
+    "startTime": "2026-10-30T13:12:30.385Z",
+    "duration": 170520.054,
+    "expected": 71,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 0
+  },
+  "otherEngines": {
+    "firefox": 20,
+    "webkit": 20
+  },
+  "audioRegression": {
+    "redFailures": 2,
+    "greenChromium": 2,
+    "greenFirefox": 2,
+    "greenWebKit": 2
+  },
+  "artifactHashesMatchBetweenSuites": true,
+  "physicalPhone": "NOT_RUN",
+  "physicalLan": "NOT_RUN",
+  "audibleSpeakerOutput": "NOT_MEASURED",
+  "notes": [
+    "AudioContext timeout and denied permissions use fixtures",
+    "Multi-tab test attempts a real AudioContext and annotates running versus unavailable",
+    "Clipboard write is real; unsupported Playwright permission grants are not requested"
+  ]
+}

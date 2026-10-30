@@ -107,10 +107,10 @@ Nếu dùng gói chạy sẵn, chạy `Start-Local.ps1` hoặc `Start-Public.ps1
 ## 8. Kiểm thử tự động
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V9.3
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V9.4
 ```
 
-Lệnh chạy Java verify, typecheck/build production + experiment, cài Chromium và chạy các nhóm E2E bằng Core/Gateway/SQLite thật. `-SkipInstall -SkipBrowserInstall` chỉ dùng khi dependencies/browser đã có. Cổng test 18080/18081 phải trống; không tái sử dụng demo đang chạy. Kết quả có JUnit XML, Playwright JSON, ảnh và hash trong `../report/evidence/cafelink-v2/v9.3-gate/<run>/`.
+Lệnh chạy Java verify, typecheck/build production + experiment, cài Chromium và chạy các nhóm E2E bằng Core/Gateway/SQLite thật. `-SkipInstall -SkipBrowserInstall` chỉ dùng khi dependencies/browser đã có. Cổng test 18080/18081 phải trống; không tái sử dụng demo đang chạy. Kết quả có JUnit XML, Playwright JSON, ảnh và hash trong `../report/evidence/cafelink-v2/v9.4-gate/<run>/`. Kiểm Firefox/WebKit riêng bằng `scripts/test-browser-compatibility.ps1`; đây vẫn là engine trên Windows, chưa phải điện thoại thật.
 
 Mốc V9.3 đã lưu: **142 Java + 65 Chromium PASS**, không lỗi/bỏ qua/flaky; **21 nhóm kiểm gói sạch PASS** bằng JRE đi kèm. Các lần kiểm mới khi chạy lại có thư mục riêng, không ghi đè evidence đã chốt. Xem báo cáo chính để biết run/hash chính xác và kiểm từ source sạch.
 

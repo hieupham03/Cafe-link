@@ -1,0 +1,486 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "D:\\BTL-LTM\\cafelink-system\\web\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "tests/v7.spec.ts"
+    ],
+    "configFile": "D:\\BTL-LTM\\cafelink-system\\web\\playwright.config.ts",
+    "rootDir": "D:/BTL-LTM/cafelink-system/web/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/BTL-LTM/cafelink-system/web/test-results/artifacts-v7",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "D:/BTL-LTM/cafelink-system/web/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\BTL-LTM\\cafelink-system\\web\\test-results\\artifacts-v7",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "webkit",
+        "testDir": "D:\\BTL-LTM\\cafelink-system\\web\\tests",
+        "snapshotDir": "D:\\BTL-LTM\\cafelink-system\\web\\tests",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:18080",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Safari/605.1.15",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1792,
+            "height": 1120
+          },
+          "deviceScaleFactor": 2,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "webkit"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "webkit"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/v7-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "node tests/start-server.mjs",
+      "url": "http://127.0.0.1:18080/api/health",
+      "reuseExistingServer": false,
+      "timeout": 30000
+    }
+  },
+  "suites": [
+    {
+      "title": "v7.spec.ts",
+      "file": "v7.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "V6 ảnh/menu thật và V7 luồng QR–trả trước–pha chế–lịch sử",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10427,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-30T13:01:13.991Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dc72c9f9fb87797a5387-c978dae369bfe9040b97",
+          "file": "v7.spec.ts",
+          "line": 100,
+          "column": 1
+        },
+        {
+          "title": "V7 thất bại cho thử lại; mất phản hồi thành công rồi reload không thu hai lần",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4584,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-30T13:01:24.871Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dc72c9f9fb87797a5387-caae774d2ce04f6a6f42",
+          "file": "v7.spec.ts",
+          "line": 196,
+          "column": 1
+        },
+        {
+          "title": "V6 cart đổi giá yêu cầu xem lại, hết món bị bỏ có xác nhận",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3014,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-30T13:01:29.485Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dc72c9f9fb87797a5387-69956e8cbcee1a2d140d",
+          "file": "v7.spec.ts",
+          "line": 247,
+          "column": 1
+        },
+        {
+          "title": "V5a thông báo từ event thật, mở không xử lý hỗ trợ và giữ đã đọc qua reload",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3842,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-30T13:01:32.521Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dc72c9f9fb87797a5387-f0d8aa18fa9737268010",
+          "file": "v7.spec.ts",
+          "line": 301,
+          "column": 1
+        },
+        {
+          "title": "V6 upload từ chối SVG, sai CSRF, guest; đường ảnh traversal không đọc file",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1777,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-30T13:01:36.403Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dc72c9f9fb87797a5387-d44b97510c6b031190aa",
+          "file": "v7.spec.ts",
+          "line": 331,
+          "column": 1
+        },
+        {
+          "title": "V7 responsive và hủy giao dịch không tạo hóa đơn, hủy đơn cho đóng lượt",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5299,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-30T13:01:38.203Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dc72c9f9fb87797a5387-f7d929cd25f6aca3a9d3",
+          "file": "v7.spec.ts",
+          "line": 366,
+          "column": 1
+        },
+        {
+          "title": "V5a hai tab cùng tài khoản chỉ hiện một toast và tắt âm vẫn dùng inbox",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 9561,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Trung tâm thông báo' }).getByRole('button', { name: 'Tắt âm thanh tại quầy', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Trung tâm thông báo' }).getByRole('button', { name: 'Tắt âm thanh tại quầy', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Trung tâm thông báo' }).getByRole('button', { name: 'Tắt âm thanh tại quầy', exact: true })\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Trung tâm thông báo' }).getByRole('button', { name: 'Tắt âm thanh tại quầy', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Trung tâm thông báo' }).getByRole('button', { name: 'Tắt âm thanh tại quầy', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Trung tâm thông báo' }).getByRole('button', { name: 'Tắt âm thanh tại quầy', exact: true })\u001b[22m\n\n    at D:\\BTL-LTM\\cafelink-system\\web\\tests\\v7.spec.ts:463:7",
+                    "location": {
+                      "file": "D:\\BTL-LTM\\cafelink-system\\web\\tests\\v7.spec.ts",
+                      "column": 7,
+                      "line": 463
+                    },
+                    "snippet": "  461 |         exact: true,\n  462 |       }),\n> 463 |     ).toBeVisible();\n      |       ^\n  464 |     await center\n  465 |       .getByRole(\"button\", { name: \"Tắt âm thanh tại quầy\", exact: true })\n  466 |       .click();"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\BTL-LTM\\cafelink-system\\web\\tests\\v7.spec.ts",
+                        "column": 7,
+                        "line": 463
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Trung tâm thông báo' }).getByRole('button', { name: 'Tắt âm thanh tại quầy', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Trung tâm thông báo' }).getByRole('button', { name: 'Tắt âm thanh tại quầy', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Trung tâm thông báo' }).getByRole('button', { name: 'Tắt âm thanh tại quầy', exact: true })\u001b[22m\n\n\n  461 |         exact: true,\n  462 |       }),\n> 463 |     ).toBeVisible();\n      |       ^\n  464 |     await center\n  465 |       .getByRole(\"button\", { name: \"Tắt âm thanh tại quầy\", exact: true })\n  466 |       .click();\n    at D:\\BTL-LTM\\cafelink-system\\web\\tests\\v7.spec.ts:463:7"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-30T13:01:43.520Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\BTL-LTM\\cafelink-system\\web\\test-results\\artifacts-v7\\v7-V5a-hai-tab-cùng-tài-kh-470ef-st-và-tắt-âm-vẫn-dùng-inbox-webkit\\test-failed-2.png"
+                    },
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\BTL-LTM\\cafelink-system\\web\\test-results\\artifacts-v7\\v7-V5a-hai-tab-cùng-tài-kh-470ef-st-và-tắt-âm-vẫn-dùng-inbox-webkit\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\BTL-LTM\\cafelink-system\\web\\test-results\\artifacts-v7\\v7-V5a-hai-tab-cùng-tài-kh-470ef-st-và-tắt-âm-vẫn-dùng-inbox-webkit\\error-context.md"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\BTL-LTM\\cafelink-system\\web\\test-results\\artifacts-v7\\v7-V5a-hai-tab-cùng-tài-kh-470ef-st-và-tắt-âm-vẫn-dùng-inbox-webkit\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\BTL-LTM\\cafelink-system\\web\\test-results\\artifacts-v7\\v7-V5a-hai-tab-cùng-tài-kh-470ef-st-và-tắt-âm-vẫn-dùng-inbox-webkit\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\BTL-LTM\\cafelink-system\\web\\tests\\v7.spec.ts",
+                    "column": 7,
+                    "line": 463
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "dc72c9f9fb87797a5387-c5b900a326ea62a0498d",
+          "file": "v7.spec.ts",
+          "line": 405,
+          "column": 1
+        },
+        {
+          "title": "V6 nhóm món thêm–đổi tên–xóa nhóm trống bằng UI",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3087,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-30T13:01:54.986Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dc72c9f9fb87797a5387-7f4a219c9dacb4e8c162",
+          "file": "v7.spec.ts",
+          "line": 475,
+          "column": 1
+        },
+        {
+          "title": "V6 lọc trạng thái, tạm hết một lần bấm và xác nhận ngừng bán giữ menu quản lý",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6690,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-30T13:01:58.341Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dc72c9f9fb87797a5387-5972ae213751a6a66433",
+          "file": "v7.spec.ts",
+          "line": 505,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-30T13:01:11.192Z",
+    "duration": 54386.972,
+    "expected": 8,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}
