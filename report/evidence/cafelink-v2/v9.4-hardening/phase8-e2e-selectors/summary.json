@@ -9,5 +9,11 @@
   "flaky": 0,
   "skipped": 0,
   "typescript": "PASS",
-  "remoteCi": "PENDING"
+  "remoteCi": "PASS",
+  "verifiedCommit": "70e8f2d6243b0b72b6aecdce7552cf69c91fcb0d",
+  "remoteRuns": [
+    "https://github.com/hieupham03/Cafe-link/actions/runs/41065467863",
+    "https://github.com/hieupham03/Cafe-link/actions/runs/41065467829"
+  ],
+  "remoteFullGate": "ci-green-gate.json"
 }

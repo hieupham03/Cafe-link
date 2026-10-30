@@ -54,7 +54,7 @@ RC3 đạt **23/23 nhóm kiểm gói** trên JRE đi kèm khi PATH của tiến 
 
 RC2 là mốc trước bản sửa âm thanh. [Lượt public đầu thất bại](evidence/cafelink-v2/v9.4-hardening/phase5-release/summary.json) do tunnel nối edge trễ được giữ riêng. Khi thử bản mới, chọn RC3; các candidate trước đó không phải gói chốt này. Runtime ZIP giữ tại workspace, không đưa vào Git; người clone dùng quy trình build từ source.
 
-GitHub CI của source `d654bc1` đã thành công trên [main](https://github.com/hieupham03/Cafe-link/actions/runs/41061881251) và [submission/cafelink](https://github.com/hieupham03/Cafe-link/actions/runs/41061881317). [Phiếu kiểm cuối](evidence/cafelink-v2/v9.4-hardening/final-verification.json) ghi hash/bằng chứng và trạng thái CI khi công bố hồ sơ.
+GitHub CI sau sửa selector, commit `70e8f2d`, đã thành công trên [main](https://github.com/hieupham03/Cafe-link/actions/runs/41065467863) và [submission/cafelink](https://github.com/hieupham03/Cafe-link/actions/runs/41065467829). [Gate tải từ artifact CI](evidence/cafelink-v2/v9.4-hardening/phase8-e2e-selectors/ci-green-gate.json) xác nhận 162 Java, 71 Chromium, không fail/error/skip/flaky và đã đóng listener test. [Phiếu kiểm cuối](evidence/cafelink-v2/v9.4-hardening/final-verification.json) ghi hash/bằng chứng và trạng thái CI khi công bố hồ sơ. Các sửa sau `d654bc1` chỉ liên quan tài liệu và bài test, không thay runtime trong RC3.
 
 ### Thực nghiệm trên source mới
 

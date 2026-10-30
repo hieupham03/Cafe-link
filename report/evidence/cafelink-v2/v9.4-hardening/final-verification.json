@@ -2,7 +2,7 @@
   "date": "2026-10-30",
   "softwareVerificationStatus": "PASS",
   "scope": "Selected automated software, simulated recovery/load and portable/public demo checks; not proof of zero remaining defects",
-  "sourceCommit": "d654bc1",
+  "sourceCommit": "70e8f2d6243b0b72b6aecdce7552cf69c91fcb0d",
   "java": {
     "tests": 162,
     "failures": 0,
@@ -40,15 +40,26 @@
   "remoteCi": {
     "sourceStatus": "PASS",
     "sourceRuns": [
+      "https://github.com/hieupham03/Cafe-link/actions/runs/41065467863",
+      "https://github.com/hieupham03/Cafe-link/actions/runs/41065467829"
+    ],
+    "publicationStatus": "PASS",
+    "publicationPreviousFailure": "https://github.com/hieupham03/Cafe-link/actions/runs/41063763749",
+    "previousSourceRuns": [
       "https://github.com/hieupham03/Cafe-link/actions/runs/41061881251",
       "https://github.com/hieupham03/Cafe-link/actions/runs/41061881317"
     ],
-    "publicationStatus": "PENDING",
-    "publicationPreviousFailure": "https://github.com/hieupham03/Cafe-link/actions/runs/41063763749"
+    "publicationRuns": [
+      "https://github.com/hieupham03/Cafe-link/actions/runs/41065467863",
+      "https://github.com/hieupham03/Cafe-link/actions/runs/41065467829"
+    ]
   },
   "selectorFix": {
     "scope": "Test-only, runtime RC3 unchanged",
     "focusedChromiumPassed": 25,
-    "remoteCi": "PENDING"
-  }
+    "remoteCi": "PASS"
+  },
+  "runtimeSourceCommit": "d654bc1",
+  "recordedAt": "2026-10-30T20:53:09.076980+07:00",
+  "recordedAtNote": "CI completion was verified by API and downloaded gate; this file records evidence only."
 }
