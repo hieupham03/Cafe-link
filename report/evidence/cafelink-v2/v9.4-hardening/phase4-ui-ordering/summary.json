@@ -20,7 +20,11 @@
       "skipped": 0
     }
   ],
-  "remoteCi": "PENDING",
+  "remoteCi": "PASS",
   "physicalPhone": "NOT_RUN",
-  "physicalLan": "NOT_RUN"
+  "physicalLan": "NOT_RUN",
+  "remoteCiRuns": [
+    "https://github.com/hieupham03/Cafe-link/actions/runs/41058054596",
+    "https://github.com/hieupham03/Cafe-link/actions/runs/41058054798"
+  ]
 }

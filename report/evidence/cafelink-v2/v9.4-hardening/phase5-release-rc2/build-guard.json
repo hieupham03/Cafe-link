@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "tests": 9,
+  "redFailures": 4,
+  "greenFailures": 0,
+  "scope": "Real PowerShell guard with isolated filesystem fixtures",
+  "includedInCi": "scripts/test-v8.ps1"
+}

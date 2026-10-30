@@ -76,12 +76,24 @@ try {
     $ready = $false; $deadline = (Get-Date).AddSeconds(30)
     while ((Get-Date) -lt $deadline) {
         if ($webProcess.HasExited) { throw "Web server exited. See $runDir\web-error.log" }
-        try { $health = Invoke-RestMethod -Uri "http://127.0.0.1:$Port/api/health" -TimeoutSec 2; $ready = $true; break } catch { Start-Sleep -Milliseconds 250 }
+        try { $health = Invoke-RestMethod -Uri "http://127.0.0.1:$Port/api/ready" -TimeoutSec 2; if($health.status -eq 'READY'){$ready = $true; break} } catch { }
+        Start-Sleep -Milliseconds 250
     }
     if (-not $ready) { throw "Web server did not become ready. See $runDir" }
+    # Quick Tunnel prints its URL before its connection to the Cloudflare edge is ready.
+    # Allow bounded cold-start/retry time without mistaking URL allocation for readiness.
+    Write-Host 'Local TCP/Core/DB ready. Waiting for the public tunnel connection...'
+    $edgeReady=$false;$deadline=(Get-Date).AddSeconds(90)
+    while((Get-Date) -lt $deadline -and -not $tunnelProcess.HasExited) {
+        $edgeLog=Get-Content -LiteralPath $tunnelLog -Raw -ErrorAction SilentlyContinue
+        if($edgeLog -and $edgeLog.Contains('Registered tunnel connection')){$edgeReady=$true;break}
+        Start-Sleep -Milliseconds 500
+    }
+    if(-not $edgeReady){throw "Local app is ready but Cloudflare did not establish a tunnel within 90 seconds. Check Internet/firewall and retry; see $runDir. No existing process was stopped."}
     $publicReady=$false;$deadline=(Get-Date).AddSeconds(35)
     while ((Get-Date) -lt $deadline -and -not $tunnelProcess.HasExited) {
-        try { $health=Invoke-RestMethod -Uri "$publicOrigin/api/health" -TimeoutSec 8; $publicReady=$true; break } catch { Start-Sleep -Milliseconds 500 }
+        try { $health=Invoke-RestMethod -Uri "$publicOrigin/api/ready" -TimeoutSec 8; if($health.status -eq 'READY'){$publicReady=$true; break} } catch { }
+        Start-Sleep -Milliseconds 500
     }
     if (-not $publicReady) { throw "Local server is ready but the public HTTPS address is unreachable. See $runDir." }
     Write-Host "`nPublic demo: $publicOrigin/admin"

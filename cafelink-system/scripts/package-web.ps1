@@ -3,7 +3,7 @@ $ErrorActionPreference='Stop'
 $ProgressPreference='SilentlyContinue'
 $projectRoot=Split-Path $PSScriptRoot -Parent
 $workspaceRoot=Split-Path $projectRoot -Parent
-if(-not $OutputDirectory){$OutputDirectory=Join-Path $workspaceRoot ('dist/CafeLink-Web-V9.3-'+(Get-Date -Format 'yyyyMMdd-HHmmss'))}
+if(-not $OutputDirectory){$OutputDirectory=Join-Path $workspaceRoot ('dist/CafeLink-Web-V9.4-'+(Get-Date -Format 'yyyyMMdd-HHmmss'))}
 $destination=[IO.Path]::GetFullPath($OutputDirectory)
 $archive=$destination+'.zip'
 if((Test-Path -LiteralPath $destination) -or (Test-Path -LiteralPath $archive)){throw 'Package destination already exists; select a fresh directory.'}
@@ -17,11 +17,7 @@ try {
     }
     $jar=Join-Path $projectRoot 'target/cafelink-1.0.0.jar'
     if($GateSummary) {
-        $gate=Get-Content -LiteralPath $GateSummary -Raw -Encoding UTF8 | ConvertFrom-Json
-        if($gate.status -ne 'PASS' -or $gate.artifact.jarSha256 -ine (Get-FileHash -LiteralPath $jar -Algorithm SHA256).Hash){throw 'JAR does not match the supplied passing gate.'}
-        foreach($row in $gate.artifact.webFiles) {
-            if((Get-FileHash -LiteralPath (Join-Path $projectRoot ('web/dist/'+$row.path)) -Algorithm SHA256).Hash -ine $row.sha256){throw 'Frontend differs from supplied gate.'}
-        }
+        & (Join-Path $PSScriptRoot 'verify-build-gate.ps1') -ProjectRoot $projectRoot -Summary $GateSummary
     }
     $pin=Get-Content release/runtime-windows-x64.json -Raw | ConvertFrom-Json
     $download=Join-Path $projectRoot ('.tools/'+$pin.archive)
@@ -50,9 +46,10 @@ try {
         New-Item -ItemType Directory -Path (Join-Path $destination '.tools') -Force | Out-Null
         Copy-Item -LiteralPath $cloud -Destination (Join-Path $destination '.tools')
     }
-    foreach($name in @('FINAL_ARCHITECTURE.md','FINAL_PROTOCOL.md','FINAL_RUNBOOK.md','WEB_RELEASE.md','WEB_USER_ACCEPTANCE.md','WEB_V9_3.md')) {Copy-Item -LiteralPath (Join-Path $projectRoot ('docs/'+$name)) -Destination (Join-Path $destination 'docs')}
+    foreach($name in @('FINAL_ARCHITECTURE.md','FINAL_PROTOCOL.md','FINAL_RUNBOOK.md','WEB_RELEASE.md','WEB_USER_ACCEPTANCE.md','WEB_V9_3.md','WEB_HARDENING.md')) {Copy-Item -LiteralPath (Join-Path $projectRoot ('docs/'+$name)) -Destination (Join-Path $destination 'docs')}
+    if($GateSummary){Copy-Item -LiteralPath $GateSummary -Destination (Join-Path $destination 'VERIFICATION.json')}
     $runtimeVersion=& (Join-Path $destination 'runtime/bin/java.exe') --version
-    [ordered]@{name='CafeLink Web';release='V9.3';patch='GUEST_ZONES';includedPatches=@('QR_ENTRY_FIX');schema=11;platform='Windows x64';createdAtUtc=[DateTime]::UtcNow.ToString('o');artifactVersion='1.0.0';javaRuntime=$runtimeVersion;runtimeSource=$pin;jarSha256=(Get-FileHash -LiteralPath $jar -Algorithm SHA256).Hash;frontendManifestSha256=(Get-FileHash web/dist/index.html -Algorithm SHA256).Hash;gateSummary=$([IO.Path]::GetFileName($GateSummary));realPayment='LOCAL_SIMULATOR';physicalPhone='NOT_RUN';physicalLan='NOT_RUN';remoteCi='NOT_RUN'} | ConvertTo-Json -Depth 7 | Set-Content -LiteralPath (Join-Path $destination 'RELEASE.json') -Encoding UTF8
+    [ordered]@{name='CafeLink Web';release='V9.4';patch='OPERATIONS_HARDENING';includedPatches=@('QR_ENTRY_FIX','GUEST_ZONES','TCP_READINESS','ADMIN_DIAGNOSTICS','PAYMENT_DEADLINE');schema=11;platform='Windows x64';createdAtUtc=[DateTime]::UtcNow.ToString('o');artifactVersion='1.0.0';javaRuntime=$runtimeVersion;runtimeSource=$pin;jarSha256=(Get-FileHash -LiteralPath $jar -Algorithm SHA256).Hash;frontendManifestSha256=(Get-FileHash web/dist/index.html -Algorithm SHA256).Hash;gateSummary=$(if($GateSummary){'VERIFICATION.json'}else{'NOT_PROVIDED'});realPayment='LOCAL_SIMULATOR';physicalPhone='NOT_RUN';physicalLan='NOT_RUN';remoteCi='NOT_RUN'} | ConvertTo-Json -Depth 7 | Set-Content -LiteralPath (Join-Path $destination 'RELEASE.json') -Encoding UTF8
     foreach($mode in @('Local','Public')) {
         "@echo off`r`npowershell -NoProfile -ExecutionPolicy Bypass -File `"%~dp0Start-$mode.ps1`" %*`r`nif errorlevel 1 pause`r`n" | Set-Content -LiteralPath (Join-Path $destination "START-$($mode.ToUpper()).cmd") -Encoding ASCII
     }

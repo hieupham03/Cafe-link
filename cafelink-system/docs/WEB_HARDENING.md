@@ -71,3 +71,13 @@ Kết quả hồi quy phần 3: **162 Java PASS**, **69 Chromium PASS**, không 
 GitHub CI của commit readiness đã báo lỗi ở `UiWorkflowTest.changingVisitClearsPreviousCustomersDraft`, không phải ở phép kiểm readiness. Bài test chờ nút của khách rồi bấm nút đóng bàn của chủ quán, trong khi chủ quán có thể vẫn đang đợi phản hồi mở bàn. `doClick` trên nút disabled không thực hiện thao tác, nên ca kiểm bị timeout.
 
 Phần sửa chờ đúng nút **Đóng bàn trống** trước khi bấm. Ca kiểm giữ chậm phản hồi OPEN_TABLE sau commit, cho khách đọc trạng thái thật qua TCP và xác nhận rằng nút của khách đã bật trong lúc chủ quán vẫn busy; sau khi nhả phản hồi mới chờ và bấm nút của chủ quán. Không tăng timeout để che lỗi, không bỏ kiểm thử legacy và không thay nghiệp vụ web. Cả năm ca Swing đạt trên JVM 24.0.2 và JVM 17.0.20.1; kết quả CI mới cần đọc riêng, không suy từ chạy local.
+
+## Gói portable và khởi động public
+
+Gói mới ghi đúng V9.4 trong launcher/RELEASE.json, có hướng dẫn chẩn đoán và giữ các patch QR/năm vùng giao diện. Khi dùng `-GateSummary`, script đối chiếu SHA-256 của JAR, **toàn bộ danh sách file giao diện** và hash từng file, rồi kèm `VERIFICATION.json`. Cách cũ chỉ kiểm các file có tên trong manifest nên có thể bỏ sót file được thêm sau lượt test. Guard mới chặn danh sách rỗng/thiếu, đường dẫn trùng, file thiếu/thừa và file đã đổi. Chín test PowerShell qua fixture Python đạt; bốn ca đã đỏ với guard cũ.
+
+Launcher public chờ `/api/ready` ở local, chờ Cloudflare báo đã nối edge trong tối đa 90 giây, sau đó mới kiểm `/api/ready` qua HTTPS công khai và in địa chỉ. URL được cấp không đồng nghĩa tunnel đã kết nối. Lỗi Internet/TLS vẫn có thể xảy ra; launcher báo rõ và dọn các tiến trình do chính nó tạo, không dừng tiến trình khác. Không tắt kiểm chứng TLS để làm demo vượt lỗi.
+
+Gói thử được giải nén vào đường dẫn có khoảng trắng; chạy bằng JRE đi kèm khi PATH của tiến trình không có Java/Node/npm máy phát triển. Bộ kiểm bao gồm manifest/tamper, UI, ảnh menu, quyền khách, phục hồi, thanh toán, restart, backup/restore, khóa dữ liệu, path escape và cổng đã dùng. Bằng chứng gồm cả lượt public thất bại ban đầu; không sửa kết quả cũ thành PASS khi thử lại.
+
+Gói RC2 tại workspace: `dist/CafeLink-Web-V9.4-RC2.zip`, SHA-256 `F51EBDF8A64512BB8A909FEF8F5F15D883208EEE11294031DE718505264633D5`. **23 nhóm kiểm gói PASS**, **8 kiểm public HTTPS/WSS PASS**, tiến trình/listener do test tạo đã đóng. [Kết quả RC2](../../report/evidence/cafelink-v2/v9.4-hardening/phase5-release-rc2/summary.json); [lượt public thất bại trước sửa](../../report/evidence/cafelink-v2/v9.4-hardening/phase5-release/summary.json). Đây là Chromium đi qua Internet từ máy phát triển, chưa phải điện thoại hoặc hai máy LAN vật lý. URL thử nghiệm đã hết sau khi dọn tiến trình.

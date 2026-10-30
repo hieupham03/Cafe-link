@@ -5,6 +5,8 @@ Push-Location $projectRoot
 try {
     & python tools/verify_v8_workflow.py
     if($LASTEXITCODE -ne 0){throw 'Workflow/configuration checks failed'}
+    & python tools/test_build_gate.py
+    if($LASTEXITCODE -ne 0){throw 'Build-to-gate matching checks failed'}
     $regressionArgs=@('-NoProfile','-ExecutionPolicy','Bypass','-File','scripts/test-web.ps1')
     if($SkipInstall){$regressionArgs+='-SkipInstall'}
     if($SkipBrowserInstall){$regressionArgs+='-SkipBrowserInstall'}

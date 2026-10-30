@@ -1,0 +1,18 @@
+{
+  "startedAt": "2026-10-30T12:56:51.193Z",
+  "origin": "https://merger-alternative-yours-laura.trycloudflare.com",
+  "status": "PASS",
+  "physicalPhone": "NOT_RUN",
+  "checks": {
+    "publicTcpDatabaseReady": true,
+    "secureCookie": true,
+    "publicQrOrigin": true,
+    "secureBrowserRecoveryApis": true,
+    "privateOrdersAndPayment": true,
+    "liveWssAndAutomaticCompletion": true,
+    "rejectWrongOrigin": true,
+    "defaultAdminPasswordRejected": true
+  },
+  "failedResources": [],
+  "finishedAt": "2026-10-30T12:57:08.689Z"
+}

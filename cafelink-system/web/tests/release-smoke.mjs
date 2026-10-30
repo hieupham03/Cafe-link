@@ -117,6 +117,23 @@ try {
     expect((await admin.context.request.get(server.origin+'/experiment.html')).status()).toBe(404);
     await page.screenshot({path:join(output,'pack-admin.png'),fullPage:true});
   });
+  if(release.includedPatches?.includes('ADMIN_DIAGNOSTICS')) await check('packaged version, readiness and real admin diagnostic UI match this release',async()=>{
+    const health=await (await admin.context.request.get(server.origin+'/api/health')).json();
+    expect(health.version).toBe(release.release);
+    const ready=await admin.context.request.get(server.origin+'/api/ready');
+    expect(ready.status()).toBe(200);expect((await ready.json()).status).toBe('READY');
+    const diagnosis=await admin.context.request.get(server.origin+'/api/admin/diagnostics');
+    expect(diagnosis.status()).toBe(200);
+    const data=await diagnosis.json();expect(data.version).toBe(release.release);expect(data.core.requests).toBeGreaterThan(0);
+    if(release.gateSummary!=='NOT_PROVIDED') {
+      const verification=JSON.parse((await readFile(join(root,release.gateSummary),'utf8')).replace(/^\uFEFF/,''));
+      expect(verification.status).toBe('PASS');expect(verification.artifact.jarSha256.toLowerCase()).toBe(release.jarSha256.toLowerCase());
+    }
+    const page=await admin.context.newPage();await page.goto(server.origin+'/admin');
+    await page.getByRole('button',{name:'Chẩn đoán hệ thống',exact:false}).click();
+    await expect(page.getByRole('status').filter({hasText:'Hệ thống sẵn sàng phục vụ'})).toBeVisible();
+    await page.screenshot({path:join(output,'pack-diagnostics.png'),fullPage:true});await page.close();
+  });
   if(release.patch==='QR_ENTRY_FIX'||release.includedPatches?.includes('QR_ENTRY_FIX')) await check('guest QR entry in admin profile explains shared session without replacing it',async()=>{
     const before=await (await admin.context.request.get(server.origin+'/api/session')).json();
     const page=await admin.context.newPage();
@@ -141,7 +158,10 @@ try {
     imageSha=sha(await (await admin.context.request.get(server.origin+imageUrl)).body());
   });
   const a=await guest(server.origin,qr),b=await guest(server.origin,qr);
-  if(release.patch==='GUEST_ZONES') await check('five guest navigation tiles and separate functional regions are usable on small screens',async()=>{
+  if(release.includedPatches?.includes('ADMIN_DIAGNOSTICS')) await check('packaged diagnostic endpoint rejects guests',async()=>{
+    expect((await a.context.request.get(server.origin+'/api/admin/diagnostics')).status()).toBe(403);
+  });
+  if(release.patch==='GUEST_ZONES'||release.includedPatches?.includes('GUEST_ZONES')) await check('five guest navigation tiles and separate functional regions are usable on small screens',async()=>{
     const nav=a.page.getByRole('navigation',{name:'Điều hướng tại bàn'});
     for(const title of ['Thực đơn','Đơn đã gọi','Hỗ trợ','Thanh toán','Giỏ hàng']) {
       const tile=nav.getByRole('link',{name:title,exact:true});

@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "startedAt": "2026-10-30T12:56:41.039Z",
+  "physicalPhone": "NOT_RUN",
+  "physicalLan": "NOT_RUN",
+  "temporaryPasswordPersisted": false,
+  "origin": "https://merger-alternative-yours-laura.trycloudflare.com",
+  "browserChecks": {
+    "publicTcpDatabaseReady": true,
+    "secureCookie": true,
+    "publicQrOrigin": true,
+    "secureBrowserRecoveryApis": true,
+    "privateOrdersAndPayment": true,
+    "liveWssAndAutomaticCompletion": true,
+    "rejectWrongOrigin": true,
+    "defaultAdminPasswordRejected": true
+  },
+  "normalDurationCleanup": true,
+  "listenersClosed": true,
+  "finishedAt": "2026-10-30T12:58:06.149Z"
+}

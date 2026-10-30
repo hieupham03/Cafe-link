@@ -1,0 +1,16 @@
+﻿{
+    "phase":  "V9",
+    "status":  "FAIL",
+    "runId":  "20261030-195225-395fd90a",
+    "startedAt":  "2026-10-30T19:52:25.3036166+07:00",
+    "archiveSha256":  "E3A973C571DAAE0A0806FB7A3628A05EFB0DD0DA2D5540823C4661C13630AAE4",
+    "packageSmoke":  "PASS",
+    "internetBrowserSmoke":  "FAIL",
+    "physicalLan":  "NOT_RUN",
+    "physicalPhone":  "NOT_RUN",
+    "remoteCi":  "NOT_RUN",
+    "release":  "V9.4",
+    "schema":  11,
+    "failure":  "Internet package acceptance failed.",
+    "finishedAt":  "2026-10-30T19:53:57.2112333+07:00"
+}

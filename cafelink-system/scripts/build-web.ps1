@@ -11,4 +11,4 @@ if (-not $SkipJava) {
     & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'build.ps1') -SkipTests
     if ($LASTEXITCODE -ne 0) { throw 'Java package failed' }
 }
-Write-Host 'Web V7 ready. Run scripts/run-web.ps1; scripts/test-web.ps1 runs Java and browser verification.'
+Write-Host 'Web V9.4 ready. Run scripts/run-web.ps1; scripts/test-web.ps1 runs Java and browser verification.'

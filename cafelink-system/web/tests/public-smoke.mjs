@@ -25,6 +25,11 @@ try {
     guest = await browser.newContext({ viewport: { width: 390, height: 844 } }),
     other = await browser.newContext();
   diagnosticRequest=owner.request;
+  const readiness=await owner.request.get(`${origin}/api/ready`);
+  expect(readiness.status()).toBe(200);
+  const readyState=await readiness.json();
+  expect(readyState.status).toBe('READY');expect(readyState.core).toBe('UP');expect(readyState.database).toBe('UP');
+  evidence.checks.publicTcpDatabaseReady=true;
   const login = await owner.request.post(`${origin}/api/login`, {
     headers: { Origin: origin },
     data: { username: "admin", password },

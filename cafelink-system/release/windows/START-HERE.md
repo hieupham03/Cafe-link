@@ -1,6 +1,6 @@
-# CafeLink Web V9.3 — bắt đầu tại đây
+# CafeLink Web V9.4 - bắt đầu tại đây
 
-Màn khách có năm ô rõ ràng: Thực đơn, Đơn đã gọi, Hỗ trợ, Thanh toán, Giỏ hàng; xem docs/WEB_V9_3.md để chạy và kiểm lại bản này.
+Màn khách có năm ô rõ ràng: Thực đơn, Đơn đã gọi, Hỗ trợ, Thanh toán, Giỏ hàng. Quản lý có thêm mục Chẩn đoán hệ thống để xem TCP/DB, kết nối, hàng đợi và mã yêu cầu. Xem docs/WEB_HARDENING.md cho thay đổi V9.4; docs/WEB_V9_3.md giữ hướng dẫn nền trước đó.
 
 Gói Windows x64 có JRE 17 đi kèm. Giải nén cả ZIP vào thư mục có quyền ghi, mở START-LOCAL.cmd hoặc START-PUBLIC.cmd. Không cần cài JDK/Node để chạy.
 
@@ -22,4 +22,4 @@ Schema 11 giữ giá và lịch sử đã nhận, thêm ghi chú từng phần v
 
 Thanh toán và hoàn tiền là giả lập học tập, không thu tiền thật. QR chung xác định bàn, mỗi browser/profile có phiên và đơn riêng. Quick Tunnel có thể đổi địa chỉ khi restart; cần lấy QR của lần chạy hiện tại. Điện thoại thật vẫn cần tự kiểm trước buổi bảo vệ.
 
-Kiểm toàn vẹn bằng Verify-Package.ps1. RELEASE.json ghi V9.3, runtime và hash. Maven artifact nội bộ vẫn tên cafelink-1.0.0.jar. ZIP nguyên gốc không có DB/khóa/phiên người dùng; dữ liệu chạy và backup không nên đưa vào gói chia sẻ.
+Kiểm toàn vẹn bằng Verify-Package.ps1. RELEASE.json ghi V9.4, runtime và hash. Khi đóng gói với gate đạt, VERIFICATION.json giữ kết quả và hash của lượt kiểm tương ứng; các lần thử điện thoại/LAN còn chờ không được chuyển thành đạt. Maven artifact nội bộ vẫn tên cafelink-1.0.0.jar. ZIP nguyên gốc không có DB/khóa/phiên người dùng; dữ liệu chạy và backup không nên đưa vào gói chia sẻ.

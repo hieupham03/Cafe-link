@@ -1,0 +1,127 @@
+{
+  "status": "PASS",
+  "startedAt": "2026-10-30T12:55:59.411Z",
+  "browser": "Chromium",
+  "hostJavaOnChildPath": false,
+  "hostNodeOnChildPath": false,
+  "physicalPhone": "NOT_RUN",
+  "physicalLan": "NOT_RUN",
+  "checks": [
+    {
+      "name": "pristine package manifest",
+      "status": "PASS",
+      "durationMs": 6232.9951
+    },
+    {
+      "name": "unlisted executable library is detected",
+      "status": "PASS",
+      "durationMs": 1534.0160999999998
+    },
+    {
+      "name": "tampered asset is detected, then fixture restored",
+      "status": "PASS",
+      "durationMs": 3098.3166
+    },
+    {
+      "name": "start on bundled JRE with developer tools absent from child PATH",
+      "status": "PASS",
+      "durationMs": 3515.724399999999
+    },
+    {
+      "name": "real admin UI, production assets and all automatic tables",
+      "status": "PASS",
+      "durationMs": 456.78520000000026
+    },
+    {
+      "name": "packaged version, readiness and real admin diagnostic UI match this release",
+      "status": "PASS",
+      "durationMs": 485.2718999999979
+    },
+    {
+      "name": "guest QR entry in admin profile explains shared session without replacing it",
+      "status": "PASS",
+      "durationMs": 200.39470000000074
+    },
+    {
+      "name": "upload image and save menu through packaged Gateway/Core",
+      "status": "PASS",
+      "durationMs": 97.70149999999921
+    },
+    {
+      "name": "packaged diagnostic endpoint rejects guests",
+      "status": "PASS",
+      "durationMs": 3.9811999999983527
+    },
+    {
+      "name": "five guest navigation tiles and separate functional regions are usable on small screens",
+      "status": "PASS",
+      "durationMs": 368.66049999999814
+    },
+    {
+      "name": "same QR gives private visits and separate carts",
+      "status": "PASS",
+      "durationMs": 129.92280000000028
+    },
+    {
+      "name": "commit then lost order response recovers one order",
+      "status": "PASS",
+      "durationMs": 411.3567000000003
+    },
+    {
+      "name": "unaccepted service intent is discarded after reload",
+      "status": "PASS",
+      "durationMs": 307.33350000000064
+    },
+    {
+      "name": "prepaid simulator, one receipt, service workflow and automatic completion",
+      "status": "PASS",
+      "durationMs": 236.16739999999845
+    },
+    {
+      "name": "backup restore and reset are blocked while launcher owns profile",
+      "status": "PASS",
+      "durationMs": 1399.471300000001
+    },
+    {
+      "name": "owned process tree stops and both listeners close",
+      "status": "PASS",
+      "durationMs": 466.1906999999992
+    },
+    {
+      "name": "offline backup with database key and media",
+      "status": "PASS",
+      "durationMs": 2310.5861000000004
+    },
+    {
+      "name": "invalid backups fail before changing the current profile",
+      "status": "PASS",
+      "durationMs": 4441.269400000001
+    },
+    {
+      "name": "restart keeps stable QR menu image and paid history",
+      "status": "PASS",
+      "durationMs": 3369.507300000001
+    },
+    {
+      "name": "reset archives current profile and next start creates new cafe",
+      "status": "PASS",
+      "durationMs": 4163.5925000000025
+    },
+    {
+      "name": "restore validated backup retains QR image and paid history",
+      "status": "PASS",
+      "durationMs": 4613.120999999999
+    },
+    {
+      "name": "data directory escape is rejected",
+      "status": "PASS",
+      "durationMs": 435.8931999999986
+    },
+    {
+      "name": "occupied port is rejected without stopping its listener",
+      "status": "PASS",
+      "durationMs": 1500.8929000000062
+    }
+  ],
+  "finishedAt": "2026-10-30T12:56:40.879Z"
+}

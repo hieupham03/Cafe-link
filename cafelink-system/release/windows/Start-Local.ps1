@@ -7,7 +7,7 @@ Push-Location $ReleaseRoot
 try {
     $busy=@(Get-NetTCPConnection -LocalPort $settings.Port,$settings.TcpPort -State Listen -ErrorAction SilentlyContinue)
     if($busy.Count){throw 'A configured port is in use. No process was stopped; choose another port pair.'}
-    Write-Host "CafeLink Web V9.3 - http://127.0.0.1:$($settings.Port)/admin"
+    Write-Host "CafeLink Web V9.4 - http://127.0.0.1:$($settings.Port)/admin"
     Write-Host 'Local account: admin / CafeLink@123. Payment is simulated. Ctrl+C stops this demo.'
     & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $ReleaseRoot 'scripts/run-web.ps1') -Port $settings.Port -TcpPort $settings.TcpPort -DatabasePath $settings.Database
     if($LASTEXITCODE -ne 0){throw 'Web server exited with an error.'}

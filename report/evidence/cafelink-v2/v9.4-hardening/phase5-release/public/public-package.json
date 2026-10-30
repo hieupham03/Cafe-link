@@ -1,0 +1,10 @@
+{
+  "status": "FAIL",
+  "startedAt": "2026-10-30T12:53:07.788Z",
+  "physicalPhone": "NOT_RUN",
+  "physicalLan": "NOT_RUN",
+  "temporaryPasswordPersisted": false,
+  "error": "Public launcher exited before announcing readiness; inspect private tunnel logs",
+  "listenersClosed": true,
+  "finishedAt": "2026-10-30T12:53:57.153Z"
+}
