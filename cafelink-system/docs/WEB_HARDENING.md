@@ -63,3 +63,11 @@ Lỗi đã tái hiện: `expires_at` lưu ISO-8601 có phần giây lẻ tùy ch
 Phần sửa đọc hạn bằng `Instant`, lấy một mốc kiểm cho thao tác tạo giao dịch và dùng quy tắc **còn hạn khi thời điểm kiểm nhỏ hơn expiresAt**. Đúng hạn hoặc sau hạn thì EXPIRED. Chỉ tái sử dụng giao dịch PENDING còn hạn; giao dịch cũ được đánh dấu hết hạn trước khi tạo lần mới trong cùng transaction. Callback tới muộn của lần cũ không thay trạng thái của lần mới. Không đổi schema, không sửa dữ liệu lịch sử và không tích hợp ngân hàng thật.
 
 `PaymentDeadlineTest` kiểm tám trường hợp: ba tình huống khác độ chính xác/ranh giới khi tạo giao dịch, xác nhận trước/đúng/sau hạn một nano giây, callback cũ sau lần thay thế, hai luồng cùng bắt đầu/xác nhận. Mốc quyết định là thời điểm Core xử lý bằng clock Server, không dùng thời gian trên điện thoại. Trước sửa có 5/8 ca thất bại; sau sửa 29 ca trong nhóm thanh toán/phiên/nghiệp vụ đều đạt.
+
+Kết quả hồi quy phần 3: **162 Java PASS**, **69 Chromium PASS**, không skip/flaky. [Summary phần 3](../../report/evidence/cafelink-v2/v9.4-hardening/phase3-payment-deadline/summary.json).
+
+## Thứ tự phản hồi trong kiểm thử desktop lịch sử
+
+GitHub CI của commit readiness đã báo lỗi ở `UiWorkflowTest.changingVisitClearsPreviousCustomersDraft`, không phải ở phép kiểm readiness. Bài test chờ nút của khách rồi bấm nút đóng bàn của chủ quán, trong khi chủ quán có thể vẫn đang đợi phản hồi mở bàn. `doClick` trên nút disabled không thực hiện thao tác, nên ca kiểm bị timeout.
+
+Phần sửa chờ đúng nút **Đóng bàn trống** trước khi bấm. Ca kiểm giữ chậm phản hồi OPEN_TABLE sau commit, cho khách đọc trạng thái thật qua TCP và xác nhận rằng nút của khách đã bật trong lúc chủ quán vẫn busy; sau khi nhả phản hồi mới chờ và bấm nút của chủ quán. Không tăng timeout để che lỗi, không bỏ kiểm thử legacy và không thay nghiệp vụ web. Cả năm ca Swing đạt trên JVM 24.0.2 và JVM 17.0.20.1; kết quả CI mới cần đọc riêng, không suy từ chạy local.

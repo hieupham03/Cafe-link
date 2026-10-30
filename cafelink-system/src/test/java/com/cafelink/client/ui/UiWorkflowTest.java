@@ -23,6 +23,7 @@ class UiWorkflowTest {
     AdminFrame admin; GuestFrame guest;
     LoginFrame loginWindow;
     GuestFrame loginGuest;
+    volatile CountDownLatch openReply, openCommitted;
     final List<String> errors = new CopyOnWriteArrayList<>();
     final Dialogs dialogs = new Dialogs() {
         public void info(Component p, String text) { }
@@ -32,13 +33,23 @@ class UiWorkflowTest {
     };
     @BeforeEach void start() throws Exception {
         Assumptions.assumeFalse(GraphicsEnvironment.isHeadless(), "Desktop required for Swing workflow");
-        service = new CafeService(temp.resolve("ui.db")); server = new CafeServer(service, "127.0.0.1", 0, s -> {}); server.start();
+        service = new CafeService(temp.resolve("ui.db"));
+        server = new CafeServer(service, "127.0.0.1", 0, s -> {}, (point, who, request) -> {
+            CountDownLatch gate = openReply;
+            if (gate != null && point == FaultInjector.Point.AFTER_COMMIT && request.action().equals("OPEN_TABLE")) {
+                openCommitted.countDown();
+                try { if (!gate.await(10, TimeUnit.SECONDS)) throw new IllegalStateException("Open response fixture was not released"); }
+                catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+            }
+            return false;
+        }); server.start();
         owner = new NetworkClient("127.0.0.1", server.port()); owner.login("admin", "CafeLink@123");
         customer = new NetworkClient("127.0.0.1", server.port()); customer.login("ban1", "Ban1@123");
         edt(() -> { Ui.setup(); admin = new AdminFrame(owner, dialogs); guest = new GuestFrame(customer, dialogs); admin.setVisible(true); guest.setVisible(true); });
         await(() -> find(admin, "openTable", JButton.class).isEnabled());
     }
     @AfterEach void stop() throws Exception {
+        if (openReply != null) openReply.countDown();
         edt(() -> { if (loginWindow != null) loginWindow.dispose(); if (loginGuest != null) loginGuest.dispose(); if (admin != null) admin.dispose(); if (guest != null) guest.dispose(); });
         if (owner != null) owner.close(); if (customer != null) customer.close(); if (server != null) server.close(); if (service != null) service.close();
     }
@@ -86,8 +97,20 @@ class UiWorkflowTest {
         edt(() -> assertFalse(loginWindow.isDisplayable()));
     }
     @Test void changingVisitClearsPreviousCustomersDraft() throws Exception {
-        edt(() -> find(admin, "openTable", JButton.class).doClick()); await(() -> find(guest, "placeOrder", JButton.class).isEnabled());
-        edt(() -> find(guest, "quantity2", JSpinner.class).setValue(3));
+        // A guest can see a committed visit while the owner's response is still delayed.
+        // Waiting for the guest's button never proves the owner's next button is ready.
+        openReply = new CountDownLatch(1); openCommitted = new CountDownLatch(1);
+        edt(() -> find(admin, "openTable", JButton.class).doClick());
+        assertTrue(openCommitted.await(5, TimeUnit.SECONDS));
+        customer.refresh();
+        await(() -> find(guest, "placeOrder", JButton.class).isEnabled());
+        edt(() -> {
+            assertTrue(admin.busy);
+            assertFalse(find(admin, "closeEmpty", JButton.class).isEnabled());
+            find(guest, "quantity2", JSpinner.class).setValue(3);
+        });
+        openReply.countDown(); openReply = null;
+        await(() -> find(admin, "closeEmpty", JButton.class).isEnabled());
         edt(() -> find(admin, "closeEmpty", JButton.class).doClick()); await(() -> !find(guest, "placeOrder", JButton.class).isEnabled());
         await(() -> find(admin, "openTable", JButton.class).isEnabled()); edt(() -> find(admin, "openTable", JButton.class).doClick());
         await(() -> !admin.busy && admin.state.tables().get(0).visitId() != null);

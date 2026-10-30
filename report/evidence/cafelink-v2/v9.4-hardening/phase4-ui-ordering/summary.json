@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "scope": "Deterministic legacy Swing regression; no production behavior change",
+  "ciFailureEvidence": "https://github.com/hieupham03/Cafe-link/actions/runs/41054911689",
+  "cause": "Guest sees committed state before admin response completes; old test clicked a disabled admin button",
+  "fix": "Delay OPEN_TABLE response using existing fault-injector fixture, assert the split state, release and await the actual admin button",
+  "validation": [
+    {
+      "javaVersion": "24.0.2",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "javaVersion": "17.0.20.1",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "remoteCi": "PENDING",
+  "physicalPhone": "NOT_RUN",
+  "physicalLan": "NOT_RUN"
+}
