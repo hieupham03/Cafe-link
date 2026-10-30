@@ -1,12 +1,12 @@
 # Nghiệm thu LAN hai máy — TCP client desktop đối chứng
 
-Tài liệu này dành cho luồng desktop gốc còn giữ trong source để đối chứng. Demo chính V9.3 dùng browser và Gateway; xem [FINAL_RUNBOOK](FINAL_RUNBOOK.md) cho local/public và [checklist](WEB_USER_ACCEPTANCE.md) để kiểm điện thoại. Thông tin JDK/launcher gốc bên dưới không thay bằng chứng JRE 17 của gói V9.3.
+Tài liệu này dành cho luồng desktop gốc còn giữ trong source để đối chứng. Demo chính V9.4 dùng browser và Gateway; xem [FINAL_RUNBOOK](FINAL_RUNBOOK.md) cho local/public và [bộ nghiệm thu thiết bị](WEB_DEVICE_ACCEPTANCE.md) để kiểm điện thoại. Luồng LAN desktop ở đây có dữ liệu/tài khoản riêng, không thay nghiệm thu website hoặc public tunnel.
 
 **Trạng thái: NOT RUN.** Người dùng xác nhận hiện chỉ có một máy. Các kết quả hiện có chạy TCP loopback; nhiều JVM không thay thế hai máy vật lý. Script `lan-check.ps1` chỉ kiểm tra mở kết nối, không xác nhận nghiệp vụ.
 
 ## Chuẩn bị
 
-Hai máy Windows cùng mạng riêng, có JDK; bản đóng gói chứa JAR + `target/lib` nên không cần tải Maven/dependency để chạy. Chạy `scripts/verify-package.ps1` trước sử dụng. JDK 24.0.2 đã kiểm tra; target biên dịch 17, chưa xác nhận runtime 17 riêng. Ghi OS/JDK/IP và loại kết nối Wi-Fi/Ethernet vào biên bản.
+Hai máy Windows cùng mạng riêng, có Java theo launcher source; bản đóng gói chứa JAR + `target/lib` nên không cần tải Maven/dependency để chạy. Chạy `scripts/verify-package.ps1` trước sử dụng. JDK 24.0.2 đã kiểm; năm ca desktop Swing cũng đã đạt trên JRE 17.0.20.1 trong [kiểm phần 4](../../report/evidence/cafelink-v2/v9.4-hardening/phase4-ui-ordering/summary.json). Các phép kiểm đó dùng loopback, chưa xác nhận hai máy LAN. Ghi OS/Java/IP và loại kết nối Wi-Fi/Ethernet vào biên bản.
 
 Giải nén vào đường dẫn ASCII, có thể có khoảng trắng như `D:\CafeLink Demo\`. Trên máy kiểm tra JDK24/Windows Cp1252, tên thư mục tiếng Việt làm hỏng tham số launcher; ca này chưa đạt, không coi là được hỗ trợ.
 

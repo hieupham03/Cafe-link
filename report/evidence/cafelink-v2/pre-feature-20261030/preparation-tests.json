@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "unitTests": 9,
+  "unitFailures": 0,
+  "realLauncherChecks": 5,
+  "newPowerShellFilesParsed": 2,
+  "physicalPhone": "NOT_RUN",
+  "physicalLan": "NOT_RUN",
+  "audibleSpeakerOutput": "NOT_RUN",
+  "scope": "Preparation and software launcher checks, not physical acceptance"
+}

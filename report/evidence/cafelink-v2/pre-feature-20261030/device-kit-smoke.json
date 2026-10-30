@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "physicalPhone": "NOT_RUN",
+  "physicalLan": "NOT_RUN",
+  "audibleSpeakerOutput": "NOT_RUN",
+  "checks": [
+    "Kit launcher starts bundled JRE, TCP Core and database",
+    "Authenticated admin operates real Gateway/TCP business API",
+    "Only the dedicated UAT local profile is created",
+    "Launching and automated probing do not complete human cases",
+    "Owned launcher process tree and listeners are closed"
+  ],
+  "listenersClosed": true
+}

@@ -1,8 +1,8 @@
-# CafeLink V9.3 — demo Internet và QR cố định tại bàn
+# CafeLink V9.4 - demo Internet và QR cố định tại bàn
 
-> **Bản hiện tại V9.3:** nếu có gói chạy sẵn `dist/CafeLink-Web-V9.3.zip`, giải nén rồi chạy START-PUBLIC.cmd, không cần build/JDK/Node. ZIP này được giữ riêng, không nằm trong GitHub repository. Khi clone source, chạy các lệnh bên dưới. Xem [hướng dẫn chạy](FINAL_RUNBOOK.md) và [checklist tự kiểm thử](WEB_USER_ACCEPTANCE.md). Kết quả public Chromium nằm trong [báo cáo cuối](../../report/CafeLink_Final_Report.md); điện thoại/camera thật vẫn cần người dùng kiểm.
+> **Bản hiện tại V9.4:** gói đã kiểm tại workspace là `dist/CafeLink-Web-V9.4-RC3.zip`; giải nén rồi chạy START-PUBLIC.cmd, không cần build/JDK/Node. ZIP giữ local, không tải kèm khi clone GitHub. [Bộ nghiệm thu thiết bị](WEB_DEVICE_ACCEPTANCE.md) tạo bản sao/profile riêng từ RC3 để thử điện thoại mà không đổi dữ liệu đang dùng. Khi clone source, chạy các lệnh bên dưới.
 
-Màn khách chia năm vùng: Thực đơn, Đơn đã gọi, Hỗ trợ, Thanh toán và Giỏ hàng. Kiến trúc và kết quả kiểm thử hiện tại nằm trong [báo cáo cuối](../../report/CafeLink_Final_Report.md).
+Màn khách chia năm vùng: Thực đơn, Đơn đã gọi, Hỗ trợ, Thanh toán và Giỏ hàng. Kết quả public/phiên bản/hash mới nằm trong [báo cáo nâng cấp V9.4](../../report/CafeLink_Hardening_20261030.md); [báo cáo RC1](../../report/CafeLink_Final_Report.md) giữ kết quả cũ để đối chiếu. Điện thoại/camera thật vẫn cần người kiểm theo [checklist](WEB_USER_ACCEPTANCE.md).
 
 **Luồng mới:** mở nhận khách cho toàn quán một lần → khách quét QR bàn → tạo phiên riêng trên trình duyệt → gọi món, thanh toán giả lập → quầy pha chế/giao đồ → phiên tự hoàn tất. Nhân viên không phải quan sát khách rời đi để đóng bàn hoặc chờ khách mới để mở lượt.
 

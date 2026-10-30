@@ -2,6 +2,8 @@
 
 Source đã nâng cấp V9.4 sau mốc biên tập báo cáo bên dưới. Xem [báo cáo nâng cấp ngày 30/10](CafeLink_Hardening_20261030.md) để đọc các bản sửa, test mới, thực nghiệm và gói chạy tương ứng. DOCX người dùng đang sửa được giữ nguyên; số liệu V9.3 không tự chuyển thành số liệu V9.4.
 
+[Mốc trước tính năng tiếp theo](CafeLink_PreFeature_Readiness_20261030.md) ghi checkpoint, kit nghiệm thu sạch và các phần còn cần người có thiết bị thực hiện.
+
 ## Báo cáo hiện tại
 
 | Định dạng | File |

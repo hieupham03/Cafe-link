@@ -1,4 +1,6 @@
-# V9–V9.3 — Checklist người dùng tự kiểm thử
+# V9.4 - Checklist người dùng tự kiểm thử
+
+**Bản phần mềm hiện tại:** RC3, schema 11. Kết quả tự động và hash nằm trong [báo cáo V9.4](../../report/CafeLink_Hardening_20261030.md). Các dòng dưới đây vẫn là kết quả của người kiểm, không tự chuyển thành Đạt vì test máy đã qua. [Bộ nghiệm thu thiết bị](WEB_DEVICE_ACCEPTANCE.md) chuẩn bị profile riêng, launcher và mẫu ghi kết quả để thử sau.
 
 **Trạng thái ban đầu: chưa có kết quả kiểm thử thủ công của người dùng.** Tự điền Đạt/Lỗi, thiết bị và ghi chú sau khi thực hiện. Kiểm phần mềm tự động không thay hàng cần điện thoại/LAN thật.
 
@@ -28,6 +30,9 @@
 | U22 | Nhân viên tra mã hỗ trợ khi mất phản hồi | Tìm đúng kết quả mà không gửi lại/thu tiền tự động | Chưa chạy — V9.2 |
 | U23 | Từ quản lý bấm mở trang đặt món cùng browser, sau đó copy link sang browser riêng | Bản sửa QR giải thích phiên dùng chung; link còn đầy đủ mã, khách vào đúng bàn; admin không bị đăng xuất | Chưa chạy — bản sửa QR |
 | U24 | Dùng năm ô điều hướng khách, thêm/gửi/trả tiền và gọi/rút hỗ trợ trên máy tính/điện thoại | Năm vùng có khung riêng, tiêu đề không bị che; số giỏ/đơn/chưa trả/đang chờ cập nhật đúng; không tràn ngang | Chưa chạy — V9.3 |
+| U25 | Mở Chẩn đoán hệ thống, tra command ID; rời trang rồi quay lại | Số liệu TCP/DB đúng phạm vi quản lý; trạng thái cũ có cảnh báo khi không tải được; khách không xem được | Chưa chạy - V9.4 |
+| U26 | Để giao dịch quá hạn rồi xác nhận hoặc bắt đầu lần mới | Không tự PAID giao dịch hết hạn; lần cũ không thay kết quả lần mới | Chưa chạy - V9.4; có kiểm ranh giới tự động |
+| U27 | Thử bật chuông khi browser không phát được âm, sau đó thử lại | Có cảnh báo bằng chữ, nút chờ có thời hạn và không khóa nhận đơn/hỗ trợ | Chưa chạy - V9.4; loa thật cần người nghe |
 | R01 | Tạo mất phản hồi sau PLACE_ORDER đã nhận bằng fault có kiểm soát | Đối chiếu lại một đơn, không yêu cầu tạo đơn thay thế | Chưa chạy |
 | R02 | Chặn lời gọi trước khi Server nhận, rồi khôi phục | Bỏ lời gọi cũ; nếu còn cần, khách gọi lại | Chưa chạy |
 | R03 | Lượt cũ hoàn tất; khách mới quét; thử lệnh cũ | Không tác động lượt mới | Chưa chạy |

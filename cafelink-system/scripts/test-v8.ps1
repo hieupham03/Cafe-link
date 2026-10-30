@@ -7,6 +7,8 @@ try {
     if($LASTEXITCODE -ne 0){throw 'Workflow/configuration checks failed'}
     & python tools/test_build_gate.py
     if($LASTEXITCODE -ne 0){throw 'Build-to-gate matching checks failed'}
+    & python tools/test_device_acceptance.py
+    if($LASTEXITCODE -ne 0){throw 'Device acceptance preparation checks failed'}
     $regressionArgs=@('-NoProfile','-ExecutionPolicy','Bypass','-File','scripts/test-web.ps1')
     if($SkipInstall){$regressionArgs+='-SkipInstall'}
     if($SkipBrowserInstall){$regressionArgs+='-SkipBrowserInstall'}

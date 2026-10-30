@@ -6,6 +6,8 @@ CafeLink là bài tập lớn môn Lập trình mạng cho một quán café. Kh
 
 [Báo cáo nâng cấp ngày 30/10](../report/CafeLink_Hardening_20261030.md) ghi kết quả Java/Chromium/Firefox/WebKit, gói portable, phép đo mới và giới hạn. Dữ liệu kiểm hiện tại gồm 162 Java, 71 Chromium và 20 ca trên mỗi engine Firefox/WebKit; xem run/hash trong báo cáo thay vì cộng dồn với các mốc cũ.
 
+Trước khi cập nhật tính năng, dùng [checkpoint và trạng thái chuẩn bị](../report/CafeLink_PreFeature_Readiness_20261030.md). [Bộ nghiệm thu thiết bị](docs/WEB_DEVICE_ACCEPTANCE.md) được tạo bằng `scripts/prepare-device-acceptance.ps1` từ ZIP RC3 đã kiểm; dùng profile riêng và mẫu kết quả còn trống. Kit được tạo ở workspace local, không tải kèm khi clone repo.
+
 Bộ yêu cầu đầy đủ hiện dùng được phân loại tại [final-project-2](../final-project-2/README.md), gồm Instruction, Topics, README mẫu, SPECIFICATION và Submission. Xem [đặc tả áp dụng riêng cho CafeLink](docs/PROJECT_SPECIFICATION.md) và [đối chiếu yêu cầu](../report/CafeLink_Requirements_Alignment.md). SPECIFICATION trong bộ môn mô tả đề tài IoT khác; các thông số của nó không được gán cho CafeLink.
 
 Bản báo cáo hiện tại có 45 trang, chữ nội dung 13: [Word](../report/NhomXX_CafeLink_Report_Evidence13_20261029.docx), [PDF](../report/NhomXX_CafeLink_Report_Evidence13_20261029.pdf), [Markdown](../report/CafeLink_Technical_Paper_Evidence13_20261029.md). Nội dung giải thích kiến trúc/giao thức, nghiệp vụ, contribution và bằng chứng thực nghiệm; bản RC1 được giữ riêng để đối chiếu. Compilatio và nghiệm thu điện thoại vẫn chờ kết quả thật.
