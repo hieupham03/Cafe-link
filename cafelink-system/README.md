@@ -4,9 +4,9 @@ CafeLink là bài tập lớn môn Lập trình mạng cho một quán café. Kh
 
 **Source hiện tại: V9.4, schema 11.** [Nâng cấp vận hành và kiểm thử](docs/WEB_HARDENING.md) ghi các thay đổi sau mốc V9.3. Báo cáo [Evidence13](../report/CafeLink_Technical_Paper_Evidence13_20261029.md) và số liệu ngày 25/10 mô tả snapshot V9.3, chưa tự trở thành kết quả của mã mới. [Chỉ mục báo cáo](../report/README.md) phân biệt báo cáo với bản RC1 cũ; các việc còn chờ ở [SUBMISSION_READINESS.md](../report/SUBMISSION_READINESS.md).
 
-[Báo cáo nâng cấp ngày 30/10](../report/CafeLink_Hardening_20261030.md) ghi kết quả Java/Chromium/Firefox/WebKit, gói portable, phép đo mới và giới hạn. Dữ liệu kiểm hiện tại gồm 162 Java, 71 Chromium và 20 ca trên mỗi engine Firefox/WebKit; xem run/hash trong báo cáo thay vì cộng dồn với các mốc cũ.
+[Báo cáo nâng cấp ngày 30/10](../report/CafeLink_Hardening_20261030.md) ghi kết quả Java/Chromium/Firefox/WebKit, gói portable, phép đo mới và giới hạn. Dữ liệu kiểm hiện tại gồm 164 Java, 71 Chromium và 20 ca trên mỗi engine Firefox/WebKit; xem run/hash trong báo cáo thay vì cộng dồn với các mốc cũ.
 
-Trước khi cập nhật tính năng, dùng [checkpoint và trạng thái chuẩn bị](../report/CafeLink_PreFeature_Readiness_20261030.md). [Bộ nghiệm thu thiết bị](docs/WEB_DEVICE_ACCEPTANCE.md) được tạo bằng `scripts/prepare-device-acceptance.ps1` từ ZIP RC3 đã kiểm; dùng profile riêng và mẫu kết quả còn trống. Kit được tạo ở workspace local, không tải kèm khi clone repo.
+Trước khi cập nhật tính năng, dùng [checkpoint và trạng thái chuẩn bị](../report/CafeLink_PreFeature_Readiness_20261030.md). [Bộ nghiệm thu thiết bị](docs/WEB_DEVICE_ACCEPTANCE.md) được tạo bằng `scripts/prepare-device-acceptance.ps1` từ ZIP RC4 đã kiểm; dùng profile riêng và mẫu kết quả còn trống. Kit được tạo ở workspace local, không tải kèm khi clone repo.
 
 Bộ yêu cầu đầy đủ hiện dùng được phân loại tại [final-project-2](../final-project-2/README.md), gồm Instruction, Topics, README mẫu, SPECIFICATION và Submission. Xem [đặc tả áp dụng riêng cho CafeLink](docs/PROJECT_SPECIFICATION.md) và [đối chiếu yêu cầu](../report/CafeLink_Requirements_Alignment.md). SPECIFICATION trong bộ môn mô tả đề tài IoT khác; các thông số của nó không được gán cho CafeLink.
 

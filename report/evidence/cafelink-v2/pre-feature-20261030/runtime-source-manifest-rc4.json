@@ -1,0 +1,354 @@
+[
+  {
+    "path": "cafelink-system/pom.xml",
+    "sha256": "CA113950AA9E90A7635BECB344B578D73950FC1658B57A7AEB774ECBA4C026D5"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/client/BenchmarkClientMain.java",
+    "sha256": "F5126264356DAFD39754F642DEB61756BFC784B6FEADE661CFF5E0B738C07B4E"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/client/ClientMain.java",
+    "sha256": "EC86FDAAFCE7B604C2A3495D6CD1EECAA9FF78714AB125F28420B62484DF1E19"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/client/DemoSmokeMain.java",
+    "sha256": "A2207CB069F27456C02725218A2705F3E20DA97A202BDC9149101D0C51FE5B5F"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/client/NetworkClient.java",
+    "sha256": "9F1DDDBB785BB49D289F74A717782E1AA9AFEB74774C8F7C05C0F10096BB2078"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/client/Outbox.java",
+    "sha256": "BA80C9E11996B4F90158B9DCE2314973F0261A04D305109470482C2B726706DE"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/client/RecoveryExperimentMain.java",
+    "sha256": "8ED3EE20B36C9EA4ED66F4CBF45DDE1FFA19DC01145F49801C3F8FC91F9F4218"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/client/RecoverySmokeMain.java",
+    "sha256": "646EEC9AC676DFF417B477C292FCB75E38578431DEDD5E8BFC1C82FBF12ECF88"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/client/RemoteException.java",
+    "sha256": "7BDED5464ED9C41EDFC8486D7B1A0F310DBB259DF244A39E66DF785ADF94CD46"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/client/ui/AdminFrame.java",
+    "sha256": "79A323953A8C353725569150664FEF243741FEEBDD03E3B1782213F6470FB233"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/client/ui/DashboardFrame.java",
+    "sha256": "9CFA927AF794E552CFBE9B15B2CC9F9AEE01B049C3B17252FEA17AAC80158AEE"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/client/ui/Dialogs.java",
+    "sha256": "ACD2AA813160A86F4D1AC37DBE2A78E1F9F40C914EA5ABC79419288BAF46797E"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/client/ui/GuestFrame.java",
+    "sha256": "97AB2C7699064AC6D286D7F40CFE0A6D4D05E3638E9DA8B5B335608F46AF7B66"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/client/ui/LoginFrame.java",
+    "sha256": "C5EBD9D3B41B22891E7C46F436741EE07A6BC35F1D2153E8D578C5C6F2F5DB30"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/client/ui/Ui.java",
+    "sha256": "6A5BEBF17DBDF440F09BB3645BC3BCD169E11E46756FD96EE8C4FFAE40A4C2BD"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/common/ApplicationInfo.java",
+    "sha256": "2C16958B52F18D4A28AE925DEB5E990371F75834E16169F19215E37336A98298"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/common/Arguments.java",
+    "sha256": "D6CF70A94AFFE83982683B2CB770CEF5F727508FC28A29C4001D125AC23CBE29"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/common/Commands.java",
+    "sha256": "1D390283B6804AC0F152F54BFECEC81B96ED934DF9D9B90472045F621A816449"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/common/FrameCodec.java",
+    "sha256": "C87D0255E0ED10CB01D5E325BCDB802CF40889FA9D227EE5D6998654B0611832"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/common/Json.java",
+    "sha256": "70CC44016D6C26A10A1E7B7EE42EDADFEF0D7092F8545FA054C584503AAD48D9"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/common/Message.java",
+    "sha256": "89198A6C2CCFE4A761996D4738F425BA684EAF8A16EB1A97DB935CE1D8B7F0B0"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/common/Models.java",
+    "sha256": "2788CF42266ED0BF6B8D4F1475A22BADA8F7837E7A1066B33536B4F7705F4617"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/BackupCheckMain.java",
+    "sha256": "4306C1C4DC741B3CABA4EEDFDAC3388407876B137CA8356918832AEAD9D8F085"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/BusinessException.java",
+    "sha256": "0E89FFAD2F25012A8336DB560E7E3FA05F07451800DA01791251CD3C005DF752"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/CafeServer.java",
+    "sha256": "97E8D66B28316474905CA728637110C6B3C0768D0CD7D7A6848D5B2308E5F2C7"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/CafeService.java",
+    "sha256": "9D04D305F8B6191A8E86361A8E5A57BC595C5124BF8C3D87049D4C688966B9D0"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/CheckoutFlow.java",
+    "sha256": "33003F168DB09588D477874F5C2DC1F832AD80D4047BBA1E122041D6D5C8D931"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/CoreMetrics.java",
+    "sha256": "772FD9059182E310C4BA8C0EF9FBCDA4230536F43F751B098218AE083A37A88C"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/Database.java",
+    "sha256": "D5BC97703D3D0E1E902CF03C02297F6846735B0939B3728541227D81E5D445F0"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/EventFeed.java",
+    "sha256": "B565A8222B0368D7E55E8020C36BB52D0E1BF754F2CF8F07C353A36F5BF2B1C4"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/FaultInjector.java",
+    "sha256": "AFA7D08A44FE8DD62BAA48547460FC100A50A499A673DE7AF230AFA4930CF631"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/MenuCatalog.java",
+    "sha256": "7B0650D9A5D6EC5BFED51404F10F1933D1A009C439D9C691C575B0C3D21ECECC"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/OrderPayments.java",
+    "sha256": "4F0877728554A5942B3DD9B4C55FD93EA7948398857DFFB80B6BD953AAA9E82E"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/OrderResolutions.java",
+    "sha256": "C445B0DF90687CE9A202DD5D2DB9C21087B8B941019082D4C2D0249F9F6A19EF"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/PasswordHash.java",
+    "sha256": "85BC53A0AF06C988998588F991E630A15CEF705538455E3A628632782DF9BC2E"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/QrAccess.java",
+    "sha256": "433489A2258497D7FA803E72225EB7BA154DFBC6EF7E90B411A555393C6E9F6A"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/QrConfig.java",
+    "sha256": "9283021CF6F4E1DA6FD22A245182230E937324AC4CBB98D2934D06B8B63F567C"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/ServerMain.java",
+    "sha256": "BCBB0D32CBDE8E90319CC31694BCE8688E841C0EE1A069D0FAE3C8F5C00211FA"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/SupportActions.java",
+    "sha256": "6FA3D20924111A80AE21F05E1B7CA584234E71600341810431976F5F4359F74B"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/server/TableOrdering.java",
+    "sha256": "6F61EA76EE6C54EC4A9B37281BD40E20A892C52404C87D015C9A93D1172311D7"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/web/CoreHealthProbe.java",
+    "sha256": "936BAF2A0862A95AD2D5186639F15E9CE16108B8B1C70F3DB81CB754710A58E1"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/web/MenuImages.java",
+    "sha256": "F4419D5C5FE1421188B46EF3EFF765684FFE6D82E3C0D4E9D3E39DEF5367FDD1"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/web/SessionBridge.java",
+    "sha256": "9736268C4ABBA8A77464A01B3BA4B3408B1729802925A0CF2F8EEEF0139902BD"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/web/WebGateway.java",
+    "sha256": "D744ABB951D1BF4B81BC18F4D0F0C0A492887107D1DD7AC3A6E6842176A79350"
+  },
+  {
+    "path": "cafelink-system/src/main/java/com/cafelink/web/WebMain.java",
+    "sha256": "8F2417883DF327CCFA3E64F6B155033C5D86B6F8E3BBA4AA0F7DB46D7E9A6A5E"
+  },
+  {
+    "path": "cafelink-system/web/package-lock.json",
+    "sha256": "B1C0E0BFFF289812642AE5B5C166F40C9123792D11B9458A5F9270D2FAEEBF6C"
+  },
+  {
+    "path": "cafelink-system/web/package.json",
+    "sha256": "CC98F15F801C00B1D11EDF93BBFE663978643D7E4E0DDD89C493EC8BBAC6841F"
+  },
+  {
+    "path": "cafelink-system/web/src/App.tsx",
+    "sha256": "5BE4008C464362BE1285922A13A2EAE8E548294FC88E9C5F2BCC57CB70BCFC30"
+  },
+  {
+    "path": "cafelink-system/web/src/Assistance.tsx",
+    "sha256": "46F2672B02CB3A26EC2EBA41D8765DCD475388AC0A2EB2C1CF76BD425F421F54"
+  },
+  {
+    "path": "cafelink-system/web/src/AutomaticTablePanel.tsx",
+    "sha256": "ABBC2ABC78FD93E2B7E100552A1D82FCE74CC4F44430CEBE84E032F4415B15AD"
+  },
+  {
+    "path": "cafelink-system/web/src/CartNote.tsx",
+    "sha256": "7C0DA1867C3A07844C6EEB6A1A86935CD565BF10F055FD49F603554D3C5B0FD7"
+  },
+  {
+    "path": "cafelink-system/web/src/CheckoutControls.tsx",
+    "sha256": "BB6480BE0BB8FD2E8374283EA6E3EAC153D00A324F0A794428A73DC748388BF0"
+  },
+  {
+    "path": "cafelink-system/web/src/Dialog.tsx",
+    "sha256": "0DC95A8E48EA3884237B01F99E414A8D3DBC8280BC56EF28B2BD1940811E0AAA"
+  },
+  {
+    "path": "cafelink-system/web/src/DrinkArt.tsx",
+    "sha256": "D8C7F89D0B604862319D9D351B3631B11EA53C2F6DB090962643D8FE01938922"
+  },
+  {
+    "path": "cafelink-system/web/src/Guest.tsx",
+    "sha256": "C60BDF6D78C9BA2646C3E11B9E1646DD0C5F6225341410EA86D463CAE6E9AF69"
+  },
+  {
+    "path": "cafelink-system/web/src/GuestEntryConflict.tsx",
+    "sha256": "119B389833C85CEEFAAE39A1BCFA02CDBE63C7F8B2527D292D041284187752EC"
+  },
+  {
+    "path": "cafelink-system/web/src/GuestLink.tsx",
+    "sha256": "173766982364DF367FC9EAA59DF0809DFA75350B09602A7A26B5F2BE898C09C4"
+  },
+  {
+    "path": "cafelink-system/web/src/GuestMenu.tsx",
+    "sha256": "E02BF05B568DF93761DC269DEDFBC5F53A061C6D81CE0AEE64ED067EB6222C55"
+  },
+  {
+    "path": "cafelink-system/web/src/GuestOrders.tsx",
+    "sha256": "93E6FFC6F424F0E2A9A30F4A7DB3E86275C71E551C74D8624F83E11901DE4128"
+  },
+  {
+    "path": "cafelink-system/web/src/GuestPayments.tsx",
+    "sha256": "AC00C0C772B616F589BE317634B3A8CFFE0CA01022F0DE8DDA137F4EFD70C43C"
+  },
+  {
+    "path": "cafelink-system/web/src/GuestSectionHeading.tsx",
+    "sha256": "71C7CCD1E10369EC47C3468F51ADB10CDFFEBB8CD4E605C8BD363D397339ECD8"
+  },
+  {
+    "path": "cafelink-system/web/src/GuestSupport.tsx",
+    "sha256": "49E50DFEC0A5370CC5F2DFE1107E6205A16F83A08736CE71040F84B1DCE92F5A"
+  },
+  {
+    "path": "cafelink-system/web/src/GuestWorkspace.tsx",
+    "sha256": "15F4117FC824661A686B0460AC33AA2168E5B03DB7B36FFC7797D1EBC98B2B29"
+  },
+  {
+    "path": "cafelink-system/web/src/Icons.tsx",
+    "sha256": "F6F45FB34D201C1F526153A5C166E6104C5BE77F000C9EA07DB0CB7B3FC50A68"
+  },
+  {
+    "path": "cafelink-system/web/src/MenuAdmin.tsx",
+    "sha256": "8169165B55D2299AA19BE5FD647A9C1A09068872267CDC99B861966F9E28A0FE"
+  },
+  {
+    "path": "cafelink-system/web/src/Notifications.tsx",
+    "sha256": "8A9268185B8309F8E2A51BC5BB9B90BACE83FF36BF09553313EA77857B5F6D20"
+  },
+  {
+    "path": "cafelink-system/web/src/OrderResolution.tsx",
+    "sha256": "6D2336CE4397DE9053A0C5C2795F8CF3A0AA4E60C072ED9DD20B23F27A544F48"
+  },
+  {
+    "path": "cafelink-system/web/src/PrepaidClose.tsx",
+    "sha256": "2B9E714691DF1B0BB3663DAB85678363F761322493349CE3C3919F6B44EB65B8"
+  },
+  {
+    "path": "cafelink-system/web/src/SalesHistory.tsx",
+    "sha256": "9D4909888878D616A25A60B6D51818F54F3A8E6734D0B544006A17373F6798FF"
+  },
+  {
+    "path": "cafelink-system/web/src/StaffRecovery.tsx",
+    "sha256": "24B87F129C83E79D77003D5F6BA2B8AE9A0FC22D9D20D44722AD7350F17106EE"
+  },
+  {
+    "path": "cafelink-system/web/src/SystemDiagnostics.tsx",
+    "sha256": "EBF0F7F5E3CB2904C5F1F6CEC2EDAA0DF68409F82F9892FE098A4DAC7075F876"
+  },
+  {
+    "path": "cafelink-system/web/src/VisitQrPanel.tsx",
+    "sha256": "17227A6E157BED69392EC2C0ADB8316752996763F301EA6D5A9F1DE6945BB451"
+  },
+  {
+    "path": "cafelink-system/web/src/Worklists.tsx",
+    "sha256": "A344FF970110DD1C951E8C6D9733C4B54AE77DA2A4D674AC627B28EEA539E7E4"
+  },
+  {
+    "path": "cafelink-system/web/src/api.ts",
+    "sha256": "62814DE3FEA95745CB6A505AB704C2550E53B443CC757CC6D84A2D8ADC72FE1C"
+  },
+  {
+    "path": "cafelink-system/web/src/guest-zones.css",
+    "sha256": "B6FB871BCA7E6EE7E4A175A05AA43E9EC859D4AD2B126BAA204F6DAD0032BAC5"
+  },
+  {
+    "path": "cafelink-system/web/src/journal.ts",
+    "sha256": "B76A253D6BC3AB4F923534E79F2CD8069F2DECDA42DFC3202504996F1D69380B"
+  },
+  {
+    "path": "cafelink-system/web/src/main.tsx",
+    "sha256": "C8FED7CBC46EE4546C559019F20C6E51AC80CB0526D0B7E3CAFA870EB1724745"
+  },
+  {
+    "path": "cafelink-system/web/src/models.ts",
+    "sha256": "4CAAE00E7D505AE6386C4B16095D79D034A3305F66DEFC6E4D632C75AF7DB1A8"
+  },
+  {
+    "path": "cafelink-system/web/src/orderRecovery.ts",
+    "sha256": "D90FBCDC479DDBBAB18387CEFF67B3D6A6610F285B502188490CC2C03941E644"
+  },
+  {
+    "path": "cafelink-system/web/src/shop.css",
+    "sha256": "D10FF2C5D35A95D125DE209A78FE13ED7E09374FBA87AD11DC4C84560BB717D2"
+  },
+  {
+    "path": "cafelink-system/web/src/staffJournal.ts",
+    "sha256": "A68BDFF623B77BF4F40910F8E1AE341D03B725F50A165FC0ADF876CCE9C8E6C2"
+  },
+  {
+    "path": "cafelink-system/web/src/style.css",
+    "sha256": "853F300F74ECFC25000FEC8841FC072BFDB5BFE91B2B98DB6FA9D9694B19CDC3"
+  },
+  {
+    "path": "cafelink-system/web/src/system-diagnostics.css",
+    "sha256": "E15C4CFB508AB4E35E90EEC3980E9F719F9F5913CEC50E596E8242CC3BDD9039"
+  },
+  {
+    "path": "cafelink-system/web/src/ui.tsx",
+    "sha256": "69D1D5EF84256FBBC181E736E01DF62DEC293FF7781AEB363B2613F029C01213"
+  },
+  {
+    "path": "cafelink-system/web/src/useGuestConnection.ts",
+    "sha256": "C5C79392E2D1599A293F16239AB473B7835EB6317D10A0D95266FB5EAE62BB19"
+  },
+  {
+    "path": "cafelink-system/web/src/v5.css",
+    "sha256": "B840BE82DDC146FFAE78345BE6DD5BBC9729EEEF9ACFC241F80D4A729B374FC5"
+  },
+  {
+    "path": "cafelink-system/web/src/v7.css",
+    "sha256": "AC55E0CA8DCCC70CB41012ABC4B98762D8B46C8CBC60FE1168DA3E08547F586B"
+  },
+  {
+    "path": "cafelink-system/web/vite.config.ts",
+    "sha256": "55D788FB9BB0FF9FC9D6CEB8C05F8D04A9D388A4EFFA40C4B5C19323C82DAC18"
+  }
+]

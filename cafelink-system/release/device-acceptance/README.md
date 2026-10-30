@@ -1,6 +1,6 @@
 # CafeLink V9.4 - Bộ nghiệm thu thiết bị
 
-Ứng dụng ở `app/` lấy từ ZIP RC3 đã kiểm SHA-256. Bộ này dùng JRE đi kèm; máy chạy không cần JDK, Node hoặc Python. Tất cả ca trong `RESULTS.json` ban đầu là `NOT_RUN`. `AUTOMATED_BASELINE.json` chỉ ghi bằng chứng phần mềm của bản nguồn.
+Ứng dụng ở `app/` lấy từ ZIP đã kiểm SHA-256, ghi rõ trong `AUTOMATED_BASELINE.json`. Bộ này dùng JRE đi kèm; máy chạy không cần JDK, Node hoặc Python. Tất cả ca trong `RESULTS.json` ban đầu là `NOT_RUN`. Bằng chứng phần mềm không thay nghiệm thu thiết bị thật.
 
 1. Mở `START-PUBLIC.cmd`, đợi terminal in địa chỉ HTTPS và mật khẩu tạm.
 2. Đăng nhập bằng địa chỉ/mật khẩu đó, bấm **Mở tất cả bàn**, mở **Bàn 1** và hiển thị QR.

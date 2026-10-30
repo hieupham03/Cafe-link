@@ -1,10 +1,10 @@
 # CafeLink V9.4 - Nghiệm thu thiết bị trước khi cập nhật tính năng
 
-Bộ kiểm phần mềm của RC3 đã đạt; các ca dưới đây vẫn **NOT_RUN cho tới khi người kiểm thực hiện thật**. Không cần hoàn thành bìa/Compilatio để tạo mốc source trước nâng cấp. Các công việc nộp môn vẫn được theo dõi riêng.
+Bộ kiểm phần mềm của RC4 đã đạt; các ca dưới đây vẫn **NOT_RUN cho tới khi người kiểm thực hiện thật**. Không cần hoàn thành bìa/Compilatio để tạo mốc source trước nâng cấp. Các công việc nộp môn vẫn được theo dõi riêng.
 
 ## Chuẩn bị một lần
 
-Tại `cafelink-system`, tạo kit từ archive RC3 đã xác minh:
+Tại `cafelink-system`, tạo kit từ archive RC4 đã xác minh:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/prepare-device-acceptance.ps1
@@ -24,7 +24,7 @@ Lệnh kiểm SHA-256, phiên bản/schema và đường dẫn ZIP, giải nén 
 | Mã | Thực hiện | Điều kiện để ghi PASS |
 |---|---|---|
 | P01 | A tắt Wi-Fi, dùng 4G/5G, quét QR; chọn món, xem giỏ, thanh toán giả lập; quầy chuyển đủ trạng thái | Đúng bàn/món/tổng tiền; quầy chỉ pha chế sau PAID; điện thoại nhận tiến độ và kết thúc phiên |
-| P02 | Hai thiết bị/browser độc lập cùng quét QR Bàn 1; A đặt món và gửi hỗ trợ, B xem trang của mình | Cùng địa chỉ bàn nhưng khác đơn/giỏ/hỗ trợ. Hai tab trong một profile không tính là hai thiết bị độc lập |
+| P02 | Hai thiết bị thật dùng browser/profile độc lập cùng quét QR Bàn 1; A đặt món và gửi hỗ trợ, B xem trang của mình | Cùng địa chỉ bàn nhưng khác đơn/giỏ/hỗ trợ. Hai tab hoặc hai browser trên cùng một máy không thay nghiệm thu hai thiết bị |
 | P03 | Trên màn nhỏ: tìm món, mở chi tiết, nhập ghi chú, tăng/giảm/xóa, xoay ngang, mở bàn phím; đi qua năm vùng | Không tràn ngang/che nút; tổng và ghi chú đúng; có thể đóng hộp thoại, trở lại giỏ và tiếp tục |
 | P04 | Khi có giỏ nháp và một đơn đang xử lý, bật chế độ máy bay; chờ báo lỗi, bật lại và đối chiếu | Giữ nháp, có đường kết nối lại; không tự đặt thêm đơn; đơn đã được nhận vẫn theo dõi được. Không mặc định mất mạng đã tạo đúng ranh giới mất ACK |
 | P05 | Với đơn mới: thanh toán thử FAILED/CANCELLED, thử lại SUCCESS; bấm nhanh khi đang chờ; tải lại | Không PAID do thất bại; thử lại giao dịch không tạo đơn mới; số đơn và lịch sử thu tiền đúng |
@@ -45,4 +45,4 @@ Khi báo lỗi, ghi mã ca, bước đã bấm, mong đợi/thực tế và thô
 
 ## Mốc source trước tính năng mới
 
-Checkpoint Git bảo vệ source đã commit; RC3 ZIP bảo vệ bản chạy đã kiểm. Mốc này không đóng băng DOCX người dùng đang sửa và không đổi các kết quả vật lý còn chờ. Trước sửa tính năng: nhánh/worktree riêng từ checkpoint, mô tả hành vi cần đổi và bất biến cần giữ; sau sửa chạy test liên quan, rồi gate đầy đủ trước đóng gói. [Trạng thái chuẩn bị source tại checkpoint](https://github.com/hieupham03/Cafe-link/blob/checkpoint/v9.4-before-features-20261030/report/CafeLink_PreFeature_Readiness_20261030.md) ghi mốc và hash thực tế.
+Checkpoint Git bảo vệ source đã commit; RC4 ZIP bảo vệ bản chạy đã kiểm. Mốc này không đóng băng DOCX người dùng đang sửa và không đổi các kết quả vật lý còn chờ. Trước sửa tính năng: nhánh/worktree riêng từ checkpoint, mô tả hành vi cần đổi và bất biến cần giữ; sau sửa chạy test liên quan, rồi gate đầy đủ trước đóng gói. [Trạng thái chuẩn bị source tại checkpoint](https://github.com/hieupham03/Cafe-link/blob/checkpoint/v9.4-before-features-20261030/report/CafeLink_PreFeature_Readiness_20261030.md) ghi mốc và hash thực tế.

@@ -1,5 +1,5 @@
 {
-  "status": "FOCUSED_PASS_FULL_GATE_PENDING",
+  "status": "PASS",
   "observedCiFailure": {
     "main": "https://github.com/hieupham03/Cafe-link/actions/runs/41073741905",
     "submissionControl": "https://github.com/hieupham03/Cafe-link/actions/runs/41073742542",
@@ -35,5 +35,14 @@
   "fix": "Consume currently available request content before committing JSON response headers. Explicitly advertise Connection: close if content is incomplete; no blocking drain or automatic command retry.",
   "runtimeChanged": true,
   "requiresNewPackage": true,
-  "physicalPhone": "NOT_RUN"
+  "physicalPhone": "NOT_RUN",
+  "fullGate": {
+    "javaTests": 164,
+    "chromiumPassed": 71,
+    "summary": "web-gate.json"
+  },
+  "sources": [
+    "https://javadoc.jetty.org/jetty-12/org/eclipse/jetty/server/Request.html#consumeAvailable()",
+    "https://github.com/jetty/jetty.project/blob/jetty-12.0.40/jetty-core/jetty-server/src/main/java/org/eclipse/jetty/server/internal/HttpChannelState.java"
+  ]
 }

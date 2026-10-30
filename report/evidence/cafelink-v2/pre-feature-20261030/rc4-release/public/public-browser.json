@@ -1,0 +1,18 @@
+{
+  "startedAt": "2026-10-30T15:03:14.605Z",
+  "origin": "https://hiring-flavor-meaning-appear.trycloudflare.com",
+  "status": "PASS",
+  "physicalPhone": "NOT_RUN",
+  "checks": {
+    "publicTcpDatabaseReady": true,
+    "secureCookie": true,
+    "publicQrOrigin": true,
+    "secureBrowserRecoveryApis": true,
+    "privateOrdersAndPayment": true,
+    "liveWssAndAutomaticCompletion": true,
+    "rejectWrongOrigin": true,
+    "defaultAdminPasswordRejected": true
+  },
+  "failedResources": [],
+  "finishedAt": "2026-10-30T15:03:33.910Z"
+}

@@ -1,13 +1,12 @@
 {
   "status": "SOFTWARE_PREPARATION_COMPLETE",
-  "createdAt": "2026-10-30T21:34:22.490157+07:00",
+  "createdAt": "2026-10-30T22:07:04.188991+07:00",
   "checkpointTag": "checkpoint/v9.4-before-features-20261030",
-  "runtimeUnchangedFrom": "90d211695bcbf86e62228af010c50d18ea2ff2d8",
   "runtimeSourceFiles": 88,
-  "archiveSha256": "6FE0B497F2B1CBBA404312A6977B6E3D9F31ACBF2510986CB1C7197EBA4A7BB3",
+  "archiveSha256": "2E06474DF9730A83F5370B139231D4AD85529831CE9E5EFF1087F5953256F34F",
   "sealedE0Sha256": "60A1E6666F4BAC52B2F0B868A9AAFD9024563991AB22777076D639416E8766EB",
   "packageManifestFilesVerified": 360,
-  "deviceKit": "dist/CafeLink-Device-UAT-V9.4-20261030",
+  "deviceKit": "dist/CafeLink-Device-UAT-V9.4-RC4-20261030",
   "deviceKitStatus": "PREPARED",
   "deviceCasesNotRun": 9,
   "kitContainsRuntimeData": false,
@@ -19,8 +18,22 @@
   "humanUsability": "NOT_RUN",
   "physicalResultsNotReplacedBySoftwareChecks": true,
   "userEditedDocx": "PRESERVED_NOT_STAGED",
-  "newCi": "PENDING",
-  "documentLinksChecked": 9,
+  "newCi": "PENDING_FINAL_PUBLICATION",
+  "documentLinksChecked": 71,
   "documentLinksBroken": 0,
-  "docxSha256": "8354488E80CA1FF5C1792B7375E5A173E90DB9313835308558208B736CACF1E8"
+  "docxSha256": "8354488E80CA1FF5C1792B7375E5A173E90DB9313835308558208B736CACF1E8",
+  "runtimeComparedWith": "90d211695bcbf86e62228af010c50d18ea2ff2d8",
+  "runtimeChangedFiles": [
+    "cafelink-system/src/main/java/com/cafelink/web/WebGateway.java"
+  ],
+  "priorRc3ArchiveSha256": "6FE0B497F2B1CBBA404312A6977B6E3D9F31ACBF2510986CB1C7197EBA4A7BB3",
+  "priorDeviceKit": "dist/CafeLink-Device-UAT-V9.4-20261030",
+  "gateEvidenceUnitTests": 3,
+  "javaTests": 164,
+  "chromiumTests": 71,
+  "firefoxTests": 20,
+  "webkitTests": 20,
+  "portableChecks": 23,
+  "publicChecks": 8,
+  "documentFilesChecked": 8
 }

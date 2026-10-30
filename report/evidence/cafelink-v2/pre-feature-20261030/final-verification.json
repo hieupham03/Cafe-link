@@ -1,0 +1,51 @@
+{
+  "softwareVerificationStatus": "PASS",
+  "scope": "Selected automated software and portable checks; physical acceptance remains NOT_RUN. Public/CI follow-up explicitly recorded separately.",
+  "sourceCommit": "b26e45be287145057d45350b41aac902541a2d03",
+  "runtimeFixCommit": "0cb97bf",
+  "java": {
+    "tests": 164,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "chromium": {
+    "startTime": "2026-10-30T14:55:59.304Z",
+    "duration": 185548.89199999996,
+    "expected": 71,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 0
+  },
+  "firefoxPassed": 20,
+  "webkitPassed": 20,
+  "preparationUnitTests": 9,
+  "gateEvidenceUnitTests": 3,
+  "archive": "dist/CafeLink-Web-V9.4-RC4.zip",
+  "archiveSha256": "2E06474DF9730A83F5370B139231D4AD85529831CE9E5EFF1087F5953256F34F",
+  "artifactHashesMatch": true,
+  "packageManifestFilesVerified": 360,
+  "portableChecks": 23,
+  "publicChecksStatus": "PASS",
+  "ciStatus": "PENDING_FINAL_PUBLICATION",
+  "testListenersClosed": true,
+  "physicalPhone": "NOT_RUN",
+  "physicalLan": "NOT_RUN",
+  "audibleSpeakerOutput": "NOT_RUN",
+  "humanUsability": "NOT_RUN",
+  "realPaymentProvider": "NOT_INTEGRATED",
+  "sealedE0Sha256": "60A1E6666F4BAC52B2F0B868A9AAFD9024563991AB22777076D639416E8766EB",
+  "priorRuntimeMeasurements": "RC3 only; 94 missed offered slots at 14 clients remain a recorded limitation, not a new RC4 measurement.",
+  "publicChecks": 8,
+  "publicListenersClosed": true,
+  "launcherSoftwareChecks": 5,
+  "launcherListenersClosed": true,
+  "remoteCi": {
+    "sourceStatus": "PASS",
+    "sourceRuns": [
+      "https://github.com/hieupham03/Cafe-link/actions/runs/41075763295",
+      "https://github.com/hieupham03/Cafe-link/actions/runs/41075763985"
+    ],
+    "publicationStatus": "PENDING"
+  }
+}

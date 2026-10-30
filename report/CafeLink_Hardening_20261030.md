@@ -1,5 +1,7 @@
 # CafeLink V9.4 - Nâng cấp độ tin cậy và kết quả kiểm thử
 
+**Cập nhật sau mốc RC3:** trong bước chuẩn bị tính năng tiếp theo, CI phát hiện lỗi kết nối ở ca từ chối yêu cầu giả mạo. Đã bổ sung xử lý nội dung HTTP chưa nhận đủ và lưu JUnit cả khi gate thất bại. [Hồ sơ chuẩn bị](CafeLink_PreFeature_Readiness_20261030.md) ghi kết quả mới, bản RC4 và kit nghiệm thu. Số liệu RC3 bên dưới được giữ đúng mốc; không tự chuyển thành phép đo của RC4.
+
 Ngày thực hiện: 30/10/2026. Phạm vi: source hiện hành sau V9.3; không sửa báo cáo DOCX người dùng đang biên tập, dữ liệu thật, baseline E0 hoặc bộ RC1 cũ. Mỗi phần được kiểm và push thành commit riêng.
 
 ## 1. Những thay đổi đã thực hiện
@@ -42,7 +44,7 @@ CI khi công bố hồ sơ còn phát hiện một assertion tìm lời phản h
 
 ### Kiểm gói và đường public
 
-**Gói mới nhất được kiểm: `dist/CafeLink-Web-V9.4-RC3.zip`.** Gói này chứa frontend sau sửa âm thanh và được ghép đúng gate 20:11. SHA-256:
+**Gói của mốc kiểm dưới đây: `dist/CafeLink-Web-V9.4-RC3.zip`.** Gói này chứa frontend sau sửa âm thanh và được ghép đúng gate 20:11. SHA-256:
 
 ```text
 6FE0B497F2B1CBBA404312A6977B6E3D9F31ACBF2510986CB1C7197EBA4A7BB3

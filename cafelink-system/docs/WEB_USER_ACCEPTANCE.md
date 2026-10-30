@@ -1,6 +1,6 @@
 # V9.4 - Checklist người dùng tự kiểm thử
 
-**Bản phần mềm hiện tại:** RC3, schema 11. Kết quả tự động và hash nằm trong [báo cáo V9.4](../../report/CafeLink_Hardening_20261030.md). Các dòng dưới đây vẫn là kết quả của người kiểm, không tự chuyển thành Đạt vì test máy đã qua. [Bộ nghiệm thu thiết bị](WEB_DEVICE_ACCEPTANCE.md) chuẩn bị profile riêng, launcher và mẫu ghi kết quả để thử sau.
+**Bản phần mềm hiện tại:** RC4, schema 11. Kết quả tự động và hash nằm trong [báo cáo V9.4](../../report/CafeLink_Hardening_20261030.md). Các dòng dưới đây vẫn là kết quả của người kiểm, không tự chuyển thành Đạt vì test máy đã qua. [Bộ nghiệm thu thiết bị](WEB_DEVICE_ACCEPTANCE.md) chuẩn bị profile riêng, launcher và mẫu ghi kết quả để thử sau.
 
 **Trạng thái ban đầu: chưa có kết quả kiểm thử thủ công của người dùng.** Tự điền Đạt/Lỗi, thiết bị và ghi chú sau khi thực hiện. Kiểm phần mềm tự động không thay hàng cần điện thoại/LAN thật.
 

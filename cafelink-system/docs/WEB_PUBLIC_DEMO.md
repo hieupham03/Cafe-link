@@ -1,6 +1,6 @@
 # CafeLink V9.4 - demo Internet và QR cố định tại bàn
 
-> **Bản hiện tại V9.4:** gói đã kiểm tại workspace là `dist/CafeLink-Web-V9.4-RC3.zip`; giải nén rồi chạy START-PUBLIC.cmd, không cần build/JDK/Node. ZIP giữ local, không tải kèm khi clone GitHub. [Bộ nghiệm thu thiết bị](WEB_DEVICE_ACCEPTANCE.md) tạo bản sao/profile riêng từ RC3 để thử điện thoại mà không đổi dữ liệu đang dùng. Khi clone source, chạy các lệnh bên dưới.
+> **Bản hiện tại V9.4:** gói đã kiểm tại workspace là `dist/CafeLink-Web-V9.4-RC4.zip`; giải nén rồi chạy START-PUBLIC.cmd, không cần build/JDK/Node. ZIP giữ local, không tải kèm khi clone GitHub. [Bộ nghiệm thu thiết bị](WEB_DEVICE_ACCEPTANCE.md) tạo bản sao/profile riêng từ RC4 để thử điện thoại mà không đổi dữ liệu đang dùng. Khi clone source, chạy các lệnh bên dưới.
 
 Màn khách chia năm vùng: Thực đơn, Đơn đã gọi, Hỗ trợ, Thanh toán và Giỏ hàng. Kết quả public/phiên bản/hash mới nằm trong [báo cáo nâng cấp V9.4](../../report/CafeLink_Hardening_20261030.md); [báo cáo RC1](../../report/CafeLink_Final_Report.md) giữ kết quả cũ để đối chiếu. Điện thoại/camera thật vẫn cần người kiểm theo [checklist](WEB_USER_ACCEPTANCE.md).
 

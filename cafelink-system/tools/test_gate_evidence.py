@@ -10,13 +10,17 @@ GATE = Path(__file__).resolve().parents[1] / "scripts/test-web.ps1"
 
 
 class JavaFailureEvidence(unittest.TestCase):
-    def run_failed_gate(self, produce_xml):
+    def run_failed_gate(self, produce_xml, stale_xml=False):
         with tempfile.TemporaryDirectory(prefix="cafelink-failed-gate-") as directory:
             workspace = Path(directory)
             project = workspace / "project"
             scripts = project / "scripts"
             scripts.mkdir(parents=True)
             shutil.copyfile(GATE, scripts / GATE.name)
+            if stale_xml:
+                reports = project / "target/surefire-reports"
+                reports.mkdir(parents=True)
+                (reports / "TEST-old.xml").write_text('<testsuite tests="20" failures="0" errors="0" skipped="0" />')
             # Exercise the real orchestrator with a failing compiler/test process.
             # No app, database or user's Maven reports are touched by this fixture.
             fixture = "param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Arguments)\n"
@@ -49,6 +53,9 @@ class JavaFailureEvidence(unittest.TestCase):
 
     def test_compiler_failure_does_not_fabricate_junit_totals(self):
         self.run_failed_gate(False)
+
+    def test_compiler_failure_cannot_reuse_old_passing_reports(self):
+        self.run_failed_gate(False, stale_xml=True)
 
 
 if __name__ == "__main__":

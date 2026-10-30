@@ -10,7 +10,7 @@ import zipfile
 
 PROJECT = Path(__file__).resolve().parents[1]
 WORKSPACE = PROJECT.parent
-DEFAULT_PROOF = WORKSPACE / "report/evidence/cafelink-v2/v9.4-hardening/final-verification.json"
+DEFAULT_PROOF = WORKSPACE / "report/evidence/cafelink-v2/pre-feature-20261030/final-verification.json"
 CASES = [
     ("P01", "Camera QR and ordering on a real phone using mobile data"),
     ("P02", "Two real devices scan one QR and keep orders private"),

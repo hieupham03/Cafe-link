@@ -6,10 +6,10 @@
     "errors": 1
   },
   "green": {
-    "tests": 2,
+    "tests": 3,
     "failures": 0,
     "errors": 0
   },
-  "scope": "Actual PowerShell orchestrator with isolated failing Java fixtures: preserve failed JUnit; compiler failure with no XML has NOT_PRODUCED and no fabricated totals. Production app was not started.",
+  "scope": "Actual PowerShell orchestrator with isolated failing Java fixtures: preserve failed JUnit; compiler failure with no XML has NOT_PRODUCED and no fabricated totals. Production app was not started. A third case verifies stale passing reports are removed before a compiler failure.",
   "sourceTests": "cafelink-system/tools/test_gate_evidence.py"
 }

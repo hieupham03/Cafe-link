@@ -2,7 +2,9 @@
 
 Ngày bắt đầu: 30/10/2026. Căn cứ mã nguồn trước nâng cấp: commit `8ee93ca`, ứng dụng V9.3/schema 11. Các báo cáo và phép đo V9.3 đã lưu vẫn mô tả đúng snapshot của chúng; không dùng lại số test hoặc số đo cũ để chứng nhận mã sau sửa.
 
-Đợt nâng cấp hiện đã kiểm xong các phần bên dưới: **162 Java, 71 Chromium, 20 Firefox, 20 WebKit; 120 ca phục hồi; 12 lượt tải; 23 nhóm kiểm gói và 8 kiểm public**. Gói mới nhất tại workspace là **CafeLink-Web-V9.4-RC3**. [Báo cáo kết quả/hash và cách chạy](../../report/CafeLink_Hardening_20261030.md) ghi cả 94 slot tải chưa phát ở mức 14 khách và các thử nghiệm vật lý còn chờ. Các số này không phải tỷ lệ bao phủ hoặc chứng minh không còn lỗi.
+Mốc RC3 đã kiểm các phần bên dưới: **162 Java, 71 Chromium, 20 Firefox, 20 WebKit; 120 ca phục hồi; 12 lượt tải; 23 nhóm kiểm gói và 8 kiểm public**. [Báo cáo kết quả/hash và cách chạy](../../report/CafeLink_Hardening_20261030.md) ghi cả 94 slot tải chưa phát ở mức 14 khách và các thử nghiệm vật lý còn chờ. Các số này không phải tỷ lệ bao phủ hoặc chứng minh không còn lỗi.
+
+Sau mốc trên có thêm bản sửa phản hồi HTTP khi từ chối yêu cầu chưa gửi đủ nội dung. [Mốc chuẩn bị cập nhật tính năng](../../report/CafeLink_PreFeature_Readiness_20261030.md) ghi gate, gói RC4 và kit nghiệm thu tương ứng; không dùng hash hoặc số đo RC3 để chứng nhận RC4.
 
 ## Cách thực hiện
 
