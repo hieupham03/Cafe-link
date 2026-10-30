@@ -70,10 +70,10 @@ Fingerprint dùng JSON sắp khóa, giữ thứ tự mảng và escaping U+2028/
 ## 4. Kiểm thử tái lập
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V9.3
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V9.4
 ```
 
-Runner tạo fixture DB/server riêng trên cổng 18080/18081, không chiếm/dừng demo đang chạy. Giữ hai cổng test trống trước khi chạy. Bản chốt có 142 Java + 65 Chromium PASS; xem [evidence gate](../../report/evidence/cafelink-v2/v9.3-gate/20261025-184703-1bdff3d4/summary.json) và [báo cáo cuối](../../report/CafeLink_Final_Report.md).
+Runner tạo fixture DB/server riêng trên cổng 18080/18081, không chiếm/dừng demo đang chạy. Giữ hai cổng test trống trước khi chạy. Bản V9.4/RC4 có 164 Java + 71 Chromium PASS; xem [phạm vi kiểm thử](TESTING.md), [phiếu kiểm cuối](../../report/evidence/cafelink-v2/pre-feature-20261030/final-verification.json) và [báo cáo hiện tại](../../report/README.md).
 
 Chạy riêng các ca phục hồi sau khi đã build:
 
@@ -86,7 +86,7 @@ Playwright chuyển request đến Core thật rồi làm mất phản hồi, ho
 
 ## 5. Giới hạn đã công bố
 
-- Cần secure context cho Web Locks/Web Crypto: localhost phục vụ demo một máy; điện thoại qua LAN phải HTTPS được tin cậy theo [WEB_QR](FINAL_RUNBOOK.md). Đã chạy Chromium desktop/viewport mobile, chưa nghiệm thu Chrome/Safari trên điện thoại thật hoặc private mode từng hãng.
+- Cần secure context cho Web Locks/Web Crypto: localhost phục vụ demo một máy; điện thoại qua LAN phải HTTPS được tin cậy theo [runbook](FINAL_RUNBOOK.md). Nhóm đã xác nhận kiểm thao tác thực tế; kết quả tự động vẫn phân biệt Chromium/viewport mobile với thiết bị thật, không suy rộng sang mọi trình duyệt hoặc private mode.
 - IndexedDB có quota và có thể bị eviction/xóa site data; private browsing có thể xóa khi kết thúc phiên. `durability: strict` yêu cầu mức bền vững cao hơn nhưng không chứng minh khả năng sống sót mọi sự cố OS/nguồn điện. Xem [MDN quotas/eviction](https://developer.mozilla.org/en-US/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria), [IDBTransaction](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction).
 - Web Locks là khóa trong phạm vi origin/hồ sơ, không khóa mọi điện thoại. Chống gửi trùng cùng mã vẫn do receipt Core; các thiết bị chủ động tạo hai ý định khác nhau được coi là hai đơn riêng. Xem [MDN Web Locks](https://developer.mozilla.org/en-US/docs/Web/API/Web_Locks_API).
 - Kênh state WSS là snapshot mới nhất; notification feed/read cursor là dữ liệu riêng, không thay receipt hay hàng đợi nghiệp vụ. Có menu ảnh/version và thanh toán giả lập; chưa có ngân hàng thật hoặc cam kết offline ordering toàn phần.

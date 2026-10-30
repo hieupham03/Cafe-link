@@ -1,66 +1,35 @@
-# CafeLink - Trạng thái chuẩn bị nộp và hồ sơ lịch sử
+# CafeLink - Chuẩn bị nộp ngày 31/10/2026
 
-**Cập nhật hiện hành:** source V9.4, gói đã kiểm RC4; [báo cáo mới](README.md) là bản Current ngày 30/10, 42 trang. Nhóm đã xác nhận hoàn thành kiểm thao tác thực tế. Compilatio và nộp chính thức vẫn cần kết quả riêng. Các bảng và trạng thái RC1/V9.3 bên dưới là snapshot lịch sử, không phải danh sách còn chờ hiện tại. Bản Word người dùng sửa được giữ nguyên.
+## Bản hiện hành
 
-**Báo cáo ngày 29/10 trong hồ sơ lịch sử:** [Word](NhomXX_CafeLink_Report_Evidence13_20261029.docx), [PDF](NhomXX_CafeLink_Report_Evidence13_20261029.pdf), [Markdown](CafeLink_Technical_Paper_Evidence13_20261029.md). Các bảng bên dưới ghi nhận mốc phần mềm/bộ RC1 ngày 25/10; bản báo cáo biên tập ngày 29/10 chưa thay ZIP RC1. Ở mốc cũ này, thông tin nhóm, Compilatio và nghiệm thu điện thoại còn chờ.
+- **Source:** V9.4, schema 11; gói portable đã kiểm RC4, cung cấp riêng khi cần.
+- **Báo cáo:** cặp [Word](NhomXX_CafeLink_Report_Current_20261030.docx) và [PDF](NhomXX_CafeLink_Report_Current_20261030.pdf), 42 trang; đã đồng nhất tên/MSSV theo xác nhận của nhóm.
+- **Yêu cầu áp dụng:** [Instruction](../final-project-2/final-project/Instruction.md), [Topics](../final-project-2/final-project/Topics.md) và [Submission](../final-project-2/final-project/Submission.md). [Bảng đối chiếu](CafeLink_Requirements_Alignment.md) chỉ vị trí đáp ứng từng yêu cầu.
 
-**Mốc chốt phần mềm:** V9.3/schema 11. **Bộ bàn giao:** `NhomXX_CafeLink_20261031_RC1`. Đây là release candidate chuẩn bị nộp, chưa phải xác nhận đã nộp hoặc được giảng viên phê duyệt. Ngày chuẩn bị/thực nghiệm: 25/10/2026; hạn theo tài liệu môn học: 23:59 ngày 31/10/2026.
+## Kết quả đã có
 
-## 1. Đã hoàn tất trong bộ bàn giao
-
-| Hạng mục | Trạng thái | Căn cứ |
-|---|---|---|
-| Source web/TCP hiện tại | PASS | Source được xuất theo allowlist, không lấy DB/key/journal/live logs từ demo |
-| README build/run/test | Hoàn tất | Viết lại theo V9.3, giải thích website→Gateway→TCP Core, tách local/public, lỗi cookie admin/link QR |
-| Build/kiểm source sạch | 142 Java + 65 Chromium PASS | [source-proof](evidence/cafelink-final/source-clean/source-proof.json); thư mục có khoảng trắng; bytecode/frontend khớp bản frozen |
-| Runtime Windows/JRE 17 | 21 nhóm PASS | [gate gói](evidence/cafelink-v2/v9.3-package/20261025-release-01/summary.json); runtime có manifest riêng |
-| HTTPS/WSS public tự động | 7 kiểm PASS, cleanup PASS | [public-final](evidence/cafelink-final/public-final/public-package.json), không thay điện thoại thật |
-| So sánh phục hồi | 120/120 ca PASS | [full campaign](evidence/cafelink-final/20261025-final-r2/summary.json), raw và oracle đi kèm |
-| Tải bản cuối | 12/12 lượt PASS | 1.348/1.350 slot hoàn tất, 2 slot lỡ, không loại lượt chậm |
-| Kiểm sửa công cụ đo | PASS | [readiness check](evidence/cafelink-final/readiness-check/readiness.json); giữ lượt FAIL trước sửa |
-| Báo cáo kỹ thuật | Markdown + DOCX + PDF | [báo cáo chính](CafeLink_Final_Report.md), đủ phần paper và references, hình/bảng từ raw |
-| Bố cục | Kiểm PDF do Word xuất | [word-render](evidence/cafelink-final/word-render.json), ảnh kiểm bố cục; không chỉ kiểm XML |
-| CI/config/analyzer | Kiểm local PASS | Cấu hình và analyzer có kiểm riêng; remote CI vẫn NOT_RUN |
-
-Runtime V9.3 ZIP niêm phong giữ SHA-256 `FDCA5E041BCB83F61260056BB8B6DB859BB513EE19A8F626F4BD464F77C83CA6`. Tên JAR nội bộ `1.0.0` không phải phiên bản phát hành; kiểm RELEASE/manifest để phân biệt. Source sạch có thể khác hash ZIP JAR do timestamp nhưng bytecode đã được so khớp. Không sửa code nghiệp vụ sau gate source sạch.
-
-## 2. Đối chiếu cấu trúc báo cáo theo Instruction.md
-
-| Yêu cầu paper | Vị trí trong báo cáo cuối |
+| Hạng mục | Kết quả và bằng chứng |
 |---|---|
-| Title, Abstract, 4–6 Keywords | Tên đề tài, Tóm tắt và sáu từ khóa đầu báo cáo |
-| Introduction | Mục 1 |
-| Background/Related Work | Mục 2; nguồn chuẩn/RFC và tài liệu chính thức |
-| Problem Definition | Mục 3, tác nhân/input/output/constraints/invariants |
-| Proposed Approach | Mục 4, journal/semantic/barrier/scope |
-| System Architecture | Mục 5 và Hình 2 |
-| Network Communication Design | Mục 6, framing/message/connection/push/error |
-| Implementation | Mục 7, module và trách nhiệm |
-| Experimental Setup | Mục 8, topology/hardware/workload/metric/baseline |
-| Results | Mục 9, bảng/biểu đồ và raw |
-| Discussion | Mục 10, chi phí/giả định/giới hạn nhân quả |
-| Novelty/Contributions | Mục 11, implementation/evidence và phạm vi claim |
-| Limitations/Future Work/Conclusion | Mục 12/13/14 |
-| References/Appendix | Mục 15/16 |
+| Build và chạy từ source | [README source](../cafelink-system/README.md); build sạch và 8 bước smoke được ghi ở [kiểm công bố](evidence/cafelink-docs-20261030/summary.json) |
+| Kiểm phần mềm V9.4/RC4 | 164 Java, 71 Chromium, 20 Firefox, 20 WebKit, 23 nhóm kiểm gói và 8 kiểm public; [phiếu kiểm cuối](evidence/cafelink-v2/pre-feature-20261030/final-verification.json) |
+| Thực nghiệm V9.4/RC3 | 120 ca phục hồi và 12 lượt tải; [analysis](evidence/cafelink-v2/v9.4-hardening/measurements-20261030/analysis.json), raw và môi trường đi kèm |
+| Thao tác thực tế | Nhóm đã xác nhận hoàn thành; không quy đổi thành số đo camera, thiết bị hoặc mạng chưa được ghi nhận |
+| Báo cáo Word/PDF | Cặp hiện hành khớp nội dung; [hash và kiểm bố cục](evidence/cafelink-docs-20261030/report.json) |
+| GitHub CI | [Các run đã xác minh](evidence/cafelink-docs-20261030/summary.json); kết quả chỉ áp dụng commit và phạm vi được ghi |
 
-## 3. Các việc giữ chờ tại mốc hồ sơ cũ
+Các lớp kiểm có mục đích riêng. Số đo RC3 không được gọi là benchmark RC4, và số Client đã thử không phải công suất tối đa.
 
-1. **Điện thoại/camera/mạng vật lý, usability:** người dùng kiểm sau theo yêu cầu; không tự đổi UAT thành Đạt. Dùng checklist của source, đặc biệt P01–P03 và U24.
-2. **Thông tin nhóm, lớp, MSSV, giảng viên, phân công:** chưa cung cấp; không tạo tên/mức đóng góp giả. Khi có thông tin, cập nhật bìa/phân công và đổi `XX` trong tên file/thư mục thành số nhóm thật.
-3. **Compilatio:** chưa upload/chưa có chứng nhận. Nhóm tự nộp đúng một DOCX, kiểm ngưỡng theo quy định môn học (≤20%), chỉnh trích dẫn/nội dung nếu cần và lưu kết quả.
-4. **Nộp/bàn giao chính thức:** chưa upload Drive/Compilatio hoặc gửi lớp trưởng. Bàn giao Source/Report theo [Submission](../final-project-2/final-project/Submission.md); bản DOCX cuối sau chỉnh phải khớp bản nộp.
-5. **Bảo vệ và đóng góp cá nhân:** các thành viên tự diễn tập giải thích code/flow/metric và xác nhận phần việc thực tế; test tự động không xác nhận điều này.
+## Hoàn tất thủ tục nộp
 
-Không cần mở rộng sang ngân hàng/kho/nhiều chi nhánh để hoàn thành phạm vi đã chốt. Nếu điện thoại phát hiện lỗi cần sửa, tạo RC tiếp theo và kiểm lại phần bị ảnh hưởng, cập nhật report/hash; không sửa archive niêm phong hoặc tự giữ kết quả cũ cho source đã đổi.
+1. Xác nhận thông tin bìa, khoa, số nhóm và phần việc thực tế. Dùng số nhóm thật thay `XX` trong tên file nộp.
+2. Tổ chức `Source/` và `Report/` theo [Submission](../final-project-2/final-project/Submission.md). Trong `Report/`, đặt tên bản đã chọn là `NhomXX_CafeLink_Report.docx`; PDF là bản đọc cùng nội dung.
+3. Nộp đúng một báo cáo trên Compilatio và lưu kết quả theo ngưỡng của lớp. Chưa có kết quả thì giữ trạng thái chưa xác nhận.
+4. Nộp/bàn giao chính thức theo quy định học phần; GitHub và CI không thay bước này. Hạn trong Submission là **23:59 ngày 31/10/2026**.
 
-## 4. Hướng dẫn bàn giao
+## Phạm vi repository
 
-Toàn bộ: `NhomXX_CafeLink_20261031_RC1.zip`. Source riêng: `NhomXX_CafeLink_Source.zip`. Báo cáo nộp: `Report/NhomXX_CafeLink_Report.docx`; PDF là bản đọc/so bố cục. Chỉ nộp một file báo cáo trên Compilatio. Run chứa gói Windows chạy sẵn, Source vẫn chứa đầy đủ mã build được.
+GitHub chỉ giữ source hiện hành, tài liệu chạy/thiết kế/kiểm thử, một cặp báo cáo Word/PDF và bằng chứng cần để kiểm chứng kết quả. Báo cáo cũ, ảnh kiểm bố cục cũ, công cụ biên soạn, skill AI và mẫu của nhóm khác giữ local.
 
-Manifest SHA-256 ở gốc bộ bàn giao bao phủ source/report/runtime; giữ cùng bộ. DB/menu demo mới tự tạo khi chạy. Không đưa DB đã vận hành, `.qr-key`, cookie/journal/backup có quyền phiên vào thư mục nộp. File bìa/phân công, kết quả Compilatio và kiểm điện thoại mới chỉ được coi hoàn tất khi có dữ liệu thật.
+ZIP E0 trong `dist/` là baseline được kiểm tra nguyên vẹn bởi test/CI, không phải bộ cài web hiện tại. Dữ liệu V9.3 được trích trong phụ lục là dữ liệu đối chiếu; không đưa lại các bản báo cáo V9.3/RC1 để người đọc lựa chọn.
 
-## 5. Cập nhật GitHub ngày 28/10/2026
-
-Các hàng mục 1 ghi nhận mốc RC1 ngày 25/10; trạng thái remote CI ở mốc đó được giữ để truy vết. Sau mốc RC1, đã xác minh Success của [run 40206552643, commit e059123](https://github.com/hieupham03/Cafe-link/actions/runs/40206552643) và [run 40726262804, commit fd1b431](https://github.com/hieupham03/Cafe-link/actions/runs/40726262804). Mỗi kết quả chỉ áp dụng đúng commit được dẫn, không tự bao gồm các chỉnh sửa tiếp theo.
-
-[Chỉ mục báo cáo](README.md) phân biệt bản hiện hành với các bản 45 trang ngày 29/10 và RC1. GitHub kèm source chạy được, tài liệu, báo cáo và evidence; không kèm gói portable/ZIP RC1. [Runbook](../cafelink-system/docs/FINAL_RUNBOOK.md) hướng dẫn riêng chạy từ source và chạy gói được cung cấp ngoài repo. Việc biên tập báo cáo không tự thay gói RC1 đã niêm phong hoặc cung cấp kết quả Compilatio; trạng thái thao tác thực tế hiện hành nằm ở đầu tài liệu.
+Khi đóng gói source, loại DB đã vận hành, khóa QR, cookie/journal, mật khẩu và cache. Dùng [runbook](../cafelink-system/docs/FINAL_RUNBOOK.md) để chạy/demo; không sửa các archive đã niêm phong.

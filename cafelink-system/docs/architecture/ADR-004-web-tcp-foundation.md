@@ -1,6 +1,6 @@
 # ADR-004: Web Gateway giữ TCP Core làm nơi quyết định nghiệp vụ
 
-Ngày: 21/10/2026. Trạng thái: **Accepted cho nền tảng V0**; các phần QR/recovery/checkout/menu/feed V2 vẫn triển khai theo [kế hoạch V2](../../../report/CafeLink_Final_Report.md).
+Ngày: 21/10/2026. Trạng thái: **Accepted cho nền tảng V0**; các phần QR/recovery/checkout/menu/feed V2 vẫn triển khai theo [kế hoạch V2](https://github.com/hieupham03/Cafe-link/blob/22150024f8915641f35a981fb1b95a5f9a58be51/report/CafeLink_Final_Report.md).
 
 ## Quyết định
 
@@ -21,6 +21,6 @@ V0 dùng DB riêng theo mặc định, không migration schema hoặc đổi ngh
 
 ## Bằng chứng và các gate tiếp theo
 
-Kiểm thử qua HTTP/WSS và TCP thực, SQLite tạm, JUnit regression và Chromium trên artifact build. Xem [báo cáo V0](../../../report/CafeLink_Final_Report.md) và [hướng dẫn chạy](../FINAL_ARCHITECTURE.md). Không gán kết quả các gate V1–V9 cho V0.
+Kiểm thử qua HTTP/WSS và TCP thực, SQLite tạm, JUnit regression và Chromium trên artifact build. Xem [báo cáo V0](https://github.com/hieupham03/Cafe-link/blob/22150024f8915641f35a981fb1b95a5f9a58be51/report/CafeLink_Final_Report.md) và [hướng dẫn chạy](../FINAL_ARCHITECTURE.md). Không gán kết quả các gate V1–V9 cho V0.
 
 Tài liệu thư viện: [Jetty WebSocket server](https://jetty.org/docs/jetty/12/programming-guide/server/websocket.html), [Vite yêu cầu Node](https://vite.dev/guide/). Phiên bản npm khóa ở `package-lock.json`, Jetty khóa ở `pom.xml`.

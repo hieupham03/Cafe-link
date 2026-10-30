@@ -1,6 +1,0 @@
-flowchart LR
- B[Browser and IndexedDB] -->|HTTP HTTPS| G[Java Gateway]
- G -->|TCP framed JSON| C[Core]
- C -->|JDBC| D[(SQLite)]
- G -->|WS WSS| B
- T[Quick Tunnel] -.-> G

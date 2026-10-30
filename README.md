@@ -143,6 +143,6 @@ Giảng viên hướng dẫn: **Ngô Văn Quyền**. Thành viên theo báo cáo
 
 Ưu tiên [Instruction](final-project-2/final-project/Instruction.md), [Topics](final-project-2/final-project/Topics.md) và [Submission](final-project-2/final-project/Submission.md). README/SPECIFICATION trong bộ môn là mẫu; [đặc tả CafeLink](cafelink-system/docs/PROJECT_SPECIFICATION.md) áp dụng riêng cho sản phẩm.
 
-Trước bàn giao, tổ chức `Source/` và `Report/`, dùng tên `NhomXX_CafeLink_Report.docx` với số nhóm thật và hoàn tất Compilatio theo quy định. GitHub không thay bước nộp chính thức. [Chỉ mục báo cáo](report/README.md) phân biệt bản hiện tại với mốc lịch sử.
+Trước bàn giao, tổ chức `Source/` và `Report/`, dùng tên `NhomXX_CafeLink_Report.docx` với số nhóm thật và hoàn tất Compilatio theo quy định. GitHub không thay bước nộp chính thức. [Chỉ mục báo cáo](report/README.md) dẫn đến cặp Word/PDF hiện hành; các bản báo cáo cũ và bản nháp giữ local.
 
 Nguồn kỹ thuật: [RFC 9293 - TCP](https://www.rfc-editor.org/rfc/rfc9293.html), [RFC 6455 - WebSocket](https://www.rfc-editor.org/rfc/rfc6455.html), [RFC 9110 - HTTP](https://www.rfc-editor.org/rfc/rfc9110.html), [SQLite transactions](https://www.sqlite.org/lang_transaction.html), [IndexedDB](https://www.w3.org/TR/IndexedDB/).

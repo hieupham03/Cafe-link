@@ -1,8 +1,8 @@
-# V9–V9.3 — Chạy bản web đóng gói và quản lý dữ liệu demo
+# CafeLink V9.4 - Chạy bản web đóng gói và quản lý dữ liệu demo
 
-V9.3 tách năm vùng khách hàng và giữ bản sửa mở link khách từ admin; xem [hướng dẫn V9.3](WEB_V9_3.md). V9.2/V9.3 dùng schema 11, công cụ nhận backup schema 9/10/11 và kiểm schema DB thật. Runtime V9/V9.1 không mở DB đã nâng cấp lên 11; muốn quay lại dùng backup trước nâng cấp. Các thông tin riêng V9/V9.1 dưới đây là lịch sử tương thích, không phải giới hạn schema của V9.3.
+V9.4 giữ năm vùng khách hàng và bổ sung chẩn đoán, readiness, hạn thanh toán và các bản sửa vận hành; xem [WEB_HARDENING](WEB_HARDENING.md). Schema hiện tại là 11; công cụ nhận backup schema 9/10/11 và kiểm schema DB thật. Runtime V9/V9.1 không mở DB đã nâng cấp lên 11; thông tin các phiên bản đó bên dưới chỉ dùng để giải thích tương thích dữ liệu.
 
-Đây là hướng dẫn dữ liệu cho V9.3. Quy trình demo hiện tại nằm ở [FINAL_RUNBOOK.md](FINAL_RUNBOOK.md); kết quả bản cuối nằm trong [báo cáo chính](../../report/CafeLink_Final_Report.md).
+Đây là hướng dẫn dữ liệu cho gói hiện hành V9.4/RC4. Quy trình demo nằm ở [FINAL_RUNBOOK.md](FINAL_RUNBOOK.md); kết quả kiểm và Word/PDF nằm ở [chỉ mục báo cáo](../../report/README.md).
 
 Tài liệu dùng được trong gói portable. Các lệnh dưới chạy từ thư mục đã giải nén chứa `Start-Local.ps1`. Gói cho Windows x64, có Java runtime; chạy local không cần Internet hoặc công cụ build. Public cần Internet. Các lần đo V8 là bằng chứng một máy, không thay nghiệm thu điện thoại thật.
 

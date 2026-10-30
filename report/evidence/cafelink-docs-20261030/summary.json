@@ -97,5 +97,27 @@
       "remoteMatchesLocal": true
     }
   ],
-  "privateFilesOrAiSkillsPublished": false
+  "privateFilesOrAiSkillsPublished": false,
+  "publicationCleanup": {
+    "dateLocal": "2026-10-31",
+    "policy": "Publish one current report pair; superseded reports and report layout drafts remain local",
+    "status": "PASS",
+    "validation": {
+      "status": "PASS",
+      "markdownFiles": 36,
+      "localLinks": 247,
+      "anchors": 17,
+      "issues": [],
+      "publicReportPair": [
+        "report/NhomXX_CafeLink_Report_Current_20261030.docx",
+        "report/NhomXX_CafeLink_Report_Current_20261030.pdf"
+      ],
+      "oldFilesKeptLocally": 59,
+      "runtimeCodeUnchanged": true
+    },
+    "experimentalRawData": "PRESERVED",
+    "sealedBaseline": "PRESERVED_REQUIRED_BY_CI",
+    "aiSkillsAndAuthoringTools": "LOCAL_ONLY",
+    "ci": "PENDING_PUBLICATION"
+  }
 }

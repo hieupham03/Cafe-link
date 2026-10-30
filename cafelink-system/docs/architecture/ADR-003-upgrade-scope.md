@@ -1,8 +1,8 @@
 # ADR-003: Phạm vi nâng cấp CafeLink trước hạn nộp
 
-> Cập nhật 21/10/2026: phần lựa chọn giao diện/transport của đề xuất này được thay bằng [ADR-004](ADR-004-web-tcp-foundation.md) và [kế hoạch V2](../../../report/CafeLink_Final_Report.md). Các bất biến receipt/visit/discard vẫn cần giữ. Không dùng trạng thái Proposed bên dưới để suy ra web V0 chưa được triển khai.
+> Cập nhật 21/10/2026: phần lựa chọn giao diện/transport của đề xuất này được thay bằng [ADR-004](ADR-004-web-tcp-foundation.md) và [kế hoạch V2](https://github.com/hieupham03/Cafe-link/blob/22150024f8915641f35a981fb1b95a5f9a58be51/report/CafeLink_Final_Report.md). Các bất biến receipt/visit/discard vẫn cần giữ. Không dùng trạng thái Proposed bên dưới để suy ra web V0 chưa được triển khai.
 
-Ngày: 20/10/2026. Trạng thái: **Proposed – kế hoạch chưa triển khai**. Chi tiết và lịch: [CafeLink_Upgrade_Plan.md](../../../report/CafeLink_Final_Report.md).
+Ngày: 20/10/2026. Trạng thái: **Proposed – kế hoạch chưa triển khai**. Chi tiết và lịch: [CafeLink_Upgrade_Plan.md](https://github.com/hieupham03/Cafe-link/blob/22150024f8915641f35a981fb1b95a5f9a58be51/report/CafeLink_Final_Report.md).
 
 ## Bối cảnh
 

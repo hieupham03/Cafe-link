@@ -1,6 +1,6 @@
 # ADR-005: Grant theo lượt và principal ổn định theo membership
 
-Ngày: 21/10/2026. Trạng thái: **Accepted/implemented cho V1 phần mềm**. Bổ sung [ADR-004](ADR-004-web-tcp-foundation.md); [phạm vi triển khai/test](../../../report/CafeLink_Final_Report.md).
+Ngày: 21/10/2026. Trạng thái: **Accepted/implemented cho V1 phần mềm**. Bổ sung [ADR-004](ADR-004-web-tcp-foundation.md); [phạm vi triển khai/test](https://github.com/hieupham03/Cafe-link/blob/22150024f8915641f35a981fb1b95a5f9a58be51/report/CafeLink_Final_Report.md).
 
 ## Quyết định
 

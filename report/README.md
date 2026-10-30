@@ -29,17 +29,13 @@ Nhóm đã xác nhận hoàn thành kiểm thao tác thực tế. Các phiếu t
 - [Kiến trúc](../cafelink-system/docs/FINAL_ARCHITECTURE.md), [giao thức](../cafelink-system/docs/FINAL_PROTOCOL.md), [chạy/demo](../cafelink-system/docs/FINAL_RUNBOOK.md).
 - [Kiểm thử](../cafelink-system/docs/TESTING.md), [thực nghiệm](../cafelink-system/docs/WEB_EXPERIMENTS.md), [CI](../cafelink-system/docs/CI.md).
 - [Instruction](../final-project-2/final-project/Instruction.md), [README mẫu](../final-project-2/final-project/README.md), [Submission](../final-project-2/final-project/Submission.md).
-- [Trạng thái nộp và hồ sơ lịch sử](SUBMISSION_READINESS.md).
+- [Trạng thái chuẩn bị nộp](SUBMISSION_READINESS.md).
 
-## Các bản trước
+## Phạm vi công bố
 
-| Bản | Vai trò |
-|---|---|
-| [Evidence13 Word](NhomXX_CafeLink_Report_Evidence13_20261029.docx), [PDF](NhomXX_CafeLink_Report_Evidence13_20261029.pdf), [Markdown](CafeLink_Technical_Paper_Evidence13_20261029.md) | Bản biên tập ngày 29/10, dùng số liệu V9.3; không còn là báo cáo đọc chính |
-| [CafeLink_Final_Report.md](CafeLink_Final_Report.md) | Báo cáo gốc của bộ RC1 ngày 25/10 |
-| [Bàn giao RC1](CafeLink_Final_Handoff.md) | Hồ sơ đã niêm phong của mốc cũ; không tự thay bằng source/báo cáo mới |
+GitHub chỉ giữ cặp Word/PDF hiện hành trong bảng đầu trang. Báo cáo RC1, bản Evidence13, ảnh kiểm bố cục và bản nháp trước đó giữ local, không được đưa lại vào repo. Lịch sử Git vẫn ghi nhận các lần công bố trước.
 
-Các tên file có `Final` hoặc mốc ngày cũ là lịch sử. Công cụ tạo báo cáo và các bản nháp khác giữ local, không phải dependency để chạy CafeLink.
+Dữ liệu thực nghiệm V9.3 trong phụ lục, phép đo V9.4 và kết quả kiểm RC4 được giữ để kiểm chứng báo cáo. Chúng là bằng chứng theo từng phép thử, không phải các bản ứng dụng hoặc báo cáo để lựa chọn. Công cụ tạo báo cáo và skill AI giữ local.
 
 ## Chuẩn bị nộp
 

@@ -53,10 +53,12 @@
 # Publish the current report; keep previous rendered drafts locally.
 /report/NhomXX_CafeLink_Report_*.docx
 /report/NhomXX_CafeLink_Report_*.pdf
-!/report/NhomXX_CafeLink_Report_Evidence13_20261029.docx
-!/report/NhomXX_CafeLink_Report_Evidence13_20261029.pdf
 !/report/NhomXX_CafeLink_Report_Current_20261030.docx
 !/report/NhomXX_CafeLink_Report_Current_20261030.pdf
+/report/NhomXX_CafeLink_Report.docx
+/report/NhomXX_CafeLink_Report.pdf
+/report/CafeLink_Final_Report.md
+/report/CafeLink_Final_Handoff.md
 /report/CafeLink_Group23_Sample_Review.md
 /report/CafeLink_Report_30_vs_58_Review.md
 /report/CafeLink_Report_Academic_Review.md
@@ -69,16 +71,13 @@
 /report/tools/
 /report/templates/
 /report/CafeLink_Technical_Paper_*.md
-!/report/CafeLink_Technical_Paper_Evidence13_20261029.md
 /report/CafeLink_Report_*.md
 /report/assets/cafelink-student-paper/README.md
 /report/assets/cafelink-student-paper/provenance.json
 /report/evidence/cafelink-student-paper/*
-!/report/evidence/cafelink-student-paper/evidence13-validation.json
-!/report/evidence/cafelink-student-paper/evidence13-visual-review.json
-!/report/evidence/cafelink-student-paper/evidence13-word-render.json
-!/report/evidence/cafelink-student-paper/submission-scope-check.json
-!/report/evidence/cafelink-student-paper/publication-20261029-check.json
+/report/evidence/cafelink-final/layout/
+/report/evidence/cafelink-final/word-render.json
+/report/assets/cafelink-final/
 /report/assets/cafelink-student-paper/business-flow.*
 /report/assets/cafelink-student-paper/recovery-decision.*
 /report/assets/cafelink-student-paper/ptit-logo-reference.png
