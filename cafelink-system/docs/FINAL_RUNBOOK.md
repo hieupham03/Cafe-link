@@ -50,6 +50,18 @@ Hostname tunnel có thể đổi ở lần sau, khi đó lấy QR mới. Local/p
 
 Có thể minh họa thêm giá thay đổi khi còn giỏ, món ngừng bán, thanh toán thử thất bại rồi thử lại, hủy đơn chưa trả hoặc từ chối/hoàn giả lập trước pha chế. Bật chuông bằng thao tác của người dùng trước khi thử thông báo.
 
+### Năm vùng trên màn hình khách
+
+| Vùng | Nội dung và số đếm |
+|---|---|
+| Thực đơn | Xem ảnh, danh mục, tìm kiếm và chi tiết đồ uống; số món không phải số tồn kho |
+| Đơn đã gọi | Theo dõi đơn đã gửi và tiến độ phục vụ; lịch sử lần trước có khung riêng |
+| Hỗ trợ | Gọi nhân viên, bổ sung/rút yêu cầu; số đếm là lời gọi đang chờ |
+| Thanh toán | Đơn UNPAID/PENDING cần trả tiền; giỏ nháp chưa phải khoản phải trả |
+| Giỏ hàng | Số lượng, ghi chú, tạm tính; số đếm là tổng số phần đang chọn |
+
+Thử thêm hai phần cùng món: Giỏ hàng tăng 2 nhưng Đơn đã gọi/Thanh toán chưa tăng. Gửi đơn thành công rồi mới thanh toán giả lập; trả tiền xong vẫn theo dõi giao đồ trong Đơn đã gọi. Chọn ô điều hướng chỉ cuộn đến vùng tương ứng, không tự đặt món hoặc trả tiền.
+
 ## 5. Minh họa mạng và contribution
 
 Trước tiên giới thiệu một đơn bình thường: Browser → HTTP → Gateway → TCP → Core/DB; kết quả trở lại HTTP và trạng thái cập nhật qua WebSocket.

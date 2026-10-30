@@ -19,6 +19,7 @@
 **/playwright-report/
 /cafelink-system/web/dist/
 /cafelink-system/web/experiment-dist/
+/cafelink-system/docs/WEB_V9_3.md
 
 # Runtime profiles, uploaded media, local secrets and backup archives.
 /cafelink-system/data/

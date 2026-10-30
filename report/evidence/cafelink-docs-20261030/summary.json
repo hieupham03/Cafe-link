@@ -118,6 +118,83 @@
     "experimentalRawData": "PRESERVED",
     "sealedBaseline": "PRESERVED_REQUIRED_BY_CI",
     "aiSkillsAndAuthoringTools": "LOCAL_ONLY",
-    "ci": "PENDING_PUBLICATION"
+    "ci": {
+      "status": "IN_PROGRESS",
+      "testedCommit": "f6c99db3b28e9c8dbdafdee1cc273f10d57e71ba",
+      "runs": [
+        {
+          "id": 41099022311,
+          "head_sha": "f6c99db3b28e9c8dbdafdee1cc273f10d57e71ba",
+          "head_branch": "submission/cafelink",
+          "status": "in_progress",
+          "conclusion": null,
+          "html_url": "https://github.com/hieupham03/Cafe-link/actions/runs/41099022311"
+        },
+        {
+          "id": 41099022315,
+          "head_sha": "f6c99db3b28e9c8dbdafdee1cc273f10d57e71ba",
+          "head_branch": "main",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/hieupham03/Cafe-link/actions/runs/41099022315"
+        }
+      ]
+    }
+  },
+  "obsoleteGuideCleanup": {
+    "dateLocal": "2026-10-31",
+    "status": "PASS",
+    "removedFromCurrentTree": "cafelink-system/docs/WEB_V9_3.md",
+    "localOldGuidePreserved": true,
+    "currentEntryPoint": "cafelink-system/docs/FINAL_RUNBOOK.md",
+    "packagingAllowlist": "REMOVED_OBSOLETE_GUIDE",
+    "packageIntegrity": {
+      "status": "PASS",
+      "files": 358,
+      "candidateZipSha256": "A2DB944790A9A97178DCC8956C366C45DAC636D692D18C9A6746F35A1C98AB45",
+      "scope": "Fresh documentation-only candidate, not a replacement of the sealed RC4 archive"
+    },
+    "packageSmoke": {
+      "status": "PASS",
+      "checks": 23,
+      "checkNames": [
+        "pristine package manifest",
+        "unlisted executable library is detected",
+        "tampered asset is detected, then fixture restored",
+        "start on bundled JRE with developer tools absent from child PATH",
+        "real admin UI, production assets and all automatic tables",
+        "packaged version, readiness and real admin diagnostic UI match this release",
+        "guest QR entry in admin profile explains shared session without replacing it",
+        "upload image and save menu through packaged Gateway/Core",
+        "packaged diagnostic endpoint rejects guests",
+        "five guest navigation tiles and separate functional regions are usable on small screens",
+        "same QR gives private visits and separate carts",
+        "commit then lost order response recovers one order",
+        "unaccepted service intent is discarded after reload",
+        "prepaid simulator, one receipt, service workflow and automatic completion",
+        "backup restore and reset are blocked while launcher owns profile",
+        "owned process tree stops and both listeners close",
+        "offline backup with database key and media",
+        "invalid backups fail before changing the current profile",
+        "restart keeps stable QR menu image and paid history",
+        "reset archives current profile and next start creates new cafe",
+        "restore validated backup retains QR image and paid history",
+        "data directory escape is rejected",
+        "occupied port is rejected without stopping its listener"
+      ],
+      "browser": "Chromium",
+      "hostJavaOnChildPath": false,
+      "hostNodeOnChildPath": false
+    },
+    "links": {
+      "status": "PASS",
+      "publishedMarkdownFiles": 35,
+      "localLinks": 247,
+      "anchors": 18,
+      "issues": [],
+      "scope": "Staged publication tree; separate user report rename is not staged"
+    },
+    "applicationSources": "UNCHANGED",
+    "userReportRename": "PRESERVED_UNSTAGED"
   }
 }

@@ -1,6 +1,6 @@
 # CafeLink Web V9.4 - bắt đầu tại đây
 
-Màn khách có năm ô rõ ràng: Thực đơn, Đơn đã gọi, Hỗ trợ, Thanh toán, Giỏ hàng. Quản lý có thêm mục Chẩn đoán hệ thống để xem TCP/DB, kết nối, hàng đợi và mã yêu cầu. Xem docs/WEB_HARDENING.md cho thay đổi V9.4; docs/WEB_V9_3.md giữ hướng dẫn nền trước đó.
+Màn khách có năm ô rõ ràng: Thực đơn, Đơn đã gọi, Hỗ trợ, Thanh toán, Giỏ hàng. Quản lý có thêm mục Chẩn đoán hệ thống để xem TCP/DB, kết nối, hàng đợi và mã yêu cầu. Xem docs/FINAL_RUNBOOK.md để chạy và demo V9.4; docs/WEB_HARDENING.md giải thích các cải thiện vận hành.
 
 Gói Windows x64 có JRE 17 đi kèm. Giải nén cả ZIP vào thư mục có quyền ghi, mở START-LOCAL.cmd hoặc START-PUBLIC.cmd. Không cần cài JDK/Node để chạy.
 

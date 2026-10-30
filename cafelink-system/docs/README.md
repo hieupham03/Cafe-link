@@ -39,4 +39,4 @@
 
 [ADR-002](architecture/ADR-002-recovery.md) và các [ADR nâng cấp](architecture/ADR-003-upgrade-scope.md) lưu quyết định tại thời điểm viết. Các mốc [web/TCP](architecture/ADR-004-web-tcp-foundation.md), [QR](architecture/ADR-005-qr-membership.md), [trả trước](architecture/ADR-007-prepaid-simulator-and-events.md), [QR cố định/public](architecture/ADR-008-fixed-table-qr-and-public-demo.md), [thực nghiệm](architecture/ADR-009-web-experiments-and-ci.md) và [portable](architecture/ADR-010-portable-web-release.md) giải thích vì sao thiết kế thay đổi.
 
-[WEB_V9_3](WEB_V9_3.md) thuộc mốc V9.3. Khi có khác biệt, ưu tiên README source và các hợp đồng hiện hành; hồ sơ cũ giữ để truy vết, không dùng làm kết quả mới.
+Các ADR ghi lại quyết định tại thời điểm thiết kế. Khi chạy hoặc demo, dùng [README source](../README.md) và [FINAL_RUNBOOK](FINAL_RUNBOOK.md) hiện hành; hướng dẫn chạy từng phiên bản cũ được giữ local hoặc xem trong lịch sử Git.

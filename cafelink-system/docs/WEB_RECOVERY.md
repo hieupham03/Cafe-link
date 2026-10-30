@@ -1,4 +1,4 @@
-# CafeLink V9.3 — giỏ món và phục hồi yêu cầu web
+# CafeLink V9.4 - Giỏ món và phục hồi yêu cầu web
 
 > Luồng chính hiện tại là QR cố định, phiên riêng và trả trước giả lập theo đơn. [Hướng dẫn demo](FINAL_RUNBOOK.md) và [protocol](FINAL_PROTOCOL.md) là tài liệu bản chốt. Receipt/giữ ID/DISCARD xử lý kết quả chưa rõ; chúng không thay cơ chế hủy hoặc hoàn tiền sau tiếp nhận.
 
@@ -95,5 +95,5 @@ Playwright chuyển request đến Core thật rồi làm mất phản hồi, ho
 
 AMEND_SERVICE bổ sung ticket theo expectedVersion; CANCEL_SERVICE rút ticket đang mở. Cả hai được ghi journal trước gửi và tra receipt khi mất ACK. AMEND_SERVICE chưa được nhận được bỏ theo SEMANTIC; nhu cầu còn thì khách bổ sung lại. CANCEL_SERVICE chưa nhận cần khách xác nhận/bỏ, không tự replay. Không sửa payload của command ID đã phát. Lệnh version cũ bị từ chối, kết quả đã nhận luôn được lookup trước khi đánh giá phiên hiện tại.
 
-Nhân viên có Tra cứu hỗ trợ bằng command ID đầy đủ hoặc số đơn. Đây là tra cứu chỉ đọc; không cấp lại quyền browser hoặc tự làm lại giao dịch. Chi tiết [bản hiện tại V9.3](WEB_V9_3.md).
+Nhân viên có Tra cứu hỗ trợ bằng command ID đầy đủ hoặc số đơn. Đây là tra cứu chỉ đọc; không cấp lại quyền browser hoặc tự làm lại giao dịch. Xem [luồng khách và quầy hiện hành](FINAL_RUNBOOK.md#4-kịch-bản-chức-năng).
 
