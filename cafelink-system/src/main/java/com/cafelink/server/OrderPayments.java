@@ -8,6 +8,7 @@ import java.util.*;
 
 /** Explicit local test gateway. There is no bank integration or real charge. */
 final class OrderPayments {
+ private record Pending(String id,Instant expiresAt){}
  private final Database db;private final QrConfig config;private final EventFeed events;
  OrderPayments(Database db,QrConfig config,EventFeed events){this.db=db;this.config=config;this.events=events;}
  boolean prepaid(String visit)throws SQLException{return db.query("SELECT payment_mode FROM visits WHERE id=?",r->r.getString(1),visit).get(0).equals("PREPAY");}
@@ -21,13 +22,16 @@ final class OrderPayments {
   var states=db.query("SELECT payment_state FROM orders WHERE id=? AND visit_id=?",r->r.getString(1),order,visit);
   if(states.isEmpty())throw new BusinessException("FORBIDDEN","Đơn không thuộc lượt này.");
   if(Set.of("PAID","CANCELLED","REFUNDED").contains(states.get(0)))throw new BusinessException("INVALID_STATE","Đơn đã trả tiền, đã hủy hoặc đã hoàn giả lập.");
-  String now=config.clock.instant().toString();
-  db.update("UPDATE order_payments SET state='EXPIRED',updated_at=? WHERE order_id=? AND state='PENDING' AND expires_at<?",now,order,now);
-  var pending=db.query("SELECT id FROM order_payments WHERE order_id=? AND state='PENDING'",r->r.getString(1),order);
-  String id=pending.isEmpty()?UUID.randomUUID().toString():pending.get(0);
-  if(pending.isEmpty()){
+  Instant checkedAt=config.clock.instant();String now=checkedAt.toString();
+  // ISO-8601 strings with optional fractional seconds do not sort chronologically as TEXT.
+  var pending=db.query("SELECT id,expires_at FROM order_payments WHERE order_id=? AND state='PENDING'",r->new Pending(r.getString(1),Instant.parse(r.getString(2))),order);
+  for(Pending attempt:pending)if(!checkedAt.isBefore(attempt.expiresAt()))
+   db.update("UPDATE order_payments SET state='EXPIRED',updated_at=? WHERE id=? AND state='PENDING'",now,attempt.id());
+  String existing=pending.stream().filter(attempt->checkedAt.isBefore(attempt.expiresAt())).map(Pending::id).findFirst().orElse(null);
+  String id=existing==null?UUID.randomUUID().toString():existing;
+  if(existing==null){
    long amount=db.query("SELECT SUM(quantity*unit_price_vnd) FROM order_items WHERE order_id=?",r->r.getLong(1),order).get(0);
-   db.update("INSERT INTO order_payments(id,order_id,amount_vnd,state,created_at,updated_at,expires_at) VALUES(?,?,?,'PENDING',?,?,?)",id,order,amount,now,now,config.clock.instant().plusSeconds(900).toString());
+   db.update("INSERT INTO order_payments(id,order_id,amount_vnd,state,created_at,updated_at,expires_at) VALUES(?,?,?,'PENDING',?,?,?)",id,order,amount,now,now,checkedAt.plusSeconds(900).toString());
   }
   db.update("UPDATE orders SET payment_state='PENDING' WHERE id=?",order);
   JsonObject out=row(id);out.addProperty("token",signature(out));return out;
@@ -41,7 +45,7 @@ final class OrderPayments {
   String outcome=CafeService.text(input,"outcome",20,true);
   if(!Set.of("SUCCESS","FAILED","CANCELLED").contains(outcome))throw new BusinessException("INVALID_INPUT","Kết quả giả lập không hợp lệ.");
   if(!transaction.get("state").getAsString().equals("PENDING"))return transaction;
-  String state=config.clock.instant().isAfter(Instant.parse(transaction.get("expiresAt").getAsString()))?"EXPIRED":outcome.equals("SUCCESS")?"PAID":outcome;
+  String state=!config.clock.instant().isBefore(Instant.parse(transaction.get("expiresAt").getAsString()))?"EXPIRED":outcome.equals("SUCCESS")?"PAID":outcome;
   db.update("UPDATE order_payments SET state=?,updated_at=? WHERE id=?",state,config.clock.instant().toString(),transaction.get("paymentId").getAsString());
   db.update("UPDATE orders SET payment_state=? WHERE id=?",state.equals("PAID")?"PAID":"UNPAID",transaction.get("orderId").getAsInt());
   if(state.equals("PAID"))events.append(visit,"PAYMENT_CONFIRMED",transaction.get("orderId").getAsString(),"Đơn #"+transaction.get("orderId").getAsString()+" đã thanh toán giả lập; quầy có thể pha chế");

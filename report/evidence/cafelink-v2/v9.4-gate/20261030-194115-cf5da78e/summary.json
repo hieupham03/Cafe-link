@@ -1,0 +1,77 @@
+﻿{
+    "phase":  "V9.4",
+    "includedPhases":  [
+                           "V5a",
+                           "V6",
+                           "V7",
+                           "prepaid-simulator",
+                           "automatic-private-visits",
+                           "trusted-loopback-proxy",
+                           "storefront-ui",
+                           "web-policy-experiment",
+                           "readiness-and-admin-diagnostics"
+                       ],
+    "runId":  "20261030-194115-cf5da78e",
+    "startedAt":  "2026-10-30T19:41:15.7859240+07:00",
+    "status":  "PASS",
+    "gates":  [
+                  {
+                      "name":  "java-verify",
+                      "exitCode":  0,
+                      "durationMs":  72458
+                  },
+                  {
+                      "name":  "web-build",
+                      "exitCode":  0,
+                      "durationMs":  4920
+                  },
+                  {
+                      "name":  "experiment-build",
+                      "exitCode":  0,
+                      "durationMs":  1974
+                  },
+                  {
+                      "name":  "browser-e2e",
+                      "exitCode":  0,
+                      "durationMs":  168803
+                  }
+              ],
+    "physicalLan":  "NOT_RUN",
+    "physicalPhone":  "NOT_RUN",
+    "realPaymentProvider":  "NOT_INTEGRATED",
+    "java":  {
+                 "tests":  162,
+                 "failures":  0,
+                 "errors":  0,
+                 "skipped":  0
+             },
+    "browser":  {
+                    "startTime":  "2026-10-30T12:42:38.840Z",
+                    "duration":  159630.566,
+                    "expected":  69,
+                    "unexpected":  0,
+                    "flaky":  0,
+                    "skipped":  0
+                },
+    "testListenersClosed":  true,
+    "artifact":  {
+                     "jarSha256":  "E6351AB6D99FC452104B62A49CFD288E064439B0587DDF4546C934AA0663A864",
+                     "frontendManifest":  "286E2D29EBF50D262F50E89ED232FBFC3308AB3A4151C22E68BB78E71319F53C",
+                     "webFiles":  [
+                                      {
+                                          "path":  "index.html",
+                                          "sha256":  "286E2D29EBF50D262F50E89ED232FBFC3308AB3A4151C22E68BB78E71319F53C"
+                                      },
+                                      {
+                                          "path":  "assets\\index-BCAlPzbZ.css",
+                                          "sha256":  "94AE9BB23BD8BB1C7424EFE8BB9C1FC96C8D78B2339F950CAD4C1BEBA7414D77"
+                                      },
+                                      {
+                                          "path":  "assets\\index-yUHTeNME.js",
+                                          "sha256":  "9925DF6AD0D13202BF678F5C81C202DBA481E673CF826E457E18E6096A28B46A"
+                                      }
+                                  ]
+                 },
+    "baselineSha256":  "60A1E6666F4BAC52B2F0B868A9AAFD9024563991AB22777076D639416E8766EB",
+    "finishedAt":  "2026-10-30T19:45:27.8489207+07:00"
+}

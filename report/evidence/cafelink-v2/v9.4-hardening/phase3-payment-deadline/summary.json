@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "date": "2026-10-30",
+  "scope": "Payment expiry precision, inclusive deadline and concurrent payment starts/confirmations",
+  "fullGate": "../../v9.4-gate/20261030-194115-cf5da78e/summary.json",
+  "red": {
+    "newTests": 8,
+    "failures": 5,
+    "errors": 0
+  },
+  "focusedGreen": {
+    "tests": 29,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "fullJava": {
+    "tests": 162,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "fullChromium": {
+    "startTime": "2026-10-30T12:42:38.840Z",
+    "duration": 159630.566,
+    "expected": 69,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 0
+  },
+  "schema": 11,
+  "rule": "Pending payment is valid iff server check instant is strictly earlier than expiresAt",
+  "physicalPhone": "NOT_RUN",
+  "physicalLan": "NOT_RUN",
+  "realPaymentProvider": "NOT_INTEGRATED"
+}

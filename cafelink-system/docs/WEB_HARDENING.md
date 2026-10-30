@@ -54,4 +54,12 @@ Endpoint yêu cầu ADMIN ở cả Gateway lẫn Core; khách và người chưa
 
 Các ca mới: `DiagnosticsIntegrationTest` kiểm phân quyền web/TCP, bộ đếm thực, giới hạn lịch sử và không lộ dữ liệu; `web/tests/diagnostics.spec.ts` kiểm tra/filter mã, lỗi cập nhật/phục hồi, layout 390 px, ngừng polling khi rời trang và endpoint công khai. Nhóm `diagnostics` được đưa vào `npm run test:e2e`; script gate mặc định ghi nhãn V9.4 và giữ ảnh desktop/mobile.
 
-K?t qu? ph?n 2: **154 Java PASS**, **69 Chromium PASS**, kh?ng skip/flaky; build production/experiment ??t v? listener test ?? ??ng. ?? xem ?nh desktop/mobile. [Summary ph?n 2](../../report/evidence/cafelink-v2/v9.4-hardening/phase2-diagnostics/summary.json) li?n k?t gate/raw.
+Kết quả phần 2: **154 Java PASS**, **69 Chromium PASS**, không skip/flaky; build production/experiment đạt và listener test đã đóng. Đã xem ảnh desktop/mobile. [Summary phần 2](../../report/evidence/cafelink-v2/v9.4-hardening/phase2-diagnostics/summary.json) liên kết gate/raw.
+
+## Hạn thanh toán và thao tác đồng thời
+
+Lỗi đã tái hiện: `expires_at` lưu ISO-8601 có phần giây lẻ tùy chọn, nhưng tạo lại giao dịch so sánh TEXT trong SQLite. Ví dụ `01:15:00Z` và `01:15:00.001Z` không có cùng thứ tự chữ với thứ tự thời gian. Điều này có thể trả lại giao dịch đã quá hạn hoặc thay một giao dịch vẫn còn hạn. Ngoài ra, callback đúng thời điểm hết hạn trước đây vẫn được coi là thành công.
+
+Phần sửa đọc hạn bằng `Instant`, lấy một mốc kiểm cho thao tác tạo giao dịch và dùng quy tắc **còn hạn khi thời điểm kiểm nhỏ hơn expiresAt**. Đúng hạn hoặc sau hạn thì EXPIRED. Chỉ tái sử dụng giao dịch PENDING còn hạn; giao dịch cũ được đánh dấu hết hạn trước khi tạo lần mới trong cùng transaction. Callback tới muộn của lần cũ không thay trạng thái của lần mới. Không đổi schema, không sửa dữ liệu lịch sử và không tích hợp ngân hàng thật.
+
+`PaymentDeadlineTest` kiểm tám trường hợp: ba tình huống khác độ chính xác/ranh giới khi tạo giao dịch, xác nhận trước/đúng/sau hạn một nano giây, callback cũ sau lần thay thế, hai luồng cùng bắt đầu/xác nhận. Mốc quyết định là thời điểm Core xử lý bằng clock Server, không dùng thời gian trên điện thoại. Trước sửa có 5/8 ca thất bại; sau sửa 29 ca trong nhóm thanh toán/phiên/nghiệp vụ đều đạt.
