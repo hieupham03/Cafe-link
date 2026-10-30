@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "startedAt": "2026-10-30T13:26:07.767Z",
+  "physicalPhone": "NOT_RUN",
+  "physicalLan": "NOT_RUN",
+  "temporaryPasswordPersisted": false,
+  "origin": "https://evanescence-will-healing-mlb.trycloudflare.com",
+  "browserChecks": {
+    "publicTcpDatabaseReady": true,
+    "secureCookie": true,
+    "publicQrOrigin": true,
+    "secureBrowserRecoveryApis": true,
+    "privateOrdersAndPayment": true,
+    "liveWssAndAutomaticCompletion": true,
+    "rejectWrongOrigin": true,
+    "defaultAdminPasswordRejected": true
+  },
+  "normalDurationCleanup": true,
+  "listenersClosed": true,
+  "finishedAt": "2026-10-30T13:27:45.448Z"
+}

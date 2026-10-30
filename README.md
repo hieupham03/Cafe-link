@@ -5,6 +5,7 @@ Hệ thống gọi món tại quán café: khách quét QR, đặt món và than
 ## Bắt đầu
 
 - **Nâng cấp source V9.4:** [độ tin cậy, readiness và chẩn đoán](cafelink-system/docs/WEB_HARDENING.md). Báo cáo/thực nghiệm V9.3 bên dưới được giữ làm snapshot đối chiếu; mỗi thay đổi mới có kết quả kiểm riêng.
+- **Kết quả kiểm V9.4 ngày 30/10:** [báo cáo nâng cấp, test và giới hạn](report/CafeLink_Hardening_20261030.md), gồm Java/Chromium/Firefox/WebKit, gói portable và thực nghiệm mới. Các phép kiểm điện thoại thật còn chờ.
 
 - **Source, build và test:** [cafelink-system/README.md](cafelink-system/README.md).
 - **Chạy local/public và demo:** [FINAL_RUNBOOK.md](cafelink-system/docs/FINAL_RUNBOOK.md).

@@ -2,6 +2,8 @@
 
 Ngày bắt đầu: 30/10/2026. Căn cứ mã nguồn trước nâng cấp: commit `8ee93ca`, ứng dụng V9.3/schema 11. Các báo cáo và phép đo V9.3 đã lưu vẫn mô tả đúng snapshot của chúng; không dùng lại số test hoặc số đo cũ để chứng nhận mã sau sửa.
 
+Đợt nâng cấp hiện đã kiểm xong các phần bên dưới: **162 Java, 71 Chromium, 20 Firefox, 20 WebKit; 120 ca phục hồi; 12 lượt tải; 23 nhóm kiểm gói và 8 kiểm public**. Gói mới nhất tại workspace là **CafeLink-Web-V9.4-RC3**. [Báo cáo kết quả/hash và cách chạy](../../report/CafeLink_Hardening_20261030.md) ghi cả 94 slot tải chưa phát ở mức 14 khách và các thử nghiệm vật lý còn chờ. Các số này không phải tỷ lệ bao phủ hoặc chứng minh không còn lỗi.
+
 ## Cách thực hiện
 
 Mỗi phần có kiểm thử riêng và kiểm hồi quy phù hợp, sau đó commit/push trước khi sang phần tiếp theo. Giữ DOCX người dùng đang sửa, dữ liệu vận hành và bộ RC1 niêm phong. Chỉ stage các file của phần đang hoàn tất.
@@ -98,3 +100,5 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-browser-compati
 ```
 
 Đây là engine Firefox/WebKit chạy trên Windows và các viewport nhỏ, chưa phải nghiệm thu Safari/iPhone, Android, camera QR hoặc loa thật. Không thay kết quả thiết bị vật lý bằng tên engine.
+
+Lượt sau sửa đạt 20 ca mỗi engine, không skip/flaky; hash JAR/giao diện khớp gate đầy đủ 162 Java/71 Chromium. [Summary phần 6](../../report/evidence/cafelink-v2/v9.4-hardening/phase6-audio-and-compatibility/summary.json). Sau đó RC3 được kiểm lại trên JRE đi kèm và HTTPS/WSS public; các run/giới hạn nằm trong báo cáo kết quả đầu trang.

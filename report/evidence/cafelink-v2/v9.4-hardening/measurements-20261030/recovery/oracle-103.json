@@ -1,0 +1,31 @@
+{
+  "case": 103,
+  "visit": [
+    {
+      "id": "45c81a0a-f3f4-4a44-98d0-ca5a240e66d2",
+      "table_id": 1,
+      "active": 0,
+      "state": "CLOSED",
+      "payment_mode": "PREPAY",
+      "service_mode": "AUTO"
+    }
+  ],
+  "orders": [],
+  "tickets": [],
+  "receipts": [
+    {
+      "command_id": "ff2be252-7f04-4649-a5cd-0905277c5c40",
+      "action": "PLACE_ORDER",
+      "result_json": "{\"cancelledBeforeAcceptance\":true}"
+    }
+  ],
+  "payments": [],
+  "events": [
+    {
+      "id": 15,
+      "type": "CLOSE_VISIT",
+      "entity_id": "45c81a0a-f3f4-4a44-98d0-ca5a240e66d2"
+    }
+  ],
+  "schema": 11
+}

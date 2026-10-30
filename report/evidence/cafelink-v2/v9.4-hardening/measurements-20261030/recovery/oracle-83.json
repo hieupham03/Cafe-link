@@ -1,0 +1,25 @@
+{
+  "case": 83,
+  "visit": [
+    {
+      "id": "e6af857b-5264-4cf5-a403-621a7afaa19d",
+      "table_id": 1,
+      "active": 0,
+      "state": "CLOSED",
+      "payment_mode": "PREPAY",
+      "service_mode": "AUTO"
+    }
+  ],
+  "orders": [],
+  "tickets": [],
+  "receipts": [],
+  "payments": [],
+  "events": [
+    {
+      "id": 25,
+      "type": "CLOSE_VISIT",
+      "entity_id": "e6af857b-5264-4cf5-a403-621a7afaa19d"
+    }
+  ],
+  "schema": 11
+}

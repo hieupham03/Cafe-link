@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "counts": [
+    1,
+    5,
+    10,
+    14
+  ],
+  "repetitions": 3,
+  "seconds": 15,
+  "warmup": 3,
+  "slotMs": 1000,
+  "maxWebSessions": 32,
+  "maxGuestSessions": 30,
+  "topology": "One machine; real React guest pages -> HTTP Gateway -> TCP Core -> SQLite",
+  "measurement": "One browser clock per actor. Full operation response includes IndexedDB/session/place response; render is first DOM detection after accepted receipt. HTTP duration includes cloned response body. Byte counts are decoded HTTP bodies, not TCP/TLS bytes.",
+  "loadModel": "Each browser starts at most one sequential order/payment flow per 1-second slot; overruns are recorded, not overlapped. Warmup excluded from timed samples but included in database oracle.",
+  "payment": "LOCAL_SIMULATOR",
+  "startedAt": "2026-10-30T13:17:39.158Z",
+  "browser": "156.0.8078.4",
+  "completedCases": 12,
+  "failed": 0,
+  "finishedAt": "2026-10-30T13:22:18.908Z"
+}

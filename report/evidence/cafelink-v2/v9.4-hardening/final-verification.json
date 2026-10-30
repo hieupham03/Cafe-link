@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-30",
+  "softwareVerificationStatus": "PASS",
+  "scope": "Selected automated software, simulated recovery/load and portable/public demo checks; not proof of zero remaining defects",
+  "sourceCommit": "d654bc1",
+  "java": {
+    "tests": 162,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "chromium": {
+    "passed": 71,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "firefoxPassed": 20,
+  "webkitPassed": 20,
+  "buildGuardPassed": 9,
+  "analysisLogicPassed": 3,
+  "recoveryCases": 120,
+  "loadCases": 12,
+  "successfulLoadFlows": 1256,
+  "offeredSlots": 1350,
+  "missedSlots": 94,
+  "flowErrors": 0,
+  "httpErrors": 0,
+  "portableChecks": 23,
+  "publicChecks": 8,
+  "archive": "dist/CafeLink-Web-V9.4-RC3.zip",
+  "archiveSha256": "6FE0B497F2B1CBBA404312A6977B6E3D9F31ACBF2510986CB1C7197EBA4A7BB3",
+  "artifactHashesMatch": true,
+  "testListenersClosed": true,
+  "physicalPhone": "NOT_RUN",
+  "physicalLan": "NOT_RUN",
+  "audibleSpeakerOutput": "NOT_MEASURED",
+  "realPaymentProvider": "NOT_INTEGRATED",
+  "userEditedDocx": "PRESERVED_AND_NOT_STAGED",
+  "sealedE0Sha256": "60A1E6666F4BAC52B2F0B868A9AAFD9024563991AB22777076D639416E8766EB",
+  "remoteCi": {
+    "sourceStatus": "PASS",
+    "sourceRuns": [
+      "https://github.com/hieupham03/Cafe-link/actions/runs/41061881251",
+      "https://github.com/hieupham03/Cafe-link/actions/runs/41061881317"
+    ],
+    "publicationStatus": "PENDING"
+  }
+}
