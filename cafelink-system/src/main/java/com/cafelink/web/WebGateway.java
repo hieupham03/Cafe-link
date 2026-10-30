@@ -258,7 +258,10 @@ public final class WebGateway implements AutoCloseable {
             return value.getAsJsonObject();
         } catch (JsonParseException e) { throw new HttpFailure(400, "INVALID_JSON", "JSON không hợp lệ."); }
     }
-    private static void respond(Response response, Callback callback, int status, Object value) {
+    private static void respond(Request request, Response response, Callback callback, int status, Object value) {
+        // Reject without blocking on a missing/slow body. Decide persistence before
+        // committing headers so a client never reuses a connection Jetty will close.
+        if (!request.consumeAvailable()) response.getHeaders().put("Connection", "close");
         response.setStatus(status); response.getHeaders().put("Content-Type", "application/json; charset=utf-8");
         response.write(true, ByteBuffer.wrap(Json.GSON.toJson(value).getBytes(StandardCharsets.UTF_8)), callback);
     }
@@ -278,20 +281,20 @@ public final class WebGateway implements AutoCloseable {
                 }
                 if (!path.startsWith("/api/") && !path.equals("/ws/state")) return staticFile(request, response, callback);
                 if (path.equals("/api/health") && method.equals("GET")) {
-                    respond(response, callback, 200, Map.of("gateway", "UP", "version", ApplicationInfo.VERSION,
+                    respond(request, response, callback, 200, Map.of("gateway", "UP", "version", ApplicationInfo.VERSION,
                             "phase", ApplicationInfo.VERSION, "transport", "TCP")); return true;
                 }
                 if (path.equals("/api/ready") && method.equals("GET")) {
                     var health = healthProbe.check();
-                    respond(response, callback, health.ready() ? 200 : 503, health.payload(ApplicationInfo.VERSION)); return true;
+                    respond(request, response, callback, health.ready() ? 200 : 503, health.payload(ApplicationInfo.VERSION)); return true;
                 }
                 if (method.equals("POST")) requireOrigin(request);
                 if (path.equals("/api/login") && method.equals("POST")) {
                     authBudget(request);
-                    respond(response, callback, 200, login(request, response, body(request)).info()); return true;
+                    respond(request, response, callback, 200, login(request, response, body(request)).info()); return true;
                 }
                 if (path.equals("/api/guest/join") && method.equals("POST")) {
-                    authBudget(request); respond(response, callback, 200, join(request, response, body(request)).info()); return true;
+                    authBudget(request); respond(request, response, callback, 200, join(request, response, body(request)).info()); return true;
                 }
                 if (path.equals("/api/guest/leave") && method.equals("POST")) {
                     SessionBridge previous = sessions.get(sessionId(request));
@@ -299,7 +302,7 @@ public final class WebGateway implements AutoCloseable {
                     if (previous != null) {
                         sessions.remove(sessionId(request), previous); previous.close();
                     }
-                    response.getHeaders().add("Set-Cookie", cookie("", 0)); respond(response, callback, 200, Map.of("left", true)); return true;
+                    response.getHeaders().add("Set-Cookie", cookie("", 0)); respond(request, response, callback, 200, Map.of("left", true)); return true;
                 }
                 SessionBridge bridge = lease(request);leased=bridge;
                 if (method.equals("POST")) csrf(request, bridge);
@@ -309,15 +312,15 @@ public final class WebGateway implements AutoCloseable {
                         if(images==null)throw new HttpFailure(503,"MEDIA_UNAVAILABLE","Chưa cấu hình kho ảnh.");
                         if(request.getLength()>MenuImages.LIMIT)throw new HttpFailure(413,"IMAGE_TOO_LARGE","Ảnh tối đa 2 MiB.");
                         byte[] bytes=Request.asInputStream(request).readNBytes(MenuImages.LIMIT+1);
-                        try{respond(response,callback,200,Map.of("imageUrl",images.save(bytes)));}catch(IOException invalid){throw new HttpFailure(400,"INVALID_IMAGE",invalid.getMessage());}
+                        try{respond(request, response,callback,200,Map.of("imageUrl",images.save(bytes)));}catch(IOException invalid){throw new HttpFailure(400,"INVALID_IMAGE",invalid.getMessage());}
                     }
-                    case "POST /api/guest/continue" -> respond(response, callback, 200, continueGuest(request,response,bridge,body(request)).info());
-                    case "GET /api/session" -> respond(response, callback, 200, bridge.info());
+                    case "POST /api/guest/continue" -> respond(request, response, callback, 200, continueGuest(request,response,bridge,body(request)).info());
+                    case "GET /api/session" -> respond(request, response, callback, 200, bridge.info());
                     case "GET /api/admin/diagnostics" -> {
                         if (!bridge.client.identity().role().equals("ADMIN")) throw new HttpFailure(403,"FORBIDDEN","Chỉ quản lý được xem chẩn đoán hệ thống.");
                         JsonObject core = bridge.command(UUID.randomUUID().toString(), "GET_DIAGNOSTICS", new JsonObject());
                         var heap = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-                        respond(response, callback, 200, Map.of("version", ApplicationInfo.VERSION,
+                        respond(request, response, callback, 200, Map.of("version", ApplicationInfo.VERSION,
                                 "sampledAt", java.time.Instant.now().toString(), "core", core,
                                 "readiness", healthProbe.check().payload(ApplicationInfo.VERSION),
                                 "gateway", Map.of("sessions", sessions.size(),
@@ -328,11 +331,11 @@ public final class WebGateway implements AutoCloseable {
                                 "jvm", Map.of("heapUsedBytes", heap.getUsed(), "heapMaxBytes", heap.getMax(),
                                         "threads", ManagementFactory.getThreadMXBean().getThreadCount())));
                     }
-                    case "GET /api/state" -> respond(response, callback, 200, bridge.client.refresh());
+                    case "GET /api/state" -> respond(request, response, callback, 200, bridge.client.refresh());
                     case "POST /api/logout" -> {
                         if (bridge.client.identity().membershipId() != null) bridge.client.request("LEAVE_VISIT", new JsonObject());
                         sessions.remove(sessionId(request), bridge); bridge.close();
-                        response.getHeaders().add("Set-Cookie", cookie("", 0)); respond(response, callback, 200, Map.of("loggedOut", true));
+                        response.getHeaders().add("Set-Cookie", cookie("", 0)); respond(request, response, callback, 200, Map.of("loggedOut", true));
                     }
                     case "POST /api/command" -> {
                         JsonObject input = body(request);
@@ -355,17 +358,17 @@ public final class WebGateway implements AutoCloseable {
                         JsonObject value = bridge.command(id, action, input.getAsJsonObject("data"));
                         if (action.equals("GET_VISIT_QR")) value.addProperty("joinUrl", origin()+"/join#grant="+value.get("grant").getAsString());
                         if (action.equals("GET_TABLE_QR")) value.addProperty("joinUrl", origin()+"/join#table="+value.get("grant").getAsString());
-                        respond(response, callback, 200, value);
+                        respond(request, response, callback, 200, value);
                     }
                     default -> throw new HttpFailure(404, "NOT_FOUND", "Không có đường dẫn này.");
                 }
-            } catch (HttpFailure e) { respond(response, callback, e.status, Map.of("code", e.code, "message", e.getMessage())); }
+            } catch (HttpFailure e) { respond(request, response, callback, e.status, Map.of("code", e.code, "message", e.getMessage())); }
             catch (RemoteException e) {
                 int status = Set.of("AUTH_FAILED","INVALID_CREDENTIAL","SESSION_REVOKED","SESSION_EXPIRED").contains(e.code()) ? 401 : Set.of("FORBIDDEN","QR_REQUIRED").contains(e.code()) ? 403 : e.code().equals("RATE_LIMITED") ? 429 : 409;
-                respond(response, callback, status, Map.of("code", e.code(), "message", e.getMessage()));
+                respond(request, response, callback, status, Map.of("code", e.code(), "message", e.getMessage()));
             } catch (IOException e) {
-                respond(response, callback, 503, Map.of("code", "CORE_UNAVAILABLE", "message", "Mất kết nối tới quán. Chưa rõ kết quả lệnh; hãy đối chiếu trước khi gửi lại."));
-            } catch (RuntimeException e) { respond(response, callback, 400, Map.of("code", "INVALID_INPUT", "message", "Yêu cầu không hợp lệ.")); }
+                respond(request, response, callback, 503, Map.of("code", "CORE_UNAVAILABLE", "message", "Mất kết nối tới quán. Chưa rõ kết quả lệnh; hãy đối chiếu trước khi gửi lại."));
+            } catch (RuntimeException e) { respond(request, response, callback, 400, Map.of("code", "INVALID_INPUT", "message", "Yêu cầu không hợp lệ.")); }
             finally {if(leased!=null)leased.release();}
             return true;
         }

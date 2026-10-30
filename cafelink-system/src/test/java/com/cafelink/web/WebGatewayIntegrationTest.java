@@ -4,8 +4,11 @@ import com.cafelink.server.*;
 import com.google.gson.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.net.*;
 import java.net.http.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -105,6 +108,63 @@ class WebGatewayIntegrationTest {
                 .POST(HttpRequest.BodyPublishers.ofString(open)).build();
         assertEquals(403, browser.send(forged, HttpResponse.BodyHandlers.ofString()).statusCode());
         assertEquals("AVAILABLE", json(get("/api/state")).getAsJsonArray("tables").get(0).getAsJsonObject().get("status").getAsString());
+    }
+    @Test void earlyRejectionAdvertisesConnectionCloseWhenBodyHasNotArrived() throws Exception {
+        // Send only headers: rejection must not wait for an attacker-controlled body,
+        // and must not offer a keep-alive connection that Jetty closes afterwards.
+        login();
+        var cookies = (CookieManager) browser.cookieHandler().orElseThrow();
+        String cookie = cookies.getCookieStore().getCookies().get(0).toString();
+        assertEarlyRejection("/api/command", "https://evil.example", "", 80, 403, "ORIGIN_DENIED");
+        assertEarlyRejection("/api/command", base, cookie, 80, 403, "CSRF_DENIED");
+        assertEarlyRejection("/api/login", base, "", 65_537, 413, "BODY_TOO_LARGE");
+    }
+    private void assertEarlyRejection(String path, String origin, String cookie, int length,
+                                      int status, String code) throws Exception {
+        try (var socket = new Socket("127.0.0.1", gateway.port())) {
+            socket.setSoTimeout(2_000);
+            String headers = "POST " + path + " HTTP/1.1\r\nHost: 127.0.0.1:" + gateway.port()
+                    + "\r\nOrigin: " + origin + "\r\nCookie: " + cookie
+                    + "\r\nContent-Type: application/json\r\nContent-Length: " + length + "\r\n\r\n";
+            socket.getOutputStream().write(headers.getBytes(StandardCharsets.US_ASCII));
+            socket.getOutputStream().flush();
+            String response = readHttpHeaders(socket.getInputStream());
+            assertTrue(response.startsWith("HTTP/1.1 " + status), response);
+            assertTrue(response.toLowerCase(Locale.ROOT).contains("\r\nconnection: close\r\n"), response);
+            int contentLength = response.lines().filter(line -> line.toLowerCase(Locale.ROOT).startsWith("content-length:"))
+                    .map(line -> Integer.parseInt(line.substring(line.indexOf(':') + 1).trim())).findFirst().orElseThrow();
+            String body = new String(socket.getInputStream().readNBytes(contentLength), StandardCharsets.UTF_8);
+            assertEquals(code, JsonParser.parseString(body).getAsJsonObject().get("code").getAsString());
+            assertEquals(-1, socket.getInputStream().read(), "Server must close after its complete error response");
+        }
+    }
+    @Test void rejectedBodiesDoNotPoisonSubsequentAuthenticatedRequests() throws Exception {
+        String csrf = login();
+        String command = "{\"commandId\":\"denied\",\"action\":\"OPEN_TABLE\",\"data\":{\"tableId\":1}}";
+        for (int attempt = 0; attempt < 12; attempt++) {
+            assertEquals(403, post("/api/command", command, null).statusCode());
+            var request = HttpRequest.newBuilder(URI.create(base + "/api/command"))
+                    .header("Origin", "https://evil.example").header("X-CSRF-Token", csrf)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(command)).build();
+            assertEquals(403, browser.send(request, HttpResponse.BodyHandlers.ofString()).statusCode());
+            var state = get("/api/state");
+            assertEquals(200, state.statusCode(), state.body());
+            assertEquals("AVAILABLE", json(state).getAsJsonArray("tables").get(0).getAsJsonObject().get("status").getAsString());
+        }
+    }
+    private static String readHttpHeaders(InputStream input) throws Exception {
+        var bytes = new ByteArrayOutputStream();
+        while (bytes.size() < 16_384) {
+            int next = input.read();
+            if (next < 0) throw new AssertionError("Connection closed before HTTP response headers");
+            bytes.write(next);
+            if (next == '\n') {
+                String text = bytes.toString(StandardCharsets.US_ASCII);
+                if (text.endsWith("\r\n\r\n")) return text;
+            }
+        }
+        throw new AssertionError("HTTP response headers exceeded test bound");
     }
     @Test void guestPasswordCannotBecomeAWebSession() throws Exception {
         var denied = post("/api/login", "{\"username\":\"ban1\",\"password\":\"Ban1@123\",\"role\":\"ADMIN\"}", null);

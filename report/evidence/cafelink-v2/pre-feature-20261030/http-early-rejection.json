@@ -1,0 +1,39 @@
+{
+  "status": "FOCUSED_PASS_FULL_GATE_PENDING",
+  "observedCiFailure": {
+    "main": "https://github.com/hieupham03/Cafe-link/actions/runs/41073741905",
+    "submissionControl": "https://github.com/hieupham03/Cafe-link/actions/runs/41073742542",
+    "javaTests": 162,
+    "failures": 0,
+    "errors": 1,
+    "test": "WebGatewayIntegrationTest.writesRequireExactOriginAndCsrfAndNeverTrustClientRole",
+    "exception": "HTTP/1.1 header parser received no bytes; Windows connection aborted on write"
+  },
+  "investigation": {
+    "originalMethodRepeatedOnJre17": 60,
+    "repeatedFailures": 0,
+    "note": "The intermittent CI abort was not reproduced in these repeats; the deterministic late-body test exposes the same unsafe connection-persistence boundary. No packet trace proves they have exactly one cause."
+  },
+  "red": {
+    "tests": 1,
+    "failures": 1,
+    "assertion": "403 response to headers-only POST did not advertise Connection: close"
+  },
+  "green": {
+    "jdk": "17.0.20.1+1",
+    "integrationClassTests": 13,
+    "failures": 0,
+    "errors": 0,
+    "newTests": 2,
+    "lateBodyCases": [
+      "ORIGIN_DENIED",
+      "CSRF_DENIED",
+      "BODY_TOO_LARGE"
+    ],
+    "consecutiveRejectedBodyCycles": 12
+  },
+  "fix": "Consume currently available request content before committing JSON response headers. Explicitly advertise Connection: close if content is incomplete; no blocking drain or automatic command retry.",
+  "runtimeChanged": true,
+  "requiresNewPackage": true,
+  "physicalPhone": "NOT_RUN"
+}
