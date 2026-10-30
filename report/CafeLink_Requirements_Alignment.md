@@ -28,7 +28,7 @@ Căn cứ ưu tiên là [bộ final-project-2](../final-project-2/README.md), đ
 - `SPECIFICATION.md`: ví dụ IoTRPCBroker. CafeLink không bắt buộc CRC16, 1.000 thiết bị hoặc mục tiêu hiệu năng của ví dụ.
 - `Submission.md`: cách đặt tên, bộ file và thủ tục nộp chính thức.
 
-Hai PDF thể thức được dùng để tham khảo bố cục Word, không đổi loại bài thành khóa luận hoặc đổi thông tin trường. Bản hiện tại 41 trang, body 13; việc biên tập không phải một lần chạy thực nghiệm mới.
+Hai PDF thể thức được dùng để tham khảo bố cục Word, không đổi loại bài thành khóa luận hoặc đổi thông tin trường. Bản hiện tại 42 trang, body 13; việc biên tập không phải một lần chạy thực nghiệm mới.
 
 ## Trạng thái hồ sơ
 

@@ -4,7 +4,7 @@
 
 Khách quét QR tại bàn để xem món, đặt hàng, thanh toán giả lập và theo dõi phục vụ. Quầy quản lý thực đơn, nhận đơn, điều phối pha chế/giao đồ và xử lý hỗ trợ. Nhiều khách cùng bàn dùng chung QR nhưng có phiên, giỏ và đơn riêng.
 
-**Source:** V9.4, schema 11. **Báo cáo hiện tại:** [Word](report/NhomXX_CafeLink_Report_Current_20261030.docx) · [PDF, 41 trang](report/NhomXX_CafeLink_Report_Current_20261030.pdf). Thanh toán dùng `LOCAL_SIMULATOR`, không thu tiền thật.
+**Source:** V9.4, schema 11. **Báo cáo hiện tại:** [Word](report/NhomXX_CafeLink_Report_Current_20261030.docx) · [PDF, 42 trang](report/NhomXX_CafeLink_Report_Current_20261030.pdf). Thanh toán dùng `LOCAL_SIMULATOR`, không thu tiền thật.
 
 | Bắt đầu tại đây | Nội dung |
 |---|---|

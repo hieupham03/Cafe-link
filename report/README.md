@@ -7,7 +7,7 @@
 | Word | [NhomXX_CafeLink_Report_Current_20261030.docx](NhomXX_CafeLink_Report_Current_20261030.docx) |
 | PDF | [NhomXX_CafeLink_Report_Current_20261030.pdf](NhomXX_CafeLink_Report_Current_20261030.pdf) |
 
-Bản biên tập ngày **30/10/2026**, **41 trang**, nội dung chính Times New Roman 13. Báo cáo trình bày toàn hệ thống gọi món, Client/Server, giao thức TCP, nhiều kết nối và xử lý lỗi. Mục 9 chia kết quả chức năng, giao tiếp mạng, hiệu năng và phục hồi; chi tiết từng ca/lượt nằm ở phụ lục. Bìa và chỉnh sửa cá nhân được giữ từ bản người dùng đã sửa.
+Bản biên tập ngày **30/10/2026**, **42 trang**, nội dung chính Times New Roman 13. Báo cáo trình bày toàn hệ thống gọi món, Client/Server, giao thức TCP, nhiều kết nối và xử lý lỗi. Mục 9 chia kết quả chức năng, giao tiếp mạng, hiệu năng và phục hồi; chi tiết từng ca/lượt nằm ở phụ lục. Bìa và chỉnh sửa cá nhân được giữ từ bản người dùng đã sửa. Ngày 31/10 đã đồng nhất tên/MSSV trong bảng phân công theo xác nhận của nhóm, rồi cập nhật mục lục và xuất lại PDF.
 
 Word là bản có thể tiếp tục chỉnh; PDF dùng đọc và kiểm bố cục. Bản mới được tạo từ DOCX, không lấy Markdown cũ để ghi đè những chỉnh sửa của người dùng. [Đối chiếu yêu cầu học phần](CafeLink_Requirements_Alignment.md).
 

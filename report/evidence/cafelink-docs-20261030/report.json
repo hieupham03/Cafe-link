@@ -1,40 +1,41 @@
 {
   "status": "PASS",
   "date": "2026-10-30",
-  "scope": "Publication copy of latest user-saved report; content was preserved, Word fields refreshed and PDF regenerated",
+  "scope": "Publication copy of latest user-saved report; confirmed member identity corrected in two cells, Word fields refreshed and PDF regenerated",
   "sourceSnapshotSha256": "EAC617A0B2CBB0584FF272A0D854DA75E3F83D7C87583CA5ABD4EBEF732A029E",
   "sourceOriginalPreserved": true,
   "docx": "report/NhomXX_CafeLink_Report_Current_20261030.docx",
-  "docxSha256": "9A9163A605FF8C7F7AFD3DB33FF9F8FC2BCF490ED77259A7EC9C835C6BEF0C48",
+  "docxSha256": "2DA840B61FFDD6739455D92F4B40F7D594AD6971266A1C1436A2759085EE0944",
   "pdf": "report/NhomXX_CafeLink_Report_Current_20261030.pdf",
-  "pdfSha256": "BA47D4DD32BAD758687F513E1875497A0B86EF936408AF0B3B946B8BF85114D3",
-  "pages": 41,
+  "pdfSha256": "19CB03FC7F207CA5A4D8352C4E192AF68E3C5CA2B357812CE02235F7191C1C72",
+  "pages": 42,
   "tables": 20,
   "images": 15,
   "bodySizePt": 13,
-  "userTextAndTablesPreserved": true,
+  "userTextAndTablesPreserved": "EXCEPT_TWO_USER_CONFIRMED_IDENTITY_CELLS",
   "noMissingPdfText": true,
   "noOffPageText": true,
   "visualReview": {
     "status": "PASS",
     "pages": [
       1,
+      2,
       3,
       4,
       5,
-      6,
-      27,
-      28,
-      29,
-      30,
-      36,
-      37,
-      38,
-      39,
       40,
-      41
+      41,
+      42
     ]
   },
   "newApplicationExperiment": false,
-  "compilatio": "NOT_RUN"
+  "compilatio": "NOT_RUN",
+  "revisionDate": "2026-10-31",
+  "confirmedIdentityCorrection": {
+    "authority": "User confirmation on 2026-10-31",
+    "name": "Nguyễn Đình Quang Huy",
+    "studentId": "B23DCCN393",
+    "coverUnchanged": true,
+    "unrelatedContentPreserved": true
+  }
 }

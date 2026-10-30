@@ -1,6 +1,6 @@
 # CafeLink - Trạng thái chuẩn bị nộp và hồ sơ lịch sử
 
-**Cập nhật hiện hành:** source V9.4, gói đã kiểm RC4; [báo cáo mới](README.md) là bản Current ngày 30/10, 41 trang. Nhóm đã xác nhận hoàn thành kiểm thao tác thực tế. Compilatio và nộp chính thức vẫn cần kết quả riêng. Các bảng và trạng thái RC1/V9.3 bên dưới là snapshot lịch sử, không phải danh sách còn chờ hiện tại. Bản Word người dùng sửa được giữ nguyên.
+**Cập nhật hiện hành:** source V9.4, gói đã kiểm RC4; [báo cáo mới](README.md) là bản Current ngày 30/10, 42 trang. Nhóm đã xác nhận hoàn thành kiểm thao tác thực tế. Compilatio và nộp chính thức vẫn cần kết quả riêng. Các bảng và trạng thái RC1/V9.3 bên dưới là snapshot lịch sử, không phải danh sách còn chờ hiện tại. Bản Word người dùng sửa được giữ nguyên.
 
 **Báo cáo ngày 29/10 trong hồ sơ lịch sử:** [Word](NhomXX_CafeLink_Report_Evidence13_20261029.docx), [PDF](NhomXX_CafeLink_Report_Evidence13_20261029.pdf), [Markdown](CafeLink_Technical_Paper_Evidence13_20261029.md). Các bảng bên dưới ghi nhận mốc phần mềm/bộ RC1 ngày 25/10; bản báo cáo biên tập ngày 29/10 chưa thay ZIP RC1. Ở mốc cũ này, thông tin nhóm, Compilatio và nghiệm thu điện thoại còn chờ.
 
