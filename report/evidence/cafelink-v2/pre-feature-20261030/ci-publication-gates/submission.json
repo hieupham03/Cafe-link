@@ -1,0 +1,98 @@
+{
+  "phase": "V9.4",
+  "includedPhases": [
+    "V5a",
+    "V6",
+    "V7",
+    "prepaid-simulator",
+    "automatic-private-visits",
+    "trusted-loopback-proxy",
+    "storefront-ui",
+    "web-policy-experiment",
+    "readiness-and-admin-diagnostics",
+    "bounded-audio"
+  ],
+  "browserEngine": "chromium",
+  "runId": "20261030-150909-46920e8e",
+  "startedAt": "2026-10-30T15:09:09.1114324+00:00",
+  "status": "PASS",
+  "gates": [
+    {
+      "name": "java-verify",
+      "exitCode": 0,
+      "durationMs": 126223
+    },
+    {
+      "name": "npm-ci",
+      "exitCode": 0,
+      "durationMs": 4442
+    },
+    {
+      "name": "web-build",
+      "exitCode": 0,
+      "durationMs": 6225
+    },
+    {
+      "name": "experiment-build",
+      "exitCode": 0,
+      "durationMs": 1239
+    },
+    {
+      "name": "browser-install",
+      "exitCode": 0,
+      "durationMs": 17899
+    },
+    {
+      "name": "browser-e2e",
+      "exitCode": 0,
+      "durationMs": 187069
+    }
+  ],
+  "physicalLan": "NOT_RUN",
+  "physicalPhone": "NOT_RUN",
+  "realPaymentProvider": "NOT_INTEGRATED",
+  "javaEvidence": "COPIED",
+  "java": {
+    "tests": 164,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "startTime": "2026-10-30T15:11:46.984Z",
+    "duration": 178695.51000000004,
+    "expected": 71,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 0
+  },
+  "testListenersClosed": true,
+  "artifact": {
+    "jarSha256": "942F0DC645D89F64746BEB12DD51101EF2A294DE60D0D26D54606F5F9EB759AB",
+    "frontendManifest": "81A55BB04BF43207CF0628F1CC115A166475900BE92F51EA80FF01E2ED7B7315",
+    "webFiles": [
+      {
+        "path": "index.html",
+        "sha256": "81A55BB04BF43207CF0628F1CC115A166475900BE92F51EA80FF01E2ED7B7315"
+      },
+      {
+        "path": "assets\\index-BCAlPzbZ.css",
+        "sha256": "94AE9BB23BD8BB1C7424EFE8BB9C1FC96C8D78B2339F950CAD4C1BEBA7414D77"
+      },
+      {
+        "path": "assets\\index-CL84o18U.js",
+        "sha256": "FC1B1313A987651296DE555AD1FCB65F4F906AEAD0CC1628ED79D866B08F3A81"
+      }
+    ]
+  },
+  "baselineSha256": "60A1E6666F4BAC52B2F0B868A9AAFD9024563991AB22777076D639416E8766EB",
+  "finishedAt": "2026-10-30T15:14:53.3151532+00:00",
+  "ci": {
+    "runId": 41077881762,
+    "url": "https://github.com/hieupham03/Cafe-link/actions/runs/41077881762",
+    "sourceCommit": "87b71506eb33a3f70c0ec784520627edae6fb5e4",
+    "branch": "submission/cafelink",
+    "conclusion": "success",
+    "completedAt": "2026-10-30T15:15:34Z"
+  }
+}

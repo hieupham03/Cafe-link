@@ -18,7 +18,7 @@
   "humanUsability": "NOT_RUN",
   "physicalResultsNotReplacedBySoftwareChecks": true,
   "userEditedDocx": "PRESERVED_NOT_STAGED",
-  "newCi": "PENDING_FINAL_PUBLICATION",
+  "newCi": "PASS",
   "documentLinksChecked": 71,
   "documentLinksBroken": 0,
   "docxSha256": "8354488E80CA1FF5C1792B7375E5A173E90DB9313835308558208B736CACF1E8",
@@ -35,5 +35,14 @@
   "webkitTests": 20,
   "portableChecks": 23,
   "publicChecks": 8,
-  "documentFilesChecked": 8
+  "documentFilesChecked": 8,
+  "ciVerifiedSourceCommit": "87b71506eb33a3f70c0ec784520627edae6fb5e4",
+  "ciRuns": [
+    "https://github.com/hieupham03/Cafe-link/actions/runs/41077881036",
+    "https://github.com/hieupham03/Cafe-link/actions/runs/41077881762"
+  ],
+  "checkpointScope": "Committed source and verified tooling; user-edited DOCX and physical acceptance remain outside this checkpoint",
+  "finalDocumentFilesChecked": 8,
+  "finalDocumentLinksChecked": 73,
+  "finalDocumentLinksBroken": 0
 }

@@ -1,7 +1,7 @@
 {
   "softwareVerificationStatus": "PASS",
   "scope": "Selected automated software and portable checks; physical acceptance remains NOT_RUN. Public/CI follow-up explicitly recorded separately.",
-  "sourceCommit": "b26e45be287145057d45350b41aac902541a2d03",
+  "sourceCommit": "87b71506eb33a3f70c0ec784520627edae6fb5e4",
   "runtimeFixCommit": "0cb97bf",
   "java": {
     "tests": 164,
@@ -27,7 +27,7 @@
   "packageManifestFilesVerified": 360,
   "portableChecks": 23,
   "publicChecksStatus": "PASS",
-  "ciStatus": "PENDING_FINAL_PUBLICATION",
+  "ciStatus": "PASS",
   "testListenersClosed": true,
   "physicalPhone": "NOT_RUN",
   "physicalLan": "NOT_RUN",
@@ -46,6 +46,12 @@
       "https://github.com/hieupham03/Cafe-link/actions/runs/41075763295",
       "https://github.com/hieupham03/Cafe-link/actions/runs/41075763985"
     ],
-    "publicationStatus": "PENDING"
-  }
+    "publicationStatus": "PASS",
+    "publicationRuns": [
+      "https://github.com/hieupham03/Cafe-link/actions/runs/41077881036",
+      "https://github.com/hieupham03/Cafe-link/actions/runs/41077881762"
+    ]
+  },
+  "recordedAt": "2026-10-30T15:18:03.221961+00:00",
+  "metadataNote": "Final publication records results only. Runtime, tests, preparation tools and release scripts are unchanged from the verified source commit."
 }

@@ -36,6 +36,8 @@ Kết quả sau sửa HTTP:
 
 Số đo của runtime RC3 nằm ở [báo cáo nâng cấp](CafeLink_Hardening_20261030.md). Các kiểm mới ở đây không cộng dồn với số ca cũ hoặc biến chúng thành tỷ lệ bao phủ. CI và hash cuối được ghi trong [phiếu kiểm RC4](evidence/cafelink-v2/pre-feature-20261030/final-verification.json).
 
+CI của commit `87b7150` đã đạt trên [main](https://github.com/hieupham03/Cafe-link/actions/runs/41077881036) và [submission/cafelink](https://github.com/hieupham03/Cafe-link/actions/runs/41077881762). Đã tải artifact và xác nhận đó là gate mới của từng lượt chạy: 164 Java, 71 Chromium, không fail/error/skip/flaky, listener test đã đóng. [Gate CI main](evidence/cafelink-v2/pre-feature-20261030/ci-publication-gates/main.json) và [gate CI submission](evidence/cafelink-v2/pre-feature-20261030/ci-publication-gates/submission.json) giữ kết quả đối chiếu. Commit ghi nhận cuối chỉ cập nhật hồ sơ kết quả; source, test, công cụ chuẩn bị và script đóng gói không đổi so với commit đã kiểm này.
+
 ## 3. Bản sửa phát hiện khi kiểm CI
 
 CI trên main của commit `500f793` có một lỗi vận tải HTTP trong ca kiểm Origin/CSRF; cùng commit trên nhánh submission đạt. Chạy lại riêng phương thức 60 lần trên JRE 17 chưa tái hiện lỗi ngắt kết nối đó. Khi dựng trường hợp chỉ gửi header, có thể tái hiện một thiếu sót: Gateway trả 403 trước khi nội dung tới, rồi Jetty đóng kết nối mà header chưa báo `Connection: close`. Client có thể hiểu nhầm rằng kết nối còn dùng tiếp được. Không có packet trace để khẳng định lỗi CI và ca dựng này có cùng một nguyên nhân duy nhất.
