@@ -288,7 +288,7 @@ CafeLink hiện thực một hệ thống Client/Server có giao tiếp TCP rõ 
 
 [7] Cloudflare Docs, *Quick Tunnels*, truy cập 25/10/2026. [Tài liệu chính thức](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/).
 
-[8] Tài liệu học phần trong bộ source: `final-project/Instruction.md`, `Topics.md`, `Submission.md`; hạn ghi trong Submission: 23:59 ngày 31/10/2026. Khi quy định thay đổi cần đối chiếu thông báo chính thức của giảng viên.
+[8] Tài liệu học phần trong bộ source: `final-project-2/final-project/Instruction.md`, `Topics.md`, `Submission.md`; hạn ghi trong Submission: 23:59 ngày 31/10/2026. Khi quy định thay đổi cần đối chiếu thông báo chính thức của giảng viên.
 
 ## 16. Phụ lục
 

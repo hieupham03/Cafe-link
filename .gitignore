@@ -41,7 +41,7 @@
 
 # Reference documents from teachers/other groups remain local.
 /*.pdf
-/final-project/*.docx
+/final-project-2/references/
 /final-project-2/**/*.pdf
 /final-project-2/*.pdf
 /final-project-2/**/__MACOSX/

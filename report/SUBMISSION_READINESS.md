@@ -48,7 +48,7 @@ Runtime V9.3 ZIP niêm phong giữ SHA-256 `FDCA5E041BCB83F61260056BB8B6DB859BB5
 1. **Điện thoại/camera/mạng vật lý, usability:** người dùng kiểm sau theo yêu cầu; không tự đổi UAT thành Đạt. Dùng checklist của source, đặc biệt P01–P03 và U24.
 2. **Thông tin nhóm, lớp, MSSV, giảng viên, phân công:** chưa cung cấp; không tạo tên/mức đóng góp giả. Khi có thông tin, cập nhật bìa/phân công và đổi `XX` trong tên file/thư mục thành số nhóm thật.
 3. **Compilatio:** chưa upload/chưa có chứng nhận. Nhóm tự nộp đúng một DOCX, kiểm ngưỡng theo quy định môn học (≤20%), chỉnh trích dẫn/nội dung nếu cần và lưu kết quả.
-4. **Nộp/bàn giao chính thức:** chưa upload Drive/Compilatio hoặc gửi lớp trưởng. Bàn giao Source/Report theo [Submission](../final-project/Submission.md); bản DOCX cuối sau chỉnh phải khớp bản nộp.
+4. **Nộp/bàn giao chính thức:** chưa upload Drive/Compilatio hoặc gửi lớp trưởng. Bàn giao Source/Report theo [Submission](../final-project-2/final-project/Submission.md); bản DOCX cuối sau chỉnh phải khớp bản nộp.
 5. **Bảo vệ và đóng góp cá nhân:** các thành viên tự diễn tập giải thích code/flow/metric và xác nhận phần việc thực tế; test tự động không xác nhận điều này.
 
 Không cần mở rộng sang ngân hàng/kho/nhiều chi nhánh để hoàn thành phạm vi đã chốt. Nếu điện thoại phát hiện lỗi cần sửa, tạo RC tiếp theo và kiểm lại phần bị ảnh hưởng, cập nhật report/hash; không sửa archive niêm phong hoặc tự giữ kết quả cũ cho source đã đổi.

@@ -120,7 +120,6 @@ Cafe-link/
 ├── report/                  Báo cáo Word/PDF, hình và evidence theo từng mốc
 ├── dist/                    Baseline E0 niêm phong phục vụ test/CI
 ├── final-project-2/         Bộ yêu cầu học phần hiện hành
-├── final-project/           Đường dẫn tương thích của hồ sơ cũ
 └── .github/workflows/       CI Windows
 ```
 
