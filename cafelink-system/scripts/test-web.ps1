@@ -30,15 +30,28 @@ try {
     # No reuse: a listener on these test ports may belong to the user.
     $existing = @(Get-NetTCPConnection -LocalPort 18080,18081 -State Listen -ErrorAction SilentlyContinue)
     if ($existing.Count -gt 0) { throw 'Test ports 18080/18081 are already in use. No process was stopped.' }
-    Invoke-Gate 'java-verify' { & powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maven.ps1 -B verify }
-    $xmlRoot = New-Item -ItemType Directory -Path (Join-Path $runRoot 'junit') -Force
-    Copy-Item -Path (Join-Path $projectRoot 'target\surefire-reports\TEST-*.xml') -Destination $xmlRoot.FullName
-    $totals = [ordered]@{tests=0;failures=0;errors=0;skipped=0}
-    foreach ($file in Get-ChildItem -LiteralPath $xmlRoot.FullName -Filter '*.xml') {
-        $suite = ([xml](Get-Content -LiteralPath $file.FullName -Raw)).testsuite
-        foreach ($key in @('tests','failures','errors','skipped')) { $totals[$key] += [int]$suite.GetAttribute($key) }
+    $reports = Join-Path $projectRoot 'target\surefire-reports'
+    if (Test-Path -LiteralPath $reports) {
+        # Drop generated reports from earlier runs so compiler failures cannot
+        # accidentally inherit a passing JUnit summary.
+        Get-ChildItem -LiteralPath $reports -Filter 'TEST-*.xml' -File | ForEach-Object { Remove-Item -LiteralPath $_.FullName }
     }
-    $summary.java = $totals
+    try { Invoke-Gate 'java-verify' { & powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maven.ps1 -B verify } }
+    finally {
+        $xml = @(if (Test-Path -LiteralPath $reports) { Get-ChildItem -LiteralPath $reports -Filter 'TEST-*.xml' -File })
+        $summary.javaEvidence = 'NOT_PRODUCED'
+        if ($xml.Count -gt 0) {
+            $xmlRoot = New-Item -ItemType Directory -Path (Join-Path $runRoot 'junit') -Force
+            $totals = [ordered]@{tests=0;failures=0;errors=0;skipped=0}
+            foreach ($file in $xml) {
+                Copy-Item -LiteralPath $file.FullName -Destination $xmlRoot.FullName
+                $suite = ([xml](Get-Content -LiteralPath $file.FullName -Raw)).testsuite
+                foreach ($key in @('tests','failures','errors','skipped')) { $totals[$key] += [int]$suite.GetAttribute($key) }
+            }
+            $summary.java = $totals
+            $summary.javaEvidence = 'COPIED'
+        }
+    }
     Push-Location (Join-Path $projectRoot 'web')
     try {
         if (-not $SkipInstall) { Invoke-Gate 'npm-ci' { & npm.cmd ci --no-fund } }

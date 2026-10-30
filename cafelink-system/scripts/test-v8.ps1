@@ -9,6 +9,8 @@ try {
     if($LASTEXITCODE -ne 0){throw 'Build-to-gate matching checks failed'}
     & python tools/test_device_acceptance.py
     if($LASTEXITCODE -ne 0){throw 'Device acceptance preparation checks failed'}
+    & python tools/test_gate_evidence.py
+    if($LASTEXITCODE -ne 0){throw 'Failed Java gate evidence checks failed'}
     $regressionArgs=@('-NoProfile','-ExecutionPolicy','Bypass','-File','scripts/test-web.ps1')
     if($SkipInstall){$regressionArgs+='-SkipInstall'}
     if($SkipBrowserInstall){$regressionArgs+='-SkipBrowserInstall'}

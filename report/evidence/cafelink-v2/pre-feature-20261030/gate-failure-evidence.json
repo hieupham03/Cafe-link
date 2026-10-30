@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "red": {
+    "tests": 2,
+    "failures": 1,
+    "errors": 1
+  },
+  "green": {
+    "tests": 2,
+    "failures": 0,
+    "errors": 0
+  },
+  "scope": "Actual PowerShell orchestrator with isolated failing Java fixtures: preserve failed JUnit; compiler failure with no XML has NOT_PRODUCED and no fabricated totals. Production app was not started.",
+  "sourceTests": "cafelink-system/tools/test_gate_evidence.py"
+}
