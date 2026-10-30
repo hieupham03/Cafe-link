@@ -32,6 +32,7 @@
 | [TESTING](TESTING.md) | Nhóm kiểm theo hành vi, lệnh chạy và kết quả RC4 |
 | [WEB_EXPERIMENTS](WEB_EXPERIMENTS.md) | Đối chứng phục hồi, tải, timer, raw và oracle |
 | [CI](CI.md) | Workflow Windows, lệnh local và run GitHub đã xác minh |
+| [PUBLICATION](PUBLICATION.md) | Chặn hướng dẫn cũ, liên kết hỏng và nhiều bản báo cáo; kiểm tài liệu portable |
 | [Báo cáo và bằng chứng](../../report/README.md) | Chọn bản Word/PDF, dữ liệu RC3 và kiểm cuối RC4 |
 | [Đối chiếu yêu cầu học phần](../../report/CafeLink_Requirements_Alignment.md) | Nơi đáp ứng từng yêu cầu trong final-project-2 |
 

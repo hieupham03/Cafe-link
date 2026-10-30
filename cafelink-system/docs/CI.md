@@ -1,5 +1,7 @@
 # CafeLink V9.4 - CI Windows
 
+CI kiểm cả nội dung công bố theo [PUBLICATION](PUBLICATION.md): phiên bản hướng dẫn, liên kết từ bản Git thực tế, một cặp Word/PDF khớp phiếu kiểm và policy tài liệu portable. Các thay đổi README, báo cáo chính, hình và bộ yêu cầu cũng kích hoạt workflow. Bộ hồi quy có các ca đưa lại hướng dẫn cũ, trộn báo cáo, thiếu file local hoặc làm hỏng liên kết portable để kiểm khả năng từ chối.
+
 Workflow: [cafelink-v8.yml](../../.github/workflows/cafelink-v8.yml). Tên file và `scripts/test-v8.ps1` giữ từ pha V8; nội dung hiện kiểm V9.4.
 
 ## Pipeline

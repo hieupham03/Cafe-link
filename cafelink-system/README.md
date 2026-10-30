@@ -119,6 +119,8 @@ Máy chủ phải bật và có Internet. Tunnel đổi hostname khi chạy lạ
 
 ## Kiểm thử
 
+Trước push hoặc đóng gói, xem [kiểm nội dung công bố](docs/PUBLICATION.md). CI dùng chung policy với script đóng gói để chặn hướng dẫn phiên bản cũ, liên kết hỏng và các cặp báo cáo bị trộn.
+
 | Lệnh | Phạm vi |
 |---|---|
 | `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maven.ps1 -B test` | Java: protocol, TCP, service, DB, Gateway và hồi quy desktop |

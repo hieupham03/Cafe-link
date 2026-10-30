@@ -1,6 +1,6 @@
 # CafeLink - Mốc chuẩn bị trước khi cập nhật tính năng
 
-Ngày 30/10/2026. **Phần chuẩn bị phần mềm đã hoàn tất; đủ cơ sở bắt đầu làm tính năng trên nhánh/worktree riêng.** Nghiệm thu thiết bị/người dùng vẫn chờ kết quả thật, không được diễn giải thành hoàn thành toàn bộ nghiệm thu.
+Biên bản checkpoint ngày 30/10/2026. **Phần chuẩn bị phần mềm tại mốc này đã hoàn tất.** Những mục chờ bên dưới ghi trạng thái tại thời điểm lập biên bản; sau đó nhóm đã xác nhận hoàn thành kiểm thao tác thực tế. Trạng thái hiện hành nằm ở [SUBMISSION_READINESS](SUBMISSION_READINESS.md); chạy/demo theo [FINAL_RUNBOOK](../cafelink-system/docs/FINAL_RUNBOOK.md).
 
 ## 1. Mốc khôi phục
 

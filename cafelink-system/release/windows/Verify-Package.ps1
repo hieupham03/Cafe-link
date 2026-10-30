@@ -10,12 +10,12 @@ foreach($row in $manifest.files) {
     if((Get-Item -LiteralPath $path -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Package links are not supported.'}
     if((Get-Item -LiteralPath $path).Length -ne [long]$row.bytes -or (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash -ine [string]$row.sha256){throw "Changed package file: $($row.path)"}
 }
-foreach($directory in @('runtime','scripts','target/lib','web/dist')) {
+foreach($directory in @('runtime','scripts','target/lib','web/dist','docs')) {
     $root=Join-Path $releaseRoot $directory
     if((Get-Item -LiteralPath $root -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Package directory links are not supported.'}
     foreach($item in Get-ChildItem -LiteralPath $root -Recurse -Force) {
         if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Package directory links are not supported.'}
-        if(-not $item.PSIsContainer -and -not $seen.Contains($item.FullName.Substring($releaseRoot.Length+1).Replace('\','/'))){throw 'Unlisted file in executable or web assets directory.'}
+        if(-not $item.PSIsContainer -and -not $seen.Contains($item.FullName.Substring($releaseRoot.Length+1).Replace('\','/'))){throw 'Unlisted file in executable, web assets or documentation directory.'}
     }
 }
 if($seen.Count -lt 10){throw 'Package manifest is incomplete.'}

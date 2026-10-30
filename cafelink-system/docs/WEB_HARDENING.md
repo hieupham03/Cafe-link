@@ -1,10 +1,10 @@
-# CafeLink - Nâng cấp độ tin cậy và chẩn đoán
+# CafeLink V9.4 - Vận hành, độ tin cậy và chẩn đoán
 
-Ngày bắt đầu: 30/10/2026. Căn cứ mã nguồn trước nâng cấp: commit `8ee93ca`, ứng dụng V9.3/schema 11. Các báo cáo và phép đo V9.3 đã lưu vẫn mô tả đúng snapshot của chúng; không dùng lại số test hoặc số đo cũ để chứng nhận mã sau sửa.
+Tài liệu mô tả cơ chế đang có trong source V9.4/schema 11. Gói được kiểm cuối là RC4; cách chạy nằm ở [FINAL_RUNBOOK](FINAL_RUNBOOK.md), kết quả hiện hành ở [TESTING](TESTING.md).
 
-Mốc RC3 đã kiểm các phần bên dưới: **162 Java, 71 Chromium, 20 Firefox, 20 WebKit; 120 ca phục hồi; 12 lượt tải; 23 nhóm kiểm gói và 8 kiểm public**. [Báo cáo kết quả/hash và cách chạy](../../report/CafeLink_Hardening_20261030.md) ghi cả 94 slot tải chưa phát ở mức 14 khách và các thử nghiệm vật lý còn chờ. Các số này không phải tỷ lệ bao phủ hoặc chứng minh không còn lỗi.
+Kiểm cuối RC4 ghi nhận **164 Java, 71 Chromium, 20 Firefox, 20 WebKit, 23 nhóm kiểm gói và 8 kiểm public**. [Biên bản đo ngày 30/10](../../report/CafeLink_Hardening_20261030.md) giữ riêng 120 ca phục hồi và 12 lượt tải của RC3, gồm 94 slot chưa phát ở mức 14 khách. Số đo RC3 không trở thành benchmark RC4.
 
-Sau mốc trên có thêm bản sửa phản hồi HTTP khi từ chối yêu cầu chưa gửi đủ nội dung. [Mốc chuẩn bị cập nhật tính năng](../../report/CafeLink_PreFeature_Readiness_20261030.md) ghi gate, gói RC4 và kit nghiệm thu tương ứng; không dùng hash hoặc số đo RC3 để chứng nhận RC4.
+RC4 bổ sung phản hồi HTTP khi từ chối yêu cầu chưa gửi đủ nội dung. [Checkpoint](../../report/CafeLink_PreFeature_Readiness_20261030.md) lưu biên bản kỹ thuật tại thời điểm tạo mốc, không phải hướng dẫn chọn một bản cũ để chạy.
 
 ## Cách thực hiện
 
@@ -17,7 +17,7 @@ Mỗi phần có kiểm thử riêng và kiểm hồi quy phù hợp, sau đó c
 3. **Rà lỗi nghiệp vụ và kết nối:** kiểm luồng đặt món, trả trước, hỗ trợ, phiên riêng, thao tác đồng thời, ngắt/nối lại; sửa lỗi có ca tái hiện và giữ kiểm hồi quy.
 4. **Đánh giá vận hành:** chạy Java, web và các phép đo phù hợp trên mã mới; ghi rõ môi trường, số liệu thật và phần thiết bị vật lý chưa chạy. Chuẩn bị cách quan sát TCP và giải thích lỗi trong demo.
 
-Không coi trạng thái PASS của các phép kiểm đã chọn là chứng minh không còn lỗi. Điện thoại/camera và mạng vật lý cần người có thiết bị thực hiện; không đánh dấu Đạt thay người dùng.
+Nhóm đã xác nhận hoàn thành kiểm thao tác thực tế. Các số ở bảng tự động vẫn giữ đúng phạm vi; không đổi phiếu của một lượt kiểm cũ để tạo kết quả thiết bị hoặc hiệu năng mới.
 
 ## Nhật ký
 
@@ -84,7 +84,7 @@ Launcher public chờ `/api/ready` ở local, chờ Cloudflare báo đã nối e
 
 Gói thử được giải nén vào đường dẫn có khoảng trắng; chạy bằng JRE đi kèm khi PATH của tiến trình không có Java/Node/npm máy phát triển. Bộ kiểm bao gồm manifest/tamper, UI, ảnh menu, quyền khách, phục hồi, thanh toán, restart, backup/restore, khóa dữ liệu, path escape và cổng đã dùng. Bằng chứng gồm cả lượt public thất bại ban đầu; không sửa kết quả cũ thành PASS khi thử lại.
 
-Gói RC2 tại workspace: `dist/CafeLink-Web-V9.4-RC2.zip`, SHA-256 `F51EBDF8A64512BB8A909FEF8F5F15D883208EEE11294031DE718505264633D5`. **23 nhóm kiểm gói PASS**, **8 kiểm public HTTPS/WSS PASS**, tiến trình/listener do test tạo đã đóng. [Kết quả RC2](../../report/evidence/cafelink-v2/v9.4-hardening/phase5-release-rc2/summary.json); [lượt public thất bại trước sửa](../../report/evidence/cafelink-v2/v9.4-hardening/phase5-release/summary.json). Đây là Chromium đi qua Internet từ máy phát triển, chưa phải điện thoại hoặc hai máy LAN vật lý. URL thử nghiệm đã hết sau khi dọn tiến trình.
+Gói được kiểm cuối là RC4; [phiếu kiểm và hash](../../report/evidence/cafelink-v2/pre-feature-20261030/final-verification.json) ghi nhận **23 nhóm kiểm gói** và **8 kiểm public HTTPS/WSS** đạt. Các [kết quả RC2](../../report/evidence/cafelink-v2/v9.4-hardening/phase5-release-rc2/summary.json) và [lượt public thất bại trước sửa](../../report/evidence/cafelink-v2/v9.4-hardening/phase5-release/summary.json) chỉ là bằng chứng lịch sử. URL của các lượt tự động đã dừng; khi demo lấy URL của launcher hiện tại.
 
 ## Trình duyệt khác và lỗi âm thanh
 

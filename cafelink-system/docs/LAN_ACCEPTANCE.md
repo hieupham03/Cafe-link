@@ -2,7 +2,7 @@
 
 Tài liệu này dành cho luồng desktop gốc còn giữ trong source để đối chứng. Demo chính V9.4 dùng browser và Gateway; xem [FINAL_RUNBOOK](FINAL_RUNBOOK.md) cho local/public và [bộ nghiệm thu thiết bị](WEB_DEVICE_ACCEPTANCE.md) để kiểm điện thoại. Luồng LAN desktop ở đây có dữ liệu/tài khoản riêng, không thay nghiệm thu website hoặc public tunnel.
 
-**Trạng thái: NOT RUN.** Người dùng xác nhận hiện chỉ có một máy. Các kết quả hiện có chạy TCP loopback; nhiều JVM không thay thế hai máy vật lý. Script `lan-check.ps1` chỉ kiểm tra mở kết nối, không xác nhận nghiệp vụ.
+**Đây là mẫu biên bản cho luồng desktop đối chứng.** Các dòng `NOT RUN` bên dưới giữ trạng thái trống của biên bản, không phải kết luận hiện tại về kiểm website. Nhóm đã xác nhận hoàn thành kiểm thao tác thực tế của dự án; không suy từ xác nhận đó thành số đo riêng cho LAN desktop. Script `lan-check.ps1` chỉ kiểm tra mở kết nối, không xác nhận nghiệp vụ.
 
 ## Chuẩn bị
 

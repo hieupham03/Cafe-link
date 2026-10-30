@@ -1,0 +1,18 @@
+{
+  "format": "CafeLinkDocumentation/1",
+  "version": "V9.4",
+  "schema": 11,
+  "currentPackage": "CafeLink-Web-V9.4-RC4",
+  "repository": "https://github.com/hieupham03/Cafe-link",
+  "reportManifest": "report/evidence/cafelink-docs-20261030/report.json",
+  "generatedLaunchers": ["START-LOCAL.cmd", "START-PUBLIC.cmd"],
+  "externalCommands": ["npm.cmd", "npx.cmd"],
+  "guides": [
+    "FINAL_ARCHITECTURE.md",
+    "FINAL_PROTOCOL.md",
+    "FINAL_RUNBOOK.md",
+    "WEB_RELEASE.md",
+    "WEB_USER_ACCEPTANCE.md",
+    "WEB_HARDENING.md"
+  ]
+}

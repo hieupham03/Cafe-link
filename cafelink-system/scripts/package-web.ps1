@@ -3,7 +3,9 @@ $ErrorActionPreference='Stop'
 $ProgressPreference='SilentlyContinue'
 $projectRoot=Split-Path $PSScriptRoot -Parent
 $workspaceRoot=Split-Path $projectRoot -Parent
-if(-not $OutputDirectory){$OutputDirectory=Join-Path $workspaceRoot ('dist/CafeLink-Web-V9.4-'+(Get-Date -Format 'yyyyMMdd-HHmmss'))}
+. (Join-Path $PSScriptRoot 'package-documentation.ps1')
+$documentation=Read-PackageDocumentation -ProjectRoot $projectRoot
+if(-not $OutputDirectory){$OutputDirectory=Join-Path $workspaceRoot ('dist/CafeLink-Web-'+$documentation.version+'-'+(Get-Date -Format 'yyyyMMdd-HHmmss'))}
 $destination=[IO.Path]::GetFullPath($OutputDirectory)
 $archive=$destination+'.zip'
 if((Test-Path -LiteralPath $destination) -or (Test-Path -LiteralPath $archive)){throw 'Package destination already exists; select a fresh directory.'}
@@ -46,10 +48,11 @@ try {
         New-Item -ItemType Directory -Path (Join-Path $destination '.tools') -Force | Out-Null
         Copy-Item -LiteralPath $cloud -Destination (Join-Path $destination '.tools')
     }
-    foreach($name in @('FINAL_ARCHITECTURE.md','FINAL_PROTOCOL.md','FINAL_RUNBOOK.md','WEB_RELEASE.md','WEB_USER_ACCEPTANCE.md','WEB_HARDENING.md')) {Copy-Item -LiteralPath (Join-Path $projectRoot ('docs/'+$name)) -Destination (Join-Path $destination 'docs')}
+    # The same release/documentation.json policy is validated by verify_publication.py.
+    Copy-PackageDocumentation -ProjectRoot $projectRoot -WorkspaceRoot $workspaceRoot -Destination $destination -Documentation $documentation
     if($GateSummary){Copy-Item -LiteralPath $GateSummary -Destination (Join-Path $destination 'VERIFICATION.json')}
     $runtimeVersion=& (Join-Path $destination 'runtime/bin/java.exe') --version
-    [ordered]@{name='CafeLink Web';release='V9.4';patch='OPERATIONS_HARDENING';includedPatches=@('QR_ENTRY_FIX','GUEST_ZONES','TCP_READINESS','ADMIN_DIAGNOSTICS','PAYMENT_DEADLINE','HTTP_EARLY_REJECTION');schema=11;platform='Windows x64';createdAtUtc=[DateTime]::UtcNow.ToString('o');artifactVersion='1.0.0';javaRuntime=$runtimeVersion;runtimeSource=$pin;jarSha256=(Get-FileHash -LiteralPath $jar -Algorithm SHA256).Hash;frontendManifestSha256=(Get-FileHash web/dist/index.html -Algorithm SHA256).Hash;gateSummary=$(if($GateSummary){'VERIFICATION.json'}else{'NOT_PROVIDED'});realPayment='LOCAL_SIMULATOR';physicalPhone='NOT_RUN';physicalLan='NOT_RUN';remoteCi='NOT_RUN'} | ConvertTo-Json -Depth 7 | Set-Content -LiteralPath (Join-Path $destination 'RELEASE.json') -Encoding UTF8
+    [ordered]@{name='CafeLink Web';release=$documentation.version;patch='OPERATIONS_HARDENING';includedPatches=@('QR_ENTRY_FIX','GUEST_ZONES','TCP_READINESS','ADMIN_DIAGNOSTICS','PAYMENT_DEADLINE','HTTP_EARLY_REJECTION');schema=[int]$documentation.schema;platform='Windows x64';createdAtUtc=[DateTime]::UtcNow.ToString('o');artifactVersion='1.0.0';javaRuntime=$runtimeVersion;runtimeSource=$pin;jarSha256=(Get-FileHash -LiteralPath $jar -Algorithm SHA256).Hash;frontendManifestSha256=(Get-FileHash web/dist/index.html -Algorithm SHA256).Hash;gateSummary=$(if($GateSummary){'VERIFICATION.json'}else{'NOT_PROVIDED'});realPayment='LOCAL_SIMULATOR';physicalPhone='NOT_RUN';physicalLan='NOT_RUN';remoteCi='NOT_RUN'} | ConvertTo-Json -Depth 7 | Set-Content -LiteralPath (Join-Path $destination 'RELEASE.json') -Encoding UTF8
     foreach($mode in @('Local','Public')) {
         "@echo off`r`npowershell -NoProfile -ExecutionPolicy Bypass -File `"%~dp0Start-$mode.ps1`" %*`r`nif errorlevel 1 pause`r`n" | Set-Content -LiteralPath (Join-Path $destination "START-$($mode.ToUpper()).cmd") -Encoding ASCII
     }

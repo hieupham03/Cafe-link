@@ -1,6 +1,6 @@
 # CafeLink V9.4 - Nghiệm thu thiết bị trước khi cập nhật tính năng
 
-Bộ kiểm phần mềm của RC4 đã đạt; các ca dưới đây vẫn **NOT_RUN cho tới khi người kiểm thực hiện thật**. Không cần hoàn thành bìa/Compilatio để tạo mốc source trước nâng cấp. Các công việc nộp môn vẫn được theo dõi riêng.
+Đây là hướng dẫn tạo một bộ kiểm mới từ RC4. Nhóm đã xác nhận kiểm thao tác thực tế; `NOT_RUN` trong kit mới là trạng thái trống của lần kiểm mới, không phủ nhận xác nhận đó. Công việc bìa/Compilatio và nộp môn được theo dõi riêng.
 
 ## Chuẩn bị một lần
 
@@ -45,4 +45,4 @@ Khi báo lỗi, ghi mã ca, bước đã bấm, mong đợi/thực tế và thô
 
 ## Mốc source trước tính năng mới
 
-Checkpoint Git bảo vệ source đã commit; RC4 ZIP bảo vệ bản chạy đã kiểm. Mốc này không đóng băng DOCX người dùng đang sửa và không đổi các kết quả vật lý còn chờ. Trước sửa tính năng: nhánh/worktree riêng từ checkpoint, mô tả hành vi cần đổi và bất biến cần giữ; sau sửa chạy test liên quan, rồi gate đầy đủ trước đóng gói. [Trạng thái chuẩn bị source tại checkpoint](https://github.com/hieupham03/Cafe-link/blob/checkpoint/v9.4-before-features-20261030/report/CafeLink_PreFeature_Readiness_20261030.md) ghi mốc và hash thực tế.
+Checkpoint Git bảo vệ source đã commit; RC4 ZIP bảo vệ bản chạy đã kiểm. Mốc này không đóng băng DOCX người dùng đang sửa và không thay đổi kết quả của các lượt kiểm khác. Trước sửa tính năng: nhánh/worktree riêng từ checkpoint, mô tả hành vi cần đổi và bất biến cần giữ; sau sửa chạy test liên quan, rồi gate đầy đủ trước đóng gói. [Trạng thái chuẩn bị source tại checkpoint](https://github.com/hieupham03/Cafe-link/blob/checkpoint/v9.4-before-features-20261030/report/CafeLink_PreFeature_Readiness_20261030.md) ghi mốc và hash thực tế.

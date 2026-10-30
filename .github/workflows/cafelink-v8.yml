@@ -1,9 +1,9 @@
 name: CafeLink verification
 on:
   push:
-    paths: ['cafelink-system/**', '.github/workflows/cafelink-v8.yml', 'dist/CafeLink-Original-1.0.0-Baseline.zip']
+    paths: ['cafelink-system/**', '.github/workflows/cafelink-v8.yml', 'dist/CafeLink-Original-1.0.0-Baseline.zip', 'README.md', '.gitignore', 'report/*.md', 'report/*.docx', 'report/*.pdf', 'report/assets/**', 'final-project-2/**']
   pull_request:
-    paths: ['cafelink-system/**', '.github/workflows/cafelink-v8.yml', 'dist/CafeLink-Original-1.0.0-Baseline.zip']
+    paths: ['cafelink-system/**', '.github/workflows/cafelink-v8.yml', 'dist/CafeLink-Original-1.0.0-Baseline.zip', 'README.md', '.gitignore', 'report/*.md', 'report/*.docx', 'report/*.pdf', 'report/assets/**', 'final-project-2/**']
   workflow_dispatch:
     inputs:
       full_experiments:
@@ -46,7 +46,7 @@ jobs:
       - name: Verify source layout and preserved baseline
         run: |
           if (-not (Test-Path ../dist/CafeLink-Original-1.0.0-Baseline.zip)) { throw 'Include the sealed baseline ZIP in the repository before enabling CI; never recreate it from current sources.' }
-      - name: Verify Java, browser and measurements
+      - name: Verify publication, Java, browser and measurements
         env:
           CAFELINK_FULL_EXPERIMENTS: ${{ inputs.full_experiments }}
         run: |

@@ -18,6 +18,8 @@ Mở http://127.0.0.1:19388/admin. Khách dùng browser/profile khác, mở tấ
 
 Chi tiết chạy và demo: docs/FINAL_RUNBOOK.md. Hướng dẫn backup/reset/restore: docs/WEB_RELEASE.md. Danh sách nghiệm thu: docs/WEB_USER_ACCEPTANCE.md.
 
+Các hướng dẫn chạy trong gói đọc được offline. Liên kết tới mã nguồn, báo cáo và tài liệu kỹ thuật không kèm trong gói sẽ mở GitHub và cần Internet.
+
 Schema 11 giữ giá và lịch sử đã nhận, thêm ghi chú từng phần và lịch sử ticket. Công cụ nhận backup schema 9/10/11 và kiểm schema thật trước khi restore. Giữ backup trước nâng cấp: runtime V9/V9.1 không mở được DB 11. Bản gói mới không tự lấy hoặc sửa DB của gói cũ.
 
 Thanh toán và hoàn tiền là giả lập học tập, không thu tiền thật. QR chung xác định bàn, mỗi browser/profile có phiên và đơn riêng. Quick Tunnel có thể đổi địa chỉ khi restart; cần lấy QR của lần chạy hiện tại. Điện thoại thật vẫn cần tự kiểm trước buổi bảo vệ.

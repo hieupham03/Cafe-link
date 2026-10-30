@@ -3,6 +3,12 @@ $ErrorActionPreference='Stop'
 $projectRoot=Split-Path $PSScriptRoot -Parent
 Push-Location $projectRoot
 try {
+    $publicationArgs=@('tools/verify_publication.py','--root','..','--output','../report/evidence/cafelink-v2/v9.4-gate/publication.json')
+    if(Test-Path -LiteralPath (Join-Path $projectRoot '../.git')){$publicationArgs+='--index'}
+    & python @publicationArgs
+    if($LASTEXITCODE -ne 0){throw 'Published documentation/report checks failed'}
+    & python -m unittest discover -s tools -p test_publication.py -v
+    if($LASTEXITCODE -ne 0){throw 'Publication guard regression checks failed'}
     & python tools/verify_v8_workflow.py
     if($LASTEXITCODE -ne 0){throw 'Workflow/configuration checks failed'}
     & python tools/test_build_gate.py

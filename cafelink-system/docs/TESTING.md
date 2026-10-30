@@ -14,6 +14,7 @@ Mục đích là kiểm đúng chức năng của quán, giao tiếp Client/Serv
 | Phục hồi | Đã nhận thì lấy kết quả cũ; bỏ trước chặn lệnh muộn; nhận trước giữ kết quả | `RecoveryIntegrationTest`, `web/tests/orders.spec.ts` |
 | Vận hành | Readiness, chẩn đoán quản lý, hạn tiền, âm thanh và API từ chối sớm | `ReadinessIntegrationTest`, `DiagnosticsIntegrationTest`, `PaymentDeadlineTest`, các nhóm E2E |
 | Gói chạy | Manifest, JRE đi kèm, profile, launcher, nghiệp vụ và public | `web/tests/release-smoke.mjs`, `release-public-smoke.mjs` |
+| Công bố và tài liệu | Phiên bản/RC đúng, một cặp báo cáo, liên kết từ file thực sự công bố, tài liệu portable không trỏ file thiếu | `tools/verify_publication.py`, `tools/test_publication.py` |
 
 Test TCP 12 Client đồng thời khác workload 14 khách của phép đo tải. Giới hạn cấu hình 64 reader hoặc 32 bridge không phải kết luận công suất đã đo.
 

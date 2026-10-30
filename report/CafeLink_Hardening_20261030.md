@@ -1,4 +1,4 @@
-# CafeLink V9.4 - Nâng cấp độ tin cậy và kết quả kiểm thử
+# CafeLink V9.4 - Biên bản nâng cấp và đo RC3 ngày 30/10
 
 **Cập nhật sau mốc RC3:** trong bước chuẩn bị tính năng tiếp theo, CI phát hiện lỗi kết nối ở ca từ chối yêu cầu giả mạo. Đã bổ sung xử lý nội dung HTTP chưa nhận đủ và lưu JUnit cả khi gate thất bại. [Hồ sơ chuẩn bị](CafeLink_PreFeature_Readiness_20261030.md) ghi kết quả mới, bản RC4 và kit nghiệm thu. Số liệu RC3 bên dưới được giữ đúng mốc; không tự chuyển thành phép đo của RC4.
 
@@ -101,26 +101,10 @@ python tools/test_build_gate.py
 
 Gate thường chạy Chromium; script tương thích chạy riêng Firefox/WebKit. Để đo lại dùng `scripts/experiment-web.ps1` với `-OutputPath` trỏ tới thư mục mới. Không tái dùng thư mục đã có bằng chứng.
 
-Chạy gói RC3 tại workspace, chọn cặp cổng trống:
+Để chạy/demo bản hiện hành, dùng [FINAL_RUNBOOK](../cafelink-system/docs/FINAL_RUNBOOK.md). RC3 ở biên bản này là mốc của phép đo, không phải bản được đề xuất để khởi động hiện tại. Local/public có profile riêng; các bài test tự động dùng DB riêng.
 
-```powershell
-cd D:\BTL-LTM\dist\CafeLink-Web-V9.4-RC3
-.\START-LOCAL.cmd -Port 19588 -TcpPort 19558
-```
+## 4. Phạm vi xác nhận thực tế
 
-Mở `http://127.0.0.1:19588/admin`, tài khoản local `admin / CafeLink@123`. Vào **Chẩn đoán hệ thống** để xem tình trạng; mở tất cả bàn, lấy nguyên link đặt món và dùng browser/profile khác cho khách. Để chạy public, dừng local bằng Ctrl+C rồi dùng:
-
-```powershell
-.\START-PUBLIC.cmd -Port 19588 -TcpPort 19558
-```
-
-Dùng địa chỉ HTTPS và mật khẩu tạm do terminal in ra. Local/public có profile riêng. Không xóa dữ liệu thật để thử lại; các bài test tự động đã dùng DB riêng.
-
-## 4. Còn cần người dùng xác nhận
-
-- Điện thoại thật: camera quét QR, Safari/iOS và Chrome/Android, chạm/bàn phím, xoay màn hình, khóa/mở máy và mạng Wi-Fi/4G.
-- Hai máy hoặc mạng LAN vật lý; chất lượng Internet/tunnel khi thuyết trình. Các lần thử tự động public đã dừng, link cũ không phải địa chỉ demo đang hoạt động.
-- Âm thanh thực sự phát qua loa. Test engine có thể xác nhận AudioContext chạy hoặc nhánh cảnh báo; không chứng minh người dùng nghe được chuông.
-- Nghiệm thu nghiệp vụ trực tiếp của người dùng/giảng viên. Thanh toán vẫn là giả lập, không có ngân hàng thật.
+Nhóm đã xác nhận hoàn thành kiểm thao tác thực tế. Báo cáo giữ xác nhận định tính này riêng với số đo tự động; không thêm kết quả cho từng hệ điều hành, mạng hoặc loa khi chưa có bản ghi tương ứng. Các lượt public tự động đã dừng, link cũ không phải địa chỉ demo đang hoạt động. Thanh toán vẫn là giả lập, chưa có ngân hàng thật.
 
 Thông tin nhóm, Compilatio, biên tập Word và nộp chính thức thuộc các công việc khác. Bản nâng cấp không tự hoàn thành những việc đó.

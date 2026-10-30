@@ -33,4 +33,4 @@ V5 dùng checkout trả sau cho cả lượt, chỉ thu khi mọi đơn SERVED v
 
 Giao diện simulator là dialog trong website, không phải website ngân hàng. Khách chủ động chọn kết quả giả lập. Không có chuyển tiền, xác minh IPN ngân hàng, chống gian lận tài chính, hoàn tiền hoặc đối soát tiền thật. Muốn vận hành thật phải thay adapter, thêm xác minh callback độc lập/merchant/query/đối soát và kiểm chứng lại trước khi dùng.
 
-Feed có độ trễ poll tối đa mục tiêu khoảng ba giây khi không có hint; không cam kết khi tab bị đình chỉ. Web Locks/localStorage điều phối toast theo origin/profile, không bảo đảm âm thanh nghe đúng một lần khi browser/OS lỗi. Camera/LAN hai máy và người dùng tại quán chưa nghiệm thu.
+Feed có độ trễ poll tối đa mục tiêu khoảng ba giây khi không có hint; không cam kết khi tab bị đình chỉ. Web Locks/localStorage điều phối toast theo origin/profile, không bảo đảm âm thanh nghe đúng một lần khi browser/OS lỗi. Ở thời điểm viết ADR này, camera/LAN hai máy và người dùng tại quán chưa nghiệm thu; trạng thái hiện hành xem [TESTING](../TESTING.md).
