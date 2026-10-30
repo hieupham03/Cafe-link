@@ -93,7 +93,9 @@ public final class CafeServer implements AutoCloseable {
             boolean faultable = Commands.mutation(request.action()) || request.action().equals("DISCARD_COMMAND");
             try {
                 JsonObject result;
-                if (Set.of("LOGIN", "JOIN_VISIT", "JOIN_TABLE", "RESUME").contains(request.action())) {
+                if (request.action().equals("HEALTH_CHECK")) {
+                    result = service.health();
+                } else if (Set.of("LOGIN", "JOIN_VISIT", "JOIN_TABLE", "RESUME").contains(request.action())) {
                     if (identity != null) throw new BusinessException("ALREADY_AUTHENTICATED", "Kết nối đã đăng nhập.");
                     identity = switch (request.action()) {
                         case "JOIN_VISIT" -> service.joinVisit(CafeService.text(request.data(), "grant", 100, true));
@@ -130,7 +132,7 @@ public final class CafeServer implements AutoCloseable {
                     log("FAULT AFTER_COMMIT " + request.action() + " id=" + request.requestId()); close(); return;
                 }
                 send(Message.success(request, result));
-                if (!request.action().equals("PING") && !request.action().equals("LOGIN")) log(identity.username() + " " + request.action() + " OK id=" + request.requestId());
+                if (identity != null && !request.action().equals("PING") && !request.action().equals("LOGIN")) log(identity.username() + " " + request.action() + " OK id=" + request.requestId());
             } catch (BusinessException e) { send(Message.error(request, e.code(), e.getMessage())); }
             catch (SQLException e) { log("Database operation failed: " + e.getClass().getSimpleName()); send(Message.error(request, "DATABASE_ERROR", "Không thể lưu dữ liệu. Vui lòng kiểm tra trạng thái trước khi thử lại.")); }
             catch (RuntimeException e) { log("Request rejected: " + e.getClass().getSimpleName()); send(Message.error(request, "INVALID_INPUT", "Yêu cầu không hợp lệ.")); }
@@ -149,7 +151,8 @@ public final class CafeServer implements AutoCloseable {
             peers.remove(this); try { socket.close(); } catch (IOException ignored) { }
             if (writer != null) writer.interrupt();
             log("Disconnected: " + (identity == null ? "anonymous" : identity.username()));
-            publish();
+            // Anonymous dependency probes never changed presence or business state.
+            if (identity != null) publish();
         }
     }
     @Override public void close() {

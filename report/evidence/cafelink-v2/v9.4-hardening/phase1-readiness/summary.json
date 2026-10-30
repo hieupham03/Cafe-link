@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "phase": "V9.4-readiness",
+  "baselineCommit": "8ee93ca44ec687c99bb9e758044cdb1a9da2a394",
+  "clientDate": "2026-10-30",
+  "java": {
+    "tests": 150,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "focusedReadinessTests": 8,
+  "browserRegression": {
+    "passed": 8,
+    "failed": 0,
+    "scope": "dashboard and QR Chromium regression"
+  },
+  "redBeforeFix": {
+    "missingReadinessEndpoint": 5,
+    "trickledResponseExceedsDeadline": 1
+  },
+  "checks": [
+    "Healthy real HTTP/TCP/SQLite",
+    "Core stopped",
+    "DB closed",
+    "Silent TCP peer",
+    "Malformed frame",
+    "Wrong response ID",
+    "Trickled response absolute deadline",
+    "Short readiness cache"
+  ],
+  "sourceSha256": {
+    "src/main/java/com/cafelink/common/ApplicationInfo.java": "2c16958b52f18d4a28ae925deb5e990371f75834e16169f19215e37336a98298",
+    "src/main/java/com/cafelink/web/CoreHealthProbe.java": "936baf2a0862a95ad2d5186639f15e9ce16108b8b1c70f3db81cb754710a58e1",
+    "src/main/java/com/cafelink/web/WebGateway.java": "b4e5257cd3fed7ea19493f15555de7c7d493b104bd0441d1f32143ccf15a6d31",
+    "src/main/java/com/cafelink/server/CafeServer.java": "47d6cb3e866d0bbec5dfb4859b541aef903e84fff96f4ede9b3dc04120e62d51",
+    "src/main/java/com/cafelink/server/CafeService.java": "9d04d305f8b6191a8e86361a8e5a57bc595c5124bf8c3d87049d4c688966b9d0",
+    "src/test/java/com/cafelink/web/ReadinessIntegrationTest.java": "65b98e2d9abd56d3c5ef9c92b7687461d84f32da54579a38fdd066a88b5266ab"
+  },
+  "physicalPhone": "NOT_RUN",
+  "physicalLan": "NOT_RUN",
+  "newPerformanceExperiment": false,
+  "sealedRc1Changed": false,
+  "userReportChangedByThisWork": false
+}

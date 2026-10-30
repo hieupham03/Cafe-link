@@ -31,6 +31,14 @@ public final class CafeService implements AutoCloseable {
         tableOrdering=config==null?null:new TableOrdering(db,qr,config,events);
         resolutions=config==null?null:new OrderResolutions(db,events);
     }
+    /** Public dependency check: read one system row, without creating users, visits or business events. */
+    public synchronized JsonObject health() throws SQLException {
+        var revisions = db.query("SELECT value FROM metadata WHERE name='revision'", r -> r.getLong(1));
+        if (revisions.size() != 1) throw new SQLException("System metadata unavailable");
+        JsonObject result = new JsonObject();
+        result.addProperty("database", "UP");
+        return result;
+    }
     public synchronized Identity joinTable(String grant) throws SQLException {
         qrRequired();return db.transaction(()->tableOrdering.join(grant));
     }

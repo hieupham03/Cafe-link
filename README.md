@@ -1,8 +1,10 @@
-# CafeLink — Gọi món QR và điều phối phục vụ V9.3
+# CafeLink - Gọi món QR và điều phối phục vụ V9.4
 
 Hệ thống gọi món tại quán café: khách quét QR, đặt món và thanh toán giả lập; quản lý nhận đơn, điều phối pha chế và xử lý hỗ trợ. Browser kết nối Java Gateway qua HTTP/WebSocket; Gateway trao đổi với Core qua TCP Socket.
 
 ## Bắt đầu
+
+- **Nâng cấp source V9.4:** [độ tin cậy, readiness và chẩn đoán](cafelink-system/docs/WEB_HARDENING.md). Báo cáo/thực nghiệm V9.3 bên dưới được giữ làm snapshot đối chiếu; mỗi thay đổi mới có kết quả kiểm riêng.
 
 - **Source, build và test:** [cafelink-system/README.md](cafelink-system/README.md).
 - **Chạy local/public và demo:** [FINAL_RUNBOOK.md](cafelink-system/docs/FINAL_RUNBOOK.md).

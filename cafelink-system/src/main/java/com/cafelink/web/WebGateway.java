@@ -2,6 +2,7 @@ package com.cafelink.web;
 
 import com.cafelink.client.*;
 import com.cafelink.common.Json;
+import com.cafelink.common.ApplicationInfo;
 import com.google.gson.*;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ContextHandler;
@@ -31,6 +32,7 @@ public final class WebGateway implements AutoCloseable {
     private final ServerConnector connector;
     private final String coreHost;
     private final int corePort;
+    private final CoreHealthProbe healthProbe;
     private final Path assets;
     private MenuImages images;
     public void mediaDirectory(Path directory){images=new MenuImages(directory);}
@@ -52,6 +54,7 @@ public final class WebGateway implements AutoCloseable {
     }
     public WebGateway(String bind,int port,String coreHost,int corePort,Path assets,String publicOrigin,Tls tls,boolean trustedProxy){
         this.coreHost = coreHost; this.corePort = corePort; this.assets = assets.toAbsolutePath().normalize();
+        healthProbe = new CoreHealthProbe(coreHost, corePort);
         secure = tls != null || trustedProxy;
         if(trustedProxy&&(tls!=null||publicOrigin==null||!Set.of("127.0.0.1","::1").contains(bind)))throw new IllegalArgumentException("Trusted proxy requires loopback HTTP and an explicit public HTTPS origin.");
         if (tls==null && !Set.of("127.0.0.1", "::1").contains(bind))
@@ -274,7 +277,12 @@ public final class WebGateway implements AutoCloseable {
                 }
                 if (!path.startsWith("/api/") && !path.equals("/ws/state")) return staticFile(request, response, callback);
                 if (path.equals("/api/health") && method.equals("GET")) {
-                    respond(response, callback, 200, Map.of("gateway", "UP", "phase", "V7", "transport", "TCP")); return true;
+                    respond(response, callback, 200, Map.of("gateway", "UP", "version", ApplicationInfo.VERSION,
+                            "phase", ApplicationInfo.VERSION, "transport", "TCP")); return true;
+                }
+                if (path.equals("/api/ready") && method.equals("GET")) {
+                    var health = healthProbe.check();
+                    respond(response, callback, health.ready() ? 200 : 503, health.payload(ApplicationInfo.VERSION)); return true;
                 }
                 if (method.equals("POST")) requireOrigin(request);
                 if (path.equals("/api/login") && method.equals("POST")) {
