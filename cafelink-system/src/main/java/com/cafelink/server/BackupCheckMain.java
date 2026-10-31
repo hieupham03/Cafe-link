@@ -25,14 +25,15 @@ public final class BackupCheckMain {
             statement.execute("PRAGMA query_only=ON");
             final int schema;
             try (var version = statement.executeQuery("PRAGMA user_version")) {
-                if (!version.next() || version.getInt(1)<9 || version.getInt(1)>11)
-                    throw new IllegalArgumentException("Backup must use web schema 9, 10 or 11.");
+                if (!version.next() || version.getInt(1)<9 || version.getInt(1)>12)
+                    throw new IllegalArgumentException("Backup must use web schema 9 through 12.");
                 schema=version.getInt(1);
             }
             if(schema>=10) {
                 try(var structure=statement.executeQuery("SELECT c.from_membership_id,c.to_membership_id,r.order_id,r.state,r.payment_id,r.amount_vnd,r.reason,r.actor,r.created_at FROM visit_continuations c LEFT JOIN order_resolutions r ON 0 LIMIT 0")) { /* verify columns without writes */ }
             }
-            if(schema==11){try(var structure=statement.executeQuery("SELECT m.purchase_version,i.line_no,i.note,t.version,c.ticket_id FROM menu m LEFT JOIN order_items i ON 0 LEFT JOIN tickets t ON 0 LEFT JOIN ticket_changes c ON 0 LIMIT 0")){ /* read-only structure */ }}
+            if(schema>=11){try(var structure=statement.executeQuery("SELECT m.purchase_version,i.line_no,i.note,t.version,c.ticket_id FROM menu m LEFT JOIN order_items i ON 0 LEFT JOIN tickets t ON 0 LEFT JOIN ticket_changes c ON 0 LIMIT 0")){ /* read-only structure */ }}
+            if(schema>=12){try(var structure=statement.executeQuery("SELECT o.tax_rate_bps,o.tax_name,o.tax_inclusive,o.subtotal_vnd,o.tax_vnd,o.total_vnd,c.voided_at FROM orders o LEFT JOIN cash_entries c ON 0 LIMIT 0")){ /* read-only structure */ }}
             try (var integrity = statement.executeQuery("PRAGMA integrity_check")) {
                 if (!integrity.next() || !"ok".equals(integrity.getString(1)) || integrity.next())
                     throw new SQLException("SQLite integrity check failed.");

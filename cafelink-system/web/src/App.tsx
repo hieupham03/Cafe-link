@@ -14,6 +14,8 @@ import { SupportQueue, CashierQueue } from "./Worklists";
 import { searchText, WaitTime } from "./ui";
 import { MenuAdmin } from "./MenuAdmin";
 import { SalesHistory } from "./SalesHistory";
+import { FinanceDashboard } from "./FinanceDashboard";
+import { TaxBreakdown } from "./TaxBreakdown";
 import { Notifications } from "./Notifications";
 import { PrepaidClose } from "./PrepaidClose";
 import { Assistance } from "./Assistance";
@@ -441,6 +443,7 @@ export function App() {
             ["cashier", "bag", "Thu ngân"],
             ["menu", "menu", "Thực đơn"],
             ["history", "receipt", "Lịch sử hóa đơn"],
+            ["finance", "receipt", "Thu chi & thuế"],
             ["assistance", "help", "Tra cứu hỗ trợ"],
             ["system", "grid", "Chẩn đoán hệ thống"],
           ].map(([id, icon, title]) => (
@@ -504,7 +507,7 @@ export function App() {
                       ? "Thu ngân"
                       : view === "history"
                         ? "Lịch sử hóa đơn"
-                        : view==='assistance'?'Tra cứu hỗ trợ':view==='system'?'Chẩn đoán hệ thống':"Thực đơn của quán"}
+                        : view==='finance'?'Thu chi & thuế':view==='assistance'?'Tra cứu hỗ trợ':view==='system'?'Chẩn đoán hệ thống':"Thực đơn của quán"}
             </h1>
             <p className="muted">
               Cùng một trạng thái, trên mọi màn hình của quán.
@@ -831,6 +834,7 @@ export function App() {
           />
         )}
         {view === "history" && <SalesHistory session={session} />}
+        {view === "finance" && <FinanceDashboard session={session} />}
         {view === "assistance" && <Assistance session={session}/>}
         {view === "system" && <SystemDiagnosticsPanel />}
         {view === "requests" && (
@@ -941,6 +945,7 @@ export function App() {
                       </li>
                     ))}
                   </ul>
+                  <TaxBreakdown order={order} />
                 </article>
               ))}
               {bill && (

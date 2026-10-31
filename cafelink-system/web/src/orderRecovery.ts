@@ -26,6 +26,7 @@ const definitive = new Set([
   "INVALID_STATE",
   "ORDERING_PAUSED",
   "MENU_CHANGED",
+  "TAX_CHANGED",
   "ITEM_UNAVAILABLE",
   "CHECKOUT_IN_PROGRESS",
   "COMMAND_DISCARDED",
@@ -223,10 +224,10 @@ export async function requestGuestAction(
     await send(info, scope, entry);
   });
 }
-export async function place(scope: GuestScope, revision: number) {
+export async function place(scope: GuestScope, revision: number, expectedTaxVersion?: number) {
   return withJournalLock(async () => {
     const info = await liveSession(scope);
-    const entry = await journal.queue(scope, revision);
+    const entry = await journal.queue(scope, revision, expectedTaxVersion);
     await send(info, scope, entry);
   });
 }

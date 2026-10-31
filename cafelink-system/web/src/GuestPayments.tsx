@@ -4,6 +4,7 @@ import { guestScope, money } from "./models";
 import type { Order, SessionInfo } from "./models";
 import { Dialog } from "./Dialog";
 import { GuestSectionHeading } from "./GuestSectionHeading";
+import { TaxBreakdown } from "./TaxBreakdown";
 interface Payment {
   paymentId: string;
   orderId: number;
@@ -190,6 +191,7 @@ export function GuestPayments({
           </div>
           <p className="warning">MÔ PHỎNG CỤC BỘ · KHÔNG THU TIỀN THẬT</p>
           <h3>Đơn #{payment.orderId}</h3>
+          {orders.find(order => order.id === payment.orderId) && <TaxBreakdown order={orders.find(order => order.id === payment.orderId)!} />}
           <div className="bill-total">
             <strong>{money(payment.amountVnd)}</strong>
           </div>

@@ -4,7 +4,7 @@
 
 Khách quét QR tại bàn để xem món, đặt hàng, thanh toán giả lập và theo dõi phục vụ. Quầy quản lý thực đơn, nhận đơn, điều phối pha chế/giao đồ và xử lý hỗ trợ. Nhiều khách cùng bàn dùng chung QR nhưng có phiên, giỏ và đơn riêng.
 
-**Source:** V9.4, schema 11. **Báo cáo hiện tại:** [Word](report/NhomXX_CafeLink_Report_Current_20261030.docx) · [PDF, 42 trang](report/NhomXX_CafeLink_Report_Current_20261030.pdf). Thanh toán dùng `LOCAL_SIMULATOR`, không thu tiền thật.
+**Source:** V9.4, schema 12. **Báo cáo hiện tại:** [Word](report/NhomXX_CafeLink_Report_Current_20261030.docx) · [PDF, 42 trang](report/NhomXX_CafeLink_Report_Current_20261030.pdf). Thanh toán dùng `LOCAL_SIMULATOR`, không thu tiền thật.
 
 | Bắt đầu tại đây | Nội dung |
 |---|---|
@@ -48,7 +48,7 @@ Dùng **URL HTTPS và mật khẩu tạm mà terminal in ra**, mở tất cả b
 | Người sử dụng | Chức năng |
 |---|---|
 | Khách | QR, thực đơn có ảnh, giỏ/số lượng/ghi chú, đặt món, thanh toán giả lập, tiến độ đơn, gọi/bổ sung/rút hỗ trợ |
-| Quản lý/quầy | Menu/ảnh, nhận hoặc tạm dừng đơn mới, pha chế/giao, thông báo, hỗ trợ, lịch sử và chẩn đoán |
+| Quản lý/quầy | Menu/ảnh, nhận hoặc tạm dừng đơn mới, pha chế/giao, thông báo, hỗ trợ, lịch sử, [thu chi và cấu hình thuế](cafelink-system/docs/FINANCE.md), chẩn đoán |
 | Hệ thống | Xác thực và phiên riêng, kiểm giá/quyền/trạng thái tại Server, chống áp lại cùng yêu cầu, phục hồi và cập nhật trực tiếp |
 
 <table>

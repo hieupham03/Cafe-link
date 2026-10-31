@@ -79,8 +79,8 @@ def prepare(archive, proof_path, destination, resources, checklist):
     with zipfile.ZipFile(archive) as package:
         files = entries(package)
         release = json.loads(package.read("RELEASE.json").decode("utf-8-sig"))
-        if release.get("release") != "V9.4" or release.get("schema") != 11:
-            raise ValueError("This checkpoint requires V9.4 schema 11")
+        if release.get("release") != "V9.4" or release.get("schema") not in (11, 12):
+            raise ValueError("This checkpoint requires V9.4 schema 11 or 12")
         if "SHA256-MANIFEST.json" not in package.namelist():
             raise ValueError("Missing package integrity manifest")
         destination.mkdir(parents=True, exist_ok=False)

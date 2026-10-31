@@ -63,6 +63,11 @@ export interface Table {
   version: number;
 }
 export interface Order {
+  subtotalVnd: number;
+  taxVnd: number;
+  taxRateBps: number;
+  taxName: string;
+  taxInclusive: boolean;
   queuedAt?: string;
   paymentState?: "POSTPAY" | "UNPAID" | "PENDING" | "PAID" | "CANCELLED" | "REFUNDED";
   id: number;
@@ -86,6 +91,7 @@ export interface Ticket {
   reply: string;
 }
 export interface Snapshot {
+  taxSettings?: TaxSettings;
   storeAcceptingOrders?: boolean;
   resolutions?: OrderResolution[];
   revision: number;
@@ -118,6 +124,8 @@ export interface Checkout {
   cycle: number;
 }
 export interface Bill {
+  subtotalVnd: number;
+  taxVnd: number;
   visitId: string;
   tableId: number;
   totalVnd: number;
@@ -129,6 +137,19 @@ export const money = (amount: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
     amount,
   );
+export interface TaxSettings {
+  enabled: boolean;
+  rateBps: number;
+  name: string;
+  inclusive: boolean;
+  version: number;
+}
+export function taxPreview(listed: number, settings?: TaxSettings) {
+  const rate = settings?.enabled ? settings.rateBps : 0;
+  const taxVnd = Math.round(listed * rate / (settings?.inclusive ? 10000 + rate : 10000));
+  const subtotalVnd = settings?.inclusive ? listed - taxVnd : listed;
+  return { subtotalVnd, taxVnd, totalVnd: subtotalVnd + taxVnd };
+}
 export const statusName: Record<string, string> = {
   SUBMITTED: "Chờ tiếp nhận",
   PREPARING: "Đang pha chế",

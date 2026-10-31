@@ -30,7 +30,7 @@ final class OrderPayments {
   String existing=pending.stream().filter(attempt->checkedAt.isBefore(attempt.expiresAt())).map(Pending::id).findFirst().orElse(null);
   String id=existing==null?UUID.randomUUID().toString():existing;
   if(existing==null){
-   long amount=db.query("SELECT SUM(quantity*unit_price_vnd) FROM order_items WHERE order_id=?",r->r.getLong(1),order).get(0);
+   long amount=db.query("SELECT total_vnd FROM orders WHERE id=?",r->r.getLong(1),order).get(0);
    db.update("INSERT INTO order_payments(id,order_id,amount_vnd,state,created_at,updated_at,expires_at) VALUES(?,?,?,'PENDING',?,?,?)",id,order,amount,now,now,checkedAt.plusSeconds(900).toString());
   }
   db.update("UPDATE orders SET payment_state='PENDING' WHERE id=?",order);

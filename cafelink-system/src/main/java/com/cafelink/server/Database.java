@@ -19,7 +19,7 @@ final class Database implements AutoCloseable {
             s.execute("PRAGMA foreign_keys=ON"); s.execute("PRAGMA busy_timeout=5000"); s.execute("PRAGMA journal_mode=WAL");
         }
         int version = query("PRAGMA user_version", r -> r.getInt(1)).get(0);
-        if (version < 0 || version > 11 || (!qrMode && version > 3)) { close(); throw new SQLException("Unsupported database schema for this mode: " + version); }
+        if (version < 0 || version > 12 || (!qrMode && version > 3)) { close(); throw new SQLException("Unsupported database schema for this mode: " + version); }
         if (qrMode && version > 0 && version < 4 && !query("SELECT id FROM visits WHERE active=1", r -> r.getString(1)).isEmpty()) {
             close(); throw new SQLException("Close and reconcile legacy visits before QR migration; use an isolated database for a fresh demo.");
         }
@@ -43,7 +43,7 @@ final class Database implements AutoCloseable {
             "CREATE TABLE IF NOT EXISTS guest_credentials(token_hash TEXT PRIMARY KEY,username TEXT NOT NULL REFERENCES accounts(username),visit_id TEXT REFERENCES visits(id),created_at TEXT NOT NULL)",
             "PRAGMA user_version=" + (qrMode ? version : 3)
         };
-        try { for (String sql : schema) update(sql); seed(); if (qrMode) { migrateQr(); if(version<5)migrateCheckout(); if(version<6)migrateEvents(); if(version<7)migrateMenu(); if(version<8)migratePrepay(); if(version<9)migrateAutomaticTables(); if(version<10)migrateBusinessWorkflows(); if(version<11)migrateConvenience(); } }
+        try { for (String sql : schema) update(sql); seed(); if (qrMode) { migrateQr(); if(version<5)migrateCheckout(); if(version<6)migrateEvents(); if(version<7)migrateMenu(); if(version<8)migratePrepay(); if(version<9)migrateAutomaticTables(); if(version<10)migrateBusinessWorkflows(); if(version<11)migrateConvenience(); if(version<12)migrateFinance(); } }
         catch (Exception e) { close(); throw e; }
     }
     private void migrateQr() throws SQLException {
@@ -145,6 +145,23 @@ final class Database implements AutoCloseable {
             }
             update("CREATE TABLE IF NOT EXISTS ticket_changes(ticket_id INTEGER NOT NULL REFERENCES tickets(id),version INTEGER NOT NULL,kind TEXT NOT NULL,note TEXT NOT NULL,actor TEXT NOT NULL,created_at TEXT NOT NULL,PRIMARY KEY(ticket_id,version))");
             update("INSERT OR IGNORE INTO store_settings VALUES('accepting_orders','1')");update("PRAGMA user_version=11");return null;
+        });
+    }
+    private void migrateFinance() throws SQLException {
+        transaction(() -> {
+            schema("ALTER TABLE orders ADD COLUMN tax_rate_bps INTEGER NOT NULL DEFAULT 0");
+            schema("ALTER TABLE orders ADD COLUMN tax_name TEXT NOT NULL DEFAULT 'VAT'");
+            schema("ALTER TABLE orders ADD COLUMN tax_inclusive INTEGER NOT NULL DEFAULT 0");
+            schema("ALTER TABLE orders ADD COLUMN subtotal_vnd INTEGER NOT NULL DEFAULT 0");
+            schema("ALTER TABLE orders ADD COLUMN tax_vnd INTEGER NOT NULL DEFAULT 0");
+            schema("ALTER TABLE orders ADD COLUMN total_vnd INTEGER NOT NULL DEFAULT 0");
+            update("UPDATE orders SET subtotal_vnd=COALESCE((SELECT SUM(quantity*unit_price_vnd) FROM order_items WHERE order_id=orders.id),0)");
+            update("UPDATE orders SET total_vnd=subtotal_vnd");
+            update("INSERT OR IGNORE INTO store_settings VALUES('tax_config','{\"enabled\":false,\"rateBps\":0,\"name\":\"VAT\",\"inclusive\":false,\"version\":0}')");
+            update("CREATE TABLE cash_entries(id INTEGER PRIMARY KEY AUTOINCREMENT,kind TEXT NOT NULL CHECK(kind IN('INCOME','EXPENSE')),amount_vnd INTEGER NOT NULL CHECK(amount_vnd>0),category TEXT NOT NULL,note TEXT NOT NULL,entry_date TEXT NOT NULL,actor TEXT NOT NULL,created_at TEXT NOT NULL,void_reason TEXT NOT NULL DEFAULT '',voided_at TEXT,voided_by TEXT)");
+            update("CREATE INDEX cash_entry_date ON cash_entries(entry_date,id)");
+            update("PRAGMA user_version=12");
+            return null;
         });
     }
     <T> List<T> query(String sql, Mapper<T> mapper, Object... args) throws SQLException {

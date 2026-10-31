@@ -1,6 +1,6 @@
 # CafeLink - Hướng dẫn source
 
-Source **V9.4 / schema 11**. Gói chạy đã kiểm: **RC4**. Tài liệu này dành cho người build, chạy và kiểm lại dự án; [README gốc](../README.md) giới thiệu chức năng và kết quả tổng quan.
+Source **V9.4 / schema 12**. Gói chạy đã kiểm: **RC4**. Tài liệu này dành cho người build, chạy và kiểm lại dự án; [README gốc](../README.md) giới thiệu chức năng và kết quả tổng quan.
 
 ## Mục lục
 
@@ -79,6 +79,10 @@ Terminal in URL và cổng Core; giữ terminal mở. `WebMain` khởi động G
 
 Không cần chạy thêm app Java phía khách. Tab thường dùng chung cookie; các cửa sổ ẩn danh cùng mở cũng có thể dùng chung phiên riêng tư. Hai khách độc lập nên dùng hai browser/profile/thiết bị khác nhau.
 
+## Thu chi và thuế hóa đơn
+
+Vào **Quản lý → Thu chi & thuế** để ghi thu/chi, xem báo cáo theo ngày, xuất CSV và cấu hình thuế hóa đơn. [Hướng dẫn sử dụng và quy tắc tính](docs/FINANCE.md).
+
 ## Cấu hình và dữ liệu
 
 ### Tham số chạy
@@ -99,7 +103,7 @@ Các đường dẫn dữ liệu tương đối được giải theo project `ca
 
 ### Khởi tạo và giữ dữ liệu
 
-SQLite tự tạo/migrate schema 11, tài khoản demo, sáu bàn và tám món khi mở DB mới; không cần cài database server hoặc nhập SQL. Seed không reset DB cũ.
+SQLite tự tạo/migrate schema 12, tài khoản demo, sáu bàn và tám món khi mở DB mới; không cần cài database server hoặc nhập SQL. Seed không reset DB cũ.
 
 Profile local trong ví dụ chứa DB, khóa QR cạnh DB và thư mục ảnh. Browser giữ cookie và IndexedDB riêng theo origin. Chạy lại cùng profile còn dữ liệu là hành vi lưu bền có chủ đích. Muốn thử sạch, dùng một `DatabasePath` mới và browser/profile khách mới. Không xóa DB đang chạy hoặc chỉ chép file DB khi còn ghi WAL.
 

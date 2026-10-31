@@ -16,7 +16,7 @@ class AutomaticTablesTest {
         Path path=temp.resolve("v8.db");var config=new QrConfig(new byte[32],Clock.systemUTC());String visit;
         try(var s=new CafeService(path,config,true)) {var admin=s.authenticate("admin","CafeLink@123");visit=s.execute(admin,"OPEN_TABLE",j("{\"tableId\":1}")).get("visitId").getAsString();}
         try(var c=java.sql.DriverManager.getConnection("jdbc:sqlite:"+path);var sql=c.createStatement()) {
-            sql.execute("DROP TABLE table_access");sql.execute("DROP INDEX one_active_visit");sql.execute("ALTER TABLE visits DROP COLUMN service_mode");sql.execute("CREATE UNIQUE INDEX one_active_visit ON visits(table_id) WHERE active=1");sql.execute("PRAGMA user_version=8");
+            sql.execute("DROP TABLE table_access");sql.execute("DROP INDEX one_active_visit");sql.execute("ALTER TABLE visits DROP COLUMN service_mode");sql.execute("CREATE UNIQUE INDEX one_active_visit ON visits(table_id) WHERE active=1");MigrationFixtures.removeFinance(sql);sql.execute("PRAGMA user_version=8");
         }
         try(var s=new CafeService(path,config,true)) {var admin=s.authenticate("admin","CafeLink@123");var table=s.snapshot(admin,Map.of()).tables().get(0);assertEquals(visit,table.visitId());assertEquals("PREPAY",table.paymentMode());assertFalse(table.automatic());assertEquals("LEGACY_VISIT_ACTIVE",assertThrows(BusinessException.class,()->s.execute(admin,"OPEN_ALL_TABLES",j("{}"))).code());}
     }

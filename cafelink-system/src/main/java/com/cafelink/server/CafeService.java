@@ -20,6 +20,7 @@ public final class CafeService implements AutoCloseable {
     private final OrderPayments orderPayments;
     private final TableOrdering tableOrdering;
     private final OrderResolutions resolutions;
+    private final Finance finance;
     public CafeService(Path path) throws Exception { this(path, null); }
     public CafeService(Path path, QrConfig config) throws Exception {
         this(path,config,false);
@@ -30,6 +31,7 @@ public final class CafeService implements AutoCloseable {
         orderPayments=config==null?null:new OrderPayments(db,config,events);
         tableOrdering=config==null?null:new TableOrdering(db,qr,config,events);
         resolutions=config==null?null:new OrderResolutions(db,events);
+        finance=config==null?null:new Finance(db);
     }
     /** Public dependency check: read one system row, without creating users, visits or business events. */
     public synchronized JsonObject health() throws SQLException {
@@ -120,7 +122,7 @@ public final class CafeService implements AutoCloseable {
         List<Ticket> tickets = db.query("SELECT k.*,v.table_id FROM tickets k JOIN visits v ON v.id=k.visit_id WHERE " + scope + " ORDER BY k.id DESC",
                 r -> new Ticket(r.getLong("id"), r.getInt("table_id"), r.getString("visit_id"), r.getString("type"), r.getString("status"), r.getString("note"), r.getString("reply"), r.getString("created_at"),qr==null?0:r.getLong("version")), args);
         long revision = db.query("SELECT value FROM metadata WHERE name='revision'", r -> r.getLong(1)).get(0);
-        return new Snapshot(revision, menu, tables, orders, tickets,checkout==null?List.of():checkout.list(admin(who)?"v.active=1":"c.visit_id=?",admin(who)?new Object[0]:new Object[]{allowed}),resolutions==null?List.of():resolutions.list(admin(who)?"v.active=1":"o.visit_id=?",admin(who)?new Object[0]:new Object[]{allowed}),qr==null||db.query("SELECT value FROM store_settings WHERE name='accepting_orders'",r->r.getString(1)).get(0).equals("1"));
+        return new Snapshot(revision, menu, tables, orders, tickets,checkout==null?List.of():checkout.list(admin(who)?"v.active=1":"c.visit_id=?",admin(who)?new Object[0]:new Object[]{allowed}),resolutions==null?List.of():resolutions.list(admin(who)?"v.active=1":"o.visit_id=?",admin(who)?new Object[0]:new Object[]{allowed}),qr==null||db.query("SELECT value FROM store_settings WHERE name='accepting_orders'",r->r.getString(1)).get(0).equals("1"),finance==null?null:finance.settings());
     }
     public synchronized JsonObject execute(Identity who, String action, JsonObject input) throws SQLException {
         return execute(who, UUID.randomUUID().toString(), action, input);
@@ -180,6 +182,12 @@ public final class CafeService implements AutoCloseable {
                 }
             }
             JsonObject result = switch (action) {
+                case "GET_TAX_SETTINGS" -> {qrRequired();requireAdmin(who);yield Json.object(finance.settings());}
+                case "SAVE_TAX_SETTINGS" -> {qrRequired();requireAdmin(who);yield finance.saveSettings(input);}
+                case "GET_FINANCE_REPORT" -> {qrRequired();requireAdmin(who);yield finance.report(input);}
+                case "GET_CASH_ENTRIES" -> {qrRequired();requireAdmin(who);yield finance.entries(input);}
+                case "CREATE_CASH_ENTRY" -> {qrRequired();requireAdmin(who);yield finance.createEntry(who.username(),input);}
+                case "VOID_CASH_ENTRY" -> {qrRequired();requireAdmin(who);yield finance.voidEntry(who.username(),input);}
                 case "OPEN_ALL_TABLES" -> {qrRequired();requireAdmin(who);yield tableOrdering.enableAll();}
                 case "SET_TABLE_ACCEPTING" -> {qrRequired();requireAdmin(who);int table=integer(input,"tableId"),enabled=integer(input,"enabled");if(enabled!=0&&enabled!=1)throw problem("INVALID_INPUT","enabled phải bằng 0 hoặc 1.");if(db.update("UPDATE table_access SET enabled=? WHERE table_id=?",enabled,table)!=1)throw problem("NOT_FOUND","Hãy bật QR cố định cho toàn quán trước.");yield fields("status",enabled==1?"ACCEPTING":"PAUSED");}
                 case "GET_TABLE_QR" -> {qrRequired();requireAdmin(who);yield tableOrdering.qr(integer(input,"tableId"));}
@@ -282,8 +290,9 @@ public final class CafeService implements AutoCloseable {
         long id = db.insert("INSERT INTO orders(visit_id,status,note,created_at) VALUES(?,'SUBMITTED',?,?)", visit, text(input, "note", 500, false), Instant.now().toString());
         if(qr!=null&&orderPayments.prepaid(visit))db.update("UPDATE orders SET payment_state='UNPAID' WHERE id=?",id);
         int line=0;for (OrderItem item : items) {if(qr==null)db.update("INSERT INTO order_items VALUES(?,?,?,?,?)", id,item.menuId(),item.name(),item.quantity(),item.unitPriceVnd());else db.update("INSERT INTO order_items VALUES(?,?,?,?,?,?,?)",id,++line,item.menuId(),item.name(),item.quantity(),item.unitPriceVnd(),item.note());}
+        if(finance!=null)finance.priceOrder(id,items.stream().mapToLong(OrderItem::subtotalVnd).sum(),input);
         if(checkout!=null)checkout.bump(visit);
-        JsonObject output = new JsonObject(); output.addProperty("orderId", id); output.addProperty("totalVnd", items.stream().mapToLong(OrderItem::subtotalVnd).sum());if(orderPayments!=null&&orderPayments.prepaid(visit))output.addProperty("paymentRequired",true); return output;
+        JsonObject output = new JsonObject(); output.addProperty("orderId", id); output.addProperty("totalVnd",loadOrders(" WHERE o.id=?",id).get(0).totalVnd());if(orderPayments!=null&&orderPayments.prepaid(visit))output.addProperty("paymentRequired",true); return output;
     }
     private JsonObject findAssistance(String query) throws SQLException {
         var results=new JsonArray();
@@ -391,7 +400,8 @@ public final class CafeService implements AutoCloseable {
         if(found.isEmpty())throw problem("NOT_FOUND","Không có hóa đơn này.");Object[] row=found.get(0);String visit=(String)row[0];
         if(!admin(who)&&!Objects.equals(guestVisit(who),visit))throw problem("FORBIDDEN","Không có quyền xem hóa đơn của lượt khác.");
         JsonObject out=new JsonObject();out.addProperty("receiptId",receipt);out.addProperty("visitId",visit);out.addProperty("tableId",(Integer)row[1]);out.addProperty("totalVnd",(Long)row[3]);out.addProperty("paidAt",(String)row[4]);out.addProperty("method",(String)row[5]);
-        out.add("orders",Json.GSON.toJsonTree((Long)row[2]==0?loadOrders(" WHERE o.visit_id=?",visit):loadOrders(" WHERE o.id=?",row[2])));
+        var receiptOrders=(Long)row[2]==0?loadOrders(" WHERE o.visit_id=?",visit):loadOrders(" WHERE o.id=?",row[2]);
+        out.add("orders",Json.GSON.toJsonTree(receiptOrders));out.addProperty("subtotalVnd",receiptOrders.stream().mapToLong(OrderView::subtotalVnd).sum());out.addProperty("taxVnd",receiptOrders.stream().mapToLong(OrderView::taxVnd).sum());
         var resolution=resolutions.list("r.order_id=?",row[2]);if(!resolution.isEmpty())out.add("resolution",resolution.get(0));return out;
     }
     private List<OrderView> loadOrders(String where, Object... args) throws SQLException {
@@ -401,7 +411,9 @@ public final class CafeService implements AutoCloseable {
         List<OrderView> orders = new ArrayList<>();
         for (Header h : headers) {
             List<OrderItem> items = db.query("SELECT * FROM order_items WHERE order_id=? ORDER BY "+(qr==null?"menu_id":"line_no"), r -> new OrderItem(r.getInt("menu_id"), r.getString("name"), r.getInt("quantity"), r.getLong("unit_price_vnd"), r.getLong("unit_price_vnd") * r.getInt("quantity"),qr==null?"":r.getString("note")), h.id());
-            orders.add(new OrderView(h.id(), h.table(), h.visit(), h.status(), h.note(), items.stream().mapToLong(OrderItem::subtotalVnd).sum(), h.time(), List.copyOf(items),h.payment(),qr==null||h.payment().equals("POSTPAY")?h.time():db.query("SELECT updated_at FROM order_payments WHERE order_id=? AND state='PAID'",r->r.getString(1),h.id()).stream().findFirst().orElse(null)));
+            String queuedAt=qr==null||h.payment().equals("POSTPAY")?h.time():db.query("SELECT updated_at FROM order_payments WHERE order_id=? AND state='PAID'",r->r.getString(1),h.id()).stream().findFirst().orElse(null);
+            if(finance==null)orders.add(new OrderView(h.id(),h.table(),h.visit(),h.status(),h.note(),items.stream().mapToLong(OrderItem::subtotalVnd).sum(),h.time(),List.copyOf(items),h.payment(),queuedAt));
+            else orders.add(db.query("SELECT * FROM orders WHERE id=?",r->new OrderView(h.id(),h.table(),h.visit(),h.status(),h.note(),r.getLong("total_vnd"),h.time(),List.copyOf(items),h.payment(),queuedAt,r.getLong("subtotal_vnd"),r.getLong("tax_vnd"),r.getInt("tax_rate_bps"),r.getString("tax_name"),r.getInt("tax_inclusive")==1),h.id()).get(0));
         }
         return List.copyOf(orders);
     }

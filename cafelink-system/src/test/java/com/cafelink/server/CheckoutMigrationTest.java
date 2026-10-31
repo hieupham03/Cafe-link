@@ -27,7 +27,7 @@ class CheckoutMigrationTest {
         Path path=previous(false);String store;
         try(Connection c=DriverManager.getConnection("jdbc:sqlite:"+path);Statement sql=c.createStatement();ResultSet rows=sql.executeQuery("SELECT value FROM store_settings WHERE name='store_id'")){store=rows.getString(1);}
         try(CafeService service=new CafeService(path,new QrConfig(new byte[32],Clock.systemUTC()))){var admin=service.authenticate("admin","CafeLink@123");assertEquals(store,admin.storeId());assertTrue(service.outcome(admin,"old-open").get("found").getAsBoolean());}
-        try(Connection c=DriverManager.getConnection("jdbc:sqlite:"+path);Statement sql=c.createStatement();ResultSet rows=sql.executeQuery("PRAGMA user_version")){assertEquals(11,rows.getInt(1));}
+        try(Connection c=DriverManager.getConnection("jdbc:sqlite:"+path);Statement sql=c.createStatement();ResultSet rows=sql.executeQuery("PRAGMA user_version")){assertEquals(12,rows.getInt(1));}
     }
     @Test void activeV2DatabaseIsRefusedBeforeChangingSchemaOrVisits() throws Exception {
         Path path=previous(true);assertThrows(SQLException.class,()->new CafeService(path,new QrConfig(new byte[32],Clock.systemUTC())));
