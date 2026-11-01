@@ -81,11 +81,19 @@ class StoreOperationsTest {
     }
     @Test void reportSeparatesPendingSalesRefundsAndVoidedExpenses() throws Exception {
         tax(800,"EXCLUSIVE");long paid=place();paid(paid);place();
+        // The report covers a fixed business day; wall-clock payment timestamps
+        // may already be on the following day in Vietnam when CI runs in UTC.
+        try(Connection c=DriverManager.getConnection("jdbc:sqlite:"+temp.resolve("store.db"));PreparedStatement sql=c.prepareStatement("UPDATE order_payments SET updated_at=? WHERE order_id=? AND state='PAID'")) {
+            sql.setString(1,"2026-11-01T09:00:00Z");sql.setLong(2,paid);assertEquals(1,sql.executeUpdate());
+        }
         JsonObject expense=data("{\"amountVnd\":10000,\"category\":\"Nguyên liệu\",\"note\":\"Mua sữa\",\"spentOn\":\"2026-11-01\"}");
         JsonObject first=service.execute(admin,"expense-once","CREATE_EXPENSE",expense);assertEquals(first,service.execute(admin,"expense-once","CREATE_EXPENSE",expense));
         JsonObject query=data("{\"fromDate\":\"2026-11-01\",\"toDate\":\"2026-11-01\"}");JsonObject report=call(admin,"GET_FINANCE_REPORT",query);
         assertEquals(32400,report.get("grossVnd").getAsLong());assertEquals(10000,report.get("expenseVnd").getAsLong());assertEquals(22400,report.get("balanceVnd").getAsLong());
         call(admin,"RESOLVE_ORDER",data("{\"orderId\":"+paid+",\"resolution\":\"REFUND\",\"reason\":\"Hết nguyên liệu\"}"));
+        try(Connection c=DriverManager.getConnection("jdbc:sqlite:"+temp.resolve("store.db"));PreparedStatement sql=c.prepareStatement("UPDATE order_resolutions SET created_at=? WHERE order_id=? AND state='REFUNDED'")) {
+            sql.setString(1,"2026-11-01T10:01:00Z");sql.setLong(2,paid);assertEquals(1,sql.executeUpdate());
+        }
         report=call(admin,"GET_FINANCE_REPORT",query);assertEquals(32400,report.get("refundVnd").getAsLong());assertEquals(0,report.get("netVnd").getAsLong());assertEquals(0,report.get("netTaxVnd").getAsLong());
         call(admin,"VOID_EXPENSE",data("{\"expenseId\":"+first.get("expenseId")+",\"reason\":\"Ghi nhầm\"}"));report=call(admin,"GET_FINANCE_REPORT",query);assertEquals(0,report.get("expenseVnd").getAsLong());assertEquals(1,report.getAsJsonArray("expenses").size());assertFalse(report.getAsJsonArray("expenses").get(0).getAsJsonObject().get("voidedAt").isJsonNull());
     }

@@ -85,5 +85,11 @@
   "portableV10_1": "NOT_RELEASED",
   "newPerformanceMeasurement": false,
   "physicalPhoneAcceptance": "NOT_RETESTED_BY_AGENT",
-  "remoteCi": "CHECK_GITHUB_ACTIONS_FOR_SUBMISSION_COMMIT"
+  "remoteCi": "CHECK_GITHUB_ACTIONS_FOR_SUBMISSION_COMMIT",
+  "javaCompatibilityRecheck": {
+    "proof": "utc-regression.json",
+    "javaRuntime": "17.0.20.1",
+    "timezone": "UTC",
+    "status": "PASS"
+  }
 }

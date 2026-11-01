@@ -297,7 +297,7 @@
   },
   {
     "path": "src/test/java/com/cafelink/server/StoreOperationsTest.java",
-    "sha256": "02a56a581ea0dd6130c4be43148d0befdaef5670987485cfaab8caab0417d825"
+    "sha256": "54f6c5b51077e89c28f401b7ab7b0445df44d17a82fa4d7af4dc6d9772b40173"
   },
   {
     "path": "src/test/java/com/cafelink/server/UpgradeMigrationTest.java",
