@@ -2,7 +2,13 @@
 
 Mục đích là kiểm đúng chức năng của quán, giao tiếp Client/Server và hành vi khi có lỗi; thực nghiệm đo hiệu năng/phục hồi được tách riêng. Yêu cầu môn ở [Instruction, mục 8-9](../../final-project-2/final-project/Instruction.md); [báo cáo hiện tại](../../report/README.md) trình bày kết quả theo cấu trúc technical paper.
 
+V10.1 bổ sung `RoleAccessTest`, `StaffRoleIntegrationTest` và `web/tests/roles.spec.ts`: quyền tại Core/HTTP/TCP, thu hồi nhiều tab, đổi mật khẩu, journal/audit không có mật khẩu, migration giữ dữ liệu và tiếp nhận khi mất phản hồi. [Chi tiết V10.1](UPGRADE_V10_1_ROLES.md) tách khỏi bằng chứng các mốc trước.
+
+Bản tích hợp thành viên có **201 Java và 90 Chromium đạt**, gồm 7 kịch bản tài chính chuyển từ nhánh thành viên và 2 ca ảnh món. [Phiếu kiểm tích hợp](../../report/evidence/cafelink-integration-20261102/summary.json) giữ số liệu và hash ảnh; kết quả các mốc trước ở dưới không bị đổi nhãn.
+
 ## Các nhóm hành vi được kiểm
+
+V10 bổ sung `StoreOperationsTest` và `web/tests/v10.spec.ts`: chặn trả tiền trước tiếp nhận, kiểm món lúc quầy nhận, từ chối, giữ nguyên thuế đơn cũ, làm tròn, hoàn, thu chi/ngày quán, quyền, mất phản hồi ghi chi, QR, responsive và điều hướng từ thông báo. [Kết quả V10](UPGRADE_V10.md) tách khỏi số liệu RC4 trong tài liệu này.
 
 | Nhóm | Điều cần chứng minh | Điểm vào test |
 |---|---|---|
@@ -23,7 +29,7 @@ Test TCP 12 Client đồng thời khác workload 14 khách của phép đo tải
 Tại `cafelink-system`, sau khi chuẩn bị môi trường theo [README](../README.md):
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V9.4
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V10.1
 ```
 
 Lệnh chạy Java verify, build frontend/experiment và Chromium E2E. Các test dùng socket, Gateway, Core và SQLite thật với dữ liệu riêng. Cổng 18080/18081 phải trống. Nếu đã cài đúng dependencies/browser, có thể thêm `-SkipInstall -SkipBrowserInstall`.

@@ -4,6 +4,12 @@ $ProgressPreference='SilentlyContinue'
 $projectRoot=Split-Path $PSScriptRoot -Parent
 $workspaceRoot=Split-Path $projectRoot -Parent
 . (Join-Path $PSScriptRoot 'package-documentation.ps1')
+$sourceVersion=(Get-Content -LiteralPath (Join-Path $projectRoot 'web/package.json') -Raw -Encoding UTF8 | ConvertFrom-Json).version
+$sourceRelease='V'+(($sourceVersion -split '\.')[0..1] -join '.')
+$releasePolicy=Get-Content -LiteralPath (Join-Path $projectRoot 'release/documentation.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+$policyVersion=$releasePolicy.version
+if($sourceRelease -ne $policyVersion){throw "Source $sourceVersion differs from release policy $policyVersion. Use the source launcher until the portable release is updated and verified."}
+if($releasePolicy.portableStatus -eq 'NOT_RELEASED'){throw "Portable $policyVersion has not been released. Build and run the source using scripts/build-web.ps1 and scripts/run-web.ps1."}
 $documentation=Read-PackageDocumentation -ProjectRoot $projectRoot
 if(-not $OutputDirectory){$OutputDirectory=Join-Path $workspaceRoot ('dist/CafeLink-Web-'+$documentation.version+'-'+(Get-Date -Format 'yyyyMMdd-HHmmss'))}
 $destination=[IO.Path]::GetFullPath($OutputDirectory)

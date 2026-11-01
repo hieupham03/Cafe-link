@@ -2,9 +2,9 @@
 
 **Hệ thống gọi món QR và điều phối phục vụ tại quán café theo mô hình Client/Server.** Bài tập lớn môn Lập trình mạng, Topic 3 - Ứng dụng mạng và hệ thống phân tán.
 
-Khách quét QR tại bàn để xem món, đặt hàng, thanh toán giả lập và theo dõi phục vụ. Quầy quản lý thực đơn, nhận đơn, điều phối pha chế/giao đồ và xử lý hỗ trợ. Nhiều khách cùng bàn dùng chung QR nhưng có phiên, giỏ và đơn riêng.
+Khách quét QR tại bàn để xem món, gửi đơn, chờ quầy tiếp nhận rồi mới thanh toán giả lập và theo dõi phục vụ. Quầy quản lý thực đơn, tiếp nhận hoặc từ chối đơn, điều phối pha chế/giao đồ, xử lý hỗ trợ và theo dõi thu chi. Nhiều khách cùng bàn dùng chung QR nhưng có phiên, giỏ và đơn riêng.
 
-**Source:** V9.4, schema 12. **Báo cáo hiện tại:** [Word](report/NhomXX_CafeLink_Report_Current_20261030.docx) · [PDF, 42 trang](report/NhomXX_CafeLink_Report_Current_20261030.pdf). Thanh toán dùng `LOCAL_SIMULATOR`, không thu tiền thật.
+**Source hiện hành:** V10.1, schema 13; đã tích hợp các nhánh thành viên. [Nguồn đóng góp](CONTRIBUTIONS.md). [Phân quyền V10.1](cafelink-system/docs/UPGRADE_V10_1_ROLES.md) · [UI/tiếp nhận/thuế/thu chi V10](cafelink-system/docs/UPGRADE_V10.md). Báo cáo đã chốt được giữ tại [thư mục báo cáo](report/README.md); nội dung báo cáo và bằng chứng V9.4 không bị thay bằng số liệu mới. Thanh toán dùng `LOCAL_SIMULATOR`, không thu tiền thật.
 
 | Bắt đầu tại đây | Nội dung |
 |---|---|
@@ -27,11 +27,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-web.ps1 -Port 80
 
 1. Giữ terminal mở, vào **http://127.0.0.1:8088/admin**.
 2. Đăng nhập local: **`admin` / `CafeLink@123`**.
-3. Chọn **Mở tất cả bàn → Bàn 1 → Sao chép link đặt món**.
+3. Chọn **Mở tất cả bàn**: QR hiện ngay trên mỗi thẻ bàn. Có thể vào **Bàn 1 → Sao chép link đặt món**.
 4. Dán nguyên link vào browser/profile khác để làm khách. Hai khách độc lập cần hai profile, trình duyệt hoặc thiết bị độc lập.
-5. Chọn món → gửi đơn → thanh toán thử thành công. Quầy chuyển pha chế → sẵn sàng → giao đủ; khách nhận cập nhật trực tiếp.
+5. Khách chọn món → gửi đơn. Quầy vào **Quầy pha chế → Tiếp nhận đơn**; khách mới được thanh toán. Quầy chuyển pha chế → sẵn sàng → giao đủ.
+6. **Nhân viên → Thêm nhân viên** tạo tài khoản STAFF riêng; đăng nhập ở browser/profile khác bằng cùng `/admin`. Nhân viên có bốn mục phục vụ. Khóa/đổi mật khẩu thu hồi mọi phiên cũ.
+7. **Cài đặt quán** cấu hình thuế; **Thu chi** xem dòng tiền, ghi/hủy phiếu chi có lý do và xuất CSV. Thuế mặc định 0%, tiền/thuế của đơn đã gửi được giữ nguyên.
 
-SQLite tự tạo schema, tài khoản demo, sáu bàn và tám món khi dùng DB mới. Dữ liệu cũ được giữ khi chạy lại. Nhấn **Ctrl+C** tại terminal Server để dừng. [Runbook](cafelink-system/docs/FINAL_RUNBOOK.md) giải thích trường hợp chỉ mở `/join` hoặc dùng chung cookie quản lý/khách.
+SQLite tự tạo schema, tài khoản demo, sáu bàn và tám món khi dùng DB mới. Tám ảnh đồ uống được đóng kèm source; ảnh quản lý tải lên được ưu tiên. Dữ liệu cũ được giữ khi chạy lại. Nhấn **Ctrl+C** tại terminal Server để dừng. [Runbook](cafelink-system/docs/FINAL_RUNBOOK.md) giải thích trường hợp chỉ mở `/join` hoặc dùng chung cookie quản lý/khách.
 
 ### Cho điện thoại quét QR qua Internet
 
@@ -48,17 +50,18 @@ Dùng **URL HTTPS và mật khẩu tạm mà terminal in ra**, mở tất cả b
 | Người sử dụng | Chức năng |
 |---|---|
 | Khách | QR, thực đơn có ảnh, giỏ/số lượng/ghi chú, đặt món, thanh toán giả lập, tiến độ đơn, gọi/bổ sung/rút hỗ trợ |
-| Quản lý/quầy | Menu/ảnh, nhận hoặc tạm dừng đơn mới, pha chế/giao, thông báo, hỗ trợ, lịch sử, [thu chi và cấu hình thuế](cafelink-system/docs/FINANCE.md), chẩn đoán |
+| Quản lý - ADMIN | Toàn bộ phục vụ; menu/ảnh/giá, lịch sử, thu chi, thuế, hoàn giả lập, chẩn đoán và tạo/khóa/đặt lại mật khẩu nhân viên |
+| Nhân viên - STAFF | QR/bàn, tiếp nhận hoặc từ chối đơn chưa trả, pha chế/giao đồ, hỗ trợ, thông báo và đánh dấu hết/còn món; không xem tài chính hoặc sửa giá |
 | Hệ thống | Xác thực và phiên riêng, kiểm giá/quyền/trạng thái tại Server, chống áp lại cùng yêu cầu, phục hồi và cập nhật trực tiếp |
 
 <table>
   <tr>
-    <td width="32%"><img src="report/evidence/cafelink-v2/v9.4-gate/20261030-201106-19bc860f/shop-guest-mobile.png" alt="Website gọi món CafeLink trên viewport điện thoại"><br>Giao diện khách</td>
-    <td width="68%"><img src="report/evidence/cafelink-v2/v9.4-gate/20261030-201106-19bc860f/dashboard-desktop.png" alt="Màn điều phối bàn và công việc CafeLink"><br>Màn quản lý</td>
+    <td width="32%"><img src="cafelink-system/docs/images/current/guest-menu.png" alt="Thực đơn V10 trên viewport điện thoại"><br>Giao diện khách V10.1</td>
+    <td width="68%"><img src="cafelink-system/docs/images/current/table-overview.png" alt="Sơ đồ bàn V10 có QR ngay trên từng thẻ"><br>Sơ đồ bàn và QR V10.1</td>
   </tr>
 </table>
 
-Ảnh từ ca kiểm Chromium V9.4, minh họa giao diện; không phải ảnh vận hành tại quán.
+Ảnh source V10.1 tích hợp chạy trên Chromium với dữ liệu riêng, gồm tám ảnh thực đơn; không phải ảnh vận hành tại quán. [Ảnh thu chi](cafelink-system/docs/images/v10/finance-report.png) · [Cấu hình thuế](cafelink-system/docs/images/v10/tax-settings.png). [Kết quả kiểm tích hợp](report/evidence/cafelink-integration-20261102/summary.json).
 
 ## Kiến trúc và nội dung Lập trình mạng
 
@@ -88,10 +91,12 @@ Java target 17, Maven bootstrap, Jetty HTTP/WebSocket, Gson, SQLite JDBC; React/
 
 ## Kiểm thử và kết quả thực nghiệm
 
+**V10.1 tích hợp:** 201 Java và 90 Chromium tích hợp đạt; 8 ca phân quyền đạt trên mỗi engine Chromium/Firefox/WebKit. Sau chỉnh CSS cuối, đã kiểm lại các luồng phân quyền/điều hướng và 17 màn có dữ liệu riêng. [Phạm vi và bằng chứng V10.1](cafelink-system/docs/UPGRADE_V10_1_ROLES.md#kết-quả-kiểm). Kết quả RC4/RC3 bên dưới thuộc mốc trước nâng cấp; kiểm engine chưa thay kiểm điện thoại vật lý.
+
 Chạy tại `cafelink-system`:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V9.4
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V10.1
 ```
 
 Kiểm cuối RC4: **164 Java, 71 Chromium, 20 Firefox, 20 WebKit, 23 nhóm kiểm gói và 8 kiểm public**. Các lớp kiểm có phạm vi riêng, không cộng thành tỷ lệ bao phủ. Nhóm đã xác nhận hoàn thành kiểm thao tác thực tế; số đo hiệu năng đến từ bộ thực nghiệm riêng. [Phạm vi kiểm và lệnh chạy](cafelink-system/docs/TESTING.md).
@@ -143,6 +148,8 @@ Giảng viên hướng dẫn: **Ngô Văn Quyền**. Thành viên theo báo cáo
 
 Ưu tiên [Instruction](final-project-2/final-project/Instruction.md), [Topics](final-project-2/final-project/Topics.md) và [Submission](final-project-2/final-project/Submission.md). README/SPECIFICATION trong bộ môn là mẫu; [đặc tả CafeLink](cafelink-system/docs/PROJECT_SPECIFICATION.md) áp dụng riêng cho sản phẩm.
 
-Trước bàn giao, tổ chức `Source/` và `Report/`, dùng tên `NhomXX_CafeLink_Report.docx` với số nhóm thật và hoàn tất Compilatio theo quy định. GitHub không thay bước nộp chính thức. [Chỉ mục báo cáo](report/README.md) dẫn đến cặp Word/PDF hiện hành; các bản báo cáo cũ và bản nháp giữ local.
+Trước bàn giao, tổ chức `Source/` và `Report/`, dùng cặp `Nhom11_CafeLink_Report.docx`/PDF hiện hành và hoàn tất Compilatio theo quy định. GitHub không thay bước nộp chính thức. [Chỉ mục báo cáo](report/README.md) dẫn đến cặp Word/PDF hiện hành; các bản báo cáo cũ và bản nháp giữ local.
 
 Nguồn kỹ thuật: [RFC 9293 - TCP](https://www.rfc-editor.org/rfc/rfc9293.html), [RFC 6455 - WebSocket](https://www.rfc-editor.org/rfc/rfc6455.html), [RFC 9110 - HTTP](https://www.rfc-editor.org/rfc/rfc9110.html), [SQLite transactions](https://www.sqlite.org/lang_transaction.html), [IndexedDB](https://www.w3.org/TR/IndexedDB/).
+
+Báo cáo đã chốt: [Word](report/submission-20261031/Nhom11_CafeLink_Report.docx) · [PDF](report/submission-20261031/Nhom11_CafeLink_Report.pdf). Nội dung báo cáo giữ mốc đã duyệt; nâng cấp V10.1 được ghi riêng trong tài liệu source.

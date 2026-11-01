@@ -1,12 +1,18 @@
 {
   "format": "CafeLinkDocumentation/1",
-  "version": "V9.4",
-  "schema": 12,
-  "currentPackage": "CafeLink-Web-V9.4-RC4",
+  "version": "V10.1",
+  "schema": 13,
+  "currentPackage": "CafeLink-Web-V10.1-RC1",
   "repository": "https://github.com/hieupham03/Cafe-link",
-  "reportManifest": "report/evidence/cafelink-docs-20261030/report.json",
-  "generatedLaunchers": ["START-LOCAL.cmd", "START-PUBLIC.cmd"],
-  "externalCommands": ["npm.cmd", "npx.cmd"],
+  "reportManifest": "report/submission-20261031/PUBLICATION.json",
+  "generatedLaunchers": [
+    "START-LOCAL.cmd",
+    "START-PUBLIC.cmd"
+  ],
+  "externalCommands": [
+    "npm.cmd",
+    "npx.cmd"
+  ],
   "guides": [
     "FINANCE.md",
     "FINAL_ARCHITECTURE.md",
@@ -15,5 +21,6 @@
     "WEB_RELEASE.md",
     "WEB_USER_ACCEPTANCE.md",
     "WEB_HARDENING.md"
-  ]
+  ],
+  "portableStatus": "NOT_RELEASED"
 }

@@ -1,4 +1,4 @@
-# CafeLink V9.4 - Giỏ món và phục hồi yêu cầu web
+# CafeLink V10.1 - Giỏ món và phục hồi yêu cầu web
 
 > Luồng chính hiện tại là QR cố định, phiên riêng và trả trước giả lập theo đơn. [Hướng dẫn demo](FINAL_RUNBOOK.md) và [protocol](FINAL_PROTOCOL.md) là tài liệu bản chốt. Receipt/giữ ID/DISCARD xử lý kết quả chưa rõ; chúng không thay cơ chế hủy hoặc hoàn tiền sau tiếp nhận.
 
@@ -70,7 +70,7 @@ Fingerprint dùng JSON sắp khóa, giữ thứ tự mảng và escaping U+2028/
 ## 4. Kiểm thử tái lập
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V9.4
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V10.1
 ```
 
 Runner tạo fixture DB/server riêng trên cổng 18080/18081, không chiếm/dừng demo đang chạy. Giữ hai cổng test trống trước khi chạy. Bản V9.4/RC4 có 164 Java + 71 Chromium PASS; xem [phạm vi kiểm thử](TESTING.md), [phiếu kiểm cuối](../../report/evidence/cafelink-v2/pre-feature-20261030/final-verification.json) và [báo cáo hiện tại](../../report/README.md).

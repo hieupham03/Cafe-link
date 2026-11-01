@@ -1,4 +1,4 @@
-# CafeLink V9.4 - Vận hành, độ tin cậy và chẩn đoán
+# CafeLink V10.1 - Vận hành, độ tin cậy và chẩn đoán
 
 Tài liệu mô tả cơ chế đang có trong source V9.4/schema 11. Gói được kiểm cuối là RC4; cách chạy nằm ở [FINAL_RUNBOOK](FINAL_RUNBOOK.md), kết quả hiện hành ở [TESTING](TESTING.md).
 

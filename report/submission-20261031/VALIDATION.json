@@ -1,0 +1,93 @@
+{
+  "reviewDate": "2026-10-31",
+  "recordedAtUtc": "2026-10-31T04:32:02.285864+00:00",
+  "scope": "Report content, format, saved-measurement arithmetic, and Word/PDF layout; not a new application gate or Compilatio result",
+  "documentChecks": "PASS",
+  "technicalPaperComponents": {
+    "required": 19,
+    "present": 19
+  },
+  "files": [
+    {
+      "name": "Nhom11_CafeLink_Report.docx",
+      "sha256": "d16cd37d4b27db545013eea74311d37cd74caee61a2f515b6ad074e01b9e6d74"
+    },
+    {
+      "name": "Nhom11_CafeLink_Report.pdf",
+      "sha256": "2f25bdbf62449d64b3d1e762c7eaa52aae4bf69b4bfc7a153419b9a552681db8"
+    }
+  ],
+  "pages": 51,
+  "bodyPointSize": 13,
+  "bodyFont": "Times New Roman",
+  "bodyLineSpacing": 1.5,
+  "page": "A4",
+  "marginsCm": {
+    "top": 3,
+    "bottom": 3,
+    "left": 3.5,
+    "right": 2
+  },
+  "numberedContentFigures": 15,
+  "embeddedImagesIncludingLogo": 16,
+  "numberedContentTables": 20,
+  "allTablesIncludingFrontMatter": 22,
+  "references": 31,
+  "twoWayCitationChecks": "PASS",
+  "jsonExamples": 4,
+  "hyperlinks": 31,
+  "sourceInput": "report\\Nhom11_CafeLink_Report_Discussion_20261031.docx",
+  "sourceInputSha256": "3d99bf2576c27618475bc0c1b7646c4840167c6fbf30235b9bd68c6dd5e3ac8a",
+  "sourceInputPreserved": true,
+  "allTableValuesAndEmbeddedImagesPreserved": true,
+  "narrativeChanges": 4,
+  "formatChanges": "Member-table column widths; updated fields and contents",
+  "savedRawRecalculation": {
+    "status": "PASS",
+    "recoveryCases": 120,
+    "loadRuns": 12,
+    "completedFlows": 1256,
+    "offeredSlots": 1350,
+    "missedSlots": 94,
+    "missedOnlyAtClients": 14,
+    "p95Method": "nearest-rank"
+  },
+  "skillAudit": {
+    "structuralStatus": "PASS",
+    "reviewStatus": "NO_FLAGS",
+    "authorshipInference": "NOT_PERFORMED"
+  },
+  "visualInspection": {
+    "status": "COMPLETED_BY_COORDINATOR",
+    "allPageContactSheetsViewed": true,
+    "fullSizePagesViewed": [
+      1,
+      5,
+      18,
+      24,
+      26,
+      29,
+      34,
+      42,
+      47,
+      50,
+      51
+    ],
+    "finalMemberTableRecheckedAfterFormatting": true,
+    "blankPages": 0,
+    "offPageText": 0,
+    "paragraphsOrCellsMissingFromPdf": 0
+  },
+  "reviewMode": "Separate source, evidence and final-verification passes by one coordinator, as skill fallback",
+  "independentAgentReview": "UNAVAILABLE_USAGE_LIMIT",
+  "newExperimentRun": false,
+  "applicationSourceChanged": false,
+  "githubPush": false,
+  "compilatio": "NOT_RUN",
+  "officialSubmission": "NOT_PERFORMED",
+  "openItems": [
+    "Run Compilatio on the exact final DOCX and retain the result required by the course.",
+    "Confirm whether the doctoral research-method PDF requires 30 journal papers for this student project; the report has 31 mixed primary/technical/project references, including three research papers.",
+    "Group confirms identities, actual contributions and understanding; assemble and hand over the matching Source/Report package."
+  ]
+}

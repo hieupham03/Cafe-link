@@ -1,4 +1,4 @@
-param([switch]$SkipInstall, [switch]$SkipJava)
+﻿param([switch]$SkipInstall, [switch]$SkipJava)
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path $PSScriptRoot -Parent
 Push-Location (Join-Path $projectRoot 'web')
@@ -11,4 +11,4 @@ if (-not $SkipJava) {
     & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'build.ps1') -SkipTests
     if ($LASTEXITCODE -ne 0) { throw 'Java package failed' }
 }
-Write-Host 'Web V9.4 ready. Run scripts/run-web.ps1; scripts/test-web.ps1 runs Java and browser verification.'
+Write-Host 'Web V10.1 ready. Run scripts/run-web.ps1; scripts/test-web.ps1 -Phase V10.1 runs Java and browser verification.'

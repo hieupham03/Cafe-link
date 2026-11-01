@@ -1,6 +1,6 @@
-# CafeLink V9.4 - demo Internet và QR cố định tại bàn
+# CafeLink V10.1 - demo Internet và QR cố định tại bàn
 
-> **Bản hiện tại V9.4:** gói đã kiểm tại workspace là `dist/CafeLink-Web-V9.4-RC4.zip`; giải nén rồi chạy START-PUBLIC.cmd, không cần build/JDK/Node. ZIP giữ local, không tải kèm khi clone GitHub. [Bộ nghiệm thu thiết bị](WEB_DEVICE_ACCEPTANCE.md) tạo bản sao/profile riêng từ RC4 để thử điện thoại mà không đổi dữ liệu đang dùng. Khi clone source, chạy các lệnh bên dưới.
+> **Bản hiện tại V9.4:** gói đã kiểm tại workspace là `dist/CafeLink-Web-V10.1-RC1.zip`; giải nén rồi chạy START-PUBLIC.cmd, không cần build/JDK/Node. ZIP giữ local, không tải kèm khi clone GitHub. [Bộ nghiệm thu thiết bị](WEB_DEVICE_ACCEPTANCE.md) tạo bản sao/profile riêng từ RC4 để thử điện thoại mà không đổi dữ liệu đang dùng. Khi clone source, chạy các lệnh bên dưới.
 
 Màn khách chia năm vùng: Thực đơn, Đơn đã gọi, Hỗ trợ, Thanh toán và Giỏ hàng. Kết quả public/phiên bản/hash nằm trong [báo cáo nâng cấp V9.4](../../report/CafeLink_Hardening_20261030.md), báo cáo Word/PDF nằm ở [chỉ mục báo cáo](../../report/README.md). Nhóm đã xác nhận hoàn tất kiểm thao tác thực tế; [checklist](WEB_USER_ACCEPTANCE.md) được giữ cho lần kiểm lại.
 
@@ -101,7 +101,7 @@ Mở `http://127.0.0.1:19088/admin`, đăng nhập `admin / CafeLink@123`, bấm
 ## 7. Kiểm thử và phạm vi đã xác minh
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V9.4 -SkipInstall -SkipBrowserInstall
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V10.1 -SkipInstall -SkipBrowserInstall
 ```
 
 Kiểm hiện hành V9.4/RC4 gồm 164 Java và 71 Chromium, xem [TESTING](TESTING.md), [phiếu kiểm cuối](../../report/evidence/cafelink-v2/pre-feature-20261030/final-verification.json) và [báo cáo hiện tại](../../report/README.md). Smoke Internet chạy tách trên DB fixture qua `web/tests/public-smoke.mjs`, nhận origin/mật khẩu bằng biến môi trường và không ghi mật khẩu vào kết quả. Không chạy smoke tạo đơn trên profile khách đang dùng.

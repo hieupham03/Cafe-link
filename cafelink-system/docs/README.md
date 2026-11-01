@@ -1,11 +1,12 @@
 # CafeLink - Chỉ mục tài liệu kỹ thuật
 
-Đọc [README gốc](../../README.md) để hiểu sản phẩm, hoặc [README source](../README.md) để build/run/test. Source hiện tại V9.4, schema 11; gói chạy đã kiểm RC4. Lệnh và số đo gắn với từng mốc, không suy từ tên file có chữ `FINAL`.
+Đọc [README gốc](../../README.md) để hiểu sản phẩm, hoặc [README source](../README.md) để build/run/test. Bản local hiện tại là [V10.1, schema 13](UPGRADE_V10_1_ROLES.md), đang chờ người dùng nghiệm thu. Gói RC4 và các số đo V9.4 được giữ nguyên mốc; không coi đó là kết quả của V10.1.
 
 ## Chạy và trải nghiệm
 
 | Tài liệu | Dùng khi |
 |---|---|
+| [Phân quyền V10.1](UPGRADE_V10_1_ROLES.md) | Tạo nhân viên, quyền quầy/quản lý, khóa và thu hồi phiên |
 | [FINAL_RUNBOOK](FINAL_RUNBOOK.md) | Chạy local/public, vào bàn, demo khách - quầy và xử lý lỗi |
 | [WEB_PUBLIC_DEMO](WEB_PUBLIC_DEMO.md) | Quét QR từ điện thoại qua Internet bằng Quick Tunnel |
 | [WEB_RELEASE](WEB_RELEASE.md) | Kiểm gói, profile dữ liệu, backup/reset/restore |

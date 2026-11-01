@@ -1,6 +1,6 @@
 # CafeLink - Hướng dẫn source
 
-Source **V9.4 / schema 12**. Gói chạy đã kiểm: **RC4**. Tài liệu này dành cho người build, chạy và kiểm lại dự án; [README gốc](../README.md) giới thiệu chức năng và kết quả tổng quan.
+Source hiện hành **V10.1 / schema 13**; xem [nguồn đóng góp](../CONTRIBUTIONS.md). [V10.1](docs/UPGRADE_V10_1_ROLES.md) mô tả phân quyền ADMIN/STAFF và quản lý tài khoản. [V10](docs/UPGRADE_V10.md) mô tả tiếp nhận trước thanh toán, QR trên thẻ bàn, thu chi và thuế. Gói **V9.4/RC4** và báo cáo đã chốt là mốc trước nâng cấp; chạy V10.1 từ source theo hướng dẫn dưới.
 
 ## Mục lục
 
@@ -57,7 +57,7 @@ target/lib/                 Dependency Java
 web/dist/                   Website production
 ```
 
-Tên Maven artifact `1.0.0` giữ để tương thích script; phiên bản ứng dụng là V9.4, không phải đang chạy nhầm desktop cũ. Build không thay thế kiểm thử đầy đủ. Sau khi code hoặc lockfile đổi, build lại; `-SkipInstall` chỉ dùng khi npm dependencies đã khớp lock.
+Tên Maven artifact `1.0.0` giữ để tương thích script; bản ứng dụng local hiện là V10.1. Build không thay thế kiểm thử đầy đủ. Sau khi code hoặc lockfile đổi, build lại; `-SkipInstall` chỉ dùng khi npm dependencies đã khớp lock.
 
 ## Chạy Server và Client
 
@@ -72,16 +72,12 @@ Terminal in URL và cổng Core; giữ terminal mở. `WebMain` khởi động G
 ### Mở Client quản lý và khách
 
 1. Quản lý vào **http://127.0.0.1:8088/admin**, đăng nhập **`admin` / `CafeLink@123`**.
-2. Chọn **Mở tất cả bàn**, vào **Bàn 1**, lấy **Sao chép link đặt món**.
+2. Chọn **Mở tất cả bàn** để hiện QR ngay trên từng thẻ. Có thể vào **Bàn 1**, lấy **Sao chép link đặt món**.
 3. Khách dùng browser/profile khác mở nguyên link. Link có mã bàn trong fragment `#table=...`; trang chỉ có `/join` không đủ thông tin.
-4. Khách chọn món, gửi đơn và thanh toán thử; quầy nhận việc, pha chế rồi giao.
+4. Khách gửi đơn; quầy chọn **Quầy pha chế → Tiếp nhận đơn** hoặc từ chối kèm lý do. Chỉ sau tiếp nhận, khách mới được thanh toán giả lập. Quầy pha chế rồi giao.
 5. Mở thêm một Client độc lập cùng QR để kiểm hai khách cùng bàn có đơn riêng.
 
 Không cần chạy thêm app Java phía khách. Tab thường dùng chung cookie; các cửa sổ ẩn danh cùng mở cũng có thể dùng chung phiên riêng tư. Hai khách độc lập nên dùng hai browser/profile/thiết bị khác nhau.
-
-## Thu chi và thuế hóa đơn
-
-Vào **Quản lý → Thu chi & thuế** để ghi thu/chi, xem báo cáo theo ngày, xuất CSV và cấu hình thuế hóa đơn. [Hướng dẫn sử dụng và quy tắc tính](docs/FINANCE.md).
 
 ## Cấu hình và dữ liệu
 
@@ -103,7 +99,7 @@ Các đường dẫn dữ liệu tương đối được giải theo project `ca
 
 ### Khởi tạo và giữ dữ liệu
 
-SQLite tự tạo/migrate schema 12, tài khoản demo, sáu bàn và tám món khi mở DB mới; không cần cài database server hoặc nhập SQL. Seed không reset DB cũ.
+SQLite tự tạo/migrate schema 13, tài khoản demo, sáu bàn và tám món khi mở DB mới; không cần cài database server hoặc nhập SQL. Seed không reset DB cũ. Để nghiệm thu V10.1 lần đầu, dùng DB riêng như `data/v10-roles-review/cafelink.db`.
 
 Profile local trong ví dụ chứa DB, khóa QR cạnh DB và thư mục ảnh. Browser giữ cookie và IndexedDB riêng theo origin. Chạy lại cùng profile còn dữ liệu là hành vi lưu bền có chủ đích. Muốn thử sạch, dùng một `DatabasePath` mới và browser/profile khách mới. Không xóa DB đang chạy hoặc chỉ chép file DB khi còn ghi WAL.
 
@@ -123,16 +119,18 @@ Máy chủ phải bật và có Internet. Tunnel đổi hostname khi chạy lạ
 
 ## Kiểm thử
 
+Bản tích hợp V10.1 đã chạy 201 Java, 90 Chromium và 8 ca phân quyền trên mỗi engine Chromium/Firefox/WebKit, đều đạt. Chỉnh CSS cuối có lượt kiểm lại riêng và bộ 17 ảnh. [Chi tiết nghiệm thu V10.1](docs/UPGRADE_V10_1_ROLES.md#kết-quả-kiểm) ghi phạm vi, bằng chứng và giới hạn; kiểm engine chưa thay kiểm điện thoại vật lý.
+
 Trước push hoặc đóng gói, xem [kiểm nội dung công bố](docs/PUBLICATION.md). CI dùng chung policy với script đóng gói để chặn hướng dẫn phiên bản cũ, liên kết hỏng và các cặp báo cáo bị trộn.
 
 | Lệnh | Phạm vi |
 |---|---|
 | `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maven.ps1 -B test` | Java: protocol, TCP, service, DB, Gateway và hồi quy desktop |
-| `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V9.4` | Java verify + build production/experiment + Chromium E2E |
+| `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V10.1` | Java verify + build production/experiment + Chromium E2E, gồm phân quyền/thu hồi phiên/tiếp nhận/thuế/thu chi |
 | `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-browser-compatibility.ps1` | Các nhóm chọn lọc trên Firefox và WebKit |
 | `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-v8.ps1 -Quick` | Bộ workflow: cấu hình, guard, test Java/web, analyzer và campaign ngắn |
 
-Lệnh cuối cần Python và requirements thực nghiệm. `test-v8.ps1` là tên giữ từ pha V8, hiện kiểm V9.4. `-Quick` giảm campaign, không bỏ bộ hồi quy Java/Chromium.
+Lệnh `test-v8.ps1` là bộ nghiệm thu/phát hành của mốc V9.4. Dùng `test-web.ps1 -Phase V10.1` cho nâng cấp hiện tại; [V10.1](docs/UPGRADE_V10_1_ROLES.md) ghi phạm vi và kết quả đã chạy. Kiểm Firefox/WebKit mới cũng được phân biệt với kết quả RC4 bên dưới.
 
 Cổng test **18080/18081** phải trống. Script tạo DB và tiến trình riêng, không dùng lại demo của bạn. Evidence mới nằm trong `../report/evidence/cafelink-v2/v9.4-gate/<run>/`; các bản đã chốt được giữ riêng. Chỉ thêm `-SkipInstall -SkipBrowserInstall` khi dependencies/browser đã có.
 
@@ -155,15 +153,7 @@ Số đo gần nhất thuộc **V9.4/RC3 ngày 30/10**: 120 ca phục hồi; t�
 
 ## Đóng gói
 
-Git có source và baseline E0, không kèm gói RC4 có JRE. Máy có source đã kiểm có thể tạo một gói tại đường dẫn mới:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-web.ps1
-```
-
-Để ràng buộc đúng JAR/frontend với gate đã chạy, chỉ định `-GateSummary` tới `summary.json` của chính build đó; guard từ chối hash hoặc tập assets không khớp. `-SkipBuild` chỉ dùng khi build hiện tại đã sẵn sàng. ZIP/thư mục đích không được tồn tại trước.
-
-Gói mới có `START-LOCAL.cmd`, `START-PUBLIC.cmd`, JRE, JAR, assets và manifest. [Runbook gói portable](docs/FINAL_RUNBOOK.md#6-gói-portable-được-cung-cấp-riêng) và [phát hành/dữ liệu](docs/WEB_RELEASE.md) mô tả kiểm gói, backup/reset/restore. Các file launcher riêng trong `release/windows` không phải một gói chạy hoàn chỉnh.
+Bản hiện hành chạy từ source theo README. Portable V10.1 chưa phát hành; `release/documentation.json` ghi `NOT_RELEASED` và script chặn tạo gói chưa được nghiệm thu. Các template/công cụ được giữ cho bản phát hành sau. Gói V9.4/RC4 và baseline E0 là mốc lịch sử, không chứa các tính năng mới. [Dữ liệu và phiên bản](docs/WEB_RELEASE.md).
 
 ## Kiến trúc và source
 

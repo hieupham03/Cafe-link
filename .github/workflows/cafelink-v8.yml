@@ -1,9 +1,9 @@
 name: CafeLink verification
 on:
   push:
-    paths: ['cafelink-system/**', '.github/workflows/cafelink-v8.yml', 'dist/CafeLink-Original-1.0.0-Baseline.zip', 'README.md', '.gitignore', 'report/*.md', 'report/*.docx', 'report/*.pdf', 'report/assets/**', 'final-project-2/**']
+    paths: ['cafelink-system/**', '.github/workflows/cafelink-v8.yml', 'dist/CafeLink-Original-1.0.0-Baseline.zip', 'README.md', '.gitignore', 'report/*.md', 'report/*.docx', 'report/*.pdf', 'report/submission-20261031/**', 'CONTRIBUTIONS.md', 'report/assets/**', 'final-project-2/**']
   pull_request:
-    paths: ['cafelink-system/**', '.github/workflows/cafelink-v8.yml', 'dist/CafeLink-Original-1.0.0-Baseline.zip', 'README.md', '.gitignore', 'report/*.md', 'report/*.docx', 'report/*.pdf', 'report/assets/**', 'final-project-2/**']
+    paths: ['cafelink-system/**', '.github/workflows/cafelink-v8.yml', 'dist/CafeLink-Original-1.0.0-Baseline.zip', 'README.md', '.gitignore', 'report/*.md', 'report/*.docx', 'report/*.pdf', 'report/submission-20261031/**', 'CONTRIBUTIONS.md', 'report/assets/**', 'final-project-2/**']
   workflow_dispatch:
     inputs:
       full_experiments:
@@ -46,13 +46,20 @@ jobs:
       - name: Verify source layout and preserved baseline
         run: |
           if (-not (Test-Path ../dist/CafeLink-Original-1.0.0-Baseline.zip)) { throw 'Include the sealed baseline ZIP in the repository before enabling CI; never recreate it from current sources.' }
-      - name: Verify publication, Java, browser and measurements
-        env:
-          CAFELINK_FULL_EXPERIMENTS: ${{ inputs.full_experiments }}
+      - name: Verify publication, Java and browser workflows
         run: |
-          $v8Args=@('-NoProfile','-ExecutionPolicy','Bypass','-File','scripts/test-v8.ps1')
-          if ($env:CAFELINK_FULL_EXPERIMENTS -ne 'true') { $v8Args+='-Quick' }
-          & powershell @v8Args
+          python tools/verify_publication.py --root .. --output ../report/evidence/cafelink-v2/v10.1-gate/publication.json
+          if ($LASTEXITCODE -ne 0) { throw 'Publication check failed' }
+          python -m unittest discover -s tools -p test_publication.py -v
+          if ($LASTEXITCODE -ne 0) { throw 'Publication guard tests failed' }
+          python tools/verify_v8_workflow.py
+          if ($LASTEXITCODE -ne 0) { throw 'Workflow check failed' }
+          powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V10.1
+          exit $LASTEXITCODE
+      - name: Run full measurements when explicitly requested
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_experiments }}
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File scripts/experiment-web.ps1 -SkipBuild
           exit $LASTEXITCODE
       - name: Upload allowlisted results even after failure
         if: always()
@@ -64,5 +71,6 @@ jobs:
             report/evidence/cafelink-v2/v8-gate/**
             report/evidence/cafelink-v2/v9.3-gate/**
             report/evidence/cafelink-v2/v9.4-gate/**
+            report/evidence/cafelink-v2/v10.1-gate/**
           if-no-files-found: warn
           retention-days: 14

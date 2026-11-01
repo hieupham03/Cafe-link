@@ -1,15 +1,15 @@
 # CafeLink - Đặc tả dự án theo bộ yêu cầu đầy đủ
 
-Đặc tả nghiệp vụ được đối chiếu ngày 28/10/2026 tại mốc V9.3/schema 11. Source hiện hành V9.4 giữ phạm vi nghiệp vụ đó; phần vận hành mới được mô tả trong [WEB_HARDENING](WEB_HARDENING.md). Căn cứ là năm tệp trong `final-project-2/final-project/`; không sửa hoặc thay nội dung bộ yêu cầu do người dùng cung cấp.
+Source hiện hành **V10.1/schema 13** được đối chiếu với `final-project-2/final-project/`. V10 bổ sung tiếp nhận trước thanh toán, thuế/thu chi và giao diện; V10.1 bổ sung phân quyền và ảnh đồ uống. Cơ chế phục hồi/giao tiếp kế thừa các mốc trước; số đo lịch sử vẫn giữ đúng phiên bản. Không sửa nội dung bộ yêu cầu giảng viên.
 
 ## 1. Thông tin và phạm vi
 
 - Đề tài: Hệ thống gọi món và điều phối phục vụ tại quán café theo mô hình Client/Server.
 - Hướng học phần: Topic 3 – Ứng dụng mạng.
-- Client: Browser khách và quản lý; Java NetworkClient làm đầu TCP của Gateway.
+- Client: Browser khách, quản lý ADMIN và nhân viên STAFF; Java NetworkClient làm đầu TCP của Gateway.
 - Server: Java Gateway nhận giao tiếp web, Java TCP Core quyết định nghiệp vụ, SQLite lưu tập trung.
-- Nhóm/lớp/thành viên/email/tỷ lệ đóng góp: chờ nhóm bổ sung và xác nhận; không mặc định ba thành viên theo SPECIFICATION của đề tài IoT.
-- Trong phạm vi: QR cố định/private visit, menu ảnh/version, giỏ/ghi chú, đơn trả trước giả lập, phục vụ/hỗ trợ/thông báo, phục hồi theo loại yêu cầu và scope/barrier, công cụ đo đối chứng.
+- Nhóm 11, giảng viên Ngô Văn Quyền; danh sách thành viên theo [README](../../README.md#nhóm-thực-hiện) và báo cáo đã chốt. Phần việc thực tế được xác nhận khi bảo vệ.
+- Trong phạm vi: QR cố định/private visit, menu ảnh/version, giỏ/ghi chú, chờ tiếp nhận rồi thanh toán giả lập, phục vụ/hỗ trợ/thông báo, thuế chốt theo đơn, báo cáo thu/hoàn/chi, phân quyền và tài khoản nhân viên, phục hồi theo loại yêu cầu/scope/barrier, công cụ đo đối chứng.
 - Ngoài phạm vi: ngân hàng thật, tồn kho/topping phụ thu, giao/hoàn từng phần, nhiều chi nhánh, SLA production.
 
 ## 2. Mô hình triển khai và trách nhiệm
@@ -38,11 +38,13 @@ CafeLink không có magic `0xABCD`, CRC16 hoặc telemetry 15 byte của SPECIFI
 1. Hai thiết bị dùng cùng QR có quyền và đơn riêng; tab cùng profile có thể chung phiên.
 2. Cùng principal/command ID và fingerprint trả kết quả cũ; khác payload bị từ chối.
 3. Receipt, mutation và event tương ứng cùng transaction; timeout Client chưa kết luận Core chưa commit.
-4. Đơn đi qua SUBMITTED → PREPARING → READY → SERVED; PREPAY chỉ được pha chế khi đủ điều kiện PAID.
+4. Đơn QR bắt đầu chờ quầy tiếp nhận. Chưa tiếp nhận không được trả tiền; nhận rồi và PAID mới đi tiếp SUBMITTED → PREPARING → READY → SERVED. Từ chối đơn chưa trả phải có lý do.
 5. Một ticket OPEN cùng loại/visit; bổ sung/rút/xử lý kiểm version và giữ lịch sử.
 6. Dừng nhận mới không xóa nghĩa vụ đã nhận. Offline không tự hủy đơn PAID hoặc kết thúc visit.
 7. Continuation giữ nháp/lịch sử riêng; command đã phát không chuyển scope.
 8. DISCARD trước accept chặn lệnh muộn; accept trước DISCARD giữ kết quả đã nhận.
+9. STAFF phục vụ, xử lý hỗ trợ và đánh dấu hết/còn món; ADMIN quản lý giá/ảnh, thuế, tài chính, hoàn và tài khoản. Core kiểm quyền độc lập với UI/Gateway; khóa/đổi mật khẩu thu hồi mọi phiên cũ.
+10. Thuế, tên món và giá đã chốt không đổi theo cấu hình sau đó. Báo cáo chỉ tính khoản thu đã thanh toán, tách ngày hoàn, loại phiếu chi đã hủy và giữ lịch sử.
 
 ## 5. Concurrency và xử lý lỗi
 
@@ -52,7 +54,7 @@ Client phân biệt lỗi mạng chưa rõ kết quả với lỗi nghiệp vụ
 
 ## 6. Dữ liệu và vận hành
 
-SQLite schema 11 lưu visit/membership, order/dòng món theo line_no, payment/resolution, ticket/history, receipt và event. Menu/giá lúc bán được lưu tại dòng đơn. DB, QR key và media cùng profile. Công cụ backup/reset/restore chạy offline theo lease và kiểm hash/schema/integrity/FK/key/media. Server backup không chứa journal/cookie Browser.
+SQLite schema 13 lưu visit/membership, order/dòng món theo line_no, tiếp nhận và snapshot thuế, payment/resolution, ticket/history, receipt/event, phiếu chi và tài khoản/audit nhân viên. DB, QR key và media cùng profile; browser cookie/journal không nằm trong backup Server. [Dữ liệu và trạng thái portable](WEB_RELEASE.md) nêu cách chạy source và giới hạn công cụ gói cũ.
 
 ## 7. Đóng góp và baseline
 

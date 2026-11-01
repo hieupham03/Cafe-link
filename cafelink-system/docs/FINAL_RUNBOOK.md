@@ -1,6 +1,6 @@
-# CafeLink V9.4 - Chạy và demo
+# CafeLink V10.1 - Chạy và demo
 
-Hướng dẫn cho source web hiện tại và gói RC4 được cung cấp riêng. [README source](../README.md) có môi trường và lệnh test. Luồng chính là QR cố định, phiên riêng từng khách và trả trước giả lập.
+Hướng dẫn source V10.1/schema 13. [Phân quyền V10.1](UPGRADE_V10_1_ROLES.md) hướng dẫn tạo nhân viên và kiểm thu hồi phiên. [V10](UPGRADE_V10.md) có các bước nghiệm thu mới; gói V9.4/RC4 ở mục 6 là mốc trước nâng cấp. Luồng hiện tại: QR cố định, phiên riêng, gửi đơn → quầy tiếp nhận → thanh toán giả lập → phục vụ.
 
 ## 1. Chạy từ source
 
@@ -13,6 +13,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-web.ps1 -Port 80
 ```
 
 Giữ terminal mở. Vào **http://127.0.0.1:8088/admin**, đăng nhập local **`admin` / `CafeLink@123`**. DB mới tự tạo schema và menu mẫu; chạy lại không reset dữ liệu cũ.
+
+Tại **Nhân viên → Thêm nhân viên**, quản lý tạo tài khoản riêng cho từng nhân viên. Nhân viên đăng nhập cùng `/admin` từ browser/profile khác; chỉ có bốn mục phục vụ. Không dùng chung tài khoản admin cho quầy.
 
 Gateway nhận HTTP/WebSocket ở 8088, Core nhận TCP loopback ở 5058. Không cần mở thêm ServerMain hay Java Client cho người dùng website. Ctrl+C tại terminal dừng demo này.
 
@@ -43,7 +45,8 @@ Hostname tunnel có thể đổi ở lần sau, khi đó lấy QR mới. Local/p
 |---|---|---|
 | 1 | Hai khách quét cùng QR, xem menu có ảnh | Cùng bàn nhưng phiên/đơn riêng |
 | 2 | Thêm món, sửa số lượng/ghi chú, gửi đơn | Đúng mã đơn, bàn, món và tiền |
-| 3 | Thanh toán giả lập thành công | Đơn PAID mới được pha chế |
+| 3 | Quầy tiếp nhận đơn hoặc từ chối với lý do | Chưa tiếp nhận thì khách chưa được thanh toán |
+| 3b | Khách thanh toán giả lập sau khi quầy tiếp nhận | Đơn PAID mới được pha chế |
 | 4 | Gọi hoặc bổ sung/rút hỗ trợ | Thông báo mới, xử lý đúng ticket và version |
 | 5 | Theo dõi tiến độ | Chuyển pha chế → sẵn sàng → giao đủ |
 | 6 | Thử đặt tiếp | Giỏ/đơn thuộc đúng khách; xem lịch sử theo quyền |
@@ -60,7 +63,7 @@ Có thể minh họa thêm giá thay đổi khi còn giỏ, món ngừng bán, t
 | Thanh toán | Đơn UNPAID/PENDING cần trả tiền; giỏ nháp chưa phải khoản phải trả |
 | Giỏ hàng | Số lượng, ghi chú, tạm tính; số đếm là tổng số phần đang chọn |
 
-Thử thêm hai phần cùng món: Giỏ hàng tăng 2 nhưng Đơn đã gọi/Thanh toán chưa tăng. Gửi đơn thành công rồi mới thanh toán giả lập; trả tiền xong vẫn theo dõi giao đồ trong Đơn đã gọi. Chọn ô điều hướng chỉ cuộn đến vùng tương ứng, không tự đặt món hoặc trả tiền.
+Thêm hai phần cùng món: Giỏ hàng tăng 2 nhưng Đơn đã gọi/Thanh toán chưa tăng. Sau khi gửi, vào Đơn đã gọi để xem chờ tiếp nhận. Quầy nhận đơn xong mới thanh toán giả lập; trả tiền xong tiếp tục theo dõi giao đồ. Năm mục điều hướng hiển thị từng vùng riêng, giữ nguyên giỏ và dữ liệu khi chuyển mục.
 
 ## 5. Minh họa mạng và contribution
 
@@ -73,24 +76,9 @@ Trước tiên giới thiệu một đơn bình thường: Browser → HTTP → 
 
 Bật Network Offline chỉ minh họa gián đoạn; không chứng minh đúng điểm sau commit. Dùng [bộ thực nghiệm](WEB_EXPERIMENTS.md) để tạo lỗi trước chuyển lệnh/sau lưu có dữ liệu đối chiếu. [WEB_RECOVERY](WEB_RECOVERY.md) giải thích hai contribution.
 
-## 6. Gói portable được cung cấp riêng
+## 6. Bản source và portable
 
-GitHub không kèm ZIP RC4. Các file trong `release/windows` là vật liệu đóng gói, không phải một bản chạy đã có JRE/JAR/assets.
-
-Khi được cấp **CafeLink-Web-V9.4-RC4**, giải nén rồi mở PowerShell tại thư mục gói:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File Verify-Package.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File Start-Local.ps1 -Port 8088 -TcpPort 5058
-```
-
-Gói có JRE 17; không cần cài JDK/Node để chạy. Có thể bấm `START-LOCAL.cmd`. Dừng local rồi dùng `START-PUBLIC.cmd` hoặc:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File Start-Public.ps1 -Port 19088 -TcpPort 19058 -DurationSeconds 1800
-```
-
-Giữ `RELEASE.json` và `SHA256-MANIFEST.json` cùng gói. [Phiếu kiểm RC4](../../report/evidence/cafelink-v2/pre-feature-20261030/final-verification.json) có hash ZIP đã chốt; gói tự dựng sau này có hash riêng.
+Bản nộp V10.1/schema 13 chạy từ source bằng các lệnh ở mục 1-3. Thư mục `release/windows` là template đóng gói, chưa phải gói chạy có JRE/JAR/assets. Policy portable đang là `NOT_RELEASED`; không mở lại gói V9.4/RC4 để thử các chức năng mới. [Dữ liệu và phiên bản](WEB_RELEASE.md).
 
 ## 7. Dữ liệu và chạy lại demo
 

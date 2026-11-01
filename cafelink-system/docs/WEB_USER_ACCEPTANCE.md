@@ -1,4 +1,6 @@
-# V9.4 - Checklist người dùng tự kiểm thử
+# V10.1 - Checklist người dùng tự kiểm thử
+
+Ưu tiên kiểm V10.1: ảnh cả tám món, gửi đơn → chờ quầy tiếp nhận → thanh toán → giao đồ; ADMIN cấu hình thuế/thu chi và tạo STAFF; khóa/đổi mật khẩu thu hồi mọi tab cũ. [Bảng quyền và kịch bản](UPGRADE_V10_1_ROLES.md). Các phần bên dưới giữ các tình huống hồi quy kế thừa.
 
 **Bản phần mềm hiện tại:** RC4, schema 11. Kết quả tự động và hash nằm trong [báo cáo V9.4](../../report/CafeLink_Hardening_20261030.md). Các dòng dưới đây vẫn là kết quả của người kiểm, không tự chuyển thành Đạt vì test máy đã qua. [Bộ nghiệm thu thiết bị](WEB_DEVICE_ACCEPTANCE.md) chuẩn bị profile riêng, launcher và mẫu ghi kết quả để thử sau.
 

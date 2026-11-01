@@ -82,3 +82,14 @@
 /report/assets/cafelink-student-paper/business-flow.*
 /report/assets/cafelink-student-paper/recovery-decision.*
 /report/assets/cafelink-student-paper/ptit-logo-reference.png
+
+# Private report drafts and paused experiment remain local.
+/report/Nhom11_CafeLink_Report*.docx
+/report/Nhom11_CafeLink_Report*.pdf
+/report/NgoVanQuyen_ResearchMethods_2.pdf
+/cafelink-system/docs/CAFE_LIVE.md
+/cafelink-system/web/src/CafeLive*.tsx
+/cafelink-system/web/src/cafe-live.css
+/cafelink-system/web/src/cafeLiveModel.ts
+/cafelink-system/web/src/useCafeLiveFeed.ts
+/cafelink-system/web/tests/cafelive*.spec.ts
