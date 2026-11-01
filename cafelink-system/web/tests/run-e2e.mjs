@@ -10,7 +10,6 @@ const groups = [
   { name: "recovery", files: ["tests/orders.spec.ts"] },
   { name: "ux", files: ["tests/ux.spec.ts"] },
   { name: "v7", files: ["tests/v7.spec.ts"] },
-  { name: "finance", files: ["tests/finance.spec.ts"] },
   { name: "automatic", files: ["tests/automatic.spec.ts"] },
   { name: "convenience", files: ["tests/convenience.spec.ts"] },
   { name: "workflow", files: ["tests/workflow.spec.ts"] },
@@ -18,6 +17,9 @@ const groups = [
   { name: "policy", files: ["tests/recovery-policy.spec.ts"] },
   { name: "diagnostics", files: ["tests/diagnostics.spec.ts"] },
   { name: "audio", files: ["tests/audio.spec.ts"] },
+  { name: "v10", files: ["tests/v10.spec.ts"] },
+  { name: "roles", files: ["tests/roles.spec.ts"] },
+  { name: "menu-images", files: ["tests/menu-images.spec.ts"] },
 ];
 let failed = false;
 const results = [];

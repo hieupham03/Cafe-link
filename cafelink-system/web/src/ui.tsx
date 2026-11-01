@@ -7,6 +7,8 @@ export const searchText = (text: string) =>
     .replace(/Đ/g, "D")
     .toLocaleLowerCase("vi");
 export const actionTitle: Record<string, string> = {
+  SET_MENU_AVAILABILITY: "Đổi tình trạng món",
+  ACCEPT_ORDER: "Tiếp nhận đơn", SAVE_TAX_SETTINGS: "Lưu cấu hình thuế", CREATE_EXPENSE: "Ghi khoản chi", VOID_EXPENSE: "Hủy phiếu chi",
   RESOLVE_ORDER: "Hủy / hoàn giả lập đơn",
   CREATE_MENU_ITEM: "Thêm món",
   UPDATE_MENU_ITEM: "Sửa món",

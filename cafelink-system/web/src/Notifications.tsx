@@ -3,6 +3,7 @@ import { api } from "./api";
 import { guestScope } from "./models";
 import type { SessionInfo } from "./models";
 import { Dialog } from "./Dialog";
+import { Icon } from "./Icons";
 
 interface Event {
   id: number;
@@ -22,6 +23,8 @@ interface Feed {
   resyncRequired: boolean;
 }
 const types: Record<string, string> = {
+  ORDER_AWAITING_ACCEPTANCE: "Đơn mới chờ nhận",
+  ORDER_ACCEPTED: "Quán đã tiếp nhận",
   ORDER_AWAITING_PAYMENT: "Chờ thanh toán",
   PLACE_ORDER: "Đặt món",
   SET_ORDER_STATUS: "Tiến độ đơn",
@@ -63,7 +66,7 @@ export function Notifications({
   const activation=useRef<{generation:number;cancel?:()=>void}>({generation:0});
   const settingsKey=`cafelink-sound:${session.identity.storeId}:${session.identity.username}`;
   useEffect(()=>{const sync=(event:StorageEvent)=>{if(event.key===settingsKey){const value=preference(session);setSound(value.sound);setVolume(value.volume);}};window.addEventListener('storage',sync);return()=>window.removeEventListener('storage',sync);},[settingsKey]);
-  useEffect(()=>{if(session.identity.role==='ADMIN')try{localStorage.setItem(settingsKey,JSON.stringify({sound,volume}));}catch{setError('Không lưu được tùy chọn âm thanh; hãy kiểm tra lại sau khi tải trang.');}},[sound,volume,settingsKey]);
+  useEffect(()=>{if(session.identity.role!=='GUEST')try{localStorage.setItem(settingsKey,JSON.stringify({sound,volume}));}catch{setError('Không lưu được tùy chọn âm thanh; hãy kiểm tra lại sau khi tải trang.');}},[sound,volume,settingsKey]);
   const cursor = useRef(0),
     first = useRef(true),
     working = useRef(false),
@@ -187,7 +190,7 @@ export function Notifications({
           first.current || Date.now() - lastSync.current > 10000;
         if (catchingUp && fresh.length)
           setSyncMessage(
-            `Đã đồng bộ ${fresh.length} thông báo. Xem lịch sử và hàng đợi để xử lý; không phát chuông cho dữ liệu cũ.`,
+            `Đã cập nhật ${fresh.length} thông báo.`,
           );
         if (
           !catchingUp &&
@@ -206,9 +209,10 @@ export function Notifications({
                 unseen = fresh.filter(
                   (e) =>
                     e.id > last &&
-                    (session.identity.role === "ADMIN"
+                    (session.identity.role !== "GUEST"
                       ? [
                           "PLACE_ORDER",
+                          "ORDER_AWAITING_ACCEPTANCE",
                           "CALL_SERVICE",
                           "AMEND_SERVICE",
                           "REQUEST_CHECKOUT",
@@ -216,6 +220,8 @@ export function Notifications({
                         ].includes(e.type)
                       : [
                           "SET_ORDER_STATUS",
+                          "ORDER_ACCEPTED",
+                          "ORDER_RESOLVED",
                           "HANDLE_TICKET",
                           "ACK_CHECKOUT",
                           "REOPEN_ORDERING",
@@ -278,14 +284,14 @@ export function Notifications({
   }
   return (
     <div className="notification-shell">
-      {session.identity.role==='ADMIN'&&<div className="sound-controls" aria-label="Trạng thái âm thanh quầy"><span role="status">{activating?'Âm thanh quầy: đang kích hoạt':!sound?'Âm thanh quầy: đã tắt':unlocked?'Âm thanh quầy: đang bật':'Âm thanh quầy: cần kích hoạt sau tải lại'}</span><button className="secondary" disabled={activating} onClick={()=>{if(sound&&unlocked){setSound(false);setUnlocked(false);}else void activate();}}>{activating?'Đang bật âm...':sound&&unlocked?'Tắt chuông quầy':'Kích hoạt chuông quầy'}</button></div>}
+      {session.identity.role!=='GUEST'&&<div className="sound-controls" aria-label="Trạng thái âm thanh quầy"><span role="status">{activating?'Âm thanh quầy: đang kích hoạt':!sound?'Âm thanh quầy: đã tắt':unlocked?'Âm thanh quầy: đang bật':'Âm thanh quầy: cần kích hoạt sau tải lại'}</span><button className="secondary" disabled={activating} onClick={()=>{if(sound&&unlocked){setSound(false);setUnlocked(false);}else void activate();}}>{activating?'Đang bật âm...':sound&&unlocked?'Tắt chuông quầy':'Kích hoạt chuông quầy'}</button></div>}
       {!open&&soundError&&<p className="warning" role="status" aria-label="Cảnh báo âm thanh">{soundError}</p>}
       <button
         className="secondary"
         onClick={() => setOpen(true)}
         aria-label={`Thông báo, ${unread} chưa đọc`}
       >
-        ♧ Thông báo <b>{unread}</b>
+        <Icon name="bell"/> Thông báo <b>{unread}</b>
       </button>
       {syncMessage && (
         <small className="notification-sync" role="status">
@@ -350,7 +356,7 @@ export function Notifications({
               Chưa đọc
             </label>
           </div>
-          {session.identity.role === "ADMIN" && (
+          {session.identity.role !== "GUEST" && (
             <div className="sound-controls">
               <button
                 className="secondary"

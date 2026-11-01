@@ -5,8 +5,7 @@ import "./style.css";
 import "./v5.css";
 import "./v7.css";
 import "./shop.css";
-import "./guest-zones.css";
-import "./blue-green.css";
+import "./design-system.css";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

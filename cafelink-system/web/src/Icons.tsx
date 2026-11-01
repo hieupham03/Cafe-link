@@ -11,8 +11,13 @@ export type IconName =
   | "receipt"
   | "grid"
   | "menu"
-  | "help";
+  | "help"
+  | "chart" | "settings" | "live";
+/* Store operations icons share the existing stroke-based family. */
 const paths: Record<IconName, string> = {
+  chart: "M4 3v18h17M8 16v-4m5 4V7m5 9v-7",
+  settings: "M9 3h6l1 3 3 1 2 5-2 5-3 1-1 3H9l-1-3-3-1-2-5 2-5 3-1 1-3Zm7 9a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z",
+  live: "M3 4h18v13H3V4Zm5 17h8m-4-4v4M6 11h3l2-4 3 7 2-3h2",
   cup: "M5 9h12v7a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V9Zm12 1h1a3 3 0 0 1 0 6h-1M8 3v3m4-3v3m4-3v3M3 22h17",
   table: "M3 10h18M5 10V6h14v4M6 10l-2 11m14-11 2 11M7 16h10",
   bag: "M5 7h14l1 14H4L5 7Zm3 0V5a4 4 0 0 1 8 0v2",

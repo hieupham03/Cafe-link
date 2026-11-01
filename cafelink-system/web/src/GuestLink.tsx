@@ -18,7 +18,7 @@ export function GuestLink({ url }: { url: string }) {
       <button className="secondary" onClick={() => void copy()}>
         Sao chép link đặt món
       </button>
-      {copied && <p role="status">Đã sao chép. Dán link vào cửa sổ riêng tư hoặc gửi tới điện thoại dùng thử.</p>}
+      {copied && <p role="status">Đã sao chép link đặt món.</p>}
       {error && <p className="error" role="alert">{error}</p>}
       <label>
         Link đặt món

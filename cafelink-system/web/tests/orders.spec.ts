@@ -1,3 +1,8 @@
+import {
+  openGuestZone,
+  openGuestPayment,
+  acceptGuestOrders,
+} from "./guest-navigation";
 import { test, expect } from "@playwright/test";
 import type { BrowserContext, Page } from "@playwright/test";
 
@@ -124,27 +129,31 @@ async function join() {
   await page
     .getByRole("button", { name: "Vào bàn của tôi", exact: true })
     .click();
+  await openGuestZone(page, "Thực đơn");
   await expect(
     page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
   ).toBeEnabled();
 }
 test("đặt món web ghi nhật ký trước gửi và tạo một đơn đúng giá tại Core", async () => {
   await join();
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
     .click();
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
     .click();
-  await expect(page.getByTestId("cart-total")).toContainText("60.000");
   await expect(
     page.getByRole("link", { name: /Xem giỏ · 2 phần/ }),
   ).toBeVisible();
   await page.getByRole("link", { name: /Xem giỏ · 2 phần/ }).click();
+  await expect(page.getByTestId("cart-total")).toContainText("60.000");
   await page.screenshot({
     path: "test-results/guest-order-cart.png",
     fullPage: true,
   });
+  await openGuestZone(page, "Giỏ hàng");
   await page
     .getByRole("button", { name: "Gửi đơn gọi món", exact: true })
     .click();
@@ -158,10 +167,12 @@ test("đặt món web ghi nhật ký trước gửi và tạo một đơn đúng
 
 test("SEMANTIC: lời gọi chưa nhận được bỏ khi reload, giỏ món vẫn giữ", async () => {
   await join();
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
     .click();
   await fault("CALL_SERVICE", false);
+  await openGuestZone(page, "Hỗ trợ");
   await page
     .getByRole("button", { name: "Gọi nhân viên", exact: true })
     .click();
@@ -175,6 +186,7 @@ test("SEMANTIC: lời gọi chưa nhận được bỏ khi reload, giỏ món v�
       (row: { visitId: string }) => row.visitId === visitId,
     ),
   ).toHaveLength(0);
+  await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("30.000");
   await expect(
     page.getByRole("button", { name: "Xác nhận gửi lại", exact: true }),
@@ -184,9 +196,11 @@ test("SEMANTIC: lời gọi chưa nhận được bỏ khi reload, giỏ món v�
 test("SEMANTIC: lời gọi đã nhận và đã phản hồi vẫn giữ đúng ticket sau mất ACK", async () => {
   await join();
   await fault("CALL_SERVICE", true);
+  await openGuestZone(page, "Hỗ trợ");
   await page
     .getByLabel("Lời nhắn cho nhân viên", { exact: true })
     .fill("Thêm nước lọc");
+  await openGuestZone(page, "Hỗ trợ");
   await page
     .getByRole("button", { name: "Gọi nhân viên", exact: true })
     .click();
@@ -200,9 +214,14 @@ test("SEMANTIC: lời gọi đã nhận và đã phản hồi vẫn giữ đúng
     reply: "Đang mang nước ra",
   });
   await page.reload();
-  await expect(page.getByRole("region", { name: "Hỗ trợ tại bàn", exact: true })
-    .getByRole("status").filter({ hasText: `Yêu cầu #${tickets[0].id} · Nhân viên đã phản hồi:` }))
-    .toContainText("Đang mang nước ra");
+  await expect(
+    page
+      .getByRole("region", { name: "Hỗ trợ tại bàn", exact: true })
+      .getByRole("status")
+      .filter({
+        hasText: `Yêu cầu #${tickets[0].id} · Nhân viên đã phản hồi:`,
+      }),
+  ).toContainText("Đang mang nước ra");
   await expect(page.getByText(/Quán đã nhận lời gọi/)).toBeVisible();
   expect(
     (await state()).tickets.filter(
@@ -214,6 +233,7 @@ test("SEMANTIC: lời gọi đã nhận và đã phản hồi vẫn giữ đúng
 test("SEMANTIC: mất ACK bỏ lời gọi vẫn chờ, lookup tombstone chặn lời gọi đến muộn", async () => {
   await join();
   const captured = await fault("CALL_SERVICE", false);
+  await openGuestZone(page, "Hỗ trợ");
   await page
     .getByRole("button", { name: "Gọi nhân viên", exact: true })
     .click();
@@ -281,11 +301,13 @@ test("checkout web mất ACK: reload cùng đối tượng, sau ACK nhiều ID v
   await addAndSend();
   await expect(page.getByText(/Quán đã nhận đơn/)).toBeVisible();
   await fault("REQUEST_CHECKOUT", true);
+  await openGuestZone(page, "Tính tiền");
   await page
     .getByRole("button", { name: "Yêu cầu tính tiền", exact: true })
     .click();
   await expect(page.getByRole("alert")).toBeVisible();
   await page.reload();
+  await openGuestZone(page, "Tính tiền");
   await expect(
     page.getByRole("button", { name: "Yêu cầu tính tiền", exact: true }),
   ).toBeDisabled();
@@ -294,8 +316,12 @@ test("checkout web mất ACK: reload cùng đối tượng, sau ACK nhiều ID v
     (c: { visitId: string }) => c.visitId === visitId,
   );
   await command("ACK_CHECKOUT", await checkoutVersions());
-  await expect(page.getByRole("region", { name: "Tính tiền tại bàn", exact: true })
-    .getByRole("status")).toContainText("Quán đã tiếp nhận tính tiền");
+  await openGuestZone(page, "Tính tiền");
+  await expect(
+    page
+      .getByRole("region", { name: "Tính tiền tại bàn", exact: true })
+      .getByRole("status"),
+  ).toContainText("Quán đã tiếp nhận tính tiền");
   const duplicate = await guestCommand("REQUEST_CHECKOUT", {
     visitId,
     expectedVisitVersion: 1,
@@ -309,6 +335,7 @@ test("checkout web mất ACK: reload cùng đối tượng, sau ACK nhiều ID v
         t.visitId === visitId && t.type === "REQUEST_BILL",
     ),
   ).toHaveLength(0);
+  await openGuestZone(page, "Thực đơn");
   await expect(
     page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
   ).toBeDisabled();
@@ -323,6 +350,7 @@ test("checkout chưa nhận không tự gửi; mở lại gọi món chặn requ
   await addAndSend();
   await expect(page.getByText(/Quán đã nhận đơn/)).toBeVisible();
   const captured = await fault("REQUEST_CHECKOUT", false);
+  await openGuestZone(page, "Tính tiền");
   await page
     .getByRole("button", { name: "Yêu cầu tính tiền", exact: true })
     .click();
@@ -341,6 +369,7 @@ test("checkout chưa nhận không tự gửi; mở lại gọi món chặn requ
     ...(await checkoutVersions()),
     reason: "Khách muốn gọi thêm",
   });
+  await openGuestZone(page, "Thực đơn");
   await expect(
     page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
   ).toBeEnabled();
@@ -524,7 +553,7 @@ test("thu ngân quota trước gửi chặn thu tiền, sau reload vẫn chưa t
       .getByRole("button", { name: "Đã nhận tiền", exact: true })
       .click();
     await expect(adminPage.getByRole("alert")).toContainText(
-      "nhật ký thu ngân",
+      "nhật ký tại quầy",
     );
     expect(payments).toBe(0);
     expect((await command("GET_CHECKOUT", { visitId })).checkout.state).toBe(
@@ -540,9 +569,11 @@ test("thu ngân quota trước gửi chặn thu tiền, sau reload vẫn chưa t
 });
 
 async function addAndSend() {
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
     .click();
+  await openGuestZone(page, "Giỏ hàng");
   await page
     .getByRole("button", { name: "Gửi đơn gọi món", exact: true })
     .click();
@@ -585,6 +616,7 @@ test("mất ACK sau Core commit rồi tải lại: tra receipt, không tạo đ�
     page.getByRole("button", { name: "Xác nhận gửi lại", exact: true }),
   ).toHaveCount(0);
   expect(await orders()).toHaveLength(1);
+  await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("0");
 });
 
@@ -652,12 +684,15 @@ test("hai tab dùng chung giỏ: chặn gửi song song, giỏ cũ không trở 
   await join();
   const second = await guest.newPage();
   await second.goto("/guest");
+  await openGuestZone(second, "Thực đơn");
   await expect(
     second.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
   ).toBeEnabled();
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
     .click();
+  await openGuestZone(second, "Giỏ hàng");
   await expect(second.getByTestId("cart-total")).toContainText("30.000");
   let release!: () => void, arrive!: () => void;
   const held = new Promise<void>((resolve) => (release = resolve)),
@@ -680,12 +715,14 @@ test("hai tab dùng chung giỏ: chặn gửi song song, giỏ cũ không trở 
       secondSubmissions++;
   });
   try {
+    await openGuestZone(page, "Giỏ hàng");
     await page
       .getByRole("button", { name: "Gửi đơn gọi món", exact: true })
       .click();
     await arrived;
     // The journal is already committed while the first HTTP request is held.
     await second.reload();
+    await openGuestZone(second, "Giỏ hàng");
     await expect(
       second.getByRole("button", { name: "Gửi đơn gọi món", exact: true }),
     ).toBeDisabled();
@@ -695,6 +732,7 @@ test("hai tab dùng chung giỏ: chặn gửi song song, giỏ cũ không trở 
   }
   await expect(page.getByText(/Quán đã nhận đơn/)).toBeVisible();
   await expect(second.getByText(/Quán đã nhận đơn/)).toBeVisible();
+  await openGuestZone(second, "Giỏ hàng");
   await expect(
     second.getByRole("button", { name: "Gửi đơn gọi món", exact: true }),
   ).toBeDisabled();
@@ -705,6 +743,7 @@ test("hai tab dùng chung giỏ: chặn gửi song song, giỏ cũ không trở 
 
 test("lỗi ghi nhật ký trước gửi: không phát PLACE_ORDER ra mạng", async () => {
   await join();
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
     .click();
@@ -727,6 +766,7 @@ test("lỗi ghi nhật ký trước gửi: không phát PLACE_ORDER ra mạng", 
     )
       submissions++;
   });
+  await openGuestZone(page, "Giỏ hàng");
   await page
     .getByRole("button", { name: "Gửi đơn gọi món", exact: true })
     .click();
@@ -734,6 +774,7 @@ test("lỗi ghi nhật ký trước gửi: không phát PLACE_ORDER ra mạng", 
   expect(submissions).toBe(0);
   expect(await orders()).toHaveLength(0);
   await page.reload();
+  await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("30.000");
 });
 
@@ -793,20 +834,25 @@ test("unknown intent khóa rời phiên; đóng lượt rồi reconnect không c
 
 test("mất mạng rồi online: giữ giỏ, tự nối kênh đọc và không tự đặt món", async () => {
   await join();
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
     .click();
   await guest.setOffline(true);
+  await openGuestZone(page, "Giỏ hàng");
   await expect(
     page.getByRole("button", { name: "Gửi đơn gọi món", exact: true }),
   ).toBeDisabled();
   await expect(page.getByRole("alert")).toContainText("mất mạng");
   await guest.setOffline(false);
+  await openGuestZone(page, "Giỏ hàng");
   await expect(
     page.getByRole("button", { name: "Gửi đơn gọi món", exact: true }),
   ).toBeEnabled();
+  await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("30.000");
   expect(await orders()).toHaveLength(0);
+  await openGuestZone(page, "Giỏ hàng");
   await page
     .getByRole("button", { name: "Gửi đơn gọi món", exact: true })
     .click();
@@ -839,6 +885,7 @@ test("lỗi kết nối kéo dài dừng retry; đổi foreground không tự b�
   await page
     .getByRole("button", { name: "Thử kết nối lại", exact: true })
     .click();
+  await openGuestZone(page, "Thực đơn");
   await expect(
     page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
   ).toBeEnabled();

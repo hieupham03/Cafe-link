@@ -1,6 +1,6 @@
 export interface Identity {
   username: string;
-  role: "ADMIN" | "GUEST";
+  role: "ADMIN" | "STAFF" | "GUEST";
   tableId?: number;
   membershipId?: string;
   visitId?: string;
@@ -63,11 +63,13 @@ export interface Table {
   version: number;
 }
 export interface Order {
-  subtotalVnd: number;
-  taxVnd: number;
-  taxRateBps: number;
-  taxName: string;
-  taxInclusive: boolean;
+  acceptanceState?: "WAITING" | "ACCEPTED" | "REJECTED";
+  acceptedAt?: string;
+  subtotalVnd?: number;
+  taxVnd?: number;
+  taxName?: string;
+  taxRateBps?: number;
+  taxIncluded?: boolean;
   queuedAt?: string;
   paymentState?: "POSTPAY" | "UNPAID" | "PENDING" | "PAID" | "CANCELLED" | "REFUNDED";
   id: number;
@@ -101,6 +103,13 @@ export interface Snapshot {
   tickets: Ticket[];
   checkouts: Checkout[];
 }
+export interface TaxSettings { name: string; rateBps: number; mode: "EXCLUSIVE" | "INCLUSIVE"; version: number; }
+export function taxQuote(menuTotal: number, settings?: TaxSettings) {
+  const rate = settings?.rateBps ?? 0, included = settings?.mode === "INCLUSIVE";
+  const denominator = included ? 10000 + rate : 10000;
+  const tax = Math.floor((menuTotal * rate + denominator / 2) / denominator);
+  return { subtotalVnd: included ? menuTotal - tax : menuTotal, taxVnd: tax, totalVnd: included ? menuTotal : menuTotal + tax };
+}
 export interface OrderResolution {
   orderId: number;
   state: "CANCELLED" | "REFUNDED";
@@ -124,8 +133,6 @@ export interface Checkout {
   cycle: number;
 }
 export interface Bill {
-  subtotalVnd: number;
-  taxVnd: number;
   visitId: string;
   tableId: number;
   totalVnd: number;
@@ -137,21 +144,8 @@ export const money = (amount: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
     amount,
   );
-export interface TaxSettings {
-  enabled: boolean;
-  rateBps: number;
-  name: string;
-  inclusive: boolean;
-  version: number;
-}
-export function taxPreview(listed: number, settings?: TaxSettings) {
-  const rate = settings?.enabled ? settings.rateBps : 0;
-  const taxVnd = Math.round(listed * rate / (settings?.inclusive ? 10000 + rate : 10000));
-  const subtotalVnd = settings?.inclusive ? listed - taxVnd : listed;
-  return { subtotalVnd, taxVnd, totalVnd: subtotalVnd + taxVnd };
-}
 export const statusName: Record<string, string> = {
-  SUBMITTED: "Chờ tiếp nhận",
+  SUBMITTED: "Chờ pha chế",
   PREPARING: "Đang pha chế",
   READY: "Chờ mang ra",
   SERVED: "Đã phục vụ",

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { GuestHome } from "./Guest";
 import { api } from "./api";
-import { guestScope, money, taxPreview } from "./models";
-import type { MenuItem, SessionInfo, ContinuationContext } from "./models";
+import { guestScope, money, taxQuote } from "./models";
+import { OrderTotals } from "./OrderTotals";
+import type { MenuItem, SessionInfo, ContinuationContext, Order } from "./models";
 import { journal, scopeKey, unresolved, withJournalLock } from "./journal";
 import type { Cart, Intent } from "./journal";
 import { place, reconcile, recover, requestGuestAction, liveSession } from "./orderRecovery";
@@ -16,6 +17,17 @@ import { GuestSupport } from "./GuestSupport";
 import { RecoveryGuide } from "./Assistance";
 import { Dialog } from "./Dialog";
 import { GuestSectionHeading } from "./GuestSectionHeading";
+
+function receiptMessage(entry: Intent, orders: Order[]) {
+  if (entry.status !== "ACCEPTED" || entry.action !== "PLACE_ORDER") return entry.message;
+  const order = orders.find(value => value.id === entry.result?.orderId);
+  if (!order) return entry.message;
+  if (order.paymentState === "PAID") return `Quán đã xác nhận thanh toán đơn #${order.id}.`;
+  if (order.paymentState === "REFUNDED") return `Đơn #${order.id} đã được hoàn tiền mô phỏng.`;
+  if (order.paymentState === "CANCELLED") return order.acceptanceState === "REJECTED" ? `Quán đã từ chối đơn #${order.id}. Xem lý do trong Đơn đã gọi.` : `Đơn #${order.id} đã được hủy.`;
+  if (order.acceptanceState === "ACCEPTED" && ["UNPAID", "PENDING"].includes(order.paymentState ?? "")) return `Quán đã tiếp nhận đơn #${order.id}. Bạn có thể thanh toán.`;
+  return entry.message;
+}
 
 export function GuestWorkspace({
   session,
@@ -41,7 +53,6 @@ export function GuestWorkspace({
     [ready, setReady] = useState(false);
   const [serviceNote, setServiceNote] = useState("");
   const [noteBlocked, setNoteBlocked] = useState(false);
-  const [paymentOrder, setPaymentOrder] = useState<number>();
   const [previous, setPrevious] = useState<ContinuationContext>({previousOrders:[],resolutions:[]});
   const [confirmLeave, setConfirmLeave] = useState(false);
   const lock = useRef(false),
@@ -170,8 +181,6 @@ export function GuestWorkspace({
   const checkoutActive =
     checkout?.state === "REQUESTED" || checkout?.state === "ACKNOWLEDGED";
   const prepaid = table?.paymentMode === "PREPAY";
-  const taxSettings = connection.state?.taxSettings;
-  const cartAmounts = taxPreview(cart.items.reduce((sum, item) => sum + item.priceVnd * item.quantity, 0), taxSettings);
   const completed = table?.automatic && table.status === "SESSION_ENDED";
   const changedItems = cart.items.filter((row) => {
     const current = connection.state?.menu.find((i) => i.id === row.menuId);
@@ -204,7 +213,10 @@ export function GuestWorkspace({
       withJournalLock(async () => {
         await journal.assertNone();
         const current=await liveSession(scope);
-        onRestart(await api.continueVisit(current));
+        const draft = await journal.read(scope);
+        const next = await api.continueVisit(current);
+        location.hash = draft.cart.items.length ? "guest-cart" : "guest-menu";
+        onRestart(next);
       }),
     );
   }
@@ -217,12 +229,12 @@ export function GuestWorkspace({
         revision={connection.state?.revision}
         onOpen={(event) => {
           const id =
-            event.type === "CALL_SERVICE" || event.type === "HANDLE_TICKET"
+            event.type.includes("SERVICE") || event.type === "HANDLE_TICKET"
               ? "guest-support"
               : event.type.includes("PAY")
                 ? "guest-checkout"
                 : "guest-orders";
-          document.getElementById(id)?.scrollIntoView({ block: "start" });
+          location.hash = id;
         }}
       />
       <section className="guest-ordering" id="guest-workspace">
@@ -387,13 +399,15 @@ export function GuestWorkspace({
               </div>
             )}
             <div className="cart-footer">
-              {taxSettings?.enabled && <div className="tax-breakdown">
-                <span>Tiền hàng trước thuế <strong>{money(cartAmounts.subtotalVnd)}</strong></span>
-                <span>{taxSettings.name} ({taxSettings.rateBps / 100}%) <strong>{money(cartAmounts.taxVnd)}</strong></span>
-                <small>{taxSettings.inclusive ? "Giá thực đơn đã gồm thuế." : "Thuế được cộng thêm vào giá thực đơn."}</small>
-              </div>}
+              <OrderTotals order={{...taxQuote(cart.items.reduce((sum,item)=>sum+item.priceVnd*item.quantity,0),connection.state?.taxSettings),taxName:connection.state?.taxSettings?.name,taxRateBps:connection.state?.taxSettings?.rateBps}}/>
               <strong data-testid="cart-total">
-                Tổng thanh toán: {money(cartAmounts.totalVnd)}
+                Tạm tính:{" "}
+                {money(
+                  cart.items.reduce(
+                    (sum, item) => sum + item.priceVnd * item.quantity,
+                    0,
+                  ),
+                )}
               </strong>
               <button
                 className="primary"
@@ -407,24 +421,12 @@ export function GuestWorkspace({
                 }
                 onClick={() =>
                   completed ? void restart() : void act(async () => {
-                    await place(scope, cart.revision, taxSettings?.version);
-                    if (prepaid) {
-                      const saved = await journal.read(scope);
-                      const accepted = saved.entries
-                        .filter(
-                          (e) =>
-                            e.scope === key &&
-                            e.action === "PLACE_ORDER" &&
-                            e.status === "ACCEPTED",
-                        )
-                        .sort((a, b) => b.createdAt - a.createdAt)[0];
-                      if (accepted?.result)
-                        setPaymentOrder(Number(accepted.result.orderId));
-                    }
+                    await place(scope, cart.revision, connection.state?.taxSettings?.version);
+                    location.hash = "guest-orders";
                   }, true)
                 }
               >
-                {completed ? "Tiếp tục giỏ ở lần đặt mới" : prepaid ? "Đặt món và thanh toán" : "Gửi đơn gọi món"}
+                {completed ? "Tiếp tục giỏ ở lần đặt mới" : "Gửi đơn gọi món"}
               </button>
             </div>
           </section>
@@ -505,14 +507,7 @@ export function GuestWorkspace({
               }
               role="status"
             >
-              {entry.status === "ACCEPTED" &&
-              entry.action === "PLACE_ORDER" &&
-              connection.state?.orders.some(
-                (o) =>
-                  o.id === entry.result?.orderId && o.paymentState === "PAID",
-              )
-                ? `Quán đã xác nhận thanh toán đơn #${entry.result?.orderId}.`
-                : entry.message}
+              {receiptMessage(entry, connection.state?.orders ?? [])}
             </p>
           ))}
         {connection.stopped && (
@@ -525,7 +520,6 @@ export function GuestWorkspace({
             session={session}
             orders={connection.state?.orders ?? []}
             disabled={disabled}
-            autoOrder={paymentOrder}
           />
         ) : (
           <section
@@ -606,7 +600,7 @@ export function GuestWorkspace({
         <a className="cart-shortcut" href="#guest-cart">
           {pending.length > 0
             ? "Xem yêu cầu cần đối chiếu"
-            : `Xem giỏ · ${cart.items.reduce((sum, item) => sum + item.quantity, 0)} phần · ${money(cartAmounts.totalVnd)}`}
+            : `Xem giỏ · ${cart.items.reduce((sum, item) => sum + item.quantity, 0)} phần · ${money(cart.items.reduce((sum, item) => sum + item.quantity * item.priceVnd, 0))}`}
         </a>
       )}
     </>

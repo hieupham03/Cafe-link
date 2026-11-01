@@ -1,3 +1,8 @@
+import {
+  openGuestZone,
+  openGuestPayment,
+  acceptGuestOrders,
+} from "./guest-navigation";
 import { test, expect } from "@playwright/test";
 import type { BrowserContext, Page } from "@playwright/test";
 const origin = "http://127.0.0.1:18080";
@@ -28,6 +33,7 @@ test.beforeEach(async ({ browser }) => {
   await page
     .getByRole("button", { name: "Vào bàn của tôi", exact: true })
     .click();
+  await openGuestZone(page, "Thực đơn");
   await expect(
     page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
   ).toBeEnabled();
@@ -43,13 +49,21 @@ test.afterAll(async () => {
   await owner.close();
 });
 
-test("storefront co giãn, minh họa cục bộ và danh mục không tràn ở 320–1440px", async () => {
-  expect((await page.request.get('/experiment.html')).status()).toBe(404);
+test("storefront co giãn, ảnh món cục bộ và danh mục không tràn ở 320–1440px", async () => {
+  expect((await page.request.get("/experiment.html")).status()).toBe(404);
   for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
-    const navigation = page.getByRole("navigation", { name: "Điều hướng tại bàn" });
-    for (const title of ["Thực đơn", "Đơn đã gọi", "Hỗ trợ", "Thanh toán", "Giỏ hàng"]) {
-      const link = navigation.getByRole("link", { name: title, exact: true });
+    const navigation = page.getByRole("navigation", {
+      name: "Điều hướng tại bàn",
+    });
+    for (const title of [
+      "Thực đơn",
+      "Đơn đã gọi",
+      "Hỗ trợ",
+      "Thanh toán",
+      "Giỏ hàng",
+    ]) {
+      const link = navigation.getByRole("link", { name: new RegExp(`^${title} [0-9]+$`) });
       const box = await link.boundingBox();
       expect(box).not.toBeNull();
       expect(box!.height).toBeGreaterThanOrEqual(44);
@@ -61,11 +75,17 @@ test("storefront co giãn, minh họa cục bộ và danh mục không tràn ở
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
+    await openGuestZone(page, "Thực đơn");
     await expect(
       page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
     ).toBeEnabled();
   }
-  expect(await page.locator(".menu-grid svg.drink-art").count()).toBe(8);
+  const photos = page.locator(".menu-grid img.menu-photo");
+  await expect(photos).toHaveCount(8);
+  for (const photo of await photos.all()) {
+    await photo.scrollIntoViewIfNeeded();
+    await expect.poll(() => photo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+  }
   await page.screenshot({
     path: "test-results/shop-guest-desktop.png",
     fullPage: true,
@@ -80,57 +100,101 @@ test("storefront co giãn, minh họa cục bộ và danh mục không tràn ở
 
 test("năm ô chức năng dẫn đúng vùng và cập nhật giỏ, đơn, thanh toán, hỗ trợ", async () => {
   const nav = page.getByRole("navigation", { name: "Điều hướng tại bàn" });
-  const link = (name: string) => nav.getByRole("link", { name, exact: true });
-  for (const name of ["Thực đơn của quán", "Đơn đã gọi", "Giỏ hàng của bạn", "Thanh toán đơn hàng", "Hỗ trợ tại bàn"]) {
+  const link = (name: string) => nav.getByRole("link", { name: new RegExp(`^${name} [0-9]+$`) });
+  for (const [tab,name] of [
+    ["Thực đơn","Thực đơn của quán"],
+    ["Đơn đã gọi","Đơn đã gọi"],
+    ["Giỏ hàng","Giỏ hàng của bạn"],
+    ["Thanh toán","Thanh toán đơn hàng"],
+    ["Hỗ trợ","Hỗ trợ tại bàn"],
+  ]) {
+    await link(tab).click();
     await expect(page.getByRole("region", { name, exact: true })).toBeVisible();
   }
-  await page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }).click();
-  await page.getByRole("button", { name: "Tăng Cà phê sữa", exact: true }).click();
+  await openGuestZone(page, "Thực đơn");
+  await page
+    .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
+    .click();
+  await openGuestZone(page, "Giỏ hàng");
+  await page
+    .getByRole("button", { name: "Tăng Cà phê sữa", exact: true })
+    .click();
   await expect(link("Giỏ hàng").locator(".guest-nav-count")).toContainText("2");
   await link("Giỏ hàng").click();
   await expect(link("Giỏ hàng")).toHaveAttribute("aria-current", "location");
-  await page.getByRole("button", { name: "Đặt món và thanh toán", exact: true }).click();
+  await openGuestZone(page, "Giỏ hàng");
+  await page
+    .getByRole("button", { name: "Gửi đơn gọi món", exact: true })
+    .click();
+  await openGuestPayment(owner, page);
   const portal = page.getByRole("dialog", { name: "Cổng thanh toán giả lập" });
   await expect(portal).toBeVisible();
   await expect(link("Giỏ hàng").locator(".guest-nav-count")).toContainText("0");
-  await expect(link("Đơn đã gọi").locator(".guest-nav-count")).toContainText("1");
-  await expect(link("Thanh toán").locator(".guest-nav-count")).toContainText("1");
-  await portal.getByRole("button", { name: "Giả lập thanh toán thành công", exact: true }).click();
+  await expect(link("Đơn đã gọi").locator(".guest-nav-count")).toContainText(
+    "1",
+  );
+  await expect(link("Thanh toán").locator(".guest-nav-count")).toContainText(
+    "1",
+  );
+  await portal
+    .getByRole("button", { name: "Giả lập thanh toán thành công", exact: true })
+    .click();
   await expect(portal).not.toBeVisible();
-  await expect(link("Thanh toán").locator(".guest-nav-count")).toContainText("0");
-  for (const [title, target] of [["Đơn đã gọi", "#guest-orders"], ["Hỗ trợ", "#guest-support"], ["Thanh toán", "#guest-checkout"], ["Giỏ hàng", "#guest-cart"], ["Thực đơn", "#guest-menu"]]) {
+  await expect(link("Thanh toán").locator(".guest-nav-count")).toContainText(
+    "0",
+  );
+  for (const [title, target] of [
+    ["Đơn đã gọi", "#guest-orders"],
+    ["Hỗ trợ", "#guest-support"],
+    ["Thanh toán", "#guest-checkout"],
+    ["Giỏ hàng", "#guest-cart"],
+    ["Thực đơn", "#guest-menu"],
+  ]) {
     await link(title).click();
     await expect(link(title)).toHaveAttribute("aria-current", "location");
-    const bounds = await page.locator(target).boundingBox(), navBounds = await nav.boundingBox();
-    expect(bounds!.y).toBeGreaterThanOrEqual(navBounds!.y + navBounds!.height - 1);
-    // At the document bottom the browser cannot align every card to the top.
-    // Its heading and first content must still fit below the sticky navigation.
-    expect(bounds!.y + Math.min(bounds!.height, 160), title).toBeLessThanOrEqual(page.viewportSize()!.height);
+    const bounds = await page.locator(target).boundingBox(),
+      navBounds = await nav.boundingBox();
+    const bottomNavigation = page.viewportSize()!.width <= 600;
+    expect(bounds!.y).toBeGreaterThanOrEqual(bottomNavigation ? 0 : navBounds!.y + navBounds!.height - 1);
+    // The heading and first content must fit above mobile bottom navigation.
+    expect(
+      bounds!.y + Math.min(bounds!.height, 160),
+      title,
+    ).toBeLessThanOrEqual(bottomNavigation ? navBounds!.y : page.viewportSize()!.height);
   }
   await link("Hỗ trợ").click();
-  await page.getByLabel("Lời nhắn cho nhân viên", { exact: true }).fill("Thêm khăn giấy");
-  await page.getByRole("button", { name: "Gọi nhân viên", exact: true }).click();
+  await openGuestZone(page, "Hỗ trợ");
+  await page
+    .getByLabel("Lời nhắn cho nhân viên", { exact: true })
+    .fill("Thêm khăn giấy");
+  await openGuestZone(page, "Hỗ trợ");
+  await page
+    .getByRole("button", { name: "Gọi nhân viên", exact: true })
+    .click();
   await expect(link("Hỗ trợ").locator(".guest-nav-count")).toContainText("1");
+  await openGuestZone(page, "Hỗ trợ");
   await page.getByRole("button", { name: /Rút yêu cầu #/ }).click();
   await expect(link("Hỗ trợ").locator(".guest-nav-count")).toContainText("0");
 });
 test("nút giỏ đưa tới đúng giỏ, điều hướng có trạng thái và dialog trả focus về món", async () => {
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
     .click();
-  await expect(page.getByTestId("cart-total")).toContainText("30.000");
   const shortcut = page.getByRole("link", { name: /Xem giỏ · 1 phần/ });
   await expect(shortcut).toBeVisible();
   await shortcut.click();
+  await expect(page.getByTestId("cart-total")).toContainText("30.000");
   await expect(
-    page.getByRole("link", { name: "Giỏ hàng", exact: true }),
+    page.getByRole("link", { name: /^Giỏ hàng \d+$/, exact: true }),
   ).toHaveAttribute("aria-current", "location");
   const top = await page
     .locator("#cart-heading")
     .evaluate((el) => el.getBoundingClientRect().top);
-  expect(top).toBeGreaterThan(55);
+  expect(top).toBeGreaterThanOrEqual(0);
   expect(top).toBeLessThan(250);
-  await page.getByRole("link", { name: "Thực đơn", exact: true }).click();
+  await page.getByRole("link", { name: /^Thực đơn \d+$/, exact: true }).click();
+  await openGuestZone(page, "Thực đơn");
   const trigger = page.getByRole("button", {
     name: "Chi tiết Cà phê sữa",
     exact: true,
@@ -152,7 +216,7 @@ test("nút giỏ đưa tới đúng giỏ, điều hướng có trạng thái v�
   await page.keyboard.press("Escape");
   await expect(dialog).not.toBeVisible();
   await expect(trigger).toBeFocused();
-  await page.getByRole("link", { name: "Giỏ hàng", exact: true }).click();
+  await page.getByRole("link", { name: /^Giỏ hàng \d+$/, exact: true }).click();
   await page.screenshot({
     path: "test-results/shop-mobile-cart.png",
     fullPage: false,

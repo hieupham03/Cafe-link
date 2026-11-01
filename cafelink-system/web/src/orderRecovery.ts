@@ -93,6 +93,7 @@ function acceptedMessage(entry: Intent, result: Record<string, unknown>) {
     return `Quán đã nhận lời gọi #${result.ticketId}.`;
   if (entry.action === "REQUEST_CHECKOUT")
     return "Quán đã nhận yêu cầu tính tiền. Theo dõi trạng thái tính tiền của bàn.";
+  if(result.acceptanceState === "WAITING")return `Đã lưu đơn #${result.orderId}. Đang chờ nhân viên tiếp nhận trước khi thanh toán.`;
   return result.paymentRequired
     ? `Đã lưu đơn #${result.orderId}. Thanh toán để quán bắt đầu pha chế.`
     : `Quán đã nhận đơn #${result.orderId}.`;

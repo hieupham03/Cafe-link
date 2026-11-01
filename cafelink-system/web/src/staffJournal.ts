@@ -3,6 +3,7 @@ import type { SessionInfo } from "./models";
 import { fingerprint, JournalError } from "./journal";
 
 export const financialActions = new Set([
+  "SET_MENU_AVAILABILITY", "ACCEPT_ORDER", "SAVE_TAX_SETTINGS", "CREATE_EXPENSE", "VOID_EXPENSE",
   "REQUEST_CHECKOUT",
   "ACK_CHECKOUT",
   "REOPEN_ORDERING",
@@ -34,7 +35,7 @@ export const staffPending = (row: StaffIntent) =>
   !["ACCEPTED", "CANCELLED", "REJECTED"].includes(row.status);
 const scope = (session: SessionInfo) => {
   const { storeId, username, role } = session.identity;
-  if (role !== "ADMIN" || !storeId)
+  if (!["ADMIN","STAFF"].includes(role) || !storeId)
     throw new JournalError("Thiếu phạm vi quản lý của quán.");
   return { storeId, username };
 };
@@ -73,7 +74,7 @@ async function transaction<T>(
     await done?.catch(() => {});
     if (e instanceof JournalError) throw e;
     throw new JournalError(
-      "Không ghi/đọc được nhật ký thu ngân. Đã khóa thao tác để tránh thu tiền nhầm.",
+      "Không ghi/đọc được nhật ký tại quầy. Đã khóa thao tác để tránh gửi lại khi chưa rõ kết quả.",
     );
   } finally {
     db?.close();
@@ -82,7 +83,7 @@ async function transaction<T>(
 async function locked<T>(work: () => Promise<T>) {
   if (!navigator.locks)
     throw new JournalError(
-      "Trình duyệt thiếu Web Locks cho thao tác thu ngân.",
+      "Trình duyệt thiếu Web Locks cho thao tác tại quầy.",
     );
   return navigator.locks.request(
     "cafelink-staff-financial",
@@ -90,7 +91,7 @@ async function locked<T>(work: () => Promise<T>) {
     (lock) => {
       if (!lock)
         throw new JournalError(
-          "Một tab quản lý khác đang thao tác. Hãy chờ rồi đối chiếu.",
+          "Một tab tại quầy khác đang thao tác. Hãy chờ rồi đối chiếu.",
         );
       return work();
     },
@@ -100,7 +101,7 @@ async function live(session: SessionInfo) {
   const current = await api.session();
   if (owner(current) !== owner(session) || !current.connected)
     throw new JournalError(
-      "Phiên quản lý đã đổi hoặc chưa kết nối. Hãy đăng nhập và đối chiếu đúng quán.",
+      "Phiên đăng nhập đã đổi hoặc chưa kết nối. Hãy đăng nhập và đối chiếu đúng quán.",
     );
   return current;
 }
@@ -123,8 +124,14 @@ const definite = new Set([
   "FORBIDDEN",
   "NOT_FOUND",
   "COMMAND_DISCARDED",
+  "ITEM_UNAVAILABLE", "TAX_CHANGED",
 ]);
 function validResult(row: StaffIntent, result: Record<string, unknown>) {
+  if(row.action==='SET_MENU_AVAILABILITY')return result.menuId===row.data.menuId&&result.version===Number(row.data.expectedVersion)+1;
+  if(row.action==='ACCEPT_ORDER')return result.orderId===row.data.orderId&&result.acceptanceState==='ACCEPTED';
+  if(row.action==='SAVE_TAX_SETTINGS')return result.version===Number(row.data.expectedVersion)+1&&result.rateBps===row.data.rateBps&&result.mode===row.data.mode;
+  if(row.action==='CREATE_EXPENSE')return Number.isSafeInteger(result.expenseId);
+  if(row.action==='VOID_EXPENSE')return result.expenseId===row.data.expenseId&&result.state==='VOIDED';
   if(row.action==="RESOLVE_ORDER")return result.orderId===row.data.orderId&&result.state===(row.data.resolution==="REFUND"?"REFUNDED":"CANCELLED")&&Number.isSafeInteger(result.amountVnd);
   if (row.action === "CREATE_MENU_ITEM" || row.action === "UPDATE_MENU_ITEM")
     return (
@@ -153,7 +160,7 @@ async function send(session: SessionInfo, row: StaffIntent) {
     row.message =
       row.action === "PAY_AND_CLOSE"
         ? `Đã ghi nhận tiền mặt ${result.totalVnd} VND, phiếu #${result.receiptId}. Không thu lại.`
-        : "Quán đã ghi nhận thao tác tính tiền.";
+        : "Quán đã ghi nhận thao tác.";
     await save(row);
     return result;
   } catch (e) {
@@ -193,7 +200,7 @@ async function lookup(session: SessionInfo, row: StaffIntent) {
       !validResult(row, known.result))
   ) {
     row.status = "BLOCKED";
-    row.message = "Kết quả không khớp ý định thu ngân.";
+    row.message = "Kết quả không khớp ý định tại quầy.";
   } else {
     row.result = known.result;
     row.status = known.result.cancelledBeforeAcceptance
@@ -203,7 +210,7 @@ async function lookup(session: SessionInfo, row: StaffIntent) {
       ? "Đã bỏ thao tác chưa được nhận; lệnh đến muộn bị chặn."
       : row.action === "PAY_AND_CLOSE"
         ? `Đã ghi nhận tiền mặt ${known.result.totalVnd} VND, phiếu #${known.result.receiptId}. Không thu lại.`
-        : "Đã đối chiếu: quán đã thực hiện thao tác tính tiền.";
+        : "Đã đối chiếu: quán đã ghi nhận thao tác.";
   }
   await save(row);
   return true;
@@ -220,7 +227,7 @@ export const staffJournal = {
   async assertNone(session: SessionInfo) {
     if ((await this.read(session)).some(staffPending))
       throw new JournalError(
-        "Có thao tác thu ngân chưa rõ kết quả. Đối chiếu trước khi thao tác tiếp.",
+        "Có thao tác tại quầy chưa rõ kết quả. Đối chiếu trước khi thao tác tiếp.",
       );
   },
   async execute(
@@ -241,7 +248,7 @@ export const staffJournal = {
         createdAt: Date.now(),
         status: "PENDING",
         message:
-          "Chưa rõ kết quả thao tác thu ngân. Không thu tiền hoặc gửi lệnh khác trước khi đối chiếu.",
+          "Chưa rõ kết quả thao tác tại quầy. Hãy đối chiếu trước khi thực hiện lại.",
       };
       await transaction(async (store) => {
         if (
@@ -249,7 +256,7 @@ export const staffJournal = {
             (r) => r.owner === key && staffPending(r),
           )
         )
-          throw new JournalError("Có thao tác thu ngân cần đối chiếu.");
+          throw new JournalError("Có thao tác tại quầy cần đối chiếu.");
         store.add(row);
       });
       return send(current, row);

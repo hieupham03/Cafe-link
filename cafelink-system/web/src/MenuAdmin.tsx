@@ -6,13 +6,15 @@ import { Dialog } from "./Dialog";
 import { staffJournal } from "./staffJournal";
 import { searchText } from "./ui";
 import { DrinkArt } from "./DrinkArt";
+import { menuPhotoUrl } from "./menuAssets";
 export function MenuPhoto({ item }: { item: MenuItem }) {
+  const source = menuPhotoUrl(item);
   const [failed, setFailed] = useState(false);
-  useEffect(() => setFailed(false), [item.imageUrl]);
-  return item.imageUrl && !failed ? (
+  useEffect(() => setFailed(false), [source]);
+  return source && !failed ? (
     <img
       className="menu-photo"
-      src={item.imageUrl.replace(/\.jpg$/, "-thumb.jpg")}
+      src={source}
       alt={item.name}
       loading="lazy"
       onError={() => setFailed(true)}

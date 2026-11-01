@@ -79,7 +79,7 @@ async function queueAndSend(action: "PLACE_ORDER" | "CALL_SERVICE") {
         const value = await journal.read(scope);
         return journal.edit(scope, value.cart.revision, item, 1);
       });
-      await place(scope, cart.revision);
+      await place(scope, cart.revision, state.taxSettings?.version);
     }
   } catch (e) {
     if (!(e instanceof ApiError && e.code === "NETWORK_LOST")) throw e;
@@ -111,19 +111,25 @@ const harness = {
     });
     let orderId = 0, renderedAt: number | undefined;
     const observe = () => {
-      if (orderId && Array.from(document.querySelectorAll("strong")).some(n => n.textContent === `Đơn #${orderId}`))
+      if (orderId && Array.from(document.querySelectorAll("strong")).some(n => n.textContent === `Đơn #${orderId}` && n.getClientRects().length > 0))
         renderedAt ??= performance.now();
     };
     const observer = new MutationObserver(observe);
-    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+    observer.observe(document.body, { childList: true, subtree: true, characterData: true, attributes:true, attributeFilter:['data-active-zone'] });
     try {
-      await place(scope, cart.revision);
+      await place(scope, cart.revision, state.taxSettings?.version);
       const entry = (await journal.read(scope)).entries.find(e => e.cartRevision === cart.revision && e.action === "PLACE_ORDER");
       // The accepted receipt is the source of the order identifier.
       orderId = Number(entry?.result?.orderId);
       if (!orderId) throw new Error("Load order has no accepted receipt");
       const responseMs = performance.now() - began;
+      location.hash = "guest-orders";
+      requestAnimationFrame(observe);
       observe();
+      // Only the isolated Node driver supplies this staff fixture.
+      const accept = (window as unknown as { acceptExperimentOrder?: (id:number)=>Promise<unknown> }).acceptExperimentOrder;
+      if (!accept) throw new Error("V10 load driver requires a staff-acceptance fixture.");
+      await accept(orderId);
       const payment = await api.command<Record<string, unknown>>(info.csrfToken, "START_ORDER_PAYMENT", {visitId:scope.visitId, orderId}, crypto.randomUUID(), scope);
       await api.command(info.csrfToken,"SIMULATE_PAYMENT",{...payment,outcome:"SUCCESS"},crypto.randomUUID(),scope);
       for(let n=0;n<150 && renderedAt === undefined;n++) await new Promise(ok=>setTimeout(ok,20));

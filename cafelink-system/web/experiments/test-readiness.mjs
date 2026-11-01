@@ -13,6 +13,7 @@ try{
  const qr=await admin.command('GET_TABLE_QR',{tableId:1});context=await browser.newContext();
  const joined=await context.request.post(server.origin+'/api/guest/join',{headers:{Origin:server.origin},data:{grant:qr.grant,table:true}});expect(joined.ok()).toBe(true);
  const page=await context.newPage();
+ await page.exposeFunction('acceptExperimentOrder',orderId=>admin.command('ACCEPT_ORDER',{orderId}));
  await page.addInitScript(()=>{
    navigator.locks.request('cafelink-guest-journal-v2',()=>new Promise(resolve=>{window.__releaseReadinessLock=resolve;}));
  });
@@ -27,7 +28,9 @@ try{
  expect((await(await context.request.get(server.origin+'/api/state')).json()).orders).toHaveLength(0);
  expect(ready).toBe(false);result.newDriverWaited=true;
  await page.evaluate(()=>window.__releaseReadinessLock());
+ await page.getByRole('link',{name:/^Giỏ hàng \d+$/}).click();
  await page.getByRole('button',{name:'Đối chiếu yêu cầu',exact:true}).click();
+ await page.getByRole('link',{name:/^Thực đơn \d+$/}).click();
  await barrier;await page.evaluate(()=>window.cafeExperiment.loadStep());
  const state=await(await context.request.get(server.origin+'/api/state')).json();
  expect(state.orders).toHaveLength(1);expect(state.orders[0].paymentState).toBe('PAID');result.newDriverPaid=true;

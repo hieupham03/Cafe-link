@@ -28,6 +28,7 @@ export interface Intent {
   owner: GuestScope;
   action: "PLACE_ORDER" | "CALL_SERVICE" | "AMEND_SERVICE" | "CANCEL_SERVICE" | "REQUEST_CHECKOUT";
   data: {
+    expectedTaxVersion?: number;
     visitId: string;
     items?: {
       menuId: number;
@@ -42,7 +43,6 @@ export interface Intent {
     expectedVersion?: number;
     expectedVisitVersion?: number;
     expectedCheckoutVersion?: number;
-    expectedTaxVersion?: number;
   };
   fingerprint: string;
   cartRevision: number;
@@ -276,8 +276,8 @@ export const journal = {
     if (!snapshot.cart.items.length)
       throw new JournalError("Chọn món trước khi gửi đơn.");
     const data = {
-      visitId: scope.visitId,
       ...(expectedTaxVersion === undefined ? {} : { expectedTaxVersion }),
+      visitId: scope.visitId,
       items: snapshot.cart.items.map((row) => ({
         menuId: row.menuId,
         ...(row.note?{note:row.note}:{}),

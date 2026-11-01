@@ -1,3 +1,8 @@
+import {
+  openGuestZone,
+  openGuestPayment,
+  acceptGuestOrders,
+} from "./guest-navigation";
 import { test, expect } from "@playwright/test";
 import type { BrowserContext, Page } from "@playwright/test";
 const origin = "http://127.0.0.1:18080";
@@ -53,6 +58,7 @@ test.beforeEach(async ({ browser }) => {
   await page
     .getByRole("button", { name: "Vào bàn của tôi", exact: true })
     .click();
+  await openGuestZone(page, "Thực đơn");
   await expect(
     page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
   ).toBeEnabled();
@@ -124,12 +130,15 @@ test("QR cố định, mở toàn quán và hai khách cùng bàn có đơn riê
 
 test("Đặt, thanh toán, giao đồ và tự kết thúc; đặt tiếp không cần nhân viên mở bàn", async () => {
   const before = await (await guest.request.get("/api/session")).json();
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
     .click();
+  await openGuestZone(page, "Giỏ hàng");
   await page
-    .getByRole("button", { name: "Đặt món và thanh toán", exact: true })
+    .getByRole("button", { name: "Gửi đơn gọi món", exact: true })
     .click();
+  await openGuestPayment(owner, page);
   const portal = page.getByRole("dialog", { name: "Cổng thanh toán giả lập" });
   await expect(portal).toBeVisible();
   await portal
@@ -153,6 +162,7 @@ test("Đặt, thanh toán, giao đồ và tự kết thúc; đặt tiếp không
   await page
     .getByRole("button", { name: "Bắt đầu lần đặt mới", exact: true })
     .click();
+  await openGuestZone(page, "Thực đơn");
   await expect(
     page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
   ).toBeEnabled();
@@ -180,75 +190,144 @@ test("Tạm dừng chỉ chặn khách mới; phiên đang dùng vẫn gọi mó
   });
   expect(denied.status()).toBe(409);
   expect((await denied.json()).code).toBe("TABLE_PAUSED");
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
     .click();
+  await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("30.000");
   await command(owner, "SET_TABLE_ACCEPTING", { tableId: 1, enabled: 1 });
   expect((await join(other)).identity.visitId).toBeTruthy();
 });
 
-test("Link đặt món mở cùng hồ sơ quản lý giải thích đổi trình duyệt và giữ nguyên phiên", async ({ browserName }) => {
+test("Link đặt món mở cùng hồ sơ quản lý giải thích đổi trình duyệt và giữ nguyên phiên", async ({
+  browserName,
+}) => {
   // Playwright supports these permission names only in Chromium. For other
   // engines observe the argument only after the real browser write succeeds.
-  if (browserName === "chromium") await owner.grantPermissions(["clipboard-read", "clipboard-write"]);
+  if (browserName === "chromium")
+    await owner.grantPermissions(["clipboard-read", "clipboard-write"]);
   async function observeClipboard(current: Page) {
     if (browserName === "chromium") return;
     await current.evaluate(() => {
       const write = navigator.clipboard.writeText.bind(navigator.clipboard);
-      Object.defineProperty(navigator.clipboard, "writeText", { configurable: true, value: async (text: string) => {
-        await write(text);
-        (window as Window & { copiedLink?: string }).copiedLink = text;
-      } });
+      Object.defineProperty(navigator.clipboard, "writeText", {
+        configurable: true,
+        value: async (text: string) => {
+          await write(text);
+          (window as Window & { copiedLink?: string }).copiedLink = text;
+        },
+      });
     });
   }
   async function copiedLink(current: Page) {
-    return browserName === "chromium" ? current.evaluate(() => navigator.clipboard.readText())
-      : current.evaluate(() => (window as Window & { copiedLink?: string }).copiedLink);
+    return browserName === "chromium"
+      ? current.evaluate(() => navigator.clipboard.readText())
+      : current.evaluate(
+          () => (window as Window & { copiedLink?: string }).copiedLink,
+        );
   }
   const before = await (await owner.request.get("/api/session")).json();
   const beforeTables = (await state()).tables;
   await admin.getByRole("button", { name: "Xem Bàn 1", exact: true }).click();
-  await expect(admin.getByRole("link", { name: "Mở trang đặt món Bàn 1", exact: true })).toBeVisible();
+  await expect(
+    admin.getByRole("link", { name: "Mở trang đặt món Bàn 1", exact: true }),
+  ).toBeVisible();
   const popupPromise = admin.waitForEvent("popup");
-  await admin.getByRole("link", { name: "Mở trang đặt món Bàn 1", exact: true }).click();
+  await admin
+    .getByRole("link", { name: "Mở trang đặt món Bàn 1", exact: true })
+    .click();
   const popup = await popupPromise;
   try {
-    await expect(popup.getByRole("heading", { name: "Bạn đang đăng nhập quản lý", exact: true })).toBeVisible();
-    await expect(popup.getByRole("button", { name: "Mở tất cả bàn", exact: true })).toHaveCount(0);
+    await expect(
+      popup.getByRole("heading", {
+        name: "Bạn đang đăng nhập quản lý",
+        exact: true,
+      }),
+    ).toBeVisible();
+    await expect(
+      popup.getByRole("button", { name: "Mở tất cả bàn", exact: true }),
+    ).toHaveCount(0);
     await observeClipboard(admin);
-    await admin.getByRole("button", { name: "Sao chép link đặt món", exact: true }).click();
+    await admin
+      .getByRole("button", { name: "Sao chép link đặt món", exact: true })
+      .click();
     await expect.poll(() => copiedLink(admin)).toBe(qr.joinUrl);
-    await expect(popup.getByText(/Ctrl\+Shift\+N/)).toBeVisible();
+    await expect(
+      popup.getByText(/Khách vui lòng quét mã QR bằng điện thoại/),
+    ).toBeVisible();
+    await expect(popup.getByText(/Ctrl\+Shift\+N/)).toHaveCount(0);
     await expect(popup).toHaveURL(origin + "/join");
-    await expect(popup.getByLabel("Link đặt món", { exact: true })).toHaveValue(qr.joinUrl);
+    await expect(popup.getByLabel("Link đặt món", { exact: true })).toHaveValue(
+      qr.joinUrl,
+    );
     await observeClipboard(popup);
-    await popup.getByRole("button", { name: "Sao chép link đặt món", exact: true }).click();
+    await popup
+      .getByRole("button", { name: "Sao chép link đặt món", exact: true })
+      .click();
     await expect.poll(() => copiedLink(popup)).toBe(qr.joinUrl);
     const copied = (await copiedLink(popup))!;
-    expect(await popup.evaluate(() => Object.values(localStorage).some(v => v.includes("#table=")))).toBe(false);
+    expect(
+      await popup.evaluate(() =>
+        Object.values(localStorage).some((v) => v.includes("#table=")),
+      ),
+    ).toBe(false);
     await popup.evaluate(() => {
-      Object.defineProperty(navigator.clipboard, "writeText", { configurable: true, value: () => Promise.reject(new Error("Permission denied")) });
+      Object.defineProperty(navigator.clipboard, "writeText", {
+        configurable: true,
+        value: () => Promise.reject(new Error("Permission denied")),
+      });
     });
-    await popup.getByRole("button", { name: "Sao chép link đặt món", exact: true }).click();
-    await expect(popup.getByRole("alert")).toContainText("Chọn ô link bên dưới");
+    await popup
+      .getByRole("button", { name: "Sao chép link đặt món", exact: true })
+      .click();
+    await expect(popup.getByRole("alert")).toContainText(
+      "Chọn ô link bên dưới",
+    );
     const fresh = await other.newPage();
     await fresh.goto(copied);
-    await fresh.getByRole("button", { name: "Vào bàn của tôi", exact: true }).click();
-    await expect(fresh.getByRole("heading", { name: "Bàn 1", exact: true })).toBeVisible();
+    await fresh
+      .getByRole("button", { name: "Vào bàn của tôi", exact: true })
+      .click();
+    await expect(
+      fresh.getByRole("heading", { name: "Bàn 1", exact: true }),
+    ).toBeVisible();
     const current = await (await owner.request.get("/api/session")).json();
     expect(current.identity).toEqual(before.identity);
     expect(current.csrfToken).toBe(before.csrfToken);
-    expect((await state()).tables[0].activeSessions).toBe(beforeTables[0].activeSessions + 1);
-    await expect(admin.getByRole("button", { name: "Mở tất cả bàn", exact: true })).toBeEnabled();
-    await popup.screenshot({ path: "test-results/qr-admin-role-conflict.png", fullPage: true });
+    expect((await state()).tables[0].activeSessions).toBe(
+      beforeTables[0].activeSessions + 1,
+    );
+    await expect(
+      admin.getByRole("button", { name: "Mở tất cả bàn", exact: true }),
+    ).toBeEnabled();
+    await popup.screenshot({
+      path: "test-results/qr-admin-role-conflict.png",
+      fullPage: true,
+    });
     await popup.reload();
-    await expect(popup.getByRole("heading", { name: "Bạn đang đăng nhập quản lý", exact: true })).toBeVisible();
-    await expect(popup.getByRole("button", { name: "Sao chép link đặt món", exact: true })).toHaveCount(0);
+    await expect(
+      popup.getByRole("heading", {
+        name: "Bạn đang đăng nhập quản lý",
+        exact: true,
+      }),
+    ).toBeVisible();
+    await expect(
+      popup.getByRole("button", { name: "Sao chép link đặt món", exact: true }),
+    ).toHaveCount(0);
     await popup.goto("/guest");
-    await expect(popup.getByRole("heading", { name: "Bạn đang đăng nhập quản lý", exact: true })).toBeVisible();
-    await popup.getByRole("link", { name: "Về màn hình quản lý", exact: true }).click();
-    await expect(popup.getByRole("button", { name: "Mở tất cả bàn", exact: true })).toBeEnabled();
+    await expect(
+      popup.getByRole("heading", {
+        name: "Bạn đang đăng nhập quản lý",
+        exact: true,
+      }),
+    ).toBeVisible();
+    await popup
+      .getByRole("link", { name: "Về màn hình quản lý", exact: true })
+      .click();
+    await expect(
+      popup.getByRole("button", { name: "Mở tất cả bàn", exact: true }),
+    ).toBeEnabled();
   } finally {
     await popup.close();
   }
@@ -257,9 +336,11 @@ test("Link đặt món mở cùng hồ sơ quản lý giải thích đổi trìn
 test("Mất phản hồi đặt món ở phiên riêng vẫn đối chiếu được, không tạo đơn trùng", async () => {
   const visitId = (await (await guest.request.get("/api/session")).json())
     .identity.visitId;
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
     .click();
+  await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("30.000");
   await page.route("**/api/command", async (route) => {
     if (route.request().postDataJSON().action === "PLACE_ORDER") {
@@ -267,8 +348,9 @@ test("Mất phản hồi đặt món ở phiên riêng vẫn đối chiếu đư
       await route.abort("failed");
     } else await route.continue();
   });
+  await openGuestZone(page, "Giỏ hàng");
   await page
-    .getByRole("button", { name: "Đặt món và thanh toán", exact: true })
+    .getByRole("button", { name: "Gửi đơn gọi món", exact: true })
     .click();
   await expect
     .poll(
@@ -278,6 +360,7 @@ test("Mất phản hồi đặt món ở phiên riêng vẫn đối chiếu đư
     .toBe(1);
   await page.unrouteAll({ behavior: "wait" });
   await page.reload();
+  await openGuestZone(page, "Thực đơn");
   await expect(
     page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
   ).toBeEnabled();

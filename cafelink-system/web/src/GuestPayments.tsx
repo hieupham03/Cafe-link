@@ -4,7 +4,7 @@ import { guestScope, money } from "./models";
 import type { Order, SessionInfo } from "./models";
 import { Dialog } from "./Dialog";
 import { GuestSectionHeading } from "./GuestSectionHeading";
-import { TaxBreakdown } from "./TaxBreakdown";
+import { OrderTotals } from "./OrderTotals";
 interface Payment {
   paymentId: string;
   orderId: number;
@@ -40,6 +40,7 @@ export function GuestPayments({
       guestScope(session),
     );
   async function start(orderId: number) {
+    if (orders.find(order => order.id === orderId)?.acceptanceState === "WAITING") return;
     if (lock.current) return;
     lock.current = true;
     setBusy(true);
@@ -104,8 +105,7 @@ export function GuestPayments({
     <section id="guest-checkout" className="checkout-panel guest-zone" data-guest-zone="payment" aria-labelledby="guest-payment-heading">
       <GuestSectionHeading id="guest-payment-heading" icon="check" title="Thanh toán đơn hàng" description="Kiểm tra tiền và thanh toán cho đơn đã gửi." meta={`${orders.filter(order => ["UNPAID", "PENDING"].includes(order.paymentState ?? "")).length} chưa trả`} />
       <p className="warning">
-        Cổng giả lập học tập — không thu tiền thật, không nhập thông tin ngân
-        hàng.
+        Thanh toán mô phỏng, không thu tiền thật.
       </p>
       {notice && (
         <p className="order-receipt" role="status">
@@ -133,14 +133,16 @@ export function GuestPayments({
                 ? "Đã thanh toán giả lập"
                 : o.paymentState === "CANCELLED"
                   ? "Đã hủy đơn"
-                  : "Chưa thanh toán — quán chưa pha chế"}
+                  : o.acceptanceState === "WAITING" ? "Đang chờ nhân viên tiếp nhận. Bạn chưa cần thanh toán."
+                  : "Quán đã nhận đơn. Thanh toán để bắt đầu pha chế."}
             </p>
           </div>
+          <OrderTotals order={o}/>
           {["UNPAID", "PENDING"].includes(o.paymentState ?? "") && (
             <div className="button-row">
               <button
                 className="primary"
-                disabled={disabled || busy}
+                disabled={disabled || busy || o.acceptanceState === "WAITING"}
                 onClick={() => void start(o.id)}
               >
                 Thanh toán đơn #{o.id}
@@ -191,13 +193,11 @@ export function GuestPayments({
           </div>
           <p className="warning">MÔ PHỎNG CỤC BỘ · KHÔNG THU TIỀN THẬT</p>
           <h3>Đơn #{payment.orderId}</h3>
-          {orders.find(order => order.id === payment.orderId) && <TaxBreakdown order={orders.find(order => order.id === payment.orderId)!} />}
           <div className="bill-total">
             <strong>{money(payment.amountVnd)}</strong>
           </div>
           <p>
-            Thử một kết quả. Server kiểm tra mã giao dịch, chữ ký và số tiền,
-            sau đó cập nhật đơn.
+            Kiểm tra số tiền của đơn đã được quán tiếp nhận trước khi xác nhận.
           </p>
           <small>
             Hết hạn: {new Date(payment.expiresAt).toLocaleTimeString("vi-VN")}

@@ -82,7 +82,7 @@ export function GuestJoin({
             <b>02</b>Chọn món
           </span>
           <span>
-            <b>03</b>Thanh toán
+            <b>03</b>Quán nhận · Trả tiền
           </span>
         </div>
         <p>
@@ -159,12 +159,25 @@ export function GuestHome({
   const table = state?.tables[0],
     ended = table?.status === "SESSION_ENDED";
   const [active, setActive] = useState(location.hash || "#guest-menu");
+  const previousZone = useRef(active);
   useEffect(() => {
     const changed = () => setActive(location.hash || "#guest-menu");
     window.addEventListener("hashchange", changed);
     return () => window.removeEventListener("hashchange", changed);
   }, []);
-  const unpaid = state?.orders.filter(order => ["UNPAID", "PENDING"].includes(order.paymentState ?? "")).length ?? 0;
+  useEffect(() => {
+    if (previousZone.current === active) return;
+    previousZone.current = active;
+    const frame = requestAnimationFrame(() => {
+      const zone = document.getElementById(active.slice(1));
+      if (!zone) return;
+      zone.setAttribute("tabindex", "-1");
+      zone.focus({ preventScroll: true });
+      zone.scrollIntoView({ block: "start" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [active]);
+  const unpaid = state?.orders.filter(order => order.acceptanceState !== "WAITING" && ["UNPAID", "PENDING"].includes(order.paymentState ?? "")).length ?? 0;
   const waitingSupport = state?.tickets.filter(ticket => ticket.type === "CALL_SERVICE" && ticket.status === "OPEN").length ?? 0;
   const navigation: { href: string; zone: string; icon: IconName; title: string; description: string; count: number }[] = [
     { href: "#guest-menu", zone: "menu", icon: "menu", title: "Thực đơn", description: "Chọn đồ uống yêu thích", count: state?.menu.length ?? 0 },
@@ -174,11 +187,11 @@ export function GuestHome({
     { href: "#guest-cart", zone: "cart", icon: "bag", title: "Giỏ hàng", description: "Kiểm tra món trước khi gửi", count: cartQuantity },
   ];
   return (
-    <main className="guest-home">
+    <main className="guest-home" data-active-zone={navigation.find(item=>item.href===active)?.zone??'menu'}>
       <header className="guest-header">
         <Brand />
         <span className="guest-header-note">
-          Gọi món tại bàn · Thanh toán thuận tiện
+          Một chút cà phê, một ngày dễ chịu
         </span>
         <button className="text-button" onClick={onLogout}>
           Rời phiên
@@ -188,13 +201,11 @@ export function GuestHome({
         <div className="guest-hero-copy">
           <span className="table-location">
             <Icon name="table" />
-            ĐANG PHỤC VỤ TẠI
+            CHÀO BẠN ĐẾN VỚI
           </span>
           <h1>{table?.name ?? `Bàn ${session.identity.tableId}`}</h1>
           <h2>
-            Một ly ngon.
-            <br />
-            Một khoảng nghỉ.
+            Chọn một ly ngon.
           </h2>
           <p>
             {ended
@@ -229,17 +240,18 @@ export function GuestHome({
               key={href}
               href={href}
               data-guest-zone={zone}
-              aria-label={title}
+              aria-label={`${title} ${count}`}
               aria-describedby={`nav-${zone}-description nav-${zone}-count`}
               aria-current={active === href ? "location" : undefined}
             >
               <span className="guest-nav-icon"><Icon name={icon} /></span>
-              <span className="guest-nav-title">{title}</span>
+              <span className="guest-nav-title" id={`nav-${zone}-title`}>{title}{" "}</span>
               <span className="guest-nav-description" id={`nav-${zone}-description`}>{description}</span>
-              <span className="guest-nav-count" id={`nav-${zone}-count`}>
-                <span className="sr-only">{zone === "cart" ? "Số phần trong giỏ: " : zone === "payment" ? "Số đơn chưa thanh toán: " : zone === "support" ? "Số yêu cầu đang chờ: " : zone === "orders" ? "Số đơn đã gọi: " : "Số món trong thực đơn: "}</span>
+              <span hidden id={`nav-${zone}-count`}>
+                {zone === "cart" ? "Số phần trong giỏ: " : zone === "payment" ? "Số đơn chưa thanh toán: " : zone === "support" ? "Số yêu cầu đang chờ: " : zone === "orders" ? "Số đơn đã gọi: " : "Số món trong thực đơn: "}
                 {count}
               </span>
+              <span className="guest-nav-count" aria-hidden="true">{count}</span>
             </a>
           ))}
         </nav>
@@ -273,9 +285,10 @@ export function GuestHome({
             <>
               <p className="guest-service-note">
                 {state?.tables[0]?.paymentMode === "PREPAY"
-                  ? "Chọn đồ uống, xác nhận giỏ và thanh toán trước. Quán pha chế sau khi Server xác nhận đã thanh toán."
+                  ? "Chọn món → Quán tiếp nhận → Thanh toán → Mang đến bàn."
                   : "Chọn đồ uống và gửi giỏ món đến quán. Bạn có thể gọi nhân viên hoặc yêu cầu tính tiền ngay trên trang này."}
               </p>
+              {(state?.taxSettings?.rateBps ?? 0)>0&&<p className="menu-tax-policy">{state?.taxSettings?.mode==='INCLUSIVE'?'Giá đã bao gồm':'Giá chưa bao gồm'} {state!.taxSettings!.rateBps/100}% {state!.taxSettings!.name}. Tổng tiền được hiển thị rõ trong giỏ.</p>}
               {state ? (
                 <GuestMenu
                   menu={state.menu}

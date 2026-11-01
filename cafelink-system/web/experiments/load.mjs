@@ -21,6 +21,7 @@ try{
    server=await startServer(resolve(privateRoot,`${repeat}-${count}`));admin=await owner(browser,server.origin);await admin.command('OPEN_ALL_TABLES',{});const qr=await admin.command('GET_TABLE_QR',{tableId:1});
    for(let i=0;i<count;i++){
     const guest=await join(browser,server.origin,qr.grant,'/guest');guests.push(guest);
+    await guest.page.exposeFunction('acceptExperimentOrder',orderId=>admin.command('ACCEPT_ORDER',{orderId}));
     await guest.page.waitForSelector('#guest-menu');
     await guest.page.evaluate(async src=>{await import(src);},script);
     record.guestReadyMs.push(await waitForGuestReady(guest.page));

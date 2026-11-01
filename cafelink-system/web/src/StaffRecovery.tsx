@@ -61,14 +61,14 @@ export function StaffRecovery({ session }: { session: SessionInfo }) {
         </p>
       )}
       {pending.length > 0 && (
-        <section className="recovery-panel" aria-label="Đối chiếu thu ngân">
-          <h2>Có thao tác quản lý cần đối chiếu</h2>
+        <section className="recovery-panel" aria-label="Đối chiếu thao tác tại quầy">
+          <h2>Có thao tác tại quầy cần đối chiếu</h2>
           <button
             className="secondary"
             disabled={busy}
             onClick={() => void act(() => staffJournal.reconcile(session))}
           >
-            Đối chiếu thu ngân
+            Đối chiếu thao tác
           </button>
           {pending.map((row) => (
             <article key={row.id}>

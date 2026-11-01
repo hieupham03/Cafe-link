@@ -1,3 +1,8 @@
+import {
+  openGuestZone,
+  openGuestPayment,
+  acceptGuestOrders,
+} from "./guest-navigation";
 import { test, expect } from "@playwright/test";
 import type { BrowserContext, Page } from "@playwright/test";
 const origin = "http://127.0.0.1:18080";
@@ -45,6 +50,7 @@ test.beforeEach(async ({ browser }) => {
   await page
     .getByRole("button", { name: "Vào bàn của tôi", exact: true })
     .click();
+  await openGuestZone(page, "Thực đơn");
   await expect(
     page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
   ).toBeEnabled();
@@ -109,8 +115,10 @@ test.afterEach(async () => {
   }
 });
 test("khách tìm món không dấu, lọc nhóm và chọn số lượng bằng dialog", async () => {
+  await openGuestZone(page, "Thực đơn");
   await page.getByLabel("Tìm đồ uống", { exact: true }).fill("ca phe sua");
   await expect(page.locator(".menu-grid .menu-card")).toHaveCount(1);
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Chi tiết Cà phê sữa", exact: true })
     .click();
@@ -124,14 +132,18 @@ test("khách tìm món không dấu, lọc nhóm và chọn số lượng bằng
     .getByRole("button", { name: "Thêm vào giỏ", exact: true })
     .click();
   await expect(dialog).not.toBeVisible();
+  await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("60.000");
+  await openGuestZone(page, "Thực đơn");
   await page.getByLabel("Tìm đồ uống", { exact: true }).fill("");
   await page
     .getByRole("button", { name: "Nhóm Trà và đồ uống khác", exact: true })
     .click();
+  await openGuestZone(page, "Thực đơn");
   await expect(
     page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
   ).toHaveCount(0);
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByLabel("Tìm đồ uống", { exact: true })
     .fill("khong co mon nay");
@@ -140,22 +152,28 @@ test("khách tìm món không dấu, lọc nhóm và chọn số lượng bằng
   ).toBeVisible();
 });
 test("sửa giỏ, lưu ghi chú qua reload và gửi đúng nội dung lên Core", async () => {
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
     .click();
+  await openGuestZone(page, "Giỏ hàng");
   await page
     .getByRole("button", { name: "Tăng Cà phê sữa", exact: true })
     .click();
+  await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("60.000");
+  await openGuestZone(page, "Giỏ hàng");
   await page
     .getByLabel("Ghi chú cho đơn", { exact: true })
     .fill("Ít đá, không đường");
   await expect(page.getByText("Ghi chú đã lưu", { exact: true })).toBeVisible();
   await page.reload();
+  await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByLabel("Ghi chú cho đơn", { exact: true })).toHaveValue(
     "Ít đá, không đường",
   );
-  await page.getByRole("link", { name: "Giỏ hàng", exact: true }).click();
+  await page.getByRole("link", { name: /^Giỏ hàng \d+$/, exact: true }).click();
+  await openGuestZone(page, "Giỏ hàng");
   await page
     .getByRole("button", { name: "Gửi đơn gọi món", exact: true })
     .click();
@@ -166,6 +184,7 @@ test("sửa giỏ, lưu ghi chú qua reload và gửi đúng nội dung lên Cor
   expect(orders).toHaveLength(1);
   expect(orders[0].note).toBe("Ít đá, không đường");
   expect(orders[0].totalVnd).toBe(60000);
+  await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByLabel("Ghi chú cho đơn", { exact: true })).toHaveValue(
     "",
   );
@@ -206,9 +225,15 @@ test("quản lý có hàng đợi hỗ trợ và thu ngân, giữ nháp phản h
     await adminPage
       .getByRole("button", { name: "Đã xử lý", exact: true })
       .click();
-    await expect(page.getByRole("region", { name: "Hỗ trợ tại bàn", exact: true })
-      .getByRole("status").filter({ hasText: `Yêu cầu #${ticket.ticketId} · Nhân viên đã phản hồi:` }))
-      .toContainText("Nhân viên đang chuẩn bị nước");
+    await openGuestZone(page, "Hỗ trợ");
+    await expect(
+      page
+        .getByRole("region", { name: "Hỗ trợ tại bàn", exact: true })
+        .getByRole("status")
+        .filter({
+          hasText: `Yêu cầu #${ticket.ticketId} · Nhân viên đã phản hồi:`,
+        }),
+    ).toContainText("Nhân viên đang chuẩn bị nước");
     const snapshot = await state(),
       table = snapshot.tables.find(
         (t: { visitId: string }) => t.visitId === visitId,
@@ -250,6 +275,7 @@ test("giao diện 360/390/768/1366 không tràn ngang, nút chính đủ lớn v
           ),
           `overflow at ${width}`,
         ).toBe(true);
+      await openGuestZone(page, "Thực đơn");
       const add = page.getByRole("button", {
         name: "Thêm Cà phê sữa",
         exact: true,
@@ -268,6 +294,7 @@ test("giao diện 360/390/768/1366 không tràn ngang, nút chính đủ lớn v
           fullPage: true,
         });
     }
+    await openGuestZone(page, "Thực đơn");
     const trigger = page.getByRole("button", {
       name: "Chi tiết Cà phê sữa",
       exact: true,
@@ -344,10 +371,12 @@ test("bộ lọc quầy giữ nguyên sau push, trạng thái rỗng chỉ đún
   }
 });
 test("lỗi lưu ghi chú khóa gửi mới và cho thử lưu lại, không âm thầm gửi nội dung cũ", async () => {
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
     .click();
   // Activate the quota fault after the independent add-to-cart transaction commits.
+  await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("30.000");
   await page.evaluate(() => {
     const original = IDBObjectStore.prototype.put;
@@ -362,10 +391,12 @@ test("lỗi lưu ghi chú khóa gửi mới và cho thử lưu lại, không âm
       return original.apply(this, args);
     };
   });
+  await openGuestZone(page, "Giỏ hàng");
   await page.getByLabel("Ghi chú cho đơn", { exact: true }).fill("Ít đá");
   await expect(
     page.getByRole("button", { name: "Thử lưu ghi chú", exact: true }),
   ).toBeVisible();
+  await openGuestZone(page, "Giỏ hàng");
   await expect(
     page.getByRole("button", { name: "Gửi đơn gọi món", exact: true }),
   ).toBeDisabled();
@@ -379,6 +410,7 @@ test("lỗi lưu ghi chú khóa gửi mới và cho thử lưu lại, không âm
     .getByRole("button", { name: "Thử lưu ghi chú", exact: true })
     .click();
   await expect(page.getByText("Ghi chú đã lưu", { exact: true })).toBeVisible();
+  await openGuestZone(page, "Giỏ hàng");
   await expect(
     page.getByRole("button", { name: "Gửi đơn gọi món", exact: true }),
   ).toBeEnabled();

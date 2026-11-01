@@ -3,11 +3,12 @@ import { Dialog } from './Dialog';
 import { money } from './models';
 import type { Order } from './models';
 
-export function OrderResolution({order,disabled,run}:{order:Order;disabled:boolean;run:(action:string,data:Record<string,unknown>)=>Promise<unknown>}) {
+export function OrderResolution({order,disabled,run,canRefund=true}:{order:Order;disabled:boolean;canRefund?:boolean;run:(action:string,data:Record<string,unknown>)=>Promise<unknown>}) {
   const [open,setOpen]=useState(false),[reason,setReason]=useState(''),[busy,setBusy]=useState(false);
   if(order.status!=='SUBMITTED'||!['UNPAID','PENDING','PAID'].includes(order.paymentState??''))return null;
   const refund=order.paymentState==='PAID';
-  return <><button className="secondary" disabled={disabled||busy} onClick={()=>setOpen(true)}>{refund?`Từ chối / hoàn giả lập đơn #${order.id}`:`Hủy đơn chưa trả #${order.id}`}</button>
+  if(refund&&!canRefund)return null;
+  return <><button className="secondary" disabled={disabled||busy} onClick={()=>setOpen(true)}>{refund?`Từ chối / hoàn giả lập đơn #${order.id}`:order.acceptanceState==='WAITING'?`Từ chối đơn #${order.id}`:`Hủy đơn chưa trả #${order.id}`}</button>
     {open&&<Dialog label="Xử lý đơn không phục vụ được" onClose={()=>{if(!busy)setOpen(false);}}>
       <h2>{refund?'Từ chối và hoàn giả lập':'Hủy đơn chưa thanh toán'} #{order.id}</h2>
       <p>{refund?`Hoàn giả lập toàn bộ ${money(order.totalVnd)}; không có giao dịch ngân hàng thật.`:'Đơn chưa thanh toán sẽ không được pha chế. Giao dịch thử đang chờ cũng bị hủy.'}</p>

@@ -6,6 +6,9 @@ import { GuestJoin } from "./Guest";
 import { GuestEntryConflict } from "./GuestEntryConflict";
 import { GuestWorkspace } from "./GuestWorkspace";
 import { CheckoutControls } from "./CheckoutControls";
+import { StaffAccountsPanel } from "./StaffAccountsPanel";
+import { StaffMenu } from "./StaffMenu";
+import { StaffTableDetails } from "./StaffTableDetails";
 import { StaffRecovery } from "./StaffRecovery";
 import { financialActions, staffJournal } from "./staffJournal";
 import { VisitQrPanel } from "./VisitQrPanel";
@@ -14,13 +17,15 @@ import { SupportQueue, CashierQueue } from "./Worklists";
 import { searchText, WaitTime } from "./ui";
 import { MenuAdmin } from "./MenuAdmin";
 import { SalesHistory } from "./SalesHistory";
-import { FinanceDashboard } from "./FinanceDashboard";
-import { TaxBreakdown } from "./TaxBreakdown";
 import { Notifications } from "./Notifications";
 import { PrepaidClose } from "./PrepaidClose";
 import { Assistance } from "./Assistance";
 import { SystemDiagnosticsPanel } from "./SystemDiagnostics";
 import { OrderResolution } from "./OrderResolution";
+import { AcceptanceQueue } from "./AcceptanceQueue";
+import { FinanceReport } from "./FinanceReport";
+import { TaxSettingsPanel } from "./TaxSettingsPanel";
+import { TableQr } from "./TableQr";
 import { Brand, Icon } from "./Icons";
 import type { IconName } from "./Icons";
 import { DrinkArt } from "./DrinkArt";
@@ -56,6 +61,8 @@ export function App() {
     [tableFilter, setTableFilter] = useState("all");
   const [replies, setReplies] = useState<Record<number, string>>({});
   const commandLock = useRef(false);
+  const isManager = session?.identity.role === "ADMIN";
+  useEffect(()=>{if(session?.identity.role==='STAFF'&&!['tables','orders','requests','menu'].includes(view))setView('tables');},[session?.identity.role,view]);
   const selectedVersion = state?.tables.find(
     (t) => t.id === selected?.id,
   )?.version;
@@ -155,6 +162,9 @@ export function App() {
           if (disposed) return;
           const message = JSON.parse(event.data);
           if (message.type === "STATE") accept(message.state);
+          else if (message.type === "SESSION_ENDED") {
+            setSession(null);setState(null);setConnected(false);setError("Tài khoản đã bị khóa hoặc phiên đã được thu hồi. Vui lòng liên hệ quản lý.");
+          }
           else if (message.type === "CONNECTION_LOST") {
             setConnected(false);
             setError(
@@ -293,8 +303,8 @@ export function App() {
         Đang mở CafeLink…
       </div>
     );
-  if (session?.identity.role === "ADMIN" && ["/join", "/guest"].includes(location.pathname))
-    return <GuestEntryConflict grant={grant} tableGrant={tableGrant} />;
+  if (session && session.identity.role !== "GUEST" && ["/join", "/guest"].includes(location.pathname))
+    return <GuestEntryConflict grant={grant} tableGrant={tableGrant} role={session.identity.role} />;
   if (!session && ["/join", "/guest"].includes(location.pathname))
     return (
       <GuestJoin
@@ -356,7 +366,7 @@ export function App() {
         <section className="login-panel">
           <form onSubmit={login}>
             <span className="eyebrow">CHÀO MỪNG TRỞ LẠI</span>
-            <h2>Đăng nhập quản lý</h2>
+            <h2>Đăng nhập quầy</h2>
             <p className="muted">
               Dành cho chủ quán và nhân viên được cấp tài khoản.
             </p>
@@ -431,10 +441,10 @@ export function App() {
     )
     .sort((a, b) => Date.parse(a.queuedAt??a.createdAt)-Date.parse(b.queuedAt??b.createdAt)||a.id-b.id);
   return (
-    <div className="app-shell">
+    <div className="app-shell" data-view={view}>
       <aside className="sidebar">
         <Brand />
-        <p className="workspace-label">KHÔNG GIAN QUẢN LÝ</p>
+        <p className="workspace-label">{isManager?"KHÔNG GIAN QUẢN LÝ":"KHÔNG GIAN NHÂN VIÊN"}</p>
         <nav aria-label="Điều hướng chính">
           {[
             ["tables", "grid", "Sơ đồ bàn"],
@@ -443,10 +453,12 @@ export function App() {
             ["cashier", "bag", "Thu ngân"],
             ["menu", "menu", "Thực đơn"],
             ["history", "receipt", "Lịch sử hóa đơn"],
-            ["finance", "receipt", "Thu chi & thuế"],
+            ["finance", "chart", "Thu chi"],
+            ["settings", "settings", "Cài đặt quán"],
             ["assistance", "help", "Tra cứu hỗ trợ"],
             ["system", "grid", "Chẩn đoán hệ thống"],
-          ].map(([id, icon, title]) => (
+            ["staff", "settings", "Nhân viên"],
+          ].filter(([id])=>isManager||["tables","orders","requests","menu"].includes(id)).map(([id, icon, title]) => (
             <button
               key={id}
               className={view === id ? "nav active" : "nav"}
@@ -460,9 +472,9 @@ export function App() {
                   {
                     orders.filter(
                       (o) =>
-                        o.status !== "SERVED" &&
+                        o.status !== "SERVED" && (o.acceptanceState === "WAITING" ||
                         (!o.paymentState ||
-                          ["PAID", "POSTPAY"].includes(o.paymentState)),
+                          ["PAID", "POSTPAY"].includes(o.paymentState))),
                     ).length
                   }
                 </b>
@@ -470,7 +482,7 @@ export function App() {
               {id === "requests" && <b>{openTickets.length}</b>}
               {id === "cashier" && (
                 <b>
-                  {(state?.orders.filter(o=>['UNPAID','PENDING'].includes(o.paymentState??'')).length??0)+(state?.checkouts.filter(
+                  {(state?.orders.filter(o=>o.acceptanceState!=='WAITING'&&['UNPAID','PENDING'].includes(o.paymentState??'')).length??0)+(state?.checkouts.filter(
                     (c) =>
                       c.state === "REQUESTED" || c.state === "ACKNOWLEDGED",
                   ).length ?? 0)}
@@ -485,7 +497,7 @@ export function App() {
           </span>
           <div>
             <strong>{session.identity.username}</strong>
-            <small>Quản lý quán</small>
+            <small>{isManager?"Quản lý quán":"Nhân viên phục vụ"}</small>
           </div>
           <button className="text-button" onClick={logout}>
             Đăng xuất
@@ -507,10 +519,10 @@ export function App() {
                       ? "Thu ngân"
                       : view === "history"
                         ? "Lịch sử hóa đơn"
-                        : view==='finance'?'Thu chi & thuế':view==='assistance'?'Tra cứu hỗ trợ':view==='system'?'Chẩn đoán hệ thống':"Thực đơn của quán"}
+                      : view==='staff'?'Nhân viên': view==='finance'?'Báo cáo thu chi':view==='settings'?'Cài đặt quán':view==='assistance'?'Tra cứu hỗ trợ':view==='system'?'Chẩn đoán hệ thống':"Thực đơn của quán"}
             </h1>
             <p className="muted">
-              Cùng một trạng thái, trên mọi màn hình của quán.
+              {new Intl.DateTimeFormat('vi-VN',{weekday:'long',day:'numeric',month:'long'}).format(new Date())} · {isManager?'Quản lý':'Nhân viên'}: {session.identity.username}
             </p>
           </div>
           <span
@@ -524,6 +536,7 @@ export function App() {
           session={session}
           revision={state?.revision}
           onOpen={(event) => {
+            if(!isManager){setView(event.type.includes('SERVICE')||event.type==='HANDLE_TICKET'?'requests':'orders');return;}
             const table = state?.tables.find(
               (t) => t.visitId === event.visitId || t.id === event.tableId,
             );
@@ -599,14 +612,14 @@ export function App() {
             </strong>
           </div>
           <div>
-            <span>Đơn cần xử lý</span>
+            <span>Đơn chờ nhận / pha chế</span>
             <strong>
               {
                 orders.filter(
                   (o) =>
                     o.status !== "SERVED" &&
-                    (!o.paymentState ||
-                      ["PAID", "POSTPAY"].includes(o.paymentState)),
+                    (o.acceptanceState === "WAITING" || !o.paymentState ||
+                      ["PAID", "POSTPAY"].includes(o.paymentState)) && !['CANCELLED','REFUNDED'].includes(o.paymentState??''),
                 ).length
               }
             </strong>
@@ -617,12 +630,12 @@ export function App() {
           </div>
           <div>
             <span>Đơn/yêu cầu chờ thanh toán</span>
-            <strong>{pendingCheckouts.length+orders.filter(o=>['UNPAID','PENDING'].includes(o.paymentState??'')).length}</strong>
+            <strong>{pendingCheckouts.length+orders.filter(o=>o.acceptanceState!=='WAITING'&&['UNPAID','PENDING'].includes(o.paymentState??'')).length}</strong>
           </div>
         </section>
         {view === "tables" && (
           <>
-          <section className="warning"><p>Nhận đơn mới toàn quán: {state?.storeAcceptingOrders===false?'Tạm dừng':'Đang nhận'}. Tạm dừng không hủy đơn, thanh toán hoặc hỗ trợ đã có.</p><button disabled={disabled} onClick={()=>void run('SET_STORE_ACCEPTING',{enabled:state?.storeAcceptingOrders===false?1:0})}>{state?.storeAcceptingOrders===false?'Tiếp tục nhận đơn toàn quán':'Tạm dừng đơn mới toàn quán'}</button><p className="muted">Mở tất cả bàn bật lại nhận khách QR cho cả quán, kể cả bàn từng tạm dừng khách mới.</p></section>
+          <section className="store-service-bar"><div><span className={`service-dot ${state?.storeAcceptingOrders===false?'paused':''}`}/><strong>{state?.storeAcceptingOrders===false?'Đang tạm dừng đơn mới':'Quán đang nhận đơn'}</strong><p>Tiếp tục xử lý các đơn và yêu cầu đã có.</p></div>{isManager&&<button className="secondary" disabled={disabled} onClick={()=>void run('SET_STORE_ACCEPTING',{enabled:state?.storeAcceptingOrders===false?1:0})}>{state?.storeAcceptingOrders===false?'Tiếp tục nhận đơn toàn quán':'Tạm dừng đơn mới toàn quán'}</button>}</section>
           <>
             <div className="section-heading">
               <h2>Không gian quán</h2>
@@ -631,7 +644,7 @@ export function App() {
               </span>
             </div>
             <div className="filter-toolbar">
-              <button
+              {isManager&&<button
                 className="primary"
                 disabled={disabled}
                 onClick={async () => {
@@ -642,7 +655,7 @@ export function App() {
                 }}
               >
                 Mở tất cả bàn
-              </button>
+              </button>}
               <label htmlFor="table-filter">Lọc bàn</label>
               <select
                 id="table-filter"
@@ -669,18 +682,13 @@ export function App() {
                           table.visitState !== "CHECKOUT_REQUESTED"),
                 )
                 .map((table) => (
-                  <button
+                  <article
                     key={table.id}
                     className={`table-card ${table.visitId || (table.activeSessions ?? 0) > 0 ? "occupied" : ""}`}
-                    onClick={() => {
-                      setSelected(table);
-                      setBill(null);
-                      setConfirmPay(false);
-                    }}
-                    aria-label={`Xem ${table.name}`}
                   >
+                    <button type="button" className="table-card-open" aria-label={`Xem ${table.name}`} onClick={() => { setSelected(table); setBill(null); setConfirmPay(false); }} />
                     <div className="table-card-top">
-                      <span className="table-icon">▦</span>
+                      <span className="table-icon"><Icon name="table"/></span>
                       <span className={`pill ${table.visitId ? "green" : ""}`}>
                         {table.automatic
                           ? table.acceptingOrders
@@ -693,15 +701,15 @@ export function App() {
                               : "Bàn trống"}
                       </span>
                     </div>
-                    <h3>{table.name}</h3>
+                    <div className="table-card-body"><div><h3>{table.name}</h3>
                     <p>
                       {table.automatic
-                        ? `${table.activeSessions ?? 0} phiên · ${orders.filter((o) => o.tableId === table.id && o.paymentState !== "CANCELLED").length} đơn`
+                        ? `${table.activeSessions ?? 0} lượt · ${orders.filter((o) => o.tableId === table.id && o.paymentState !== "CANCELLED").length} đơn`
                         : table.visitId
                           ? `${orders.filter((o) => o.tableId === table.id).length} đơn · ${table.onlineClients} kết nối`
                           : "Sẵn sàng đón khách"}
                     </p>
-                    <div className="table-card-foot">
+                    </div><TableQr tableId={table.id} csrf={session.csrfToken} enabled={!!table.automatic}/></div><div className="table-card-foot">
                       <strong>
                         {money(
                           orders
@@ -713,9 +721,9 @@ export function App() {
                             .reduce((total, o) => total + o.totalVnd, 0),
                         )}
                       </strong>
-                      <span>Xem bàn →</span>
+                      <span aria-hidden="true">Xem bàn →</span>
                     </div>
-                  </button>
+                  </article>
                 ))}
             </section>
           </>
@@ -723,6 +731,7 @@ export function App() {
         )}
         {view === "orders" && (
           <>
+            <AcceptanceQueue orders={orders} disabled={disabled} run={run}/>
             <div className="section-heading">
               <h2>Hàng đợi phục vụ</h2>
               <label className="search-label">
@@ -785,18 +794,18 @@ export function App() {
                   >
                     {nextLabel[order.status]}
                   </button>
-                  <OrderResolution order={order} disabled={disabled} run={run}/>
+                  <OrderResolution order={order} disabled={disabled} run={run} canRefund={isManager}/>
                   <p className="muted">Giao theo bàn + mã đơn #{order.id}. Chỉ xác nhận đã mang ra khi đủ mọi món.</p>
                 </article>
               ))}
-              {!orders.some((o) => o.status !== "SERVED") && (
+              {!orders.some((o) => o.status !== "SERVED"&&['PAID','POSTPAY'].includes(o.paymentState??'POSTPAY')) && (
                 <div className="empty">
-                  <span>☕</span>
+                  <Icon name="cup"/>
                   <h3>Quầy đã xử lý xong đơn</h3>
-                  <p>Đơn mới sẽ xuất hiện khi khách đặt món.</p>
+                  <p>Đơn đã tiếp nhận và thanh toán sẽ được đưa vào pha chế.</p>
                 </div>
               )}
-              {orders.some((o) => o.status !== "SERVED") &&
+              {orders.some((o) => o.status !== "SERVED"&&['PAID','POSTPAY'].includes(o.paymentState??'POSTPAY')) &&
                 !filteredOrders.length && (
                   <div className="empty">
                     <h3>Không có đơn khớp bộ lọc</h3>
@@ -815,7 +824,8 @@ export function App() {
             </section>
           </>
         )}
-        {view === "menu" && (
+        {view === "menu" && !isManager && <StaffMenu menu={state?.menu??[]} disabled={disabled} run={run}/>}
+        {view === "menu" && isManager && (
           <MenuAdmin
             session={session}
             menu={state?.menu ?? []}
@@ -833,10 +843,12 @@ export function App() {
             }}
           />
         )}
-        {view === "history" && <SalesHistory session={session} />}
-        {view === "finance" && <FinanceDashboard session={session} />}
-        {view === "assistance" && <Assistance session={session}/>}
-        {view === "system" && <SystemDiagnosticsPanel />}
+        {isManager && view === "history" && <SalesHistory session={session} />}
+        {isManager && view === "finance" && <FinanceReport session={session} disabled={disabled}/>}
+        {isManager && view === "settings" && <TaxSettingsPanel session={session} disabled={disabled} onChanged={()=>{void api.state().then(setState);}}/>}
+        {isManager && view === "assistance" && <Assistance session={session}/>}
+        {isManager && view === "system" && <SystemDiagnosticsPanel />}
+        {isManager && view === "staff" && <StaffAccountsPanel session={session} disabled={disabled}/>}
         {view === "requests" && (
           <SupportQueue
             state={state}
@@ -853,7 +865,7 @@ export function App() {
             onOpen={setSelected}
           />
         )}
-        {view === "cashier" && (
+        {isManager && view === "cashier" && (
           <CashierQueue
             state={state}
             disabled={disabled}
@@ -886,7 +898,7 @@ export function App() {
               ×
             </button>
           </div>
-          {currentTable?.automatic ? (
+          {!isManager ? <StaffTableDetails table={currentTable} orders={tableOrders} csrf={session.csrfToken}/> : currentTable?.automatic ? (
             <AutomaticTablePanel
               table={currentTable}
               orders={tableOrders}
@@ -945,7 +957,6 @@ export function App() {
                       </li>
                     ))}
                   </ul>
-                  <TaxBreakdown order={order} />
                 </article>
               ))}
               {bill && (

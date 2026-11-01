@@ -1,3 +1,8 @@
+import {
+  openGuestZone,
+  openGuestPayment,
+  acceptGuestOrders,
+} from "./guest-navigation";
 import { test, expect } from "@playwright/test";
 import type { BrowserContext, Page } from "@playwright/test";
 const origin = "http://127.0.0.1:18080";
@@ -51,6 +56,7 @@ test.beforeEach(async ({ browser }) => {
   await page
     .getByRole("button", { name: "Vào bàn của tôi", exact: true })
     .click();
+  await openGuestZone(page, "Thực đơn");
   await expect(
     page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
   ).toBeEnabled();
@@ -109,9 +115,16 @@ test("V6 ảnh/menu thật và V7 luồng QR–trả trước–pha chế–lị
     .getByLabel(/Ảnh món/)
     .setInputFiles({ name: "drink.png", mimeType: "image/png", buffer: image });
   await expect(form.getByAltText("Xem trước ảnh món")).toBeVisible();
-  await expect.poll(()=>form.getByAltText("Xem trước ảnh món").evaluate(img=>(img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  await expect
+    .poll(() =>
+      form
+        .getByAltText("Xem trước ảnh món")
+        .evaluate((img) => (img as HTMLImageElement).naturalWidth),
+    )
+    .toBeGreaterThan(0);
   await form.getByRole("button", { name: "Lưu món", exact: true }).click();
   await expect(form).not.toBeVisible();
+  await openGuestZone(page, "Thực đơn");
   await page.getByLabel("Tìm đồ uống", { exact: true }).fill("matcha");
   await expect(
     page.getByAltText("Matcha thử ảnh", { exact: true }),
@@ -121,15 +134,18 @@ test("V6 ảnh/menu thật và V7 luồng QR–trả trước–pha chế–lị
       .getByAltText("Matcha thử ảnh", { exact: true })
       .evaluate((i) => (i as HTMLImageElement).naturalWidth),
   ).toBeGreaterThan(0);
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Matcha thử ảnh", exact: true })
     .click();
+  await openGuestZone(page, "Giỏ hàng");
   await page
-    .getByRole("button", { name: "Đặt món và thanh toán", exact: true })
+    .getByRole("button", { name: "Gửi đơn gọi món", exact: true })
     .click();
+  await openGuestPayment(owner, page);
   const portal = page.getByRole("dialog", { name: "Cổng thanh toán giả lập" });
   await expect(portal).toBeVisible();
-  await expect(portal.locator(".bill-total")).toContainText("45.000");
+  await expect(portal.getByText("45.000", { exact: false })).toBeVisible();
   const before = (await state()).orders.find((o: any) => o.visitId === visitId);
   expect(before.paymentState).toBe("PENDING");
   await admin.getByRole("button", { name: /Quầy pha chế/ }).click();
@@ -194,12 +210,15 @@ test("V6 ảnh/menu thật và V7 luồng QR–trả trước–pha chế–lị
 });
 
 test("V7 thất bại cho thử lại; mất phản hồi thành công rồi reload không thu hai lần", async () => {
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
     .click();
+  await openGuestZone(page, "Giỏ hàng");
   await page
-    .getByRole("button", { name: "Đặt món và thanh toán", exact: true })
+    .getByRole("button", { name: "Gửi đơn gọi món", exact: true })
     .click();
+  await openGuestPayment(owner, page);
   let portal = page.getByRole("dialog", { name: "Cổng thanh toán giả lập" });
   await portal
     .getByRole("button", { name: "Giả lập thanh toán thất bại" })
@@ -207,6 +226,8 @@ test("V7 thất bại cho thử lại; mất phản hồi thành công rồi rel
   await expect(portal).not.toBeVisible();
   const order = (await state()).orders.find((o: any) => o.visitId === visitId);
   expect(order.paymentState).toBe("UNPAID");
+  await acceptGuestOrders(owner, page);
+  await openGuestZone(page, "Thanh toán");
   await page
     .getByRole("button", { name: `Thanh toán đơn #${order.id}`, exact: true })
     .click();
@@ -232,6 +253,8 @@ test("V7 thất bại cho thử lại; mất phản hồi thành công rồi rel
   await expect(
     page.getByText("Đã thanh toán giả lập", { exact: true }),
   ).toBeVisible();
+  await acceptGuestOrders(owner, page);
+  await openGuestZone(page, "Thanh toán");
   await expect(
     page.getByRole("button", {
       name: `Thanh toán đơn #${order.id}`,
@@ -245,6 +268,7 @@ test("V7 thất bại cho thử lại; mất phản hồi thành công rồi rel
 });
 
 test("V6 cart đổi giá yêu cầu xem lại, hết món bị bỏ có xác nhận", async () => {
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
     .click();
@@ -255,14 +279,16 @@ test("V6 cart đổi giá yêu cầu xem lại, hết món bị bỏ có xác nh
     expectedVersion: item.version,
     priceVnd: 32000,
   });
+  await openGuestZone(page, "Giỏ hàng");
   await expect(
     page.getByRole("button", {
       name: "Cập nhật giỏ theo thực đơn mới",
       exact: true,
     }),
   ).toBeVisible();
+  await openGuestZone(page, "Giỏ hàng");
   await expect(
-    page.getByRole("button", { name: "Đặt món và thanh toán", exact: true }),
+    page.getByRole("button", { name: "Gửi đơn gọi món", exact: true }),
   ).toBeDisabled();
   await page
     .getByRole("button", {
@@ -270,6 +296,7 @@ test("V6 cart đổi giá yêu cầu xem lại, hết món bị bỏ có xác nh
       exact: true,
     })
     .click();
+  await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("32.000");
   const updated = (await state()).menu.find((i: any) => i.id === 2);
   await adminCommand("UPDATE_MENU_ITEM", {
@@ -284,7 +311,9 @@ test("V6 cart đổi giá yêu cầu xem lại, hết món bị bỏ có xác nh
       exact: true,
     })
     .click();
+  await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("0");
+  await openGuestZone(page, "Thực đơn");
   await expect(
     page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
   ).toHaveCount(0);
@@ -299,9 +328,11 @@ test("V6 cart đổi giá yêu cầu xem lại, hết món bị bỏ có xác nh
 });
 
 test("V5a thông báo từ event thật, mở không xử lý hỗ trợ và giữ đã đọc qua reload", async () => {
+  await openGuestZone(page, "Hỗ trợ");
   await page
     .getByLabel("Lời nhắn cho nhân viên", { exact: true })
     .fill("Thêm nước test thông báo");
+  await openGuestZone(page, "Hỗ trợ");
   await page
     .getByRole("button", { name: "Gọi nhân viên", exact: true })
     .click();
@@ -375,12 +406,15 @@ test("V7 responsive và hủy giao dịch không tạo hóa đơn, hủy đơn c
         `overflow ${width}`,
       ).toBe(true);
   }
+  await openGuestZone(page, "Thực đơn");
   await page
     .getByRole("button", { name: "Thêm Cà phê sữa", exact: true })
     .click();
+  await openGuestZone(page, "Giỏ hàng");
   await page
-    .getByRole("button", { name: "Đặt món và thanh toán", exact: true })
+    .getByRole("button", { name: "Gửi đơn gọi món", exact: true })
     .click();
+  await openGuestPayment(owner, page);
   await page
     .getByRole("dialog", { name: "Cổng thanh toán giả lập" })
     .getByRole("button", { name: "Hủy giao dịch thử", exact: true })
@@ -455,16 +489,39 @@ test("V5a hai tab cùng tài khoản chỉ hiện một toast và tắt âm vẫ
     await center
       .getByRole("button", { name: "Bật âm thanh tại quầy", exact: true })
       .click();
-    const mute = center.getByRole("button", { name: "Tắt âm thanh tại quầy", exact: true });
-    const unavailable = center.getByRole("status", { name: "Cảnh báo âm thanh" });
+    const mute = center.getByRole("button", {
+      name: "Tắt âm thanh tại quầy",
+      exact: true,
+    });
+    const unavailable = center.getByRole("status", {
+      name: "Cảnh báo âm thanh",
+    });
     await expect(mute.or(unavailable)).toBeVisible();
     if (await mute.isVisible()) {
-      test.info().annotations.push({ type: "audioOutcome", description: "Real AudioContext resumed; audible output not measured" });
+      test
+        .info()
+        .annotations.push({
+          type: "audioOutcome",
+          description: "Real AudioContext resumed; audible output not measured",
+        });
       await mute.click();
     } else {
-      test.info().annotations.push({ type: "audioOutcome", description: "Browser audio unavailable; bounded visual fallback verified" });
-      await expect(unavailable).toContainText("Thông báo chữ vẫn được cập nhật");
-      await expect(center.getByRole("button", { name: "Bật âm thanh tại quầy", exact: true })).toBeEnabled();
+      test
+        .info()
+        .annotations.push({
+          type: "audioOutcome",
+          description:
+            "Browser audio unavailable; bounded visual fallback verified",
+        });
+      await expect(unavailable).toContainText(
+        "Thông báo chữ vẫn được cập nhật",
+      );
+      await expect(
+        center.getByRole("button", {
+          name: "Bật âm thanh tại quầy",
+          exact: true,
+        }),
+      ).toBeEnabled();
     }
     await expect(
       center.getByRole("button", { name: new RegExp(note) }),
@@ -545,6 +602,7 @@ test("V6 lọc trạng thái, tạm hết một lần bấm và xác nhận ng�
     .getByRole("button", { name: "Xác nhận ngừng bán", exact: true })
     .click();
   await expect(dialog).not.toBeVisible();
+  await openGuestZone(page, "Thực đơn");
   await expect(
     page.getByRole("button", { name: "Chi tiết Nước suối", exact: true }),
   ).toHaveCount(0);

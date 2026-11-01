@@ -1,3 +1,4 @@
+import { openGuestZone } from './guest-navigation';
 import { test, expect } from "@playwright/test";
 import { TcpPeer } from "./tcp-peer";
 
@@ -22,7 +23,7 @@ test("đăng nhập, mở bàn, đồng bộ hai tab và đăng xuất toàn b�
     .getByRole("button", { name: "Mở lượt khách", exact: true })
     .click();
   await expect(
-    second.getByRole("button", { name: "Xem Bàn 1", exact: true }),
+    second.locator('.table-card').filter({has:second.getByRole("button", { name: "Xem Bàn 1", exact: true })}),
   ).toContainText("Đang phục vụ");
   await page.getByRole("button", { name: "Đóng chi tiết bàn" }).click();
   await page.screenshot({
@@ -35,10 +36,10 @@ test("đăng nhập, mở bàn, đồng bộ hai tab và đăng xuất toàn b�
   ).toBeVisible();
   await page.getByRole("button", { name: "Đăng xuất", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Đăng nhập quản lý" }),
+    page.getByRole("heading", { name: "Đăng nhập quầy" }),
   ).toBeVisible();
   await expect(
-    second.getByRole("heading", { name: "Đăng nhập quản lý" }),
+    second.getByRole("heading", { name: "Đăng nhập quầy" }),
   ).toBeVisible({ timeout: 6000 });
 });
 
@@ -53,7 +54,7 @@ test("sai mật khẩu có phản hồi rõ và không vào được dữ liệu
     "Sai tài khoản hoặc mật khẩu",
   );
   await expect(
-    page.getByRole("heading", { name: "Đăng nhập quản lý" }),
+    page.getByRole("heading", { name: "Đăng nhập quầy" }),
   ).toBeVisible();
 });
 
@@ -83,7 +84,7 @@ test("trình duyệt bị chặn ghi lệnh thiếu CSRF, không làm thay đổ
   );
   expect(status).toBe(403);
   await expect(
-    page.getByRole("button", { name: "Xem Bàn 6", exact: true }),
+    page.locator('.table-card').filter({has:page.getByRole("button", { name: "Xem Bàn 6", exact: true })}),
   ).toContainText("Bàn trống");
 });
 
@@ -108,7 +109,8 @@ test("màn hình điện thoại không tràn ngang và vẫn thao tác được
     fullPage: true,
   });
   await page.getByRole("button", { name: "Xem Bàn 2", exact: true }).click();
-  await expect(
+  await openGuestZone(page, 'Thực đơn');
+await expect(
     page.getByRole("dialog", { name: "Chi tiết Bàn 2" }),
   ).toBeVisible();
   expect(
@@ -135,7 +137,7 @@ test("đơn TCP hiện trên web, quầy phục vụ, phản hồi khách và th
   // click() does not await the async journal/network handler. Wait for the
   // committed visit to reach the UI before using it as the TCP fixture scope.
   await expect(
-    page.getByRole("button", { name: "Xem Bàn 3", exact: true }),
+    page.locator('.table-card').filter({has:page.getByRole("button", { name: "Xem Bàn 3", exact: true })}),
   ).toContainText("Đang phục vụ");
   const state = await page.request.get("/api/state");
   const visitId = (await state.json()).tables.find(

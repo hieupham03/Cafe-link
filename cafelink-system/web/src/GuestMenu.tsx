@@ -131,7 +131,7 @@ export function GuestMenu({
                 aria-label={`Chi tiết ${item.name}`}
                 onClick={() => open(item)}
               >
-                Chọn số lượng <Icon name="arrow" />
+                Chi tiết <Icon name="arrow" />
               </button>
             </div>
           </article>

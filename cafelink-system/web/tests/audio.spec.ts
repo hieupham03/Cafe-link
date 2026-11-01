@@ -48,7 +48,7 @@ test("cảnh báo âm không bị polling xóa, thử lại được và đăng 
   await expect(page.getByRole("button", { name: "Tắt chuông quầy", exact: true })).toBeVisible();
   await expect(warning).toHaveCount(0);
   await page.getByRole("button", { name: "Đăng xuất", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Đăng nhập quản lý" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Đăng nhập quầy" })).toBeVisible();
   expect(await page.evaluate(() => (window as unknown as Window & { audioClosed: number }).audioClosed)).toBe(2);
   expect(errors).toEqual([]);
 });

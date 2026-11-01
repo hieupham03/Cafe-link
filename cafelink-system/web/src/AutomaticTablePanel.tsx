@@ -54,8 +54,7 @@ export function AutomaticTablePanel({
         {table.acceptingOrders ? "Nhận khách mới qua QR" : "Tạm dừng khách mới"}
       </span>
       <p>
-        QR cố định · Mỗi trình duyệt một phiên riêng · Tự hoàn tất sau khi trả
-        tiền, phục vụ và hỗ trợ xong.
+        QR gọi món tại bàn · Mỗi khách có đơn và thanh toán riêng.
       </p>
       <p>
         {table.activeSessions ?? 0} phiên đang xử lý. Con số này không biểu thị
@@ -80,17 +79,11 @@ export function AutomaticTablePanel({
             Mở trang đặt món {table.name}
           </a>
           <GuestLink key={url} url={url} />
-          <p className="muted">
-            Thử làm khách: dán link vào cửa sổ InPrivate/Ẩn danh
-            (Ctrl+Shift+N trên Edge/Chrome), trình duyệt khác hoặc quét QR bằng điện thoại.
-            Tab thường dùng chung phiên quản lý.
-          </p>
           <button className="secondary" onClick={download}>
             Tải QR bàn
           </button>
           <p className="muted">
-            Có thể dùng lại qua nhiều lượt khách. Nếu đổi địa chỉ demo Internet,
-            hãy tải QR mới.
+            Dùng chung mã tại bàn. Mỗi khách có đơn và thanh toán riêng.
           </p>
         </div>
       )}

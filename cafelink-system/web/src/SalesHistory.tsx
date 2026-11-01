@@ -3,7 +3,7 @@ import { api } from "./api";
 import { money } from "./models";
 import type { SessionInfo, Order, OrderResolution } from "./models";
 import { Dialog } from "./Dialog";
-import { TaxBreakdown } from "./TaxBreakdown";
+import { OrderTotals } from "./OrderTotals";
 interface Receipt {
   resolution?: OrderResolution;
   receiptId: string;
@@ -181,14 +181,14 @@ export function SalesHistory({ session }: { session: SessionInfo }) {
                 ))}
               </ul>
               {o.note && <p>Ghi chú: {o.note}</p>}
-              <TaxBreakdown order={o} />
+              <OrderTotals order={o}/>
             </article>
           ))}
           <p className="bill-total">
             Tổng đã xác nhận <strong>{money(selected.totalVnd)}</strong>
           </p>
           <p className="muted">
-            Bản ghi nội bộ cho demo; không phải hóa đơn thuế.
+            Phiếu thanh toán của quán. Không thay thế hóa đơn điện tử theo quy định.
           </p>
           {selected.resolution&&<div className="warning"><p>Đã hoàn giả lập: {money(selected.resolution.amountVnd)}</p><p>Lý do: {selected.resolution.reason}</p><p>Người xử lý: {selected.resolution.actor}</p><p>Khoản thu gốc được giữ để đối chiếu. Không có giao dịch ngân hàng thật.</p></div>}
         </Dialog>
