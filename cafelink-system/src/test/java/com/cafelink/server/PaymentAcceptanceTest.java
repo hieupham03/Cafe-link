@@ -14,7 +14,7 @@ class PaymentAcceptanceTest {
  @AfterEach void stop()throws Exception{s.close();}
  JsonObject call(Identity who,String action,JsonObject data)throws Exception{return s.execute(who,UUID.randomUUID().toString(),action,data);}
  JsonObject order()throws Exception{return call(guest,"PLACE_ORDER",j("{\"visitId\":\""+visit+"\",\"items\":[{\"menuId\":2,\"quantity\":1,\"expectedVersion\":1,\"expectedPriceVnd\":30000}]}"));}
- JsonObject startPay(int order)throws Exception{return call(guest,"START_ORDER_PAYMENT",j("{\"visitId\":\""+visit+"\",\"orderId\":"+order+"}"));}
+ JsonObject startPay(int order)throws Exception{call(admin,"ACCEPT_ORDER",j("{\"orderId\":"+order+"}"));return call(guest,"START_ORDER_PAYMENT",j("{\"visitId\":\""+visit+"\",\"orderId\":"+order+"}"));}
  JsonObject finish(JsonObject pay,String outcome)throws Exception{JsonObject d=pay.deepCopy();d.addProperty("outcome",outcome);return call(guest,"SIMULATE_PAYMENT",d);}
  JsonObject payOne()throws Exception{JsonObject p=startPay(order().get("orderId").getAsInt());finish(p,"SUCCESS");return p;}
  @Test void terminalFailureCanRetryButLateOldSuccessCannotPayAgain()throws Exception{

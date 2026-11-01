@@ -3,6 +3,7 @@ package com.cafelink.server;
 import com.cafelink.common.Models.*;
 import com.cafelink.common.Json;
 import com.cafelink.common.Commands;
+import com.cafelink.common.Permissions;
 import com.google.gson.*;
 import java.nio.file.Path;
 import java.sql.SQLException;
@@ -11,6 +12,7 @@ import java.util.*;
 
 /** Database and business state are serialized here; socket I/O never holds this lock. */
 public final class CafeService implements AutoCloseable {
+    private static final Set<String> STAFF_DISCARD_ACTIONS=Set.of("SET_MENU_AVAILABILITY","ACCEPT_ORDER","SAVE_TAX_SETTINGS","CREATE_EXPENSE","VOID_EXPENSE","REQUEST_CHECKOUT","ACK_CHECKOUT","REOPEN_ORDERING","PAY_AND_CLOSE","CLOSE_VISIT","CREATE_MENU_ITEM","UPDATE_MENU_ITEM","RESOLVE_ORDER");
     private final Database db;
     private final QrAccess qr;
     private final CheckoutFlow checkout;
@@ -20,7 +22,8 @@ public final class CafeService implements AutoCloseable {
     private final OrderPayments orderPayments;
     private final TableOrdering tableOrdering;
     private final OrderResolutions resolutions;
-    private final Finance finance;
+    private final StoreFinance finance;
+    private final StaffAccounts staffAccounts;
     public CafeService(Path path) throws Exception { this(path, null); }
     public CafeService(Path path, QrConfig config) throws Exception {
         this(path,config,false);
@@ -31,7 +34,8 @@ public final class CafeService implements AutoCloseable {
         orderPayments=config==null?null:new OrderPayments(db,config,events);
         tableOrdering=config==null?null:new TableOrdering(db,qr,config,events);
         resolutions=config==null?null:new OrderResolutions(db,events);
-        finance=config==null?null:new Finance(db);
+        finance=config==null?null:new StoreFinance(db,config.clock);
+        staffAccounts=config==null?null:new StaffAccounts(db);
     }
     /** Public dependency check: read one system row, without creating users, visits or business events. */
     public synchronized JsonObject health() throws SQLException {
@@ -68,7 +72,7 @@ public final class CafeService implements AutoCloseable {
     public synchronized void confirmJoinGrant(Identity who, String grant) throws SQLException { qrRequired().confirmGrant(who, grant); }
     public synchronized void checkIdentity(Identity who) throws SQLException {
         if (who == null) throw problem("UNAUTHENTICATED", "Vui lòng đăng nhập.");
-        if (!admin(who)) guestVisit(who);
+        if (operator(who)) { if(staffAccounts!=null)staffAccounts.validate(who); } else guestVisit(who);
     }
     public synchronized void logoutGuest(Identity who) throws SQLException {
         qrRequired();String visit=guestVisit(who);
@@ -79,7 +83,7 @@ public final class CafeService implements AutoCloseable {
         qr.logout(who);
     }
     public synchronized boolean onlineInCurrentVisit(Identity who) throws SQLException {
-        if (qr == null || admin(who)) return true;
+        if (qr == null || operator(who)) return true;
         try {
             String visit = guestVisit(who);
             return !db.query("SELECT id FROM visits WHERE id=? AND active=1", r -> r.getString(1), visit).isEmpty();
@@ -91,12 +95,12 @@ public final class CafeService implements AutoCloseable {
     public synchronized Identity authenticate(String username, String password, String credential) throws SQLException {
         if (username == null || password == null || username.length() > 60 || password.length() > 128)
             throw problem("AUTH_FAILED", "Sai tài khoản hoặc mật khẩu.");
-        record Account(String hash, Identity identity) { }
+        record Account(String hash, Identity identity, boolean active) { }
         List<Account> found = db.query("SELECT * FROM accounts WHERE username=?", r -> new Account(r.getString("password_hash"),
-                new Identity(username, r.getString("role"), r.getObject("table_id") == null ? null : r.getInt("table_id"), null)), username);
-        if (found.isEmpty() || !PasswordHash.verify(password, found.get(0).hash())) throw problem("AUTH_FAILED", "Sai tài khoản hoặc mật khẩu.");
+                new Identity(username, r.getString("role"), r.getObject("table_id") == null ? null : r.getInt("table_id"), null,null,null,null,qr==null?0:r.getLong("auth_version")), qr==null||r.getInt("active")==1), username);
+        if (found.isEmpty() || !found.get(0).active() || !PasswordHash.verify(password, found.get(0).hash())) throw problem("AUTH_FAILED", "Sai tài khoản hoặc mật khẩu.");
         Identity account = found.get(0).identity();
-        if (admin(account)) return qr==null?account:new Identity(account.username(),account.role(),null,null,null,null,qr.storeId());
+        if (operator(account)) return qr==null?account:new Identity(account.username(),account.role(),null,null,null,null,qr.storeId(),account.accountVersion());
         if (qr != null) throw problem("QR_REQUIRED", "Khách cần quét QR của lượt bàn; mật khẩu bàn không cấp quyền trên V2.");
         String token = credential;
         if (token == null || token.isEmpty()) {
@@ -109,26 +113,27 @@ public final class CafeService implements AutoCloseable {
         return new Identity(username, account.role(), account.tableId(), token);
     }
     public synchronized Snapshot snapshot(Identity who, Map<Integer, Integer> online) throws SQLException {
-        if (who == null) throw problem("UNAUTHENTICATED", "Vui lòng đăng nhập.");
-        String allowed = admin(who) ? null : guestVisit(who);
-        List<MenuItem> menu = catalog!=null?catalog.list(admin(who)):db.query("SELECT * FROM menu ORDER BY id", r -> new MenuItem(r.getInt("id"), r.getString("name"), r.getLong("price_vnd"), r.getString("category")));
-        String filter = admin(who) ? "" : " WHERE t.id=?";
-        Object[] tableArgs = admin(who) ? new Object[0] : new Object[]{allowed, who.tableId()};
-        List<TableView> tables = db.query("SELECT t.id,t.name,CASE WHEN v.active=1 THEN v.id ELSE NULL END visit_id"+(qr==null?"":",v.state,v.version,v.payment_mode,a.table_id auto_table,a.enabled,(SELECT count(*) FROM visits av WHERE av.table_id=t.id AND av.active=1) session_count")+" FROM cafe_tables t LEFT JOIN visits v ON v.table_id=t.id AND " + (qr!=null&&!admin(who)?"(v.active=1 OR v.service_mode='AUTO')":"v.active=1") + (admin(who) ? (qr==null?"":" AND v.service_mode='MANUAL'") : " AND v.id=?") + (qr==null?"":" LEFT JOIN table_access a ON a.table_id=t.id") + filter + " ORDER BY t.id",
+        checkIdentity(who);
+        String allowed = operator(who) ? null : guestVisit(who);
+        List<MenuItem> menu = catalog!=null?catalog.list(operator(who)):db.query("SELECT * FROM menu ORDER BY id", r -> new MenuItem(r.getInt("id"), r.getString("name"), r.getLong("price_vnd"), r.getString("category")));
+        String filter = operator(who) ? "" : " WHERE t.id=?";
+        Object[] tableArgs = operator(who) ? new Object[0] : new Object[]{allowed, who.tableId()};
+        List<TableView> tables = db.query("SELECT t.id,t.name,CASE WHEN v.active=1 THEN v.id ELSE NULL END visit_id"+(qr==null?"":",v.state,v.version,v.payment_mode,a.table_id auto_table,a.enabled,(SELECT count(*) FROM visits av WHERE av.table_id=t.id AND av.active=1) session_count")+" FROM cafe_tables t LEFT JOIN visits v ON v.table_id=t.id AND " + (qr!=null&&!operator(who)?"(v.active=1 OR v.service_mode='AUTO')":"v.active=1") + (operator(who) ? (qr==null?"":" AND v.service_mode='MANUAL'") : " AND v.id=?") + (qr==null?"":" LEFT JOIN table_access a ON a.table_id=t.id") + filter + " ORDER BY t.id",
                 r -> new TableView(r.getInt("id"), r.getString("name"), r.getString("visit_id"), r.getString("visit_id") == null ? (allowed == null ? (qr!=null&&r.getObject("auto_table")!=null?(r.getInt("enabled")==1?"ACCEPTING":"PAUSED"):"AVAILABLE") : "SESSION_ENDED") : "OCCUPIED", online.getOrDefault(r.getInt("id"), 0),qr==null?null:r.getString("state"),qr==null?0:r.getLong("version"),qr==null?"POSTPAY":r.getString("payment_mode"),qr!=null&&r.getObject("auto_table")!=null,qr!=null&&r.getInt("enabled")==1,qr==null?(r.getString("visit_id")==null?0:1):r.getInt("session_count")), tableArgs);
-        String scope = admin(who) ? "v.active=1" : (qr==null?"v.active=1":"(v.active=1 OR v.service_mode='AUTO')")+" AND v.table_id=? AND v.id=?";
-        Object[] args = admin(who) ? new Object[0] : new Object[]{who.tableId(), allowed};
+        String scope = operator(who) ? "v.active=1" : (qr==null?"v.active=1":"(v.active=1 OR v.service_mode='AUTO')")+" AND v.table_id=? AND v.id=?";
+        Object[] args = operator(who) ? new Object[0] : new Object[]{who.tableId(), allowed};
         List<OrderView> orders = loadOrders(" WHERE " + scope, args);
         List<Ticket> tickets = db.query("SELECT k.*,v.table_id FROM tickets k JOIN visits v ON v.id=k.visit_id WHERE " + scope + " ORDER BY k.id DESC",
                 r -> new Ticket(r.getLong("id"), r.getInt("table_id"), r.getString("visit_id"), r.getString("type"), r.getString("status"), r.getString("note"), r.getString("reply"), r.getString("created_at"),qr==null?0:r.getLong("version")), args);
         long revision = db.query("SELECT value FROM metadata WHERE name='revision'", r -> r.getLong(1)).get(0);
-        return new Snapshot(revision, menu, tables, orders, tickets,checkout==null?List.of():checkout.list(admin(who)?"v.active=1":"c.visit_id=?",admin(who)?new Object[0]:new Object[]{allowed}),resolutions==null?List.of():resolutions.list(admin(who)?"v.active=1":"o.visit_id=?",admin(who)?new Object[0]:new Object[]{allowed}),qr==null||db.query("SELECT value FROM store_settings WHERE name='accepting_orders'",r->r.getString(1)).get(0).equals("1"),finance==null?null:finance.settings());
+        return new Snapshot(revision, menu, tables, orders, tickets,checkout==null?List.of():checkout.list(operator(who)?"v.active=1":"c.visit_id=?",operator(who)?new Object[0]:new Object[]{allowed}),resolutions==null?List.of():resolutions.list(operator(who)?"v.active=1":"o.visit_id=?",operator(who)?new Object[0]:new Object[]{allowed}),qr==null||db.query("SELECT value FROM store_settings WHERE name='accepting_orders'",r->r.getString(1)).get(0).equals("1"),finance==null?new TaxSettings("Thuế",0,"EXCLUSIVE",1):finance.settings());
     }
     public synchronized JsonObject execute(Identity who, String action, JsonObject input) throws SQLException {
         return execute(who, UUID.randomUUID().toString(), action, input);
     }
     public synchronized JsonObject outcome(Identity who, String commandId) throws SQLException {
         if (who == null) throw problem("UNAUTHENTICATED", "Vui lòng đăng nhập.");
+        checkIdentity(who);
         validateCommandId(commandId);
         List<JsonObject> found = db.query("SELECT action,fingerprint,result_json FROM command_receipts WHERE principal=? AND command_id=?", r -> {
             JsonObject result = new JsonObject(); result.addProperty("found", true); result.addProperty("commandId", commandId);
@@ -150,9 +155,10 @@ public final class CafeService implements AutoCloseable {
         return new Identity(who.username(), who.role(), who.tableId(), token);
     }
     public synchronized JsonObject discard(Identity who, String commandId, String action, JsonObject input) throws SQLException {
-        if(!(qr!=null&&admin(who)&&Set.of("REQUEST_CHECKOUT","ACK_CHECKOUT","REOPEN_ORDERING","PAY_AND_CLOSE","CLOSE_VISIT","CREATE_MENU_ITEM","UPDATE_MENU_ITEM","RESOLVE_ORDER").contains(action)))requireGuest(who);
+        checkIdentity(who);authorize(who,action,input);
+        if(!(qr!=null&&operator(who)&&STAFF_DISCARD_ACTIONS.contains(action)))requireGuest(who);
         validateCommandId(commandId);
-        if (!Commands.guestMutation(action)&&!(qr!=null&&admin(who)&&Set.of("ACK_CHECKOUT","REOPEN_ORDERING","PAY_AND_CLOSE","CLOSE_VISIT","CREATE_MENU_ITEM","UPDATE_MENU_ITEM","RESOLVE_ORDER").contains(action))) throw problem("INVALID_INPUT", "Chỉ bỏ yêu cầu hợp lệ chưa được tiếp nhận.");
+        if (!Commands.guestMutation(action)&&!(qr!=null&&operator(who)&&STAFF_DISCARD_ACTIONS.contains(action))) throw problem("INVALID_INPUT", "Chỉ bỏ yêu cầu hợp lệ chưa được tiếp nhận.");
         return db.transaction(() -> {
             String owner = principal(who), fingerprint = Commands.fingerprint(action, input);
             JsonObject known = outcome(who, commandId);
@@ -168,12 +174,14 @@ public final class CafeService implements AutoCloseable {
     }
     public synchronized JsonObject execute(Identity who, String commandId, String action, JsonObject input) throws SQLException {
         checkIdentity(who);
+        authorize(who,action,input);
         validateCommandId(commandId);
         return db.transaction(() -> {
             String fingerprint = Commands.fingerprint(action, input);
+            boolean credentialCommand=Set.of("CREATE_STAFF_ACCOUNT","RESET_STAFF_PASSWORD").contains(action);
             if (Commands.mutation(action)) {
                 List<JsonObject> existing = db.query("SELECT fingerprint,result_json FROM command_receipts WHERE principal=? AND command_id=?", r -> {
-                    if (!r.getString("fingerprint").equals(fingerprint)) throw problem("COMMAND_CONFLICT", "Mã yêu cầu đã dùng cho nội dung khác.");
+                    if (!(credentialCommand?PasswordHash.verify(fingerprint,r.getString("fingerprint")):r.getString("fingerprint").equals(fingerprint))) throw problem("COMMAND_CONFLICT", "Mã yêu cầu đã dùng cho nội dung khác.");
                     return JsonParser.parseString(r.getString("result_json")).getAsJsonObject();
                 }, principal(who), commandId);
                 if (!existing.isEmpty()) {
@@ -182,15 +190,9 @@ public final class CafeService implements AutoCloseable {
                 }
             }
             JsonObject result = switch (action) {
-                case "GET_TAX_SETTINGS" -> {qrRequired();requireAdmin(who);yield Json.object(finance.settings());}
-                case "SAVE_TAX_SETTINGS" -> {qrRequired();requireAdmin(who);yield finance.saveSettings(input);}
-                case "GET_FINANCE_REPORT" -> {qrRequired();requireAdmin(who);yield finance.report(input);}
-                case "GET_CASH_ENTRIES" -> {qrRequired();requireAdmin(who);yield finance.entries(input);}
-                case "CREATE_CASH_ENTRY" -> {qrRequired();requireAdmin(who);yield finance.createEntry(who.username(),input);}
-                case "VOID_CASH_ENTRY" -> {qrRequired();requireAdmin(who);yield finance.voidEntry(who.username(),input);}
                 case "OPEN_ALL_TABLES" -> {qrRequired();requireAdmin(who);yield tableOrdering.enableAll();}
                 case "SET_TABLE_ACCEPTING" -> {qrRequired();requireAdmin(who);int table=integer(input,"tableId"),enabled=integer(input,"enabled");if(enabled!=0&&enabled!=1)throw problem("INVALID_INPUT","enabled phải bằng 0 hoặc 1.");if(db.update("UPDATE table_access SET enabled=? WHERE table_id=?",enabled,table)!=1)throw problem("NOT_FOUND","Hãy bật QR cố định cho toàn quán trước.");yield fields("status",enabled==1?"ACCEPTING":"PAUSED");}
-                case "GET_TABLE_QR" -> {qrRequired();requireAdmin(who);yield tableOrdering.qr(integer(input,"tableId"));}
+                case "GET_TABLE_QR" -> {qrRequired();requireOperator(who);yield tableOrdering.qr(integer(input,"tableId"));}
                 case "GET_OWN_TABLE_QR" -> {qrRequired();requireGuest(who);if(db.query("SELECT id FROM visits WHERE id=? AND service_mode='AUTO'",r->r.getString(1),guestVisit(who)).isEmpty())throw problem("FORBIDDEN","Chỉ áp dụng cho phiên riêng QR cố định.");yield tableOrdering.qr(who.tableId());}
                 case "START_ORDER_PAYMENT","SIMULATE_PAYMENT","CANCEL_UNPAID_ORDER" -> {
                     qrRequired();requireGuest(who);String visit=text(input,"visitId",80,true);activeVisit(who,visit);
@@ -201,20 +203,31 @@ public final class CafeService implements AutoCloseable {
                 case "AMEND_SERVICE","CANCEL_SERVICE" -> {qrRequired();requireGuest(who);String visit=text(input,"visitId",80,true);activeVisit(who,visit);yield new SupportActions(db,events).change(visit,who.username(),input,action.equals("CANCEL_SERVICE"));}
                 case "SET_STORE_ACCEPTING" -> {qrRequired();requireAdmin(who);int enabled=integer(input,"enabled");if(enabled!=0&&enabled!=1)throw problem("INVALID_INPUT","Trạng thái phải là 0 hoặc 1.");db.update("UPDATE store_settings SET value=? WHERE name='accepting_orders'",String.valueOf(enabled));yield fields("status",enabled==1?"ACCEPTING":"PAUSED");}
                 case "FIND_ASSISTANCE" -> {qrRequired();requireAdmin(who);yield findAssistance(text(input,"query",80,true));}
-                case "RESOLVE_ORDER" -> {qrRequired();requireAdmin(who);yield resolutions.resolve(who.username(),input);}
+                case "RESOLVE_ORDER" -> {qrRequired();requireOperator(who);yield resolutions.resolve(who.username(),input);}
                 case "GET_SALES_HISTORY" -> {qrRequired();requireAdmin(who);yield salesHistory(input);}
                 case "GET_SALES_RECEIPT" -> {qrRequired();yield salesReceipt(who,text(input,"receiptId",100,true));}
                 case "CREATE_MENU_ITEM","UPDATE_MENU_ITEM" -> {qrRequired();requireAdmin(who);yield catalog.save(input,action.equals("CREATE_MENU_ITEM"));}
                 case "GET_MENU_CATEGORIES" -> {qrRequired();requireAdmin(who);yield catalog.categories();}
                 case "SAVE_MENU_CATEGORY","DELETE_MENU_CATEGORY" -> {qrRequired();requireAdmin(who);yield catalog.category(input,action.equals("DELETE_MENU_CATEGORY"));}
-                case "GET_NOTIFICATIONS" -> { qrRequired();yield events.list(principal(who),admin(who)?null:guestVisit(who),input); }
-                case "MARK_NOTIFICATION_READ" -> { qrRequired();yield events.read(principal(who),admin(who)?null:guestVisit(who),integer(input,"eventId")); }
+                case "GET_NOTIFICATIONS" -> { qrRequired();yield events.list(principal(who),operator(who)?null:guestVisit(who),input,"STAFF".equals(who.role())); }
+                case "MARK_NOTIFICATION_READ" -> { qrRequired();yield events.read(principal(who),operator(who)?null:guestVisit(who),integer(input,"eventId"),"STAFF".equals(who.role())); }
                 case "OPEN_TABLE" -> openTable(who, integer(input, "tableId"));
-                case "GET_VISIT_QR" -> { requireAdmin(who); String visit = text(input, "visitId", 80, true); activeVisit(who, visit); yield qrRequired().qr(visit); }
+                case "GET_VISIT_QR" -> { requireOperator(who); String visit = text(input, "visitId", 80, true); activeVisit(who, visit); yield qrRequired().qr(visit); }
                 case "ROTATE_JOIN_GRANT" -> { requireAdmin(who); String visit = text(input, "visitId", 80, true); activeVisit(who, visit); yield qrRequired().rotateGrant(visit); }
                 case "GET_VISIT_MEMBERSHIPS" -> { requireAdmin(who); String visit = text(input, "visitId", 80, true); activeVisit(who, visit); yield qrRequired().memberships(visit); }
                 case "REVOKE_SESSION" -> { requireAdmin(who); String visit = text(input, "visitId", 80, true); activeVisit(who, visit); yield qrRequired().revoke(visit, text(input, "membershipId", 80, true)); }
                 case "PLACE_ORDER" -> placeOrder(who, input);
+                case "ACCEPT_ORDER" -> acceptOrder(who, integer(input,"orderId"));
+                case "GET_STAFF_ACCOUNTS" -> {qrRequired();requireAdmin(who);yield staffAccounts.list();}
+                case "CREATE_STAFF_ACCOUNT" -> {qrRequired();requireAdmin(who);yield staffAccounts.create(who.username(),input);}
+                case "SET_STAFF_ACTIVE","RESET_STAFF_PASSWORD" -> {qrRequired();requireAdmin(who);yield staffAccounts.change(input,action.equals("RESET_STAFF_PASSWORD"));}
+                case "GET_STAFF_AUDIT" -> {qrRequired();requireAdmin(who);yield staffAccounts.auditLog();}
+                case "SET_MENU_AVAILABILITY" -> {qrRequired();requireOperator(who);yield setMenuAvailability(input);}
+                case "GET_TAX_SETTINGS" -> {qrRequired();requireAdmin(who);yield Json.object(finance.settings());}
+                case "SAVE_TAX_SETTINGS" -> {qrRequired();requireAdmin(who);yield finance.saveSettings(input);}
+                case "GET_FINANCE_REPORT" -> {qrRequired();requireAdmin(who);yield finance.report(input);}
+                case "CREATE_EXPENSE" -> {qrRequired();requireAdmin(who);yield finance.createExpense(who.username(),input);}
+                case "VOID_EXPENSE" -> {qrRequired();requireAdmin(who);yield finance.voidExpense(input);}
                 case "SET_ORDER_STATUS" -> advanceOrder(who, integer(input, "orderId"), text(input, "status", 30, true));
                 case "CALL_SERVICE", "REQUEST_BILL" -> {if(qr!=null&&action.equals("REQUEST_BILL"))throw problem("ACTION_REPLACED","Dùng REQUEST_CHECKOUT với version; không tạo ticket tính tiền trên bản QR.");yield createTicket(who, input, action);}
                 case "REQUEST_CHECKOUT" -> { qrRequired();String visit=text(input,"visitId",80,true);activeVisit(who,visit);if(orderPayments.prepaid(visit))throw problem("PREPAY_REQUIRED","Lượt này thanh toán từng đơn trước khi pha chế.");yield checkout.request(visit,principal(who),input); }
@@ -227,9 +240,10 @@ public final class CafeService implements AutoCloseable {
                 default -> throw problem("UNKNOWN_ACTION", "Thao tác không được hỗ trợ.");
             };
             if(events!=null)recordEvent(action,input,result);
+            if(staffAccounts!=null&&operator(who))staffAccounts.audit(who.username(),action,input,result);
             if(tableOrdering!=null&&Set.of("SET_ORDER_STATUS","HANDLE_TICKET","CANCEL_UNPAID_ORDER","RESOLVE_ORDER","CANCEL_SERVICE").contains(action))tableOrdering.finishReadyVisits();
             if (Commands.mutation(action)) db.update("UPDATE metadata SET value=value+1 WHERE name='revision'");
-            if (Commands.mutation(action)) db.update("INSERT INTO command_receipts VALUES(?,?,?,?,?,?)", principal(who), commandId, action, fingerprint, Json.GSON.toJson(result), Instant.now().toString());
+            if (Commands.mutation(action)) db.update("INSERT INTO command_receipts VALUES(?,?,?,?,?,?)", principal(who), commandId, action, credentialCommand?PasswordHash.create(fingerprint):fingerprint, Json.GSON.toJson(result), Instant.now().toString());
             return result;
         });
     }
@@ -251,7 +265,7 @@ public final class CafeService implements AutoCloseable {
             case "PAY_AND_CLOSE" -> {entity=result.get("receiptId").getAsString();title="Đã ghi nhận thanh toán và kết thúc lượt";}
             default -> {return;}
         }
-        if(action.equals("PLACE_ORDER")&&orderPayments.prepaid(visit)){events.append(visit,"ORDER_AWAITING_PAYMENT",entity,"Đơn #"+entity+" chờ thanh toán");return;}
+        if(action.equals("PLACE_ORDER")&&orderPayments.prepaid(visit)){events.append(visit,"ORDER_AWAITING_ACCEPTANCE",entity,"Đơn mới #"+entity+" chờ nhân viên tiếp nhận");return;}
         events.append(visit,action,entity,title);
     }
     private JsonObject openTable(Identity who, int tableId) throws SQLException {
@@ -288,11 +302,27 @@ public final class CafeService implements AutoCloseable {
         }
         if(qr!=null&&orderPayments.prepaid(visit))for(JsonElement row:element.getAsJsonArray())if(!row.getAsJsonObject().has("expectedVersion"))throw problem("MENU_CHANGED","Hãy xem lại giá hiện tại trước khi đặt và thanh toán.");
         long id = db.insert("INSERT INTO orders(visit_id,status,note,created_at) VALUES(?,'SUBMITTED',?,?)", visit, text(input, "note", 500, false), Instant.now().toString());
-        if(qr!=null&&orderPayments.prepaid(visit))db.update("UPDATE orders SET payment_state='UNPAID' WHERE id=?",id);
+        StoreFinance.Quote quote=finance==null?null:finance.quote(items.stream().mapToLong(OrderItem::subtotalVnd).sum(),input);
+        if(quote!=null)db.update("UPDATE orders SET subtotal_vnd=?,tax_vnd=?,total_vnd=?,tax_name=?,tax_rate_bps=?,tax_included=?,tax_settings_version=? WHERE id=?",quote.subtotalVnd(),quote.taxVnd(),quote.totalVnd(),quote.settings().name(),quote.settings().rateBps(),quote.settings().mode().equals("INCLUSIVE")?1:0,quote.settings().version(),id);
+        if(qr!=null&&orderPayments.prepaid(visit))db.update("UPDATE orders SET payment_state='UNPAID',acceptance_state='WAITING' WHERE id=?",id);
         int line=0;for (OrderItem item : items) {if(qr==null)db.update("INSERT INTO order_items VALUES(?,?,?,?,?)", id,item.menuId(),item.name(),item.quantity(),item.unitPriceVnd());else db.update("INSERT INTO order_items VALUES(?,?,?,?,?,?,?)",id,++line,item.menuId(),item.name(),item.quantity(),item.unitPriceVnd(),item.note());}
-        if(finance!=null)finance.priceOrder(id,items.stream().mapToLong(OrderItem::subtotalVnd).sum(),input);
         if(checkout!=null)checkout.bump(visit);
-        JsonObject output = new JsonObject(); output.addProperty("orderId", id); output.addProperty("totalVnd",loadOrders(" WHERE o.id=?",id).get(0).totalVnd());if(orderPayments!=null&&orderPayments.prepaid(visit))output.addProperty("paymentRequired",true); return output;
+        JsonObject output = new JsonObject(); output.addProperty("orderId", id); output.addProperty("totalVnd",quote==null?items.stream().mapToLong(OrderItem::subtotalVnd).sum():quote.totalVnd());if(orderPayments!=null&&orderPayments.prepaid(visit)){output.addProperty("paymentRequired",false);output.addProperty("acceptanceState","WAITING");} return output;
+    }
+    private JsonObject acceptOrder(Identity who,int id) throws SQLException {
+        qrRequired();requireOperator(who);
+        var found=loadOrders(" WHERE o.id=?",id);
+        if(found.isEmpty())throw problem("NOT_FOUND","Không có đơn này.");
+        OrderView order=found.get(0);
+        if(Set.of("CANCELLED","REFUNDED").contains(order.paymentState()))throw problem("INVALID_STATE","Đơn đã hủy hoặc hoàn tiền, không thể tiếp nhận.");
+        activeVisit(who,order.visitId());
+        JsonObject result=new JsonObject();result.addProperty("orderId",id);result.addProperty("acceptanceState","ACCEPTED");
+        if(order.acceptanceState().equals("ACCEPTED"))return result;
+        if(!order.acceptanceState().equals("WAITING")||!order.paymentState().equals("UNPAID"))throw problem("INVALID_STATE","Đơn không còn ở bước chờ tiếp nhận.");
+        var unavailable=db.query("SELECT DISTINCT m.name FROM order_items i JOIN menu m ON m.id=i.menu_id WHERE i.order_id=? AND (m.available=0 OR m.active=0)",r->r.getString(1),id);
+        if(!unavailable.isEmpty())throw problem("ITEM_UNAVAILABLE","Món "+String.join(", ",unavailable)+" hiện không phục vụ được. Hãy từ chối đơn với lý do để khách chọn lại.");
+        String now=Instant.now().toString();db.update("UPDATE orders SET acceptance_state='ACCEPTED',accepted_at=?,accepted_by=? WHERE id=?",now,who.username(),id);
+        events.append(order.visitId(),"ORDER_ACCEPTED",String.valueOf(id),"Quán đã tiếp nhận đơn #"+id+". Bạn có thể thanh toán.");return result;
     }
     private JsonObject findAssistance(String query) throws SQLException {
         var results=new JsonArray();
@@ -315,10 +345,11 @@ public final class CafeService implements AutoCloseable {
         return result;
     }
     private JsonObject advanceOrder(Identity who, int orderId, String status) throws SQLException {
-        requireAdmin(who);
+        requireOperator(who);
         List<OrderView> found = loadOrders(" WHERE o.id=?", orderId);
         if (found.isEmpty()) throw problem("NOT_FOUND", "Không có đơn này.");
         OrderView order = found.get(0); activeVisit(who, order.visitId());
+        if(!order.acceptanceState().equals("ACCEPTED"))throw problem("ACCEPTANCE_REQUIRED","Cần tiếp nhận đơn trước khi pha chế.");
         if(!Set.of("PAID","POSTPAY").contains(order.paymentState()))throw problem("PAYMENT_REQUIRED","Chỉ bắt đầu pha chế khi Server đã xác nhận thanh toán.");
         String next = switch (order.status()) { case "SUBMITTED" -> "PREPARING"; case "PREPARING" -> "READY"; case "READY" -> "SERVED"; default -> ""; };
         if (!next.equals(status)) throw problem("INVALID_STATE", "Chỉ được chuyển sang bước phục vụ kế tiếp.");
@@ -333,7 +364,7 @@ public final class CafeService implements AutoCloseable {
         JsonObject output = new JsonObject(); output.addProperty("ticketId", id); return output;
     }
     private JsonObject handleTicket(Identity who, int id, String reply,JsonObject input) throws SQLException {
-        requireAdmin(who);
+        requireOperator(who);
         List<String> visits = db.query("SELECT visit_id FROM tickets WHERE id=? AND status='OPEN'", r -> r.getString(1), id);
         if (visits.isEmpty()) throw problem("INVALID_STATE", "Yêu cầu không tồn tại hoặc đã được xử lý.");
         activeVisit(who, visits.get(0)); if(qr!=null&&input.has("expectedVersion")&&db.query("SELECT version FROM tickets WHERE id=?",r->r.getInt(1),id).get(0)!=integer(input,"expectedVersion"))throw problem("VERSION_CONFLICT","Khách vừa bổ sung yêu cầu. Hãy đọc lại trước khi hoàn tất.");db.update(qr==null?"UPDATE tickets SET status='HANDLED',reply=? WHERE id=?":"UPDATE tickets SET status='HANDLED',reply=?,version=version+1 WHERE id=?", reply, id); return fields("reply", reply);
@@ -365,12 +396,12 @@ public final class CafeService implements AutoCloseable {
     private int activeVisit(Identity who, String visit) throws SQLException {
         List<Integer> tables = db.query("SELECT table_id FROM visits WHERE id=? AND active=1", r -> r.getInt(1), visit);
         if (tables.isEmpty()) throw problem("SESSION_CLOSED", "Phiên bàn đã kết thúc hoặc không tồn tại.");
-        if (!admin(who) && !Objects.equals(who.tableId(), tables.get(0))) throw problem("FORBIDDEN", "Bạn không có quyền trên bàn này.");
-        if (!admin(who) && !Objects.equals(guestVisit(who), visit)) throw problem("STALE_SESSION", "Quyền của bạn không thuộc lượt khách này. Yêu cầu cũ không được chuyển lượt.");
+        if (!operator(who) && !Objects.equals(who.tableId(), tables.get(0))) throw problem("FORBIDDEN", "Bạn không có quyền trên bàn này.");
+        if (!operator(who) && !Objects.equals(guestVisit(who), visit)) throw problem("STALE_SESSION", "Quyền của bạn không thuộc lượt khách này. Yêu cầu cũ không được chuyển lượt.");
         return tables.get(0);
     }
     private String principal(Identity who) throws SQLException {
-        if (admin(who)) return who.username();
+        if (operator(who)) return who.username();
         if (qr != null) return "membership:" + qr.validate(who).membershipId();
         guestVisit(who); // Also verify the credential when looking up a closed visit's receipt.
         return who.username() + ":" + Commands.digest(who.credential());
@@ -400,8 +431,7 @@ public final class CafeService implements AutoCloseable {
         if(found.isEmpty())throw problem("NOT_FOUND","Không có hóa đơn này.");Object[] row=found.get(0);String visit=(String)row[0];
         if(!admin(who)&&!Objects.equals(guestVisit(who),visit))throw problem("FORBIDDEN","Không có quyền xem hóa đơn của lượt khác.");
         JsonObject out=new JsonObject();out.addProperty("receiptId",receipt);out.addProperty("visitId",visit);out.addProperty("tableId",(Integer)row[1]);out.addProperty("totalVnd",(Long)row[3]);out.addProperty("paidAt",(String)row[4]);out.addProperty("method",(String)row[5]);
-        var receiptOrders=(Long)row[2]==0?loadOrders(" WHERE o.visit_id=?",visit):loadOrders(" WHERE o.id=?",row[2]);
-        out.add("orders",Json.GSON.toJsonTree(receiptOrders));out.addProperty("subtotalVnd",receiptOrders.stream().mapToLong(OrderView::subtotalVnd).sum());out.addProperty("taxVnd",receiptOrders.stream().mapToLong(OrderView::taxVnd).sum());
+        out.add("orders",Json.GSON.toJsonTree((Long)row[2]==0?loadOrders(" WHERE o.visit_id=?",visit):loadOrders(" WHERE o.id=?",row[2])));
         var resolution=resolutions.list("r.order_id=?",row[2]);if(!resolution.isEmpty())out.add("resolution",resolution.get(0));return out;
     }
     private List<OrderView> loadOrders(String where, Object... args) throws SQLException {
@@ -411,11 +441,25 @@ public final class CafeService implements AutoCloseable {
         List<OrderView> orders = new ArrayList<>();
         for (Header h : headers) {
             List<OrderItem> items = db.query("SELECT * FROM order_items WHERE order_id=? ORDER BY "+(qr==null?"menu_id":"line_no"), r -> new OrderItem(r.getInt("menu_id"), r.getString("name"), r.getInt("quantity"), r.getLong("unit_price_vnd"), r.getLong("unit_price_vnd") * r.getInt("quantity"),qr==null?"":r.getString("note")), h.id());
-            String queuedAt=qr==null||h.payment().equals("POSTPAY")?h.time():db.query("SELECT updated_at FROM order_payments WHERE order_id=? AND state='PAID'",r->r.getString(1),h.id()).stream().findFirst().orElse(null);
-            if(finance==null)orders.add(new OrderView(h.id(),h.table(),h.visit(),h.status(),h.note(),items.stream().mapToLong(OrderItem::subtotalVnd).sum(),h.time(),List.copyOf(items),h.payment(),queuedAt));
-            else orders.add(db.query("SELECT * FROM orders WHERE id=?",r->new OrderView(h.id(),h.table(),h.visit(),h.status(),h.note(),r.getLong("total_vnd"),h.time(),List.copyOf(items),h.payment(),queuedAt,r.getLong("subtotal_vnd"),r.getLong("tax_vnd"),r.getInt("tax_rate_bps"),r.getString("tax_name"),r.getInt("tax_inclusive")==1),h.id()).get(0));
+            String queued=qr==null||h.payment().equals("POSTPAY")?h.time():db.query("SELECT updated_at FROM order_payments WHERE order_id=? AND state='PAID'",r->r.getString(1),h.id()).stream().findFirst().orElse(null);
+            if(qr==null)orders.add(new OrderView(h.id(),h.table(),h.visit(),h.status(),h.note(),items.stream().mapToLong(OrderItem::subtotalVnd).sum(),h.time(),List.copyOf(items),h.payment(),queued));
+            else orders.add(db.query("SELECT * FROM orders WHERE id=?",r->new OrderView(h.id(),h.table(),h.visit(),h.status(),h.note(),r.getLong("total_vnd"),h.time(),List.copyOf(items),h.payment(),queued,r.getString("acceptance_state"),r.getString("accepted_at"),r.getLong("subtotal_vnd"),r.getLong("tax_vnd"),r.getString("tax_name"),r.getInt("tax_rate_bps"),r.getInt("tax_included")==1),h.id()).get(0));
         }
         return List.copyOf(orders);
+    }
+    private static boolean operator(Identity who) { return Permissions.operator(who); }
+    private static void requireOperator(Identity who) { if(!operator(who))throw problem("FORBIDDEN","Chỉ quản lý hoặc nhân viên được thực hiện thao tác này."); }
+    private static void authorize(Identity who,String action,JsonObject input) {
+        if("STAFF".equals(who.role())&&!Permissions.staffAllowed(action,input))throw problem("FORBIDDEN","Tài khoản nhân viên không có quyền thực hiện thao tác này.");
+    }
+    private JsonObject setMenuAvailability(JsonObject input) throws SQLException {
+        if(!Set.of("menuId","expectedVersion","available").containsAll(input.keySet())||!input.has("available")||!input.get("available").isJsonPrimitive()||!input.get("available").getAsJsonPrimitive().isBoolean())throw problem("INVALID_INPUT","Chỉ được đổi trạng thái còn bán/hết món.");
+        int id=integer(input,"menuId"),version=integer(input,"expectedVersion");
+        var found=db.query("SELECT version FROM menu WHERE id=? AND active=1",r->r.getLong(1),id);
+        if(found.isEmpty())throw problem("NOT_FOUND","Không có món đang bán này.");
+        if(found.get(0)!=version)throw problem("VERSION_CONFLICT","Món vừa thay đổi. Hãy tải lại trước khi cập nhật.");
+        db.update("UPDATE menu SET available=?,version=version+1,purchase_version=purchase_version+1 WHERE id=?",input.get("available").getAsBoolean()?1:0,id);
+        JsonObject result=new JsonObject();result.addProperty("menuId",id);result.addProperty("version",version+1);return result;
     }
     private static boolean admin(Identity who) { return who != null && "ADMIN".equals(who.role()); }
     private QrAccess qrRequired() { if (qr == null) throw problem("QR_DISABLED", "Server E0 không hỗ trợ QR."); return qr; }

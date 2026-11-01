@@ -45,6 +45,7 @@ class PaymentDeadlineTest {
         var body = scope();
         body.add("items", JsonParser.parseString("[{\"menuId\":2,\"quantity\":1,\"expectedVersion\":1,\"expectedPriceVnd\":30000}]"));
         order = call(guest, "PLACE_ORDER", body).get("orderId").getAsInt();
+        call(admin,"ACCEPT_ORDER",orderScope());
     }
 
     JsonObject scope() { var body = new JsonObject(); body.addProperty("visitId", visit); return body; }

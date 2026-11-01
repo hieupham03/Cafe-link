@@ -16,6 +16,8 @@ class PrepaidFlowTest {
    Identity g=s.joinVisit(s.execute(a,"GET_VISIT_QR",j("{\"visitId\":\""+visit+"\"}")).get("grant").getAsString());
    JsonObject placed=s.execute(g,"order-one","PLACE_ORDER",j("{\"visitId\":\""+visit+"\",\"items\":[{\"menuId\":2,\"quantity\":2,\"expectedVersion\":1,\"expectedPriceVnd\":30000}]}"));
    int id=placed.get("orderId").getAsInt();JsonObject order=j("{\"visitId\":\""+visit+"\",\"orderId\":"+id+"}");
+   assertEquals("ACCEPTANCE_REQUIRED",assertThrows(BusinessException.class,()->s.execute(g,"START_ORDER_PAYMENT",order)).code());
+   s.execute(a,"ACCEPT_ORDER",j("{\"orderId\":"+id+"}"));
    assertEquals("PAYMENT_REQUIRED",assertThrows(BusinessException.class,()->s.execute(a,"SET_ORDER_STATUS",j("{\"orderId\":"+id+",\"status\":\"PREPARING\"}"))).code());
    JsonObject pay=s.execute(g,"START_ORDER_PAYMENT",order),again=s.execute(g,"START_ORDER_PAYMENT",order);assertEquals(pay.get("paymentId"),again.get("paymentId"));
    JsonObject event=pay.deepCopy();event.addProperty("visitId",visit);event.addProperty("outcome","SUCCESS");

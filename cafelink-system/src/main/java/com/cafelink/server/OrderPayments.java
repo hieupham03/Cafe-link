@@ -21,6 +21,7 @@ final class OrderPayments {
   if(!prepaid(visit))throw new BusinessException("INVALID_STATE","Lượt này dùng luồng thanh toán sau.");
   var states=db.query("SELECT payment_state FROM orders WHERE id=? AND visit_id=?",r->r.getString(1),order,visit);
   if(states.isEmpty())throw new BusinessException("FORBIDDEN","Đơn không thuộc lượt này.");
+  if(!db.query("SELECT acceptance_state FROM orders WHERE id=?",r->r.getString(1),order).get(0).equals("ACCEPTED"))throw new BusinessException("ACCEPTANCE_REQUIRED","Quán đang kiểm tra đơn. Bạn chỉ thanh toán sau khi nhân viên tiếp nhận.");
   if(Set.of("PAID","CANCELLED","REFUNDED").contains(states.get(0)))throw new BusinessException("INVALID_STATE","Đơn đã trả tiền, đã hủy hoặc đã hoàn giả lập.");
   Instant checkedAt=config.clock.instant();String now=checkedAt.toString();
   // ISO-8601 strings with optional fractional seconds do not sort chronologically as TEXT.

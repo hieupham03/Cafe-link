@@ -44,6 +44,7 @@ final class OrderResolutions {
         }
         db.update("INSERT INTO order_resolutions VALUES(?,?,?,?,?,?,?)",order,terminal,payment,amount,reason,actor,Instant.now().toString());
         db.update("UPDATE orders SET payment_state=? WHERE id=?",terminal,order);
+        if(kind.equals("CANCEL_UNPAID"))db.update("UPDATE orders SET acceptance_state='REJECTED' WHERE id=? AND acceptance_state='WAITING'",order);
         events.append(state.visit(),"ORDER_RESOLVED",String.valueOf(order),"Đơn #"+order+(kind.equals("REFUND")?" đã hoàn giả lập: ":" đã hủy chưa thanh toán: ")+reason);
         return list("r.order_id=?",order).get(0);
     }

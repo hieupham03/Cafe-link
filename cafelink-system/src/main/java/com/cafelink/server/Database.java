@@ -19,7 +19,7 @@ final class Database implements AutoCloseable {
             s.execute("PRAGMA foreign_keys=ON"); s.execute("PRAGMA busy_timeout=5000"); s.execute("PRAGMA journal_mode=WAL");
         }
         int version = query("PRAGMA user_version", r -> r.getInt(1)).get(0);
-        if (version < 0 || version > 12 || (!qrMode && version > 3)) { close(); throw new SQLException("Unsupported database schema for this mode: " + version); }
+        if (version < 0 || version > 13 || (!qrMode && version > 3)) { close(); throw new SQLException("Unsupported database schema for this mode: " + version); }
         if (qrMode && version > 0 && version < 4 && !query("SELECT id FROM visits WHERE active=1", r -> r.getString(1)).isEmpty()) {
             close(); throw new SQLException("Close and reconcile legacy visits before QR migration; use an isolated database for a fresh demo.");
         }
@@ -43,7 +43,7 @@ final class Database implements AutoCloseable {
             "CREATE TABLE IF NOT EXISTS guest_credentials(token_hash TEXT PRIMARY KEY,username TEXT NOT NULL REFERENCES accounts(username),visit_id TEXT REFERENCES visits(id),created_at TEXT NOT NULL)",
             "PRAGMA user_version=" + (qrMode ? version : 3)
         };
-        try { for (String sql : schema) update(sql); seed(); if (qrMode) { migrateQr(); if(version<5)migrateCheckout(); if(version<6)migrateEvents(); if(version<7)migrateMenu(); if(version<8)migratePrepay(); if(version<9)migrateAutomaticTables(); if(version<10)migrateBusinessWorkflows(); if(version<11)migrateConvenience(); if(version<12)migrateFinance(); } }
+        try { for (String sql : schema) update(sql); seed(); if (qrMode) { migrateQr(); if(version<5)migrateCheckout(); if(version<6)migrateEvents(); if(version<7)migrateMenu(); if(version<8)migratePrepay(); if(version<9)migrateAutomaticTables(); if(version<10)migrateBusinessWorkflows(); if(version<11)migrateConvenience(); if(version<12)migrateStoreOperations(); if(version<13)migrateStaffAccounts(); } }
         catch (Exception e) { close(); throw e; }
     }
     private void migrateQr() throws SQLException {
@@ -80,10 +80,10 @@ final class Database implements AutoCloseable {
             for (int table = 1; table <= 6; table++) {
                 update("INSERT OR IGNORE INTO cafe_tables VALUES(?,?)", table, "Bàn " + table);
                 if (query("SELECT username FROM accounts WHERE username=?", r -> r.getString(1), "ban" + table).isEmpty())
-                    update("INSERT INTO accounts VALUES(?,?,?,?)", "ban" + table, PasswordHash.create("Ban" + table + "@123"), "GUEST", table);
+                    update("INSERT INTO accounts(username,password_hash,role,table_id) VALUES(?,?,?,?)", "ban" + table, PasswordHash.create("Ban" + table + "@123"), "GUEST", table);
             }
             if (query("SELECT username FROM accounts WHERE username='admin'", r -> r.getString(1)).isEmpty())
-                update("INSERT INTO accounts VALUES(?,?,?,NULL)", "admin", PasswordHash.create("CafeLink@123"), "ADMIN");
+                update("INSERT INTO accounts(username,password_hash,role,table_id) VALUES(?,?,?,NULL)", "admin", PasswordHash.create("CafeLink@123"), "ADMIN");
             String[] names = {"Cà phê đen", "Cà phê sữa", "Bạc xỉu", "Latte", "Trà đào", "Trà chanh", "Cacao", "Nước suối"};
             long[] prices = {25000, 30000, 35000, 45000, 40000, 25000, 40000, 15000};
             for (int i = 0; i < names.length; i++) update("INSERT OR IGNORE INTO menu(id,name,price_vnd,category) VALUES(?,?,?,?)", i + 1, names[i], prices[i], i < 4 ? "Cà phê" : "Đồ uống khác");
@@ -147,22 +147,42 @@ final class Database implements AutoCloseable {
             update("INSERT OR IGNORE INTO store_settings VALUES('accepting_orders','1')");update("PRAGMA user_version=11");return null;
         });
     }
-    private void migrateFinance() throws SQLException {
+    private void migrateStoreOperations() throws SQLException {
         transaction(() -> {
-            schema("ALTER TABLE orders ADD COLUMN tax_rate_bps INTEGER NOT NULL DEFAULT 0");
-            schema("ALTER TABLE orders ADD COLUMN tax_name TEXT NOT NULL DEFAULT 'VAT'");
-            schema("ALTER TABLE orders ADD COLUMN tax_inclusive INTEGER NOT NULL DEFAULT 0");
-            schema("ALTER TABLE orders ADD COLUMN subtotal_vnd INTEGER NOT NULL DEFAULT 0");
-            schema("ALTER TABLE orders ADD COLUMN tax_vnd INTEGER NOT NULL DEFAULT 0");
-            schema("ALTER TABLE orders ADD COLUMN total_vnd INTEGER NOT NULL DEFAULT 0");
-            update("UPDATE orders SET subtotal_vnd=COALESCE((SELECT SUM(quantity*unit_price_vnd) FROM order_items WHERE order_id=orders.id),0)");
-            update("UPDATE orders SET total_vnd=subtotal_vnd");
-            update("INSERT OR IGNORE INTO store_settings VALUES('tax_config','{\"enabled\":false,\"rateBps\":0,\"name\":\"VAT\",\"inclusive\":false,\"version\":0}')");
-            update("CREATE TABLE cash_entries(id INTEGER PRIMARY KEY AUTOINCREMENT,kind TEXT NOT NULL CHECK(kind IN('INCOME','EXPENSE')),amount_vnd INTEGER NOT NULL CHECK(amount_vnd>0),category TEXT NOT NULL,note TEXT NOT NULL,entry_date TEXT NOT NULL,actor TEXT NOT NULL,created_at TEXT NOT NULL,void_reason TEXT NOT NULL DEFAULT '',voided_at TEXT,voided_by TEXT)");
-            update("CREATE INDEX cash_entry_date ON cash_entries(entry_date,id)");
+            var columns=query("PRAGMA table_info(orders)",r->r.getString("name"));
+            boolean initializeTotals=!columns.contains("total_vnd");
+            for(String definition:List.of("acceptance_state TEXT NOT NULL DEFAULT 'ACCEPTED' CHECK(acceptance_state IN('WAITING','ACCEPTED','REJECTED'))","accepted_at TEXT","accepted_by TEXT","subtotal_vnd INTEGER NOT NULL DEFAULT 0","tax_vnd INTEGER NOT NULL DEFAULT 0","total_vnd INTEGER NOT NULL DEFAULT 0","tax_name TEXT NOT NULL DEFAULT 'Thuế'","tax_rate_bps INTEGER NOT NULL DEFAULT 0","tax_included INTEGER NOT NULL DEFAULT 0","tax_settings_version INTEGER NOT NULL DEFAULT 1"))
+                if(!columns.contains(definition.split(" ")[0]))schema("ALTER TABLE orders ADD COLUMN "+definition);
+            if(initializeTotals){
+                update("UPDATE orders SET subtotal_vnd=COALESCE((SELECT SUM(quantity*unit_price_vnd) FROM order_items WHERE order_id=orders.id),0)");
+                update("UPDATE orders SET total_vnd=subtotal_vnd,accepted_at=created_at");
+            }
+            update("INSERT OR IGNORE INTO store_settings VALUES('tax_name','Thuế')");
+            update("INSERT OR IGNORE INTO store_settings VALUES('tax_rate_bps','0')");
+            update("INSERT OR IGNORE INTO store_settings VALUES('tax_mode','EXCLUSIVE')");
+            update("INSERT OR IGNORE INTO store_settings VALUES('tax_version','1')");
+            schema("CREATE TABLE IF NOT EXISTS expenses(id INTEGER PRIMARY KEY AUTOINCREMENT,amount_vnd INTEGER NOT NULL CHECK(amount_vnd BETWEEN 1 AND 1000000000),category TEXT NOT NULL,note TEXT NOT NULL,spent_on TEXT NOT NULL,created_by TEXT NOT NULL,created_at TEXT NOT NULL,voided_at TEXT,void_reason TEXT)");
+            schema("CREATE INDEX IF NOT EXISTS expenses_spent_on ON expenses(spent_on,id)");
             update("PRAGMA user_version=12");
             return null;
         });
+    }
+    private void migrateStaffAccounts() throws SQLException {
+        // No connections are admitted until startup finishes. Rebuild only this parent
+        // table, retaining its name and keys so legacy credential references stay valid.
+        schema("PRAGMA foreign_keys=OFF");
+        try {
+            transaction(() -> {
+                if (!query("PRAGMA table_info(accounts)", r -> r.getString("name")).contains("auth_version")) {
+                    schema("CREATE TABLE accounts_next(username TEXT PRIMARY KEY,password_hash TEXT NOT NULL,role TEXT NOT NULL CHECK(role IN('ADMIN','STAFF','GUEST')),table_id INTEGER REFERENCES cafe_tables(id),active INTEGER NOT NULL DEFAULT 1 CHECK(active IN(0,1)),auth_version INTEGER NOT NULL DEFAULT 1,display_name TEXT NOT NULL DEFAULT '',created_at TEXT NOT NULL DEFAULT '',created_by TEXT NOT NULL DEFAULT '')");
+                    update("INSERT INTO accounts_next(username,password_hash,role,table_id,display_name) SELECT username,password_hash,role,table_id,username FROM accounts");
+                    schema("DROP TABLE accounts");schema("ALTER TABLE accounts_next RENAME TO accounts");
+                }
+                schema("CREATE TABLE IF NOT EXISTS staff_audit(id INTEGER PRIMARY KEY AUTOINCREMENT,actor TEXT NOT NULL,action TEXT NOT NULL,entity_id TEXT NOT NULL,detail TEXT NOT NULL,created_at TEXT NOT NULL)");
+                update("PRAGMA user_version=13");return null;
+            });
+        } finally { schema("PRAGMA foreign_keys=ON"); }
+        if (!query("PRAGMA foreign_key_check", r -> r.getString(1)).isEmpty()) throw new SQLException("Account migration failed foreign-key validation");
     }
     <T> List<T> query(String sql, Mapper<T> mapper, Object... args) throws SQLException {
         try (PreparedStatement statement = prepare(sql, args); ResultSet rows = statement.executeQuery()) {

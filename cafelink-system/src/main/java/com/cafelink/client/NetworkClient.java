@@ -192,6 +192,9 @@ public final class NetworkClient implements AutoCloseable {
             while (!closed.get() && (message = FrameCodec.read(input)) != null) {
                 if (message.kind().equals("RESPONSE")) { CompletableFuture<Message> future = pending.get(message.requestId()); if (future != null) future.complete(message); }
                 else if (message.kind().equals("EVENT") && message.action().equals("STATE_UPDATED")) accept(Json.GSON.fromJson(message.data(), Snapshot.class));
+                else if (message.kind().equals("EVENT") && message.action().equals("AUTH_REVOKED")) {
+                    authenticationFailure = "SESSION_REVOKED"; fail(message.message()); return;
+                }
                 else throw new IOException("Unexpected server message");
             }
             fail("Mất kết nối đến quán.");

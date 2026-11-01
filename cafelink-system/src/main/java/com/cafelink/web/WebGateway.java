@@ -2,6 +2,7 @@ package com.cafelink.web;
 
 import com.cafelink.client.*;
 import com.cafelink.common.Json;
+import com.cafelink.common.Permissions;
 import com.cafelink.common.ApplicationInfo;
 import com.google.gson.*;
 import org.eclipse.jetty.server.*;
@@ -26,9 +27,9 @@ import java.util.function.Consumer;
 public final class WebGateway implements AutoCloseable {
     public record Tls(Path keyStore, String password) { }
     private static final int BODY_LIMIT = 64 * 1024;
-    private static final Set<String> ACTIONS = Set.of("AMEND_SERVICE", "CANCEL_SERVICE", "SET_STORE_ACCEPTING", "FIND_ASSISTANCE", "OPEN_ALL_TABLES", "GET_TABLE_QR", "GET_OWN_TABLE_QR", "GET_CONTINUATION_CONTEXT", "RESOLVE_ORDER", "SET_TABLE_ACCEPTING", "OPEN_TABLE", "CLOSE_EMPTY_TABLE", "PLACE_ORDER",
+    private static final Set<String> ACTIONS = Set.of("GET_STAFF_ACCOUNTS", "CREATE_STAFF_ACCOUNT", "SET_STAFF_ACTIVE", "RESET_STAFF_PASSWORD", "GET_STAFF_AUDIT", "SET_MENU_AVAILABILITY", "ACCEPT_ORDER", "GET_TAX_SETTINGS", "SAVE_TAX_SETTINGS", "GET_FINANCE_REPORT", "CREATE_EXPENSE", "VOID_EXPENSE", "AMEND_SERVICE", "CANCEL_SERVICE", "SET_STORE_ACCEPTING", "FIND_ASSISTANCE", "OPEN_ALL_TABLES", "GET_TABLE_QR", "GET_OWN_TABLE_QR", "GET_CONTINUATION_CONTEXT", "RESOLVE_ORDER", "SET_TABLE_ACCEPTING", "OPEN_TABLE", "CLOSE_EMPTY_TABLE", "PLACE_ORDER",
             "SET_ORDER_STATUS", "CALL_SERVICE", "REQUEST_BILL", "HANDLE_TICKET", "GET_BILL", "PAY_AND_CLOSE",
-            "GET_OUTCOME", "DISCARD_COMMAND", "GET_VISIT_QR", "ROTATE_JOIN_GRANT", "GET_VISIT_MEMBERSHIPS", "REVOKE_SESSION", "REQUEST_CHECKOUT", "ACK_CHECKOUT", "REOPEN_ORDERING", "GET_CHECKOUT", "GET_NOTIFICATIONS", "MARK_NOTIFICATION_READ", "CREATE_MENU_ITEM", "UPDATE_MENU_ITEM", "GET_MENU_CATEGORIES", "SAVE_MENU_CATEGORY", "DELETE_MENU_CATEGORY", "START_ORDER_PAYMENT", "SIMULATE_PAYMENT", "CANCEL_UNPAID_ORDER", "CLOSE_VISIT", "GET_SALES_HISTORY", "GET_SALES_RECEIPT", "GET_TAX_SETTINGS", "SAVE_TAX_SETTINGS", "GET_FINANCE_REPORT", "GET_CASH_ENTRIES", "CREATE_CASH_ENTRY", "VOID_CASH_ENTRY");
+            "GET_OUTCOME", "DISCARD_COMMAND", "GET_VISIT_QR", "ROTATE_JOIN_GRANT", "GET_VISIT_MEMBERSHIPS", "REVOKE_SESSION", "REQUEST_CHECKOUT", "ACK_CHECKOUT", "REOPEN_ORDERING", "GET_CHECKOUT", "GET_NOTIFICATIONS", "MARK_NOTIFICATION_READ", "CREATE_MENU_ITEM", "UPDATE_MENU_ITEM", "GET_MENU_CATEGORIES", "SAVE_MENU_CATEGORY", "DELETE_MENU_CATEGORY", "START_ORDER_PAYMENT", "SIMULATE_PAYMENT", "CANCEL_UNPAID_ORDER", "CLOSE_VISIT", "GET_SALES_HISTORY", "GET_SALES_RECEIPT");
     private final Server server = new Server();
     private final ServerConnector connector;
     private final String coreHost;
@@ -143,11 +144,23 @@ public final class WebGateway implements AutoCloseable {
             if (result.client.identity().membershipId() == null) throw new HttpFailure(401, "SESSION_EXPIRED", "Phiên đăng nhập đã hết hạn.");
             result = null;
         }
+        if (result != null && Permissions.operator(result.client.identity())) {
+            try {
+                if (result.client.authenticationFailure() != null) throw new RemoteException("SESSION_REVOKED", "Tài khoản đã bị khóa hoặc phiên đã bị thu hồi.");
+                if (result.client.connected()) result.client.request("PING", new JsonObject());
+            } catch (RemoteException denied) {
+                if (Set.of("SESSION_REVOKED","SESSION_EXPIRED","INVALID_CREDENTIAL").contains(denied.code())) { sessions.remove(key,result);result.close(); }
+                throw denied;
+            }
+        }
         if (result != null && result.client.identity().membershipId() != null) {
             if (result.client.connected()) result.client.request("PING", new JsonObject());
             else { sessions.remove(key, result); result.close(); result = null; }
         }
         if (result == null) {
+            // Operator cookies are memory-only web sessions, never guest resume tokens.
+            // Keep repeated requests from revoked tabs out of the guest recovery path.
+            if (key.startsWith("operator_")) throw new HttpFailure(401,"SESSION_REVOKED","Phiên đã hết hạn hoặc được thu hồi. Vui lòng đăng nhập lại.");
             makeRoom(true);
             NetworkClient client = new NetworkClient(coreHost, corePort);
             try {
@@ -214,9 +227,9 @@ public final class WebGateway implements AutoCloseable {
         NetworkClient client = new NetworkClient(coreHost, corePort);
         try {
             var identity = client.login(string(body, "username", 60), string(body, "password", 128));
-            if (!identity.role().equals("ADMIN")) throw new HttpFailure(403, "QR_REQUIRED", "Khách cần quét QR của lượt bàn; không dùng mật khẩu bàn trên web.");
+            if (!Permissions.operator(identity)) throw new HttpFailure(403, "QR_REQUIRED", "Khách cần quét QR của lượt bàn; không dùng mật khẩu bàn trên web.");
             SessionBridge bridge = new SessionBridge(client, secret());
-            String key = secret(); sessions.put(key, bridge);
+            String key = "operator_" + secret(); sessions.put(key, bridge);
             SessionBridge previous = sessions.remove(sessionId(request)); if (previous != null) previous.close();
             response.getHeaders().add("Set-Cookie", cookie(key, 28800));
             return bridge;
@@ -355,6 +368,8 @@ public final class WebGateway implements AutoCloseable {
                             JsonObject expected=input.getAsJsonObject("scope"),actual=bridge.identity();
                             for(String field:List.of("storeId","username"))if(!actual.has(field)||!string(expected,field,80).equals(actual.get(field).getAsString()))throw new HttpFailure(409,"SCOPE_CHANGED","Quán hoặc tài khoản quản lý đã thay đổi.");
                         }
+                        if (bridge.client.identity().role().equals("STAFF") && !Set.of("GET_OUTCOME","DISCARD_COMMAND").contains(action) && !Permissions.staffAllowed(action,input.getAsJsonObject("data")))
+                            throw new HttpFailure(403,"FORBIDDEN","Tài khoản nhân viên không có quyền thực hiện thao tác này.");
                         JsonObject value = bridge.command(id, action, input.getAsJsonObject("data"));
                         if (action.equals("GET_VISIT_QR")) value.addProperty("joinUrl", origin()+"/join#grant="+value.get("grant").getAsString());
                         if (action.equals("GET_TABLE_QR")) value.addProperty("joinUrl", origin()+"/join#table="+value.get("grant").getAsString());
@@ -381,8 +396,9 @@ public final class WebGateway implements AutoCloseable {
         Path file = assets.resolve(path.substring(1)).normalize();
         if (!file.startsWith(assets) || !Files.isRegularFile(file) || !file.toRealPath().startsWith(assets.toRealPath()))
             throw new HttpFailure(404, "NOT_FOUND", "Chưa build giao diện hoặc tài nguyên không tồn tại.");
-        String type = path.endsWith(".html") ? "text/html" : path.endsWith(".js") ? "text/javascript" : path.endsWith(".css") ? "text/css" : "application/octet-stream";
-        response.getHeaders().put("Content-Type", type + "; charset=utf-8");
+        String type = path.endsWith(".html") ? "text/html; charset=utf-8" : path.endsWith(".js") ? "text/javascript; charset=utf-8" : path.endsWith(".css") ? "text/css; charset=utf-8"
+            : path.endsWith(".jpg") || path.endsWith(".jpeg") ? "image/jpeg" : path.endsWith(".png") ? "image/png" : path.endsWith(".svg") ? "image/svg+xml" : path.endsWith(".ico") ? "image/x-icon" : "application/octet-stream";
+        response.getHeaders().put("Content-Type", type);
         byte[] bytes=Files.readAllBytes(file);
         if(path.endsWith(".js")||path.endsWith(".css")) {
             response.getHeaders().put("Vary","Accept-Encoding");

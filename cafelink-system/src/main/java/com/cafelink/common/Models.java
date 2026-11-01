@@ -5,7 +5,10 @@ import java.util.List;
 public final class Models {
     private Models() { }
     public record Identity(String username, String role, Integer tableId, String credential,
-                           String membershipId, String visitId, String storeId) {
+                           String membershipId, String visitId, String storeId, long accountVersion) {
+        public Identity(String username, String role, Integer tableId, String credential, String membershipId, String visitId, String storeId) {
+            this(username,role,tableId,credential,membershipId,visitId,storeId,0);
+        }
         public Identity(String username, String role, Integer tableId, String credential) {
             this(username, role, tableId, credential, null, null, null);
         }
@@ -22,9 +25,10 @@ public final class Models {
     public record OrderItem(int menuId, String name, int quantity, long unitPriceVnd, long subtotalVnd,String note) {
         public OrderItem(int menuId,String name,int quantity,long unitPriceVnd,long subtotalVnd){this(menuId,name,quantity,unitPriceVnd,subtotalVnd,"");}
     }
-    public record TaxSettings(boolean enabled, int rateBps, String name, boolean inclusive, long version) { }
-    public record OrderView(long id, int tableId, String visitId, String status, String note, long totalVnd, String createdAt, List<OrderItem> items,String paymentState,String queuedAt,long subtotalVnd,long taxVnd,int taxRateBps,String taxName,boolean taxInclusive) {
-        public OrderView(long id,int tableId,String visitId,String status,String note,long totalVnd,String createdAt,List<OrderItem> items,String paymentState,String queuedAt){this(id,tableId,visitId,status,note,totalVnd,createdAt,items,paymentState,queuedAt,totalVnd,0,0,"VAT",false);}
+    public record TaxSettings(String name,int rateBps,String mode,long version) { }
+    public record OrderView(long id, int tableId, String visitId, String status, String note, long totalVnd, String createdAt, List<OrderItem> items,String paymentState,String queuedAt,
+                            String acceptanceState,String acceptedAt,long subtotalVnd,long taxVnd,String taxName,int taxRateBps,boolean taxIncluded) {
+        public OrderView(long id,int tableId,String visitId,String status,String note,long totalVnd,String createdAt,List<OrderItem> items,String paymentState,String queuedAt){this(id,tableId,visitId,status,note,totalVnd,createdAt,items,paymentState,queuedAt,"ACCEPTED",createdAt,totalVnd,0,"Thuế",0,false);}
         public OrderView(long id,int tableId,String visitId,String status,String note,long totalVnd,String createdAt,List<OrderItem> items,String paymentState){this(id,tableId,visitId,status,note,totalVnd,createdAt,items,paymentState,createdAt);}
         public OrderView(long id,int tableId,String visitId,String status,String note,long totalVnd,String createdAt,List<OrderItem> items){this(id,tableId,visitId,status,note,totalVnd,createdAt,items,"POSTPAY");}
     }
@@ -32,12 +36,11 @@ public final class Models {
         public Ticket(long id,int tableId,String visitId,String type,String status,String note,String reply,String createdAt){this(id,tableId,visitId,type,status,note,reply,createdAt,0);}
     }
     public record Checkout(String checkoutId,String visitId,int tableId,String state,long version,int cycle,String createdAt,String updatedAt) { }
-    public record Bill(String visitId, int tableId, long totalVnd, List<OrderView> orders,long billVersion,long checkoutVersion,long subtotalVnd,long taxVnd) {
-        public Bill(String visitId,int tableId,long totalVnd,List<OrderView> orders,long billVersion,long checkoutVersion){this(visitId,tableId,totalVnd,orders,billVersion,checkoutVersion,orders.stream().mapToLong(OrderView::subtotalVnd).sum(),orders.stream().mapToLong(OrderView::taxVnd).sum());}
+    public record Bill(String visitId, int tableId, long totalVnd, List<OrderView> orders,long billVersion,long checkoutVersion) {
         public Bill(String visitId,int tableId,long totalVnd,List<OrderView> orders){this(visitId,tableId,totalVnd,orders,0,0);}
     }
     public record Snapshot(long revision, List<MenuItem> menu, List<TableView> tables, List<OrderView> orders, List<Ticket> tickets,List<Checkout> checkouts,List<com.google.gson.JsonObject> resolutions,boolean storeAcceptingOrders,TaxSettings taxSettings) {
-        public Snapshot(long revision,List<MenuItem> menu,List<TableView> tables,List<OrderView> orders,List<Ticket> tickets,List<Checkout> checkouts,List<com.google.gson.JsonObject> resolutions,boolean storeAcceptingOrders){this(revision,menu,tables,orders,tickets,checkouts,resolutions,storeAcceptingOrders,null);}
+        public Snapshot(long revision,List<MenuItem> menu,List<TableView> tables,List<OrderView> orders,List<Ticket> tickets,List<Checkout> checkouts,List<com.google.gson.JsonObject> resolutions,boolean storeAcceptingOrders){this(revision,menu,tables,orders,tickets,checkouts,resolutions,storeAcceptingOrders,new TaxSettings("Thuế",0,"EXCLUSIVE",1));}
         public Snapshot(long revision,List<MenuItem> menu,List<TableView> tables,List<OrderView> orders,List<Ticket> tickets,List<Checkout> checkouts,List<com.google.gson.JsonObject> resolutions){this(revision,menu,tables,orders,tickets,checkouts,resolutions,true);}
         public Snapshot(long revision,List<MenuItem> menu,List<TableView> tables,List<OrderView> orders,List<Ticket> tickets,List<Checkout> checkouts){this(revision,menu,tables,orders,tickets,checkouts,List.of());}
     }

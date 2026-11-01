@@ -76,7 +76,12 @@ public final class CafeServer implements AutoCloseable {
         Map<Integer, Integer> counts = online();
         for (Peer peer : peers) if (peer.identity != null && !peer.closed.get()) {
             try { peer.send(Message.event(Json.object(service.snapshot(peer.identity, counts)))); }
-            catch (SQLException | BusinessException e) { log("Snapshot unavailable: " + e.getClass().getSimpleName()); }
+            catch (BusinessException e) {
+                if ("STAFF".equals(peer.identity.role()) && e.code().equals("SESSION_REVOKED"))
+                    peer.send(new Message(Message.VERSION,"EVENT",null,"AUTH_REVOKED",false,e.code(),e.getMessage(),new JsonObject()));
+                else log("Snapshot unavailable: " + e.getClass().getSimpleName());
+            }
+            catch (SQLException e) { log("Snapshot unavailable: " + e.getClass().getSimpleName()); }
         }
     }
     private void log(String message) { try { logger.accept(message); } catch (RuntimeException ignored) { /* logging must not stop networking */ } }

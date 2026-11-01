@@ -32,7 +32,7 @@ final class SessionBridge implements AutoCloseable {
     SessionBridge(NetworkClient client, String csrf) {
         this.client = client; this.csrf = csrf;
         client.onState(state -> broadcast(Json.GSON.toJson(Map.of("type", "STATE", "state", state))));
-        client.onDisconnect(ignored -> { if (!closed.get()) broadcast("{\"type\":\"CONNECTION_LOST\"}"); });
+        client.onDisconnect(ignored -> { if (!closed.get()) broadcast(client.authenticationFailure()!=null&&client.identity().role().equals("STAFF")?"{\"type\":\"SESSION_ENDED\"}":"{\"type\":\"CONNECTION_LOST\"}"); });
     }
     JsonObject identity() {
         var who = client.identity();

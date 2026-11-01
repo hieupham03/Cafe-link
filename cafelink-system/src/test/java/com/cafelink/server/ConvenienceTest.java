@@ -42,6 +42,7 @@ class ConvenienceTest {
  @Test void stoppingNewOrdersPreservesPaymentAndFulfillment()throws Exception{
   var order=call(guest,"PLACE_ORDER",cart("[{\"menuId\":2,\"quantity\":1,\"expectedVersion\":1,\"expectedPriceVnd\":30000}]"));
   call(admin,"SET_STORE_ACCEPTING",j("{\"enabled\":0}"));assertEquals("ORDERING_PAUSED",assertThrows(BusinessException.class,()->call(guest,"PLACE_ORDER",cart("[{\"menuId\":2,\"quantity\":1,\"expectedVersion\":1,\"expectedPriceVnd\":30000}]"))).code());
+  call(admin,"ACCEPT_ORDER",j("{\"orderId\":"+order.get("orderId")+"}"));
   var p=call(guest,"START_ORDER_PAYMENT",j("{\"visitId\":\""+guest.visitId()+"\",\"orderId\":"+order.get("orderId")+"}"));p.addProperty("outcome","SUCCESS");call(guest,"SIMULATE_PAYMENT",p);
   call(admin,"SET_ORDER_STATUS",j("{\"orderId\":"+order.get("orderId")+",\"status\":\"PREPARING\"}"));
  }
@@ -53,10 +54,11 @@ class ConvenienceTest {
  }
  @Test void schema10WithRealRowsUpgradesWithoutChangingPaidAmountOrQr()throws Exception{
   var order=call(guest,"PLACE_ORDER",cart("[{\"menuId\":2,\"quantity\":1,\"expectedVersion\":1,\"expectedPriceVnd\":30000}]"));String token=guest.credential();
+  call(admin,"ACCEPT_ORDER",j("{\"orderId\":"+order.get("orderId")+"}"));
   var p=call(guest,"START_ORDER_PAYMENT",j("{\"visitId\":\""+guest.visitId()+"\",\"orderId\":"+order.get("orderId")+"}"));p.addProperty("outcome","SUCCESS");call(guest,"SIMULATE_PAYMENT",p);s.close();
   try(var connection=java.sql.DriverManager.getConnection("jdbc:sqlite:"+temp.resolve("c.db"));var sql=connection.createStatement()){
    sql.execute("DROP TABLE ticket_changes");sql.execute("ALTER TABLE tickets DROP COLUMN version");sql.execute("ALTER TABLE menu DROP COLUMN purchase_version");
-   sql.execute("CREATE TABLE old_items(order_id INTEGER NOT NULL REFERENCES orders(id),menu_id INTEGER NOT NULL REFERENCES menu(id),name TEXT NOT NULL,quantity INTEGER NOT NULL,unit_price_vnd INTEGER NOT NULL,PRIMARY KEY(order_id,menu_id))");sql.execute("INSERT INTO old_items SELECT order_id,menu_id,name,quantity,unit_price_vnd FROM order_items");sql.execute("DROP TABLE order_items");sql.execute("ALTER TABLE old_items RENAME TO order_items");MigrationFixtures.removeFinance(sql);sql.execute("PRAGMA user_version=10");
+   sql.execute("CREATE TABLE old_items(order_id INTEGER NOT NULL REFERENCES orders(id),menu_id INTEGER NOT NULL REFERENCES menu(id),name TEXT NOT NULL,quantity INTEGER NOT NULL,unit_price_vnd INTEGER NOT NULL,PRIMARY KEY(order_id,menu_id))");sql.execute("INSERT INTO old_items SELECT order_id,menu_id,name,quantity,unit_price_vnd FROM order_items");sql.execute("DROP TABLE order_items");sql.execute("ALTER TABLE old_items RENAME TO order_items");sql.execute("PRAGMA user_version=10");
   }
   s=new CafeService(temp.resolve("c.db"),new QrConfig(new byte[32],Clock.systemUTC()),true);guest=s.resume(token);assertEquals(30000,s.snapshot(guest,Map.of()).orders().get(0).totalVnd());assertEquals("PAID",s.snapshot(guest,Map.of()).orders().get(0).paymentState());
  }

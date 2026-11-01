@@ -20,11 +20,15 @@ final class EventFeed {
         db.update("DELETE FROM business_events WHERE created_at<?",Instant.now().minusSeconds(7*86400).toString());
     }
     JsonObject list(String principal,String visit,JsonObject input) throws SQLException {
+        return list(principal,visit,input,false);
+    }
+    JsonObject list(String principal,String visit,JsonObject input,boolean activeOnly) throws SQLException {
         int after=input.has("after")?CafeService.integer(input,"after"):0;
         int before=input.has("before")?CafeService.integer(input,"before"):Integer.MAX_VALUE;
         int limit=input.has("limit")?CafeService.integer(input,"limit"):50;
         if(after<0||before<1||limit<1||limit>100)throw new BusinessException("INVALID_INPUT","Phân trang thông báo không hợp lệ.");
         String scope=visit==null?"1=1":"e.visit_id=?";
+        if(activeOnly)scope+=" AND EXISTS(SELECT 1 FROM visits v WHERE v.id=e.visit_id AND v.active=1)";
         List<Object> args=new ArrayList<>();args.add(principal);if(visit!=null)args.add(visit);args.add(after);args.add(before);args.add(limit+1);
         boolean history=input.has("before");
         var rows=db.query("SELECT e.*,EXISTS(SELECT 1 FROM notification_reads n WHERE n.event_id=e.id AND n.principal=?) is_read FROM business_events e WHERE "+scope+" AND e.id>? AND e.id<? ORDER BY e.id "+(history?"DESC":"ASC")+" LIMIT ?",r->{
@@ -39,7 +43,11 @@ final class EventFeed {
         JsonObject out=new JsonObject();out.add("events",Json.GSON.toJsonTree(rows));out.addProperty("hasMore",more);out.addProperty("latest",latest);out.addProperty("unread",unread);out.addProperty("resyncRequired",after>0&&after<floor);return out;
     }
     JsonObject read(String principal,String visit,int id) throws SQLException {
+        return read(principal,visit,id,false);
+    }
+    JsonObject read(String principal,String visit,int id,boolean activeOnly) throws SQLException {
         String scope=visit==null?"":" AND visit_id=?";
+        if(activeOnly)scope+=" AND EXISTS(SELECT 1 FROM visits v WHERE v.id=business_events.visit_id AND v.active=1)";
         Object[] args=visit==null?new Object[]{id}:new Object[]{id,visit};
         if(db.query("SELECT id FROM business_events WHERE id=?"+scope,r->r.getLong(1),args).isEmpty())throw new BusinessException("FORBIDDEN","Thông báo không thuộc quyền hiện tại.");
         db.update("INSERT OR IGNORE INTO notification_reads VALUES(?,?)",principal,id);
