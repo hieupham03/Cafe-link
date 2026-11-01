@@ -58,7 +58,7 @@ class BackupCheckTest {
         Path database=temp.resolve("v9.db"),key=temp.resolve("v9.db.qr-key");Files.write(key,new byte[32]);
         try(var service=new CafeService(database,new QrConfig(new byte[32],Clock.systemUTC()),true)) { }
         try(var connection=DriverManager.getConnection("jdbc:sqlite:"+database);var sql=connection.createStatement()) {
-            sql.execute("DROP TABLE visit_continuations");sql.execute("DROP TABLE order_resolutions");sql.execute("PRAGMA user_version=9");
+            sql.execute("DROP TABLE visit_continuations");sql.execute("DROP TABLE order_resolutions");MigrationFixtures.removeFinance(sql);sql.execute("PRAGMA user_version=9");
         }
         byte[] before=Files.readAllBytes(database);assertEquals(9,BackupCheckMain.check(database,key));assertArrayEquals(before,Files.readAllBytes(database));
     }

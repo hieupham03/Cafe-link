@@ -10,6 +10,7 @@ const groups = [
   { name: "recovery", files: ["tests/orders.spec.ts"] },
   { name: "ux", files: ["tests/ux.spec.ts"] },
   { name: "v7", files: ["tests/v7.spec.ts"] },
+  { name: "finance", files: ["tests/finance.spec.ts"] },
   { name: "automatic", files: ["tests/automatic.spec.ts"] },
   { name: "convenience", files: ["tests/convenience.spec.ts"] },
   { name: "workflow", files: ["tests/workflow.spec.ts"] },

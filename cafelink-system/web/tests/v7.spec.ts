@@ -129,7 +129,7 @@ test("V6 ảnh/menu thật và V7 luồng QR–trả trước–pha chế–lị
     .click();
   const portal = page.getByRole("dialog", { name: "Cổng thanh toán giả lập" });
   await expect(portal).toBeVisible();
-  await expect(portal.getByText("45.000", { exact: false })).toBeVisible();
+  await expect(portal.locator(".bill-total")).toContainText("45.000");
   const before = (await state()).orders.find((o: any) => o.visitId === visitId);
   expect(before.paymentState).toBe("PENDING");
   await admin.getByRole("button", { name: /Quầy pha chế/ }).click();

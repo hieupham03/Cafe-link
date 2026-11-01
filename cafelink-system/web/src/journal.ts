@@ -42,6 +42,7 @@ export interface Intent {
     expectedVersion?: number;
     expectedVisitVersion?: number;
     expectedCheckoutVersion?: number;
+    expectedTaxVersion?: number;
   };
   fingerprint: string;
   cartRevision: number;
@@ -269,13 +270,14 @@ export const journal = {
       return cart;
     });
   },
-  async queue(scope: GuestScope, revision: number) {
+  async queue(scope: GuestScope, revision: number, expectedTaxVersion?: number) {
     const snapshot = await journal.read(scope);
     assertNone(snapshot.entries);
     if (!snapshot.cart.items.length)
       throw new JournalError("Chọn món trước khi gửi đơn.");
     const data = {
       visitId: scope.visitId,
+      ...(expectedTaxVersion === undefined ? {} : { expectedTaxVersion }),
       items: snapshot.cart.items.map((row) => ({
         menuId: row.menuId,
         ...(row.note?{note:row.note}:{}),

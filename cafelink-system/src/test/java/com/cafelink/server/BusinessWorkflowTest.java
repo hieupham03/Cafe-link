@@ -128,7 +128,7 @@ class BusinessWorkflowTest {
     @Test void genuineSchema9UpgradeKeepsQrPaymentAndGuestAccess() throws Exception {
         int id=order(guest);pay(guest,payment(guest,id));String token=guest.credential();service.close();
         try(var connection=java.sql.DriverManager.getConnection("jdbc:sqlite:"+temp.resolve("workflow.db"));var sql=connection.createStatement()) {
-            sql.execute("DROP TABLE visit_continuations");sql.execute("DROP TABLE order_resolutions");sql.execute("PRAGMA user_version=9");
+            sql.execute("DROP TABLE visit_continuations");sql.execute("DROP TABLE order_resolutions");MigrationFixtures.removeFinance(sql);sql.execute("PRAGMA user_version=9");
         }
         service=new CafeService(temp.resolve("workflow.db"),config,true);guest=service.resume(token);admin=service.authenticate("admin","CafeLink@123");
         assertEquals(grant,call(admin,"GET_TABLE_QR",j("{\"tableId\":1}")).get("grant").getAsString());

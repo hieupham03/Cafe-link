@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { GuestHome } from "./Guest";
 import { api } from "./api";
-import { guestScope, money } from "./models";
+import { guestScope, money, taxPreview } from "./models";
 import type { MenuItem, SessionInfo, ContinuationContext } from "./models";
 import { journal, scopeKey, unresolved, withJournalLock } from "./journal";
 import type { Cart, Intent } from "./journal";
@@ -170,6 +170,8 @@ export function GuestWorkspace({
   const checkoutActive =
     checkout?.state === "REQUESTED" || checkout?.state === "ACKNOWLEDGED";
   const prepaid = table?.paymentMode === "PREPAY";
+  const taxSettings = connection.state?.taxSettings;
+  const cartAmounts = taxPreview(cart.items.reduce((sum, item) => sum + item.priceVnd * item.quantity, 0), taxSettings);
   const completed = table?.automatic && table.status === "SESSION_ENDED";
   const changedItems = cart.items.filter((row) => {
     const current = connection.state?.menu.find((i) => i.id === row.menuId);
@@ -385,14 +387,13 @@ export function GuestWorkspace({
               </div>
             )}
             <div className="cart-footer">
+              {taxSettings?.enabled && <div className="tax-breakdown">
+                <span>Tiền hàng trước thuế <strong>{money(cartAmounts.subtotalVnd)}</strong></span>
+                <span>{taxSettings.name} ({taxSettings.rateBps / 100}%) <strong>{money(cartAmounts.taxVnd)}</strong></span>
+                <small>{taxSettings.inclusive ? "Giá thực đơn đã gồm thuế." : "Thuế được cộng thêm vào giá thực đơn."}</small>
+              </div>}
               <strong data-testid="cart-total">
-                Tạm tính:{" "}
-                {money(
-                  cart.items.reduce(
-                    (sum, item) => sum + item.priceVnd * item.quantity,
-                    0,
-                  ),
-                )}
+                Tổng thanh toán: {money(cartAmounts.totalVnd)}
               </strong>
               <button
                 className="primary"
@@ -406,7 +407,7 @@ export function GuestWorkspace({
                 }
                 onClick={() =>
                   completed ? void restart() : void act(async () => {
-                    await place(scope, cart.revision);
+                    await place(scope, cart.revision, taxSettings?.version);
                     if (prepaid) {
                       const saved = await journal.read(scope);
                       const accepted = saved.entries
@@ -605,7 +606,7 @@ export function GuestWorkspace({
         <a className="cart-shortcut" href="#guest-cart">
           {pending.length > 0
             ? "Xem yêu cầu cần đối chiếu"
-            : `Xem giỏ · ${cart.items.reduce((sum, item) => sum + item.quantity, 0)} phần · ${money(cart.items.reduce((sum, item) => sum + item.quantity * item.priceVnd, 0))}`}
+            : `Xem giỏ · ${cart.items.reduce((sum, item) => sum + item.quantity, 0)} phần · ${money(cartAmounts.totalVnd)}`}
         </a>
       )}
     </>

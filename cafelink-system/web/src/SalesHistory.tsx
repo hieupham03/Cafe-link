@@ -3,6 +3,7 @@ import { api } from "./api";
 import { money } from "./models";
 import type { SessionInfo, Order, OrderResolution } from "./models";
 import { Dialog } from "./Dialog";
+import { TaxBreakdown } from "./TaxBreakdown";
 interface Receipt {
   resolution?: OrderResolution;
   receiptId: string;
@@ -180,6 +181,7 @@ export function SalesHistory({ session }: { session: SessionInfo }) {
                 ))}
               </ul>
               {o.note && <p>Ghi chú: {o.note}</p>}
+              <TaxBreakdown order={o} />
             </article>
           ))}
           <p className="bill-total">
