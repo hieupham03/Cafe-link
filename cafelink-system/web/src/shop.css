@@ -1008,10 +1008,12 @@ button:disabled {
   opacity: 0.92;
 }
 .login-story h1 {
-  font-family: Georgia, "Times New Roman", serif;
+  color: #fff4e3;
+  font-family: Cambria, Georgia, serif;
   font-weight: 400;
   font-size: clamp(32px, 3vw, 47px);
-  letter-spacing: -1.3px;
+  letter-spacing: 0;
+  word-spacing: normal;
   line-height: 1.12;
 }
 .login-panel {

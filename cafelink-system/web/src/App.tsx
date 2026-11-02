@@ -398,9 +398,6 @@ export function App() {
             <button className="primary full" disabled={busy}>
               {busy ? "Đang xác thực…" : "Đăng nhập"}
             </button>
-            <p className="login-foot">
-              Khách tại bàn sẽ truy cập bằng mã QR của quán.
-            </p>
           </form>
         </section>
       </main>

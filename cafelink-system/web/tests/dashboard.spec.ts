@@ -7,6 +7,10 @@ test("đăng nhập, mở bàn, đồng bộ hai tab và đăng xuất toàn b�
   context,
 }) => {
   await page.goto("/admin");
+  await expect(page.locator(".login-story h1")).toHaveCSS(
+    "font-family",
+    /Cambria/,
+  );
   await page.getByLabel("Tài khoản", { exact: true }).fill("admin");
   await page.getByLabel("Mật khẩu", { exact: true }).fill("CafeLink@123");
   await page.getByRole("button", { name: "Đăng nhập", exact: true }).click();
