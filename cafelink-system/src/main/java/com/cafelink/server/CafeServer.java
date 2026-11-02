@@ -77,7 +77,7 @@ public final class CafeServer implements AutoCloseable {
         for (Peer peer : peers) if (peer.identity != null && !peer.closed.get()) {
             try { peer.send(Message.event(Json.object(service.snapshot(peer.identity, counts)))); }
             catch (BusinessException e) {
-                if ("STAFF".equals(peer.identity.role()) && e.code().equals("SESSION_REVOKED"))
+                if (e.code().equals("SESSION_REVOKED"))
                     peer.send(new Message(Message.VERSION,"EVENT",null,"AUTH_REVOKED",false,e.code(),e.getMessage(),new JsonObject()));
                 else log("Snapshot unavailable: " + e.getClass().getSimpleName());
             }

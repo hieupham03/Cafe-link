@@ -7,6 +7,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Path;
 import java.time.Clock;
+import java.io.IOException;
 import java.util.concurrent.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,9 +31,10 @@ class QrNetworkTest {
                 assertEquals("FORBIDDEN", assertThrows(RemoteException.class, () -> guest.request("GET_VISIT_QR", scope)).code());
                 JsonObject revoke = scope.deepCopy(); revoke.addProperty("membershipId", who.membershipId());
                 admin.request("REVOKE_SESSION", revoke);
-                assertEquals("SESSION_REVOKED", assertThrows(RemoteException.class, () -> guest.request("PING", new JsonObject())).code());
+                assertThrows(IOException.class, () -> guest.request("PING", new JsonObject()));
                 assertFalse(guest.connected());
-                assertEquals("SESSION_REVOKED", assertThrows(RemoteException.class, resumed::refresh).code());
+                assertThrows(IOException.class, resumed::refresh);
+                assertFalse(resumed.connected());
             }
         }
     }

@@ -12,7 +12,7 @@ import java.util.*;
 
 /** Database and business state are serialized here; socket I/O never holds this lock. */
 public final class CafeService implements AutoCloseable {
-    private static final Set<String> STAFF_DISCARD_ACTIONS=Set.of("SET_MENU_AVAILABILITY","ACCEPT_ORDER","SAVE_TAX_SETTINGS","CREATE_EXPENSE","VOID_EXPENSE","REQUEST_CHECKOUT","ACK_CHECKOUT","REOPEN_ORDERING","PAY_AND_CLOSE","CLOSE_VISIT","CREATE_MENU_ITEM","UPDATE_MENU_ITEM","RESOLVE_ORDER");
+    private static final Set<String> STAFF_DISCARD_ACTIONS=Set.of("SET_MENU_AVAILABILITY","ACCEPT_ORDER","SAVE_TAX_SETTINGS","CREATE_EXPENSE","VOID_EXPENSE","REQUEST_CHECKOUT","ACK_CHECKOUT","REOPEN_ORDERING","PAY_AND_CLOSE","CLOSE_VISIT","END_TABLE_SESSIONS","CREATE_MENU_ITEM","UPDATE_MENU_ITEM","RESOLVE_ORDER");
     private final Database db;
     private final QrAccess qr;
     private final CheckoutFlow checkout;
@@ -75,12 +75,17 @@ public final class CafeService implements AutoCloseable {
         if (operator(who)) { if(staffAccounts!=null)staffAccounts.validate(who); } else guestVisit(who);
     }
     public synchronized void logoutGuest(Identity who) throws SQLException {
-        qrRequired();String visit=guestVisit(who);
-        if(!db.query("SELECT id FROM visits WHERE id=? AND service_mode='AUTO'",r->r.getString(1),visit).isEmpty()
-            && (!db.query("SELECT id FROM orders WHERE visit_id=? AND payment_state NOT IN('CANCELLED','REFUNDED') AND (payment_state!='PAID' OR status!='SERVED')",r->r.getLong(1),visit).isEmpty()
-                || !db.query("SELECT id FROM tickets WHERE visit_id=? AND status='OPEN'",r->r.getLong(1),visit).isEmpty()))
-            throw problem("VISIT_HAS_WORK","Bạn còn đơn hoặc yêu cầu đang xử lý. Hãy giữ phiên để theo dõi; liên hệ nhân viên nếu cần hủy hoặc hỗ trợ.");
-        qr.logout(who);
+        qrRequired();
+        db.transaction(() -> {
+            String visit=guestVisit(who);
+            boolean automatic=!db.query("SELECT id FROM visits WHERE id=? AND service_mode='AUTO' AND active=1",r->r.getString(1),visit).isEmpty();
+            if(automatic&&tableOrdering.hasOpenWork(visit))
+                throw problem("VISIT_HAS_WORK","Bạn còn đơn hoặc yêu cầu đang xử lý. Hãy giữ phiên để theo dõi; liên hệ nhân viên nếu cần hủy hoặc hỗ trợ.");
+            qr.leave(who);
+            if(automatic)tableOrdering.closeDepartedVisit(visit);
+            db.update("UPDATE metadata SET value=value+1 WHERE name='revision'");
+            return null;
+        });
     }
     public synchronized boolean onlineInCurrentVisit(Identity who) throws SQLException {
         if (qr == null || operator(who)) return true;
@@ -192,6 +197,7 @@ public final class CafeService implements AutoCloseable {
             JsonObject result = switch (action) {
                 case "OPEN_ALL_TABLES" -> {qrRequired();requireAdmin(who);yield tableOrdering.enableAll();}
                 case "SET_TABLE_ACCEPTING" -> {qrRequired();requireAdmin(who);int table=integer(input,"tableId"),enabled=integer(input,"enabled");if(enabled!=0&&enabled!=1)throw problem("INVALID_INPUT","enabled phải bằng 0 hoặc 1.");if(db.update("UPDATE table_access SET enabled=? WHERE table_id=?",enabled,table)!=1)throw problem("NOT_FOUND","Hãy bật QR cố định cho toàn quán trước.");yield fields("status",enabled==1?"ACCEPTING":"PAUSED");}
+                case "END_TABLE_SESSIONS" -> {qrRequired();requireAdmin(who);yield tableOrdering.endTableSessions(integer(input,"tableId"));}
                 case "GET_TABLE_QR" -> {qrRequired();requireOperator(who);yield tableOrdering.qr(integer(input,"tableId"));}
                 case "GET_OWN_TABLE_QR" -> {qrRequired();requireGuest(who);if(db.query("SELECT id FROM visits WHERE id=? AND service_mode='AUTO'",r->r.getString(1),guestVisit(who)).isEmpty())throw problem("FORBIDDEN","Chỉ áp dụng cho phiên riêng QR cố định.");yield tableOrdering.qr(who.tableId());}
                 case "START_ORDER_PAYMENT","SIMULATE_PAYMENT","CANCEL_UNPAID_ORDER" -> {
@@ -241,7 +247,6 @@ public final class CafeService implements AutoCloseable {
             };
             if(events!=null)recordEvent(action,input,result);
             if(staffAccounts!=null&&operator(who))staffAccounts.audit(who.username(),action,input,result);
-            if(tableOrdering!=null&&Set.of("SET_ORDER_STATUS","HANDLE_TICKET","CANCEL_UNPAID_ORDER","RESOLVE_ORDER","CANCEL_SERVICE").contains(action))tableOrdering.finishReadyVisits();
             if (Commands.mutation(action)) db.update("UPDATE metadata SET value=value+1 WHERE name='revision'");
             if (Commands.mutation(action)) db.update("INSERT INTO command_receipts VALUES(?,?,?,?,?,?)", principal(who), commandId, action, credentialCommand?PasswordHash.create(fingerprint):fingerprint, Json.GSON.toJson(result), Instant.now().toString());
             return result;

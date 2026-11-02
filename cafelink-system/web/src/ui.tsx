@@ -13,6 +13,7 @@ export const actionTitle: Record<string, string> = {
   CREATE_MENU_ITEM: "Thêm món",
   UPDATE_MENU_ITEM: "Sửa món",
   CLOSE_VISIT: "Kết thúc lượt",
+  END_TABLE_SESSIONS: "Kết thúc phiên tại bàn",
   PLACE_ORDER: "Đặt món",
   CALL_SERVICE: "Gọi nhân viên",
   REQUEST_CHECKOUT: "Yêu cầu tính tiền",

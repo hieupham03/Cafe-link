@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { api } from "./api";
+import { Dialog } from "./Dialog";
 import { GuestLink } from "./GuestLink";
 import { money, statusName } from "./models";
 import type { Table, Order } from "./models";
@@ -19,7 +20,8 @@ export function AutomaticTablePanel({
   run: (action: string, data: Record<string, unknown>) => Promise<unknown>;
 }) {
   const [url, setUrl] = useState(""),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [confirmEnd, setConfirmEnd] = useState(false);
   const svg = useRef<SVGSVGElement>(null);
   useEffect(() => {
     let live = true;
@@ -57,7 +59,7 @@ export function AutomaticTablePanel({
         QR gọi món tại bàn · Mỗi khách có đơn và thanh toán riêng.
       </p>
       <p>
-        {table.activeSessions ?? 0} phiên đang xử lý. Con số này không biểu thị
+        {table.activeSessions ?? 0} phiên đang phục vụ. Con số này không biểu thị
         số người còn ngồi tại bàn.
       </p>
       {error && (
@@ -99,7 +101,16 @@ export function AutomaticTablePanel({
       >
         {table.acceptingOrders ? "Tạm dừng khách mới" : "Tiếp tục nhận khách"}
       </button>
-      <h3 className="spaced">Đơn đang xử lý tại bàn ({orders.length})</h3>
+      {(table.activeSessions ?? 0) > 0 && (
+        <button
+          className="secondary"
+          disabled={disabled}
+          onClick={() => setConfirmEnd(true)}
+        >
+          Kết thúc phiên
+        </button>
+      )}
+      <h3 className="spaced">Đơn trong các phiên tại bàn ({orders.length})</h3>
       {orders.length === 0 && (
         <p className="muted">
           Khách có thể quét và đặt ngay, không cần mở lượt.
@@ -125,6 +136,32 @@ export function AutomaticTablePanel({
           <strong>{money(order.totalVnd)}</strong>
         </article>
       ))}
+      {confirmEnd && (
+        <Dialog
+          label="Xác nhận kết thúc phiên"
+          role="alertdialog"
+          onClose={() => setConfirmEnd(false)}
+        >
+          <h2>Kết thúc tất cả phiên tại {table.name}?</h2>
+          <p>
+            Khách sẽ bị đăng xuất khỏi các phiên của bàn này. Chỉ có thể kết thúc
+            khi mọi đơn đã thanh toán và giao, mọi yêu cầu hỗ trợ đã xử lý.
+          </p>
+          <div className="button-row">
+            <button onClick={() => setConfirmEnd(false)}>Hủy</button>
+            <button
+              className="secondary"
+              disabled={disabled}
+              onClick={async () => {
+                await run("END_TABLE_SESSIONS", { tableId: table.id });
+                setConfirmEnd(false);
+              }}
+            >
+              Xác nhận kết thúc phiên
+            </button>
+          </div>
+        </Dialog>
+      )}
     </section>
   );
 }

@@ -30,7 +30,7 @@ class ConvenienceTest {
   var result=s.execute(guest,"fixed-amend","AMEND_SERVICE",amend);assertEquals(1,result.get("version").getAsInt());assertEquals(result,s.execute(guest,"fixed-amend","AMEND_SERVICE",amend));
   assertThrows(BusinessException.class,()->call(admin,"HANDLE_TICKET",j("{\"ticketId\":"+ticket.get("ticketId")+",\"expectedVersion\":0,\"reply\":\"Done\"}")));
   call(guest,"CANCEL_SERVICE",j("{\"visitId\":\""+guest.visitId()+"\",\"ticketId\":"+ticket.get("ticketId")+",\"expectedVersion\":1}"));
-  assertEquals(1,s.snapshot(guest,Map.of()).tickets().size());assertEquals("CANCELLED",s.snapshot(guest,Map.of()).tickets().get(0).status());assertEquals("SESSION_ENDED",s.snapshot(guest,Map.of()).tables().get(0).status());
+  assertEquals(1,s.snapshot(guest,Map.of()).tickets().size());assertEquals("CANCELLED",s.snapshot(guest,Map.of()).tickets().get(0).status());assertEquals("OCCUPIED",s.snapshot(guest,Map.of()).tables().get(0).status());
  }
  @Test void presentationEditKeepsPurchaseVersionButPriceChangeRequiresReview()throws Exception{
   var item=com.cafelink.common.Json.object(s.snapshot(admin,Map.of()).menu().get(1));item.addProperty("menuId",2);item.addProperty("expectedVersion",1);item.addProperty("description","Ảnh và lời giới thiệu mới");

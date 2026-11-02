@@ -58,7 +58,7 @@ async function serve(id: number) {
     await command(owner, "SET_ORDER_STATUS", { orderId: id, status });
   await expect(
     page.getByRole("heading", { name: "Cảm ơn bạn đã ghé quán", exact: true }),
-  ).toBeVisible();
+  ).toHaveCount(0);
 }
 test.beforeAll(async ({ browser }) => {
   owner = await browser.newContext();
@@ -92,7 +92,7 @@ test.afterAll(async () => {
   await owner.close();
 });
 
-test("giao đơn đầu vẫn giữ giỏ tiếp theo, chuyển nháp có xác nhận và xem được đơn cũ", async () => {
+test("giao đơn vẫn giữ phiên phục vụ, giỏ nháp và lịch sử đơn", async () => {
   const order = await buy();
   await openGuestZone(page, "Thực đơn");
   await page.getByRole("button", { name: "Thêm Trà đào", exact: true }).click();
@@ -110,23 +110,12 @@ test("giao đơn đầu vẫn giữ giỏ tiếp theo, chuyển nháp có xác n
     path: "test-results/workflow-completed-draft.png",
     fullPage: true,
   });
-  await page
-    .getByRole("button", { name: "Bắt đầu lần đặt mới", exact: true })
-    .click();
-  await openGuestZone(page, "Giỏ hàng");
-  await expect(
-    page.getByRole("button", { name: "Gửi đơn gọi món", exact: true }),
-  ).toBeEnabled();
-  await openGuestZone(page, "Giỏ hàng");
-  await expect(page.getByTestId("cart-total")).toContainText("40.000");
-  expect((await state()).orders).toHaveLength(0);
   await page.reload();
   await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("40.000");
   await openGuestZone(page, "Đơn đã gọi");
-  await expect(page.getByTestId("previous-orders")).toContainText(
-    `Đơn #${order.id}`,
-  );
+  await expect(page.getByText(`Đơn #${order.id}`, { exact: true })).toBeVisible();
+  expect((await state()).orders).toHaveLength(1);
   await page.screenshot({
     path: "test-results/workflow-continued-mobile.png",
     fullPage: true,
@@ -162,7 +151,7 @@ test("rời phiên có đơn đã trả bị chặn cả UI và API; nháp cần
   await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("40.000");
 });
-test("mất phản hồi chuyển phiên vẫn phục hồi đúng một phiên kế tiếp và một giỏ nháp", async () => {
+test("tải lại sau khi giao món vẫn giữ nguyên phiên và giỏ nháp", async () => {
   const order = await buy();
   await openGuestZone(page, "Thực đơn");
   await page.getByRole("button", { name: "Thêm Trà đào", exact: true }).click();
@@ -170,29 +159,12 @@ test("mất phản hồi chuyển phiên vẫn phục hồi đúng một phiên 
   const before = await (
     await guest.request.get(origin + "/api/session")
   ).json();
-  let lost = false;
-  await page.route("**/api/guest/continue", async (route) => {
-    const response = await route.fetch();
-    expect(response.ok()).toBe(true);
-    lost = true;
-    await route.abort("failed");
-  });
-  await page
-    .getByRole("button", { name: "Bắt đầu lần đặt mới", exact: true })
-    .click();
-  await expect.poll(() => lost).toBe(true);
   await page.reload();
   await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("40.000");
   const after = await (await guest.request.get(origin + "/api/session")).json();
-  expect(after.identity.visitId).not.toBe(before.identity.visitId);
-  const retry = await guest.request.post(origin + "/api/guest/continue", {
-    headers: { Origin: origin, "X-CSRF-Token": after.csrfToken },
-    data: { membershipId: before.identity.membershipId },
-  });
-  expect(retry.ok()).toBe(true);
-  expect((await retry.json()).identity.visitId).toBe(after.identity.visitId);
-  expect((await state()).orders).toHaveLength(0);
+  expect(after.identity.visitId).toBe(before.identity.visitId);
+  expect((await state()).orders).toHaveLength(1);
 });
 test("quầy từ chối và hoàn giả lập đơn chưa pha chế; khách thấy lý do, lịch sử giữ khoản thu gốc", async () => {
   const order = await buy();
@@ -261,42 +233,14 @@ test("thu ngân hủy đơn chưa trả bị bỏ dở mà không cần quyền 
     ),
   ).toBe(false);
 });
-test("lỗi ghi giỏ lúc chuyển phiên khóa gửi và reload phục hồi nháp từ transaction cũ", async () => {
+test("giỏ nháp giữ nguyên sau khi đơn đã giao và reload", async () => {
   const order = await buy();
   await openGuestZone(page, "Thực đơn");
   await page.getByRole("button", { name: "Thêm Trà đào", exact: true }).click();
   await serve(order.id);
-  const before = await (
-    await guest.request.get(origin + "/api/session")
-  ).json();
-  await page.evaluate((oldMembership) => {
-    const original = IDBObjectStore.prototype.put;
-    IDBObjectStore.prototype.put = function (value: any, key?: IDBValidKey) {
-      if (
-        this.name === "carts" &&
-        value?.items?.length &&
-        typeof value.scope === "string" &&
-        !value.scope.includes(oldMembership)
-      )
-        throw new DOMException("Simulated quota failure", "QuotaExceededError");
-      return key === undefined
-        ? original.call(this, value)
-        : original.call(this, value, key);
-    };
-  }, before.identity.membershipId);
-  await page
-    .getByRole("button", { name: "Bắt đầu lần đặt mới", exact: true })
-    .click();
-  await openGuestZone(page, "Giỏ hàng");
-  await expect(
-    page.getByRole("button", { name: "Gửi đơn gọi món", exact: true }),
-  ).toBeDisabled();
-  await expect(page.getByRole("alert")).toContainText("nhật ký");
-  expect((await state()).orders).toHaveLength(0);
   await page.reload();
   await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("40.000");
-  await openGuestZone(page, "Giỏ hàng");
   await expect(
     page.getByRole("button", { name: "Gửi đơn gọi món", exact: true }),
   ).toBeEnabled();
@@ -360,7 +304,7 @@ test("mất phản hồi hoàn giả lập được đối chiếu sau reload, k
   expect(receipts).toHaveLength(1);
   expect(receipts[0].resolution.state).toBe("REFUNDED");
 });
-test("giỏ được chuyển vẫn phải xác nhận giá mới và không tự gửi đơn", async () => {
+test("giỏ nháp phải xác nhận giá mới và không tự gửi đơn", async () => {
   const order = await buy();
   await openGuestZone(page, "Thực đơn");
   await page.getByRole("button", { name: "Thêm Trà đào", exact: true }).click();
@@ -372,9 +316,7 @@ test("giỏ được chuyển vẫn phải xác nhận giá mới và không t�
     expectedVersion: tea.version,
     priceVnd: 49000,
   });
-  await page
-    .getByRole("button", { name: "Bắt đầu lần đặt mới", exact: true })
-    .click();
+  await openGuestZone(page, "Giỏ hàng");
   await expect(
     page.getByRole("button", { name: "Cập nhật giỏ theo thực đơn mới" }),
   ).toBeVisible();
@@ -382,7 +324,7 @@ test("giỏ được chuyển vẫn phải xác nhận giá mới và không t�
   await expect(
     page.getByRole("button", { name: "Gửi đơn gọi món", exact: true }),
   ).toBeDisabled();
-  expect((await state()).orders).toHaveLength(0);
+  expect((await state()).orders).toHaveLength(1);
   await page
     .getByRole("button", { name: "Cập nhật giỏ theo thực đơn mới" })
     .click();

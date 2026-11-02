@@ -32,7 +32,10 @@ class AutomaticTablesTest {
             s.execute(x,"CANCEL_UNPAID_ORDER",j("{\"visitId\":\""+x.visitId()+"\",\"orderId\":"+one.get("orderId")+"}"));
             assertEquals(x.visitId(),s.snapshot(x,Map.of()).tables().get(0).visitId());
             s.execute(x,"CANCEL_UNPAID_ORDER",j("{\"visitId\":\""+x.visitId()+"\",\"orderId\":"+two.get("orderId")+"}"));
-            assertEquals("SESSION_ENDED",s.snapshot(x,Map.of()).tables().get(0).status());
+            assertEquals("OCCUPIED",s.snapshot(x,Map.of()).tables().get(0).status());
+            s.logoutGuest(x);
+            assertEquals(1,s.snapshot(a,Map.of()).tables().get(0).activeSessions());
+            assertEquals("OCCUPIED",s.snapshot(y,Map.of()).tables().get(0).status());
             assertEquals(y.visitId(),s.snapshot(y,Map.of()).tables().get(0).visitId());
             s.execute(a,"OPEN_ALL_TABLES",j("{}"));assertNotNull(s.joinTable(grant));
         }
@@ -48,7 +51,7 @@ class AutomaticTablesTest {
             assertEquals("AUTOMATIC_TABLE",assertThrows(BusinessException.class,()->s.execute(a,"OPEN_TABLE",j("{\"tableId\":1}"))).code());
         }
     }
-    @Test void stableQrCreatesPrivateVisitsAndCompletionRespectsPaymentAndSupport() throws Exception {
+    @Test void stableQrKeepsVisitActiveAfterWorkAndGuestLeaveEndsOnlyTheirVisit() throws Exception {
         var config = new QrConfig(new byte[32], Clock.systemUTC());
         String grant, oldVisit;
         try (var s = new CafeService(temp.resolve("auto.db"), config, true)) {
@@ -76,15 +79,36 @@ class AutomaticTablesTest {
             for (String state: List.of("PREPARING","READY","SERVED")) s.execute(a,"SET_ORDER_STATUS",j("{\"orderId\":"+id+",\"status\":\""+state+"\"}"));
             assertEquals(x.visitId(),s.snapshot(x,Map.of()).tables().get(0).visitId());
             s.execute(a,"HANDLE_TICKET",j("{\"ticketId\":"+ticket.get("ticketId")+",\"reply\":\"Done\"}"));
-            assertEquals("SESSION_ENDED",s.snapshot(x,Map.of()).tables().get(0).status());
+            assertEquals("OCCUPIED",s.snapshot(x,Map.of()).tables().get(0).status());
             assertEquals(order,s.execute(x,"fixed-order","PLACE_ORDER",j(payload)));
-            assertEquals("SESSION_CLOSED",assertThrows(BusinessException.class,()->s.execute(x,"late-order","PLACE_ORDER",j(payload))).code());
+            assertEquals(2,s.snapshot(a,Map.of()).tables().get(0).activeSessions());
+            s.logoutGuest(x);
+            assertEquals(1,s.snapshot(a,Map.of()).tables().get(0).activeSessions());
+            assertEquals("OCCUPIED",s.snapshot(y,Map.of()).tables().get(0).status());
+            assertEquals("SESSION_REVOKED",assertThrows(BusinessException.class,()->s.execute(x,"late-order","PLACE_ORDER",j(payload))).code());
             assertNotEquals(oldVisit,s.joinTable(grant).visitId());
         }
         try(var s=new CafeService(temp.resolve("auto.db"),config,true)) {
             Identity a=s.authenticate("admin","CafeLink@123");
             assertEquals(grant,s.execute(a,"GET_TABLE_QR",j("{\"tableId\":1}")).get("grant").getAsString());
             assertNotEquals(oldVisit,s.joinTable(grant).visitId());
+        }
+    }
+    @Test void managerCanEndAllClearSessionsButCannotDiscardPendingWork() throws Exception {
+        try(var s=new CafeService(temp.resolve("end-table.db"),new QrConfig(new byte[32],Clock.systemUTC()),true)) {
+            var admin=s.authenticate("admin","CafeLink@123");
+            s.execute(admin,"OPEN_ALL_TABLES",j("{}"));
+            String grant=s.execute(admin,"GET_TABLE_QR",j("{\"tableId\":1}")).get("grant").getAsString();
+            var first=s.joinTable(grant);var second=s.joinTable(grant);
+            var order=s.execute(first,"PLACE_ORDER",j("{\"visitId\":\""+first.visitId()+"\",\"items\":[{\"menuId\":2,\"quantity\":1,\"expectedVersion\":1,\"expectedPriceVnd\":30000}]}"));
+            assertEquals("TABLE_HAS_WORK",assertThrows(BusinessException.class,()->s.execute(admin,"END_TABLE_SESSIONS",j("{\"tableId\":1}"))).code());
+            s.execute(first,"CANCEL_UNPAID_ORDER",j("{\"visitId\":\""+first.visitId()+"\",\"orderId\":"+order.get("orderId")+"}"));
+            var result=s.execute(admin,"END_TABLE_SESSIONS",j("{\"tableId\":1}"));
+            assertEquals(2,result.get("endedSessions").getAsInt());
+            assertEquals(0,s.snapshot(admin,Map.of()).tables().get(0).activeSessions());
+            assertEquals("SESSION_REVOKED",assertThrows(BusinessException.class,()->s.resume(first.credential())).code());
+            assertEquals("SESSION_REVOKED",assertThrows(BusinessException.class,()->s.resume(second.credential())).code());
+            assertEquals(1,s.joinTable(grant).tableId());
         }
     }
 }

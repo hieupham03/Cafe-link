@@ -128,7 +128,7 @@ test("QR cố định, mở toàn quán và hai khách cùng bàn có đơn riê
   });
 });
 
-test("Đặt, thanh toán, giao đồ và tự kết thúc; đặt tiếp không cần nhân viên mở bàn", async () => {
+test("Thanh toán và giao món không kết thúc phiên; khách rời phiên thì bàn mới trống", async () => {
   const before = await (await guest.request.get("/api/session")).json();
   await openGuestZone(page, "Thực đơn");
   await page
@@ -151,35 +151,56 @@ test("Đặt, thanh toán, giao đồ và tự kết thúc; đặt tiếp không
     await command(owner, "SET_ORDER_STATUS", { orderId: order.id, status });
   await expect(
     page.getByRole("heading", { name: "Cảm ơn bạn đã ghé quán", exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "Bắt đầu lần đặt mới", exact: true }),
-  ).toBeEnabled();
-  await page.screenshot({
-    path: "test-results/auto-completed.png",
-    fullPage: true,
-  });
-  await page
-    .getByRole("button", { name: "Bắt đầu lần đặt mới", exact: true })
-    .click();
+  ).toHaveCount(0);
   await openGuestZone(page, "Thực đơn");
   await expect(
     page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
   ).toBeEnabled();
   const after = await (await guest.request.get("/api/session")).json();
-  expect(after.identity.visitId).not.toBe(before.identity.visitId);
-  expect((await state(guest)).orders).toHaveLength(0);
-  const stale = await guest.request.post("/api/command", {
-    headers: { Origin: origin, "X-CSRF-Token": after.csrfToken },
-    data: {
-      commandId: crypto.randomUUID(),
-      action: "GET_OWN_TABLE_QR",
-      data: {},
-      scope: before.identity,
-    },
+  expect(after.identity.visitId).toBe(before.identity.visitId);
+  expect((await state(guest)).orders).toHaveLength(1);
+  const activeBeforeLeave = (await state()).tables[0].activeSessions;
+  await page.getByRole("button", { name: "Rời phiên", exact: true }).click();
+  const leaveDialog = page.getByRole("alertdialog", {
+    name: "Xác nhận rời phiên",
   });
-  expect(stale.status()).toBe(409);
-  expect((await stale.json()).code).toBe("SCOPE_CHANGED");
+  if (await leaveDialog.isVisible())
+    await leaveDialog
+      .getByRole("button", { name: "Rời phiên và bỏ giỏ", exact: true })
+      .click();
+  await expect
+    .poll(async () => (await state()).tables[0].activeSessions)
+    .toBe(activeBeforeLeave - 1);
+});
+
+test("Quản lý có thể kết thúc phiên tại bàn khi không còn việc cần xử lý", async () => {
+  const tableId = 2,
+    tableQr = await command(owner, "GET_TABLE_QR", { tableId });
+  const joinResponse = await other.request.post("/api/guest/join", {
+    headers: { Origin: origin },
+    data: { grant: tableQr.grant, table: true },
+  });
+  expect(joinResponse.ok(), await joinResponse.text()).toBe(true);
+  await admin.getByRole("button", { name: `Xem Bàn ${tableId}`, exact: true }).click();
+  await admin.getByRole("button", { name: "Kết thúc phiên", exact: true }).click();
+  const dialog = admin.getByRole("alertdialog", {
+    name: "Xác nhận kết thúc phiên",
+  });
+  await expect(dialog).toContainText("đăng xuất");
+  await dialog
+    .getByRole("button", { name: "Xác nhận kết thúc phiên", exact: true })
+    .click();
+  await expect
+    .poll(async () => (await state()).tables.find((table: any) => table.id === tableId).activeSessions)
+    .toBe(0);
+  await expect(
+    admin
+      .locator(".table-card")
+      .filter({ has: admin.getByRole("heading", { name: `Bàn ${tableId}`, exact: true }) })
+      .getByText("Bàn trống · Đang nhận đơn", { exact: true }),
+  ).toBeVisible();
+  const stale = await other.request.get("/api/state");
+  expect(stale.status()).toBe(401);
 });
 
 test("Tạm dừng chỉ chặn khách mới; phiên đang dùng vẫn gọi món", async () => {

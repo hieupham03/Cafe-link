@@ -44,19 +44,14 @@ class BusinessWorkflowTest {
         service.logoutGuest(guest);
         assertEquals("SESSION_REVOKED",assertThrows(BusinessException.class,()->service.resume(guest.credential())).code());
     }
-    @Test void continuationIsDurablePrivateAndDoesNotTransferOldCommands() throws Exception {
+    @Test void completedWorkKeepsTheVisitOpenUntilTheGuestLeaves() throws Exception {
         int id=order(guest);pay(guest,payment(guest,id));serve(id);
-        Identity next=service.continueVisit(guest), outsider=service.joinTable(grant);
-        assertNotEquals(guest.visitId(),next.visitId());
-        assertEquals(next.membershipId(),service.continueVisit(guest).membershipId());
-        var context=call(next,"GET_CONTINUATION_CONTEXT",j("{}"));
-        assertEquals(guest.visitId(),context.getAsJsonObject("previousScope").get("visitId").getAsString());
-        assertEquals(1,context.getAsJsonArray("previousOrders").size());
-        assertEquals(0,call(outsider,"GET_CONTINUATION_CONTEXT",j("{}")).getAsJsonArray("previousOrders").size());
-        assertEquals("SESSION_CLOSED",assertThrows(BusinessException.class,()->order(guest)).code());
-        service.close();service=new CafeService(temp.resolve("workflow.db"),config,true);
-        assertEquals(next.membershipId(),service.continueVisit(service.resume(guest.credential())).membershipId());
-        assertEquals(1,call(service.resume(next.credential()),"GET_CONTINUATION_CONTEXT",j("{}")).getAsJsonArray("previousOrders").size());
+        assertEquals("OCCUPIED",service.snapshot(guest,Map.of()).tables().get(0).status());
+        int nextOrder=order(guest);
+        call(guest,"CANCEL_UNPAID_ORDER",j("{\"visitId\":\""+guest.visitId()+"\",\"orderId\":"+nextOrder+"}"));
+        service.logoutGuest(guest);
+        assertEquals("SESSION_REVOKED",assertThrows(BusinessException.class,()->service.resume(guest.credential())).code());
+        assertEquals(0,service.snapshot(service.authenticate("admin","CafeLink@123"),Map.of()).tables().get(0).activeSessions());
     }
     @Test void cannotContinueAnActiveVisitOrAnAdministrator() {
         assertThrows(BusinessException.class,()->service.continueVisit(guest));
@@ -67,7 +62,8 @@ class BusinessWorkflowTest {
         var result=call(admin,"RESOLVE_ORDER",resolution(id,"CANCEL_UNPAID"));
         assertEquals("CANCELLED",result.get("state").getAsString());
         assertEquals(result,call(admin,"RESOLVE_ORDER",resolution(id,"CANCEL_UNPAID")));
-        assertEquals("SESSION_CLOSED",assertThrows(BusinessException.class,()->pay(guest,payment)).code());
+        var latePayment=payment.deepCopy();latePayment.addProperty("outcome","SUCCESS");
+        call(guest,"SIMULATE_PAYMENT",latePayment);
         assertEquals("CANCELLED",service.snapshot(guest,Map.of()).orders().get(0).paymentState());
         assertEquals(0,call(admin,"GET_SALES_HISTORY",j("{}")).getAsJsonArray("receipts").size());
     }
@@ -81,7 +77,7 @@ class BusinessWorkflowTest {
         assertEquals("REFUNDED",call(admin,"GET_SALES_HISTORY",j("{}")).getAsJsonArray("receipts").get(0).getAsJsonObject().getAsJsonObject("resolution").get("state").getAsString());
         assertThrows(BusinessException.class,()->call(admin,"SET_ORDER_STATUS",j("{\"orderId\":"+id+",\"status\":\"PREPARING\"}")));
         assertThrows(BusinessException.class,()->payment(guest,id));
-        assertEquals("SESSION_ENDED",service.snapshot(guest,Map.of()).tables().get(0).status());
+        assertEquals("OCCUPIED",service.snapshot(guest,Map.of()).tables().get(0).status());
     }
     @Test void refundRequiresStaffReasonAndNotYetPreparing() throws Exception {
         int id=order(guest);pay(guest,payment(guest,id));
@@ -94,10 +90,9 @@ class BusinessWorkflowTest {
     @Test void supportOnlyVisitCompletesAndCanContinueWithoutPurchase() throws Exception {
         var ticket=call(guest,"CALL_SERVICE",j("{\"visitId\":\""+guest.visitId()+"\"}"));
         call(admin,"HANDLE_TICKET",j("{\"ticketId\":"+ticket.get("ticketId")+",\"reply\":\"Đã mang nước\"}"));
-        assertEquals("SESSION_ENDED",service.snapshot(guest,Map.of()).tables().get(0).status());
-        var next=service.continueVisit(guest);
-        assertNotEquals(guest.visitId(),next.visitId());
-        assertNotNull(call(next,"CALL_SERVICE",j("{\"visitId\":\""+next.visitId()+"\"}")));
+        assertEquals("OCCUPIED",service.snapshot(guest,Map.of()).tables().get(0).status());
+        service.logoutGuest(guest);
+        assertEquals(0,service.snapshot(service.authenticate("admin","CafeLink@123"),Map.of()).tables().get(0).activeSessions());
     }
     List<String> race(java.util.concurrent.Callable<String> a,java.util.concurrent.Callable<String> b) throws Exception {
         var workers=java.util.concurrent.Executors.newFixedThreadPool(2);
@@ -120,7 +115,6 @@ class BusinessWorkflowTest {
     @Test void cancelAndPaymentRaceCannotBothWin() throws Exception {
         int id=order(guest);var payment=payment(guest,id);payment.addProperty("outcome","SUCCESS");
         var outcomes=race(()->attempt(admin,"RESOLVE_ORDER",resolution(id,"CANCEL_UNPAID")),()->attempt(guest,"SIMULATE_PAYMENT",payment));
-        assertEquals(1,outcomes.stream().filter("OK"::equals).count());
         var result=service.snapshot(guest,Map.of()).orders().get(0);
         assertTrue(List.of("PAID","CANCELLED").contains(result.paymentState()));
         assertEquals(result.paymentState().equals("PAID")?1:0,call(admin,"GET_SALES_HISTORY",j("{}")).getAsJsonArray("receipts").size());

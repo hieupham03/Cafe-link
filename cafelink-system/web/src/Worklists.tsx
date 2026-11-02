@@ -148,13 +148,27 @@ export function CashierQueue({
   const pending = (state?.checkouts ?? []).filter(
     (c) => c.state === "REQUESTED" || c.state === "ACKNOWLEDGED",
   );
+  const hasAutomaticCashierWork = (table: Table) =>
+    (state?.orders ?? []).some(
+      (order) =>
+        order.tableId === table.id &&
+        !["CANCELLED", "REFUNDED"].includes(order.paymentState ?? "") &&
+        (["UNPAID", "PENDING"].includes(order.paymentState ?? "") ||
+          order.status !== "SERVED"),
+    );
+  const hasCashierTables = (tables: Table[]) =>
+    tables.some(
+      (table) =>
+        (table.visitId && table.paymentMode === "PREPAY") ||
+        (table.automatic && hasAutomaticCashierWork(table)),
+    );
   return (
     <section>
       {state?.tables
         .filter(
           (t) =>
             (t.visitId && t.paymentMode === "PREPAY") ||
-            (t.automatic && (t.activeSessions ?? 0) > 0),
+          (t.automatic && hasAutomaticCashierWork(t)),
         )
         .map((table) => {
           const orders = state.orders.filter((o) =>
@@ -181,7 +195,7 @@ export function CashierQueue({
               {orders.filter(o=>o.status==='SUBMITTED'&&['UNPAID','PENDING','PAID'].includes(o.paymentState??'')).map(order=><div className="table-order" key={order.id}><p>Đơn #{order.id} · {money(order.totalVnd)} · {order.paymentState==='PAID'?'Đã trả tiền':'Chưa trả tiền'}</p><OrderResolution order={order} disabled={disabled} run={run}/></div>)}
               <p className="muted">
                 {table.automatic
-                  ? "Mỗi khách thanh toán riêng; phiên tự kết thúc sau khi giao đồ và hỗ trợ xong."
+                  ? "Mỗi khách thanh toán riêng. Khách vẫn có thể ở lại và gọi thêm sau khi nhận món."
                   : "Đơn đã trả tiền chuyển sang quầy; đóng lượt khi phục vụ xong."}
               </p>
               <button className="secondary" onClick={() => onOpen(table)}>
@@ -198,11 +212,7 @@ export function CashierQueue({
         <span className="count">{pending.length}</span>
       </div>}
       {!pending.length &&
-        !state?.tables.some(
-          (t) =>
-            (t.visitId && t.paymentMode === "PREPAY") ||
-            (t.automatic && (t.activeSessions ?? 0) > 0),
-        ) && (
+        !hasCashierTables(state?.tables ?? []) && (
           <div className="empty">
             <h3>Chưa có đơn cần thu ngân xử lý</h3>
             <p>

@@ -689,11 +689,13 @@ export function App() {
                     <button type="button" className="table-card-open" aria-label={`Xem ${table.name}`} onClick={() => { setSelected(table); setBill(null); setConfirmPay(false); }} />
                     <div className="table-card-top">
                       <span className="table-icon"><Icon name="table"/></span>
-                      <span className={`pill ${table.visitId ? "green" : ""}`}>
+                      <span className={`pill ${table.visitId || (table.activeSessions ?? 0) > 0 ? "green" : ""}`}>
                         {table.automatic
-                          ? table.acceptingOrders
-                            ? "Đang nhận đơn"
-                            : "Tạm dừng"
+                          ? (table.activeSessions ?? 0) > 0
+                            ? "Đang phục vụ"
+                            : table.acceptingOrders
+                              ? "Bàn trống · Đang nhận đơn"
+                              : "Bàn trống · Tạm dừng nhận đơn"
                           : table.visitState === "CHECKOUT_REQUESTED"
                             ? "Đang tính tiền"
                             : table.visitId
@@ -704,7 +706,7 @@ export function App() {
                     <div className="table-card-body"><div><h3>{table.name}</h3>
                     <p>
                       {table.automatic
-                        ? `${table.activeSessions ?? 0} lượt · ${orders.filter((o) => o.tableId === table.id && o.paymentState !== "CANCELLED").length} đơn`
+                        ? `${table.activeSessions ?? 0} phiên · ${orders.filter((o) => o.tableId === table.id && o.paymentState !== "CANCELLED").length} đơn`
                         : table.visitId
                           ? `${orders.filter((o) => o.tableId === table.id).length} đơn · ${table.onlineClients} kết nối`
                           : "Sẵn sàng đón khách"}

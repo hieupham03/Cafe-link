@@ -152,7 +152,7 @@ test("V10 chờ quán tiếp nhận, tính thuế, trả tiền rồi mới pha 
   await zone("Đơn đã gọi");
   await expect(
     page.getByRole("heading", { name: "Cảm ơn bạn đã ghé quán", exact: true }),
-  ).toBeVisible();
+  ).toHaveCount(0);
   await expect(page.locator("#guest-orders")).toContainText("Đã giao");
   await goAdmin("Lịch sử hóa đơn");
   await admin

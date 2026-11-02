@@ -39,8 +39,6 @@ final class TableOrdering {
     }
     Identity join(String grant) throws SQLException {
         qr.checkJoinRate();int table=lookup(grant);
-        // Expire only abandoned empty sessions; never discard an accepted order or support request.
-        db.update("UPDATE visits SET active=0,state='CLOSED',closed_at=? WHERE service_mode='AUTO' AND active=1 AND opened_at<? AND NOT EXISTS(SELECT 1 FROM orders WHERE visit_id=visits.id) AND NOT EXISTS(SELECT 1 FROM tickets WHERE visit_id=visits.id)",config.clock.instant().toString(),config.clock.instant().minusSeconds(28800).toString());
         if(db.query("SELECT count(*) FROM visits WHERE active=1 AND service_mode='AUTO'",r->r.getInt(1)).get(0)>=512)throw new BusinessException("VISIT_LIMIT","Quán đang có quá nhiều phiên. Vui lòng nhờ nhân viên hỗ trợ.");
         String visit=UUID.randomUUID().toString();
         db.update("INSERT INTO visits(id,table_id,active,opened_at,payment_mode,service_mode) VALUES(?,?,1,?,'PREPAY','AUTO')",visit,table,config.clock.instant().toString());
@@ -62,6 +60,27 @@ final class TableOrdering {
         db.update("INSERT INTO visit_continuations VALUES(?,?)",who.membershipId(),next.membershipId());
         return next;
     }
+    boolean hasOpenWork(String visit) throws SQLException {
+        return !db.query("SELECT id FROM orders WHERE visit_id=? AND payment_state NOT IN('CANCELLED','REFUNDED') AND (payment_state!='PAID' OR status!='SERVED') LIMIT 1",r->r.getLong(1),visit).isEmpty()
+                || !db.query("SELECT id FROM tickets WHERE visit_id=? AND status='OPEN' LIMIT 1",r->r.getLong(1),visit).isEmpty();
+    }
+    void closeDepartedVisit(String visit) throws SQLException {
+        if(qr.hasActiveMemberships(visit))return;
+        db.update("UPDATE visits SET active=0,state='CLOSED',version=version+1,closed_at=? WHERE id=? AND service_mode='AUTO' AND active=1",config.clock.instant().toString(),visit);
+    }
+    JsonObject endTableSessions(int table) throws SQLException {
+        if(db.query("SELECT table_id FROM table_access WHERE table_id=?",r->r.getInt(1),table).isEmpty())
+            throw new BusinessException("NOT_AUTOMATIC_TABLE","Bàn này không dùng QR cố định.");
+        var visits=db.query("SELECT id FROM visits WHERE table_id=? AND service_mode='AUTO' AND active=1",r->r.getString(1),table);
+        for(String visit:visits) if(hasOpenWork(visit))
+            throw new BusinessException("TABLE_HAS_WORK","Bàn còn đơn chưa thanh toán/giao hoặc yêu cầu hỗ trợ đang mở. Hoàn tất các việc đó trước khi kết thúc phiên.");
+        for(String visit:visits) {
+            qr.revokeVisit(visit);
+            db.update("UPDATE visits SET active=0,state='CLOSED',version=version+1,closed_at=? WHERE id=? AND active=1",config.clock.instant().toString(),visit);
+            events.append(visit,"ADMIN_END_VISIT",visit,"Quản lý đã kết thúc phiên tại bàn");
+        }
+        JsonObject result=new JsonObject();result.addProperty("tableId",table);result.addProperty("endedSessions",visits.size());return result;
+    }
     List<String> previousMemberships(Identity who) throws SQLException {
         List<String> result=new java.util.ArrayList<>();String member=who.membershipId();
         for(int n=0;n<20;n++) {
@@ -69,12 +88,5 @@ final class TableOrdering {
             if(previous.isEmpty())break;member=previous.get(0);result.add(member);
         }
         return result;
-    }
-    void finishReadyVisits() throws SQLException {
-        var ready=db.query("SELECT id FROM visits v WHERE service_mode='AUTO' AND active=1 AND (EXISTS(SELECT 1 FROM orders WHERE visit_id=v.id) OR EXISTS(SELECT 1 FROM tickets WHERE visit_id=v.id)) AND NOT EXISTS(SELECT 1 FROM orders WHERE visit_id=v.id AND payment_state NOT IN('CANCELLED','REFUNDED') AND (payment_state!='PAID' OR status!='SERVED')) AND NOT EXISTS(SELECT 1 FROM tickets WHERE visit_id=v.id AND status='OPEN')",r->r.getString(1));
-        for(String visit:ready) {
-            db.update("UPDATE visits SET active=0,state='CLOSED',version=version+1,closed_at=? WHERE id=?",config.clock.instant().toString(),visit);
-            events.append(visit,"AUTO_COMPLETE",visit,"Đã hoàn tất các đơn và yêu cầu hỗ trợ của bạn");
-        }
     }
 }
