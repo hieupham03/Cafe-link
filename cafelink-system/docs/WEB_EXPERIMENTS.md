@@ -44,13 +44,15 @@ Tám tình huống × ba policy × năm lần = **120 ca**, seed `20261023`. M�
 | `UNACCEPTED_ORDER` | Abort trước forward | R0 tự tạo đơn; R1/R2 chờ khách, chưa tạo đơn |
 | `UNACCEPTED_SERVICE` | Abort trước forward; giả định nhu cầu đã hết khi khôi phục | R0 tạo ticket, R1 chờ, R2 bỏ và lưu barrier |
 | `LOST_SERVICE_ACK_HANDLED` | Đã nhận, mất response; nhân viên xử lý trước recovery | Một ticket HANDLED, không sinh lại |
-| `VISIT_ENDED` | Đơn chưa nhận, đóng lượt; người mới quét cùng QR | Ý định cũ không tác động lượt mới; R2 có barrier |
+| `VISIT_ENDED` | Đơn chưa nhận, quản lý kết thúc phiên và thu hồi quyền; khách mới quét cùng QR | Cả ba policy bị chặn bằng SESSION_REVOKED; gửi trực tiếp lệnh cũ cũng phải nhận 401, DB không có tác động lên lượt cũ/mới |
 | `DISCARD_WINS_LATE_SERVICE` | Lời gọi chưa nhận; sau recovery mới giao lệnh cũ | R2 không hồi sinh ticket; R1 chưa có barrier nên lệnh cũ vẫn có thể được nhận |
 | `ACCEPT_WINS_LATE_SERVICE` | Giao lệnh trước recovery, nhân viên đã xử lý | Giữ kết quả đã nhận, không DISCARD ngược một việc đã xảy ra |
 
 Đây là fault có kiểm soát tại HTTP, không phải đánh rơi gói TCP. “ACK” trong tên ca là phản hồi ứng dụng. Hai lịch đến muộn kiểm thứ tự quan sát được, không tuyên bố đã duyệt mọi lịch thread. Đơn và lời gọi đi qua API/journal thật, Gateway, TCP Core và SQLite thật.
 
-“Lời gọi thừa nhu cầu” chỉ có nghĩa trong ca **đã quy định nhu cầu hết**. Campaign không khảo sát khách thật. `recoveryMs` đo từ bắt đầu đối chiếu đến đọc lại state/journal trên cùng đồng hồ browser; trạng thái chờ xác nhận vẫn là kết quả đối chiếu, không phải đã hoàn tất mong muốn khách.
+"Lời gọi thừa nhu cầu" chỉ có nghĩa trong ca **đã quy định nhu cầu hết**. Campaign không khảo sát khách thật. `recoveryMs` đo từ bắt đầu đối chiếu đến đọc lại state/journal trên cùng đồng hồ browser; trạng thái chờ xác nhận vẫn là kết quả đối chiếu, không phải đã hoàn tất mong muốn khách.
+
+Sau cập nhật phiên/bàn ở PR #4, riêng `VISIT_ENDED` kiểm trường hợp quyền bị thu hồi: `recoveryMs` là thời gian nhận từ chối phục hồi, ghi kèm `recoveryBlockedBy=SESSION_REVOKED`. Ca này không yêu cầu hay chứng minh receipt DISCARD vì Client đã mất quyền gửi lệnh. Hai ca lời gọi chưa nhận/đến muộn vẫn bắt buộc kiểm barrier bền của R2. Không so trực tiếp thời gian ca thu hồi quyền với ca đóng lượt còn giữ quyền trong kết quả V9.4 đã lưu.
 
 SQLite oracle mở read-only và chỉ xuất cột cho phép theo visit/membership. Nó đếm đơn/ticket/payment/receipt/event, không tạo ACK và không sửa nghiệp vụ. Teardown xử lý dữ liệu fixture sau đo. DB, khóa, cookie, grant và log JVM nằm dưới `target/v8-private`, không đưa vào artifact công khai.
 
@@ -58,7 +60,7 @@ SQLite oracle mở read-only và chỉ xuất cột cho phép theo visit/members
 
 Full: **1/5/10/14 khách + một admin**, warmup 3 giây, đo 15 giây, ba lần mỗi mức. Quick: 1/5 khách, warmup 1 giây, đo 3 giây, một lần. Không nâng session limit 16 để chạy mức 20 khách của đề xuất ban đầu.
 
-Mỗi guest là một context Chromium riêng, mở React `/guest` thật và nhận cập nhật. Mỗi slot một giây bắt đầu nhiều nhất một luồng: chọn một cà phê sữa 30.000đ → ghi journal → PLACE_ORDER → START_ORDER_PAYMENT → SIMULATE_PAYMENT SUCCESS. Mỗi actor chạy tuần tự; lỡ slot được đếm, không xếp thêm tác vụ chồng nhau để che quá tải. Giữ các đơn đã trả tiền ở SUBMITTED trong thời gian đo để phiên không tự đóng. DB oracle gồm cả warmup và đo, yêu cầu đúng số đơn, một payment PAID/đơn và đúng tổng tiền.
+Mỗi guest là một context Chromium riêng, mở React `/guest` thật và nhận cập nhật. Mỗi slot một giây bắt đầu nhiều nhất một luồng: chọn một cà phê sữa 30.000đ → ghi journal → PLACE_ORDER → quầy ACCEPT_ORDER → START_ORDER_PAYMENT → SIMULATE_PAYMENT SUCCESS. Mỗi actor chạy tuần tự; lỡ slot được đếm, không xếp thêm tác vụ chồng nhau để che quá tải. Giữ các đơn đã trả tiền ở SUBMITTED trong thời gian đo, không đưa công đoạn pha chế/giao đồ vào workload này. DB oracle gồm cả warmup và đo, yêu cầu đúng số đơn, một payment PAID/đơn và đúng tổng tiền.
 
 - `responseMs`: từ bắt đầu luồng browser đến khi có receipt đơn trong journal; gồm đọc session/state, IndexedDB và các request của `place`. Không gọi là độ trễ TCP hay một HTTP request đơn lẻ.
 - `renderMs`: thời điểm phát hiện `Đơn #id` trong DOM sau khi biết ID từ receipt. Nếu React đã render trước receipt, đây là cận trên của lần render đầu, không phải thời điểm commit → push chính xác.

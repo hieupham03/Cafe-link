@@ -4,7 +4,7 @@
 
 Màn khách chia năm vùng: Thực đơn, Đơn đã gọi, Hỗ trợ, Thanh toán và Giỏ hàng. Kết quả public/phiên bản/hash nằm trong [báo cáo nâng cấp V9.4](../../report/CafeLink_Hardening_20261030.md), báo cáo Word/PDF nằm ở [chỉ mục báo cáo](../../report/README.md). Nhóm đã xác nhận hoàn tất kiểm thao tác thực tế; [checklist](WEB_USER_ACCEPTANCE.md) được giữ cho lần kiểm lại.
 
-**Luồng mới:** mở nhận khách cho toàn quán một lần → khách quét QR bàn → tạo phiên riêng trên trình duyệt → gọi món, thanh toán giả lập → quầy pha chế/giao đồ → phiên tự hoàn tất. Nhân viên không phải quan sát khách rời đi để đóng bàn hoặc chờ khách mới để mở lượt.
+**Luồng hiện tại:** mỗi lần quản lý đăng nhập, QR các bàn được tạm ngưng; bấm **Mở tất cả bàn** để bật nhận khách và tải QR. Khách quét QR sẽ có phiên riêng, gọi món và thanh toán giả lập. Bàn vẫn **Đang phục vụ** sau khi món được giao; phiên chỉ đóng khi khách bấm **Rời phiên** hoặc quản lý bấm **Kết thúc phiên**.
 
 ## 1. Chạy demo qua Internet
 
@@ -42,11 +42,11 @@ Cloudflare Quick Tunnel cấp hostname ngẫu nhiên, không yêu cầu tài kho
 ## 2. Kịch bản trình bày với giảng viên
 
 1. **Chủ quán:** mở toàn bộ bàn bằng một lần bấm, chiếu QR Bàn 1 lên màn hình.
-2. **Khách A:** dùng điện thoại quét, chọn đồ uống, xác nhận giỏ, chọn thanh toán thử thành công. Quầy nhận thông báo và chỉ được pha chế sau khi Server xác nhận thanh toán.
+2. **Khách A:** dùng điện thoại quét, chọn đồ uống và gửi đơn. Quầy tiếp nhận đơn; sau đó A mới được chọn thanh toán thử thành công. Quầy chỉ được pha chế sau khi Server xác nhận thanh toán.
 3. **Khách B:** dùng điện thoại/trình duyệt độc lập quét **cùng QR**. B vẫn thấy giỏ và đơn riêng, không thấy đơn hoặc lời gọi của A. Hai điện thoại có thể dùng hai mạng khác nhau.
-4. **Khách A:** gọi nhân viên. Chủ quán chuyển đơn qua **Bắt đầu pha chế → Pha chế xong → Đã mang ra bàn**. Nếu hỗ trợ còn chờ, phiên A chưa tự kết thúc.
-5. **Chủ quán:** xử lý hỗ trợ A. Trang A hiện lời cảm ơn và nút **Bắt đầu lần đặt mới**. B vẫn tiếp tục phiên riêng. Bàn vẫn nhận khách, không cần bấm đóng/mở lượt.
-6. **A đặt thêm:** bấm **Bắt đầu lần đặt mới**. Giỏ nháp đang soạn được giữ khi chuyển; khách vẫn xem được lịch sử đơn trước. Yêu cầu chưa rõ kết quả phải đối chiếu trước khi rời/chuyển phiên.
+4. **Khách A:** gọi nhân viên. Chủ quán chuyển đơn qua **Bắt đầu pha chế → Pha chế xong → Đã mang ra bàn**. Sau khi món được giao, A vẫn ở phiên hiện tại và có thể đặt thêm nếu muốn.
+5. **Khách A:** bấm **Rời phiên** khi rời quán. Nếu còn đơn chưa thanh toán/chưa giao hoặc hỗ trợ đang mở, hệ thống giữ phiên và yêu cầu xử lý trước.
+6. **Chủ quán:** nếu khách quên rời phiên, mở chi tiết bàn và bấm **Kết thúc phiên**. Hành động này đóng tất cả phiên tại bàn sau khi không còn đơn/hỗ trợ cần xử lý; QR nhận khách của bàn vẫn được bật.
 7. **Contribution phục hồi:** trên trình duyệt máy tính, dùng DevTools hoặc kịch bản kiểm thử để tạo mất phản hồi sau khi Core nhận đơn. Kết nối lại và đối chiếu: vẫn một đơn. Ngắt Wi-Fi đơn thuần không chắc tạo đúng thời điểm “Server đã nhận nhưng Client chưa biết”; không dùng tình huống không kiểm soát để kết luận chống trùng.
 
 Thanh toán vẫn là **LOCAL_SIMULATOR, không thu tiền thật**. Không nhập số thẻ/thông tin ngân hàng. QR/web/WSS là cải tiến triển khai; contribution vẫn là receipt chống trùng và phục hồi theo loại yêu cầu + phạm vi phiên.
@@ -55,15 +55,16 @@ Thanh toán vẫn là **LOCAL_SIMULATOR, không thu tiền thật**. Không nh�
 
 | Trạng thái/thao tác | Ý nghĩa |
 |---|---|
-| Mở tất cả bàn | Bật nhận khách qua QR cố định cho cả 6 bàn; gọi lại không đổi QR hoặc xóa phiên/đơn |
-| Đang nhận đơn | Khách mới có thể quét vào; không khẳng định bàn đang trống |
-| Tạm dừng khách mới | Chặn tạo phiên mới ở bàn đó; không hủy phiên/đơn đang xử lý |
+| Admin đăng nhập | Tạm ngưng QR nhận khách của các bàn đã cấu hình; phiên khách hiện tại không bị đóng |
+| Mở tất cả bàn | Bật nhận khách qua QR cố định cho cả 6 bàn và mới tải/hiển thị QR; gọi lại không đổi QR hoặc xóa phiên/đơn |
+| Bàn trống · Đang nhận đơn | Không còn phiên khách đang hoạt động; khách mới có thể quét QR |
+| Đang phục vụ | Có ít nhất một phiên khách đang hoạt động; vẫn giữ trạng thái sau thanh toán/giao món |
+| Tạm ngưng | QR không nhận khách mới và không hiển thị QR; phiên đã mở vẫn tiếp tục |
 | Phiên riêng | Một membership/visit gắn cookie trình duyệt; tab cùng profile dùng chung phiên, trình duyệt/profile khác có phiên khác |
-| Phiên tự kết thúc | Có ít nhất một đơn; mọi đơn đã PAID+SERVED hoặc CANCELLED; không còn hỗ trợ OPEN |
-| Phiên trống bị bỏ dở | Có thể hết hạn sau 8 giờ, được dọn khi có lượt quét mới; không tự xóa đơn hoặc hỗ trợ đã tiếp nhận |
-| Bắt đầu lần đặt mới | Khách chủ động tạo scope mới sau khi phiên hoàn tất; không tự mang giỏ/ý định cũ sang |
+| Rời phiên | Khách thu hồi quyền thiết bị hiện tại; bị chặn khi còn đơn chưa thanh toán/chưa giao hoặc hỗ trợ đang mở. Bàn trống khi không còn phiên khác |
+| Kết thúc phiên | Quản lý thu hồi tất cả phiên ở bàn; chỉ thành công khi các đơn đã xử lý và hỗ trợ đã đóng |
 
-**Đếm phiên không phải đếm người đang ngồi tại quán.** Khách chưa trả tiền hoặc còn yêu cầu chưa xử lý không ngăn khách khác quét cùng QR. Bản hiện tại chưa tự hủy đơn bỏ dở theo giờ; giao dịch giả lập có hạn 15 phút và có thể thử lại/hủy trên đúng đơn. Không tự hủy đơn đã trả tiền hoặc suy khách đã rời bàn từ việc điện thoại offline.
+**Đếm phiên không phải đếm người đang ngồi tại quán.** Phiên không tự đóng theo giờ; nếu khách rời đi mà quên bấm **Rời phiên**, quản lý có thể kết thúc phiên tại bàn sau khi xử lý hết đơn và hỗ trợ đang mở. Khách chưa trả tiền hoặc còn yêu cầu chưa xử lý không ngăn khách khác quét cùng QR. Giao dịch giả lập có hạn 15 phút; không tự hủy đơn đã trả tiền hoặc suy khách đã rời bàn từ việc điện thoại offline.
 
 ## 4. Dữ liệu demo và chạy lại
 
@@ -95,7 +96,7 @@ Mở `http://127.0.0.1:19088/admin`, đăng nhập `admin / CafeLink@123`, bấm
 | Khách báo đang ở phiên quản lý | Quản lý và khách dùng trình duyệt/profile hoặc thiết bị khác nhau |
 | Điện thoại quét QR của lần chạy trước | Hiển thị/tải QR mới chứa hostname tunnel hiện tại |
 | Bật toàn quán báo còn lượt cũ | Hoàn tất các lượt MANUAL theo quy trình V7 trước, hoặc chọn DB demo mới. Không tự đổi quyền/lượt đang hoạt động |
-| Khách quét lại sau khi phiên hoàn tất | Bấm Bắt đầu lần đặt mới; nếu đang ở trang join báo phiên cũ, rời phiên rồi vào lại. Nhật ký chưa rõ kết quả phải được đối chiếu trước |
+| Khách bỏ quên phiên | Quản lý xử lý đơn/hỗ trợ còn mở rồi vào chi tiết bàn, bấm **Kết thúc phiên** |
 | Nhiều người không vào thêm được | Gateway tối đa 32 bridge; tối đa 30 guest và 16 admin cùng chia sẻ tổng 32. Đây là giới hạn cấu hình demo, chưa phải công suất đã đo |
 
 ## 7. Kiểm thử và phạm vi đã xác minh

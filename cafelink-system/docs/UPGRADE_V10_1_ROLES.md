@@ -1,6 +1,6 @@
 # CafeLink V10.1 - Quản lý và nhân viên
 
-V10.1 bổ sung tài khoản nhân viên riêng và phân quyền trên nền [V10](UPGRADE_V10.md). Source hiện dùng schema 13, đang giữ local để người dùng nghiệm thu; công bố từ source; chưa phát hành portable mới. Báo cáo Word/PDF đã chốt và bằng chứng V9.4/V10 được giữ nguyên.
+V10.1 bổ sung tài khoản nhân viên riêng và phân quyền trên nền [V10](UPGRADE_V10.md). Source hiện dùng schema 13, được công bố trên GitHub; chưa phát hành portable mới. Báo cáo Word/PDF đã chốt và bằng chứng V9.4/V10 được giữ nguyên.
 
 ## Quyền sử dụng
 
@@ -13,6 +13,7 @@ V10.1 bổ sung tài khoản nhân viên riêng và phân quyền trên nền [V
 | Đánh dấu món đang bán thành hết/còn | Có | Có, không sửa giá hoặc nội dung món |
 | Tạo/sửa món, giá, ảnh và nhóm thực đơn | Có | Không |
 | Mở/tạm dừng bàn, dừng nhận đơn toàn quán, quản lý phiên khách | Có | Không |
+| Kết thúc tất cả phiên QR tại bàn khi không còn công việc | Có, cần xác nhận | Không |
 | Thu ngân thủ công, lịch sử hóa đơn, thu chi, thuế và hoàn tiền giả lập | Có | Không |
 | Chẩn đoán, tạo/khóa/mở khóa/đặt lại mật khẩu nhân viên | Có | Không |
 | Xem nhật ký người thao tác | Có | Không |

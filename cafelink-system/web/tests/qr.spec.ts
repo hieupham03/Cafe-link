@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import type { Locator } from "@playwright/test";
 import jsQR from "jsqr";
 import { PNG } from "pngjs";
+import { openLegacyTable } from "./legacy-table";
 
 async function decode(qr: Locator) {
   const png = PNG.sync.read(await qr.screenshot());
@@ -21,9 +22,7 @@ test("QR thật: nhiều khách, quét lại, thu hồi thiết bị, đổi QR 
   await page.getByLabel("Mật khẩu", { exact: true }).fill("CafeLink@123");
   await page.getByRole("button", { name: "Đăng nhập", exact: true }).click();
   await page.getByRole("button", { name: "Xem Bàn 5", exact: true }).click();
-  await page
-    .getByRole("button", { name: "Mở lượt khách", exact: true })
-    .click();
+  await openLegacyTable(page, 5);
   await page
     .getByRole("button", { name: "Xem QR và thiết bị", exact: true })
     .click();
@@ -130,9 +129,7 @@ test("QR thật: nhiều khách, quét lại, thu hồi thiết bị, đổi QR 
     await expect(
       two.getByRole("heading", { name: "Cảm ơn bạn đã ghé quán", exact: true }),
     ).toBeVisible();
-    await page
-      .getByRole("button", { name: "Mở lượt khách", exact: true })
-      .click();
+    await openLegacyTable(page, 5);
     await page
       .getByRole("button", { name: "Xem QR và thiết bị", exact: true })
       .click();

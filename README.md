@@ -27,11 +27,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-web.ps1 -Port 80
 
 1. Giữ terminal mở, vào **http://127.0.0.1:8088/admin**.
 2. Đăng nhập local: **`admin` / `CafeLink@123`**.
-3. Chọn **Mở tất cả bàn**: QR hiện ngay trên mỗi thẻ bàn. Có thể vào **Bàn 1 → Sao chép link đặt món**.
+3. Sau khi đăng nhập, QR các bàn đang tạm ngưng. Chọn **Mở tất cả bàn** để bật nhận khách và hiện QR trên các thẻ bàn. Có thể vào **Bàn 1 → Sao chép link đặt món**.
 4. Dán nguyên link vào browser/profile khác để làm khách. Hai khách độc lập cần hai profile, trình duyệt hoặc thiết bị độc lập.
-5. Khách chọn món → gửi đơn. Quầy vào **Quầy pha chế → Tiếp nhận đơn**; khách mới được thanh toán. Quầy chuyển pha chế → sẵn sàng → giao đủ.
+5. Khách chọn món → gửi đơn. Quầy vào **Quầy pha chế → Tiếp nhận đơn**; khách mới được thanh toán. Quầy chuyển pha chế → sẵn sàng → giao đủ. Giao món và thanh toán xong không tự kết thúc phiên: khách vẫn có thể ngồi lại và đặt thêm.
 6. **Nhân viên → Thêm nhân viên** tạo tài khoản STAFF riêng; đăng nhập ở browser/profile khác bằng cùng `/admin`. Nhân viên có bốn mục phục vụ. Khóa/đổi mật khẩu thu hồi mọi phiên cũ.
 7. **Cài đặt quán** cấu hình thuế; **Thu chi** xem dòng tiền, ghi/hủy phiếu chi có lý do và xuất CSV. Thuế mặc định 0%, tiền/thuế của đơn đã gửi được giữ nguyên.
+
+Khi khách rời quán, khách chọn **Rời phiên** để đóng phiên của mình và bàn trở về **Bàn trống · Đang nhận đơn** nếu không còn khách nào khác trong phiên. Nếu khách quên rời, quản lý mở chi tiết bàn và chọn **Kết thúc phiên**. Chỉ đóng phiên khi các đơn chưa thanh toán/chưa giao và yêu cầu hỗ trợ đã được xử lý; thao tác này không tắt QR nhận khách của bàn.
 
 SQLite tự tạo schema, tài khoản demo, sáu bàn và tám món khi dùng DB mới. Tám ảnh đồ uống được đóng kèm source; ảnh quản lý tải lên được ưu tiên. Dữ liệu cũ được giữ khi chạy lại. Nhấn **Ctrl+C** tại terminal Server để dừng. [Runbook](cafelink-system/docs/FINAL_RUNBOOK.md) giải thích trường hợp chỉ mở `/join` hoặc dùng chung cookie quản lý/khách.
 
@@ -43,14 +45,14 @@ Dừng local, rồi chạy từ `cafelink-system` sau khi build:
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/public-demo.ps1 -SkipBuild -Port 19088 -TcpPort 19058 -DurationSeconds 1800
 ```
 
-Dùng **URL HTTPS và mật khẩu tạm mà terminal in ra**, mở tất cả bàn rồi lấy QR. Điện thoại có thể dùng Wi-Fi hoặc dữ liệu di động; máy chủ phải tiếp tục chạy và có Internet. Local/public dùng DB riêng. Tunnel đổi địa chỉ thì lấy QR mới. [Chi tiết public demo](cafelink-system/docs/WEB_PUBLIC_DEMO.md).
+Dùng **URL HTTPS và mật khẩu tạm mà terminal in ra**, chọn **Mở tất cả bàn** rồi lấy QR. Điện thoại có thể dùng Wi-Fi hoặc dữ liệu di động; máy chủ phải tiếp tục chạy và có Internet. Local/public dùng DB riêng. Tunnel đổi địa chỉ thì lấy QR mới. [Chi tiết public demo](cafelink-system/docs/WEB_PUBLIC_DEMO.md).
 
 ## Chức năng chính
 
 | Người sử dụng | Chức năng |
 |---|---|
-| Khách | QR, thực đơn có ảnh, giỏ/số lượng/ghi chú, đặt món, thanh toán giả lập, tiến độ đơn, gọi/bổ sung/rút hỗ trợ |
-| Quản lý - ADMIN | Toàn bộ phục vụ; menu/ảnh/giá, lịch sử, thu chi, thuế, hoàn giả lập, chẩn đoán và tạo/khóa/đặt lại mật khẩu nhân viên |
+| Khách | QR, thực đơn có ảnh, giỏ/số lượng/ghi chú, đặt món, thanh toán giả lập, tiến độ đơn, gọi/bổ sung/rút hỗ trợ, chủ động rời phiên |
+| Quản lý - ADMIN | Toàn bộ phục vụ; mở/tạm ngưng nhận khách, kết thúc phiên bị bỏ quên, menu/ảnh/giá, lịch sử, thu chi, thuế, hoàn giả lập, chẩn đoán và tạo/khóa/đặt lại mật khẩu nhân viên |
 | Nhân viên - STAFF | QR/bàn, tiếp nhận hoặc từ chối đơn chưa trả, pha chế/giao đồ, hỗ trợ, thông báo và đánh dấu hết/còn món; không xem tài chính hoặc sửa giá |
 | Hệ thống | Xác thực và phiên riêng, kiểm giá/quyền/trạng thái tại Server, chống áp lại cùng yêu cầu, phục hồi và cập nhật trực tiếp |
 
@@ -105,7 +107,7 @@ Dùng **URL HTTPS và mật khẩu tạm mà terminal in ra**, mở tất cả b
 
 </details>
 
-Nhấn vào ảnh để xem kích thước gốc. [Hướng dẫn source](cafelink-system/README.md) · [Kết quả kiểm tích hợp](report/evidence/cafelink-integration-20261102/summary.json).
+Nhấn vào ảnh để xem kích thước gốc. [Hướng dẫn source](cafelink-system/README.md) · [Kết quả kiểm bản gộp phiên/bàn](report/evidence/cafelink-session-merge-20261102/summary.json).
 
 ## Kiến trúc và nội dung Lập trình mạng
 
@@ -135,7 +137,7 @@ Java target 17, Maven bootstrap, Jetty HTTP/WebSocket, Gson, SQLite JDBC; React/
 
 ## Kiểm thử và kết quả thực nghiệm
 
-**V10.1 tích hợp:** 201 Java và 90 Chromium tích hợp đạt; 8 ca phân quyền đạt trên mỗi engine Chromium/Firefox/WebKit. Sau chỉnh CSS cuối, đã kiểm lại các luồng phân quyền/điều hướng và 17 màn có dữ liệu riêng. [Phạm vi và bằng chứng V10.1](cafelink-system/docs/UPGRADE_V10_1_ROLES.md#kết-quả-kiểm). Kết quả RC4/RC3 bên dưới thuộc mốc trước nâng cấp; kiểm engine chưa thay kiểm điện thoại vật lý.
+**V10.1 sau gộp phiên/bàn (PR #4):** 204 Java, 92 Chromium và 37 kiểm công bố đạt; kiểm nhanh thực nghiệm có 24/24 ca phục hồi và hai mức 1/5 khách giả lập đạt. [Bằng chứng bản gộp](report/evidence/cafelink-session-merge-20261102/summary.json). Các lượt phân quyền trước đó gồm 8 ca trên mỗi engine Chromium/Firefox/WebKit; [phạm vi V10.1](cafelink-system/docs/UPGRADE_V10_1_ROLES.md#kết-quả-kiểm) giữ bằng chứng từng mốc. Kết quả RC4/RC3 bên dưới thuộc mốc trước nâng cấp; kiểm engine chưa thay kiểm điện thoại vật lý. Kiểm nhanh không thay bộ đo hiệu năng đầy đủ.
 
 Chạy tại `cafelink-system`:
 

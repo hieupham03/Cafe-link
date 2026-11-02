@@ -1,6 +1,7 @@
 import { openGuestZone } from './guest-navigation';
 import { test, expect } from "@playwright/test";
 import { TcpPeer } from "./tcp-peer";
+import { openLegacyTable } from "./legacy-table";
 
 test("đăng nhập, mở bàn, đồng bộ hai tab và đăng xuất toàn bộ phiên", async ({
   page,
@@ -23,9 +24,7 @@ test("đăng nhập, mở bàn, đồng bộ hai tab và đăng xuất toàn b�
     second.getByRole("status").filter({ hasText: "Đang kết nối" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Xem Bàn 1", exact: true }).click();
-  await page
-    .getByRole("button", { name: "Mở lượt khách", exact: true })
-    .click();
+  await openLegacyTable(page, 1);
   await expect(
     second.locator('.table-card').filter({has:second.getByRole("button", { name: "Xem Bàn 1", exact: true })}),
   ).toContainText("Đang phục vụ");
@@ -89,7 +88,7 @@ test("trình duyệt bị chặn ghi lệnh thiếu CSRF, không làm thay đổ
   expect(status).toBe(403);
   await expect(
     page.locator('.table-card').filter({has:page.getByRole("button", { name: "Xem Bàn 6", exact: true })}),
-  ).toContainText("Bàn trống");
+  ).toContainText("Tạm ngưng");
 });
 
 test("màn hình điện thoại không tràn ngang và vẫn thao tác được bàn", async ({
@@ -135,11 +134,9 @@ test("đơn TCP hiện trên web, quầy phục vụ, phản hồi khách và th
     page.getByRole("status").filter({ hasText: "Đang kết nối" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Xem Bàn 3", exact: true }).click();
-  await page
-    .getByRole("button", { name: "Mở lượt khách", exact: true })
-    .click();
-  // click() does not await the async journal/network handler. Wait for the
-  // committed visit to reach the UI before using it as the TCP fixture scope.
+  await openLegacyTable(page, 3);
+  // The API response can precede the WebSocket snapshot. Wait for the committed
+  // legacy visit to reach the UI before using it as the TCP fixture scope.
   await expect(
     page.locator('.table-card').filter({has:page.getByRole("button", { name: "Xem Bàn 3", exact: true })}),
   ).toContainText("Đang phục vụ");
@@ -219,7 +216,7 @@ test("đơn TCP hiện trên web, quầy phục vụ, phản hồi khách và th
       .getByRole("button", { name: "Đã nhận tiền", exact: true })
       .click();
     await expect(
-      page.getByRole("heading", { name: "Bàn đang trống", exact: true }),
+      page.getByRole("heading", { name: "Tạm ngưng", exact: true }),
     ).toBeVisible();
   } finally {
     guest.close();

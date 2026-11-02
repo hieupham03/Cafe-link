@@ -78,6 +78,8 @@ Terminal in URL và cổng Core; giữ terminal mở. `WebMain` khởi động G
 4. Khách gửi đơn; quầy chọn **Quầy pha chế → Tiếp nhận đơn** hoặc từ chối kèm lý do. Chỉ sau tiếp nhận, khách mới được thanh toán giả lập. Quầy pha chế rồi giao.
 5. Mở thêm một Client độc lập cùng QR để kiểm hai khách cùng bàn có đơn riêng.
 
+Sau thanh toán và giao đồ, khách vẫn giữ phiên để đặt thêm. **Rời phiên** kết thúc phiên của khách; quản lý có thể **Kết thúc phiên** trong chi tiết bàn nếu khách quên rời. Cả hai đều bị chặn khi còn đơn chưa thanh toán/chưa giao hoặc hỗ trợ chưa xử lý. Kết thúc phiên không tắt QR nhận khách. Mỗi lần ADMIN đăng nhập, các bàn tạm ngưng nhận khách mới; bấm **Mở tất cả bàn** để bật lại. Đăng nhập STAFF không tạm ngưng bàn.
+
 Không cần chạy thêm app Java phía khách. Tab thường dùng chung cookie; các cửa sổ ẩn danh cùng mở cũng có thể dùng chung phiên riêng tư. Hai khách độc lập nên dùng hai browser/profile/thiết bị khác nhau.
 
 ## Giao diện hiện hành
@@ -128,7 +130,7 @@ Máy chủ phải bật và có Internet. Tunnel đổi hostname khi chạy lạ
 
 ## Kiểm thử
 
-Bản tích hợp V10.1 đã chạy 201 Java, 90 Chromium và 8 ca phân quyền trên mỗi engine Chromium/Firefox/WebKit, đều đạt. Chỉnh CSS cuối có lượt kiểm lại riêng và bộ 17 ảnh. [Chi tiết nghiệm thu V10.1](docs/UPGRADE_V10_1_ROLES.md#kết-quả-kiểm) ghi phạm vi, bằng chứng và giới hạn; kiểm engine chưa thay kiểm điện thoại vật lý.
+Bản V10.1 sau gộp phiên/bàn (PR #4) đã chạy đạt 204 Java, 92 Chromium và 37 kiểm công bố; kiểm nhanh thực nghiệm đạt 24/24 ca phục hồi và hai mức 1/5 khách giả lập. [Kết quả bản gộp](../report/evidence/cafelink-session-merge-20261102/summary.json). Các lượt phân quyền trước đó có 8 ca đạt trên mỗi engine Chromium/Firefox/WebKit; [chi tiết nghiệm thu V10.1](docs/UPGRADE_V10_1_ROLES.md#kết-quả-kiểm) giữ phạm vi từng mốc. Kiểm engine chưa thay điện thoại vật lý, kiểm nhanh chưa thay bộ đo hiệu năng đầy đủ.
 
 Trước push hoặc đóng gói, xem [kiểm nội dung công bố](docs/PUBLICATION.md). CI dùng chung policy với script đóng gói để chặn hướng dẫn phiên bản cũ, liên kết hỏng và các cặp báo cáo bị trộn.
 

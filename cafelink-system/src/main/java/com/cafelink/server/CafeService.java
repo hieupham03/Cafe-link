@@ -75,12 +75,17 @@ public final class CafeService implements AutoCloseable {
         if (operator(who)) { if(staffAccounts!=null)staffAccounts.validate(who); } else guestVisit(who);
     }
     public synchronized void logoutGuest(Identity who) throws SQLException {
-        qrRequired();String visit=guestVisit(who);
-        if(!db.query("SELECT id FROM visits WHERE id=? AND service_mode='AUTO'",r->r.getString(1),visit).isEmpty()
-            && (!db.query("SELECT id FROM orders WHERE visit_id=? AND payment_state NOT IN('CANCELLED','REFUNDED') AND (payment_state!='PAID' OR status!='SERVED')",r->r.getLong(1),visit).isEmpty()
-                || !db.query("SELECT id FROM tickets WHERE visit_id=? AND status='OPEN'",r->r.getLong(1),visit).isEmpty()))
-            throw problem("VISIT_HAS_WORK","Bạn còn đơn hoặc yêu cầu đang xử lý. Hãy giữ phiên để theo dõi; liên hệ nhân viên nếu cần hủy hoặc hỗ trợ.");
-        qr.logout(who);
+        qrRequired();
+        db.transaction(() -> {
+            String visit=guestVisit(who);
+            boolean automatic=!db.query("SELECT id FROM visits WHERE id=? AND service_mode='AUTO' AND active=1",r->r.getString(1),visit).isEmpty();
+            if(automatic&&tableOrdering.hasOpenWork(visit))
+                throw problem("VISIT_HAS_WORK","Bạn còn đơn hoặc yêu cầu đang xử lý. Hãy giữ phiên để theo dõi; liên hệ nhân viên nếu cần hủy hoặc hỗ trợ.");
+            qr.leave(who);
+            if(automatic)tableOrdering.closeDepartedVisit(visit);
+            db.update("UPDATE metadata SET value=value+1 WHERE name='revision'");
+            return null;
+        });
     }
     public synchronized boolean onlineInCurrentVisit(Identity who) throws SQLException {
         if (qr == null || operator(who)) return true;
@@ -100,7 +105,10 @@ public final class CafeService implements AutoCloseable {
                 new Identity(username, r.getString("role"), r.getObject("table_id") == null ? null : r.getInt("table_id"), null,null,null,null,qr==null?0:r.getLong("auth_version")), qr==null||r.getInt("active")==1), username);
         if (found.isEmpty() || !found.get(0).active() || !PasswordHash.verify(password, found.get(0).hash())) throw problem("AUTH_FAILED", "Sai tài khoản hoặc mật khẩu.");
         Identity account = found.get(0).identity();
-        if (operator(account)) return qr==null?account:new Identity(account.username(),account.role(),null,null,null,null,qr.storeId(),account.accountVersion());
+        if (operator(account)) {
+            if(admin(account)&&tableOrdering!=null)db.transaction(()->{tableOrdering.pauseAll();return null;});
+            return qr==null?account:new Identity(account.username(),account.role(),null,null,null,null,qr.storeId(),account.accountVersion());
+        }
         if (qr != null) throw problem("QR_REQUIRED", "Khách cần quét QR của lượt bàn; mật khẩu bàn không cấp quyền trên V2.");
         String token = credential;
         if (token == null || token.isEmpty()) {
@@ -192,13 +200,14 @@ public final class CafeService implements AutoCloseable {
             JsonObject result = switch (action) {
                 case "OPEN_ALL_TABLES" -> {qrRequired();requireAdmin(who);yield tableOrdering.enableAll();}
                 case "SET_TABLE_ACCEPTING" -> {qrRequired();requireAdmin(who);int table=integer(input,"tableId"),enabled=integer(input,"enabled");if(enabled!=0&&enabled!=1)throw problem("INVALID_INPUT","enabled phải bằng 0 hoặc 1.");if(db.update("UPDATE table_access SET enabled=? WHERE table_id=?",enabled,table)!=1)throw problem("NOT_FOUND","Hãy bật QR cố định cho toàn quán trước.");yield fields("status",enabled==1?"ACCEPTING":"PAUSED");}
+                case "END_TABLE_SESSIONS" -> {qrRequired();requireAdmin(who);yield tableOrdering.endTableSessions(integer(input,"tableId"));}
                 case "GET_TABLE_QR" -> {qrRequired();requireOperator(who);yield tableOrdering.qr(integer(input,"tableId"));}
                 case "GET_OWN_TABLE_QR" -> {qrRequired();requireGuest(who);if(db.query("SELECT id FROM visits WHERE id=? AND service_mode='AUTO'",r->r.getString(1),guestVisit(who)).isEmpty())throw problem("FORBIDDEN","Chỉ áp dụng cho phiên riêng QR cố định.");yield tableOrdering.qr(who.tableId());}
                 case "START_ORDER_PAYMENT","SIMULATE_PAYMENT","CANCEL_UNPAID_ORDER" -> {
                     qrRequired();requireGuest(who);String visit=text(input,"visitId",80,true);activeVisit(who,visit);
                     yield action.equals("START_ORDER_PAYMENT")?orderPayments.start(visit,integer(input,"orderId")):action.equals("SIMULATE_PAYMENT")?orderPayments.simulate(visit,input):orderPayments.cancel(visit,integer(input,"orderId"));
                 }
-                case "CLOSE_VISIT" -> {qrRequired();requireAdmin(who);String visit=text(input,"visitId",80,true);activeVisit(who,visit);yield orderPayments.close(visit);}
+                case "CLOSE_VISIT" -> {qrRequired();requireAdmin(who);String visit=text(input,"visitId",80,true);activeVisit(who,visit);if(!db.query("SELECT id FROM visits WHERE id=? AND service_mode='AUTO'",r->r.getString(1),visit).isEmpty())throw problem("USE_END_TABLE_SESSIONS","Phiên QR cố định chỉ kết thúc khi khách rời phiên hoặc quản lý kết thúc phiên tại bàn.");yield orderPayments.close(visit);}
                 case "GET_CONTINUATION_CONTEXT" -> continuationContext(who);
                 case "AMEND_SERVICE","CANCEL_SERVICE" -> {qrRequired();requireGuest(who);String visit=text(input,"visitId",80,true);activeVisit(who,visit);yield new SupportActions(db,events).change(visit,who.username(),input,action.equals("CANCEL_SERVICE"));}
                 case "SET_STORE_ACCEPTING" -> {qrRequired();requireAdmin(who);int enabled=integer(input,"enabled");if(enabled!=0&&enabled!=1)throw problem("INVALID_INPUT","Trạng thái phải là 0 hoặc 1.");db.update("UPDATE store_settings SET value=? WHERE name='accepting_orders'",String.valueOf(enabled));yield fields("status",enabled==1?"ACCEPTING":"PAUSED");}
@@ -241,7 +250,6 @@ public final class CafeService implements AutoCloseable {
             };
             if(events!=null)recordEvent(action,input,result);
             if(staffAccounts!=null&&operator(who))staffAccounts.audit(who.username(),action,input,result);
-            if(tableOrdering!=null&&Set.of("SET_ORDER_STATUS","HANDLE_TICKET","CANCEL_UNPAID_ORDER","RESOLVE_ORDER","CANCEL_SERVICE").contains(action))tableOrdering.finishReadyVisits();
             if (Commands.mutation(action)) db.update("UPDATE metadata SET value=value+1 WHERE name='revision'");
             if (Commands.mutation(action)) db.update("INSERT INTO command_receipts VALUES(?,?,?,?,?,?)", principal(who), commandId, action, credentialCommand?PasswordHash.create(fingerprint):fingerprint, Json.GSON.toJson(result), Instant.now().toString());
             return result;
@@ -387,6 +395,8 @@ public final class CafeService implements AutoCloseable {
     }
     private JsonObject closeEmpty(Identity who, String visit) throws SQLException {
         requireAdmin(who); activeVisit(who, visit);
+        if(qr!=null&&!db.query("SELECT id FROM visits WHERE id=? AND service_mode='AUTO'",r->r.getString(1),visit).isEmpty())
+            throw problem("USE_END_TABLE_SESSIONS","Phiên QR cố định chỉ kết thúc khi khách rời phiên hoặc quản lý kết thúc phiên tại bàn.");
         if (!loadOrders(" WHERE o.visit_id=?", visit).isEmpty() || !db.query("SELECT id FROM tickets WHERE visit_id=? AND status='OPEN'", r -> r.getLong(1), visit).isEmpty())
             throw problem("INVALID_STATE", "Chỉ đóng bàn trống và đã xử lý hết yêu cầu.");
         db.update("UPDATE visits SET active=0,closed_at=? WHERE id=?", Instant.now().toString(), visit);

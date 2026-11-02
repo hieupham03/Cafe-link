@@ -1,0 +1,85 @@
+{
+  "status": "PASS",
+  "version": "V10.1",
+  "schema": 13,
+  "baseCommit": "7382868751561b45c71103252d99d20615f2bcb3",
+  "integratedBranch": "feature/session_logic",
+  "integratedCommit": "3aab0e1633adc9a453078f5491afa23abfea1cf2",
+  "pullRequest": "https://github.com/hieupham03/Cafe-link/pull/4",
+  "gate": {
+    "runId": "20261102-223628-e73fbfed",
+    "startedAt": "2026-11-02T22:36:28.1197785+07:00",
+    "finishedAt": "2026-11-02T22:42:41.9733962+07:00",
+    "gates": [
+      {
+        "name": "java-verify",
+        "exitCode": 0,
+        "durationMs": 100661
+      },
+      {
+        "name": "web-build",
+        "exitCode": 0,
+        "durationMs": 7102
+      },
+      {
+        "name": "experiment-build",
+        "exitCode": 0,
+        "durationMs": 2424
+      },
+      {
+        "name": "browser-e2e",
+        "exitCode": 0,
+        "durationMs": 259195
+      }
+    ],
+    "java": {
+      "tests": 204,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "startTime": "2026-11-02T15:38:22.343Z",
+      "duration": 245957.481,
+      "expected": 92,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "testListenersClosed": true,
+    "baselineSha256": "60A1E6666F4BAC52B2F0B868A9AAFD9024563991AB22777076D639416E8766EB"
+  },
+  "additionalChecks": {
+    "publicationGuardTests": 37,
+    "publication": "PASS",
+    "workflowValidation": "PASS",
+    "automaticTableJava17UtcTests": 7
+  },
+  "quickExperiment": {
+    "status": "PASS",
+    "startedAt": "2026-11-02T22:45:12.7724087+07:00",
+    "finishedAt": "2026-11-02T22:45:46.5873222+07:00",
+    "recoveryCases": 24,
+    "loadCases": 2,
+    "loadClients": [
+      1,
+      5
+    ],
+    "sessionEndPolicy": "ADMIN_END_VISIT revokes credentials; VISIT_ENDED checks authorization fencing for every policy, not a discard receipt",
+    "note": "Quick validation only, not a full performance campaign or replacement of historical V9.4 measurements."
+  },
+  "approvedReportHashes": {
+    "Nhom11_CafeLink_Report.docx": "d16cd37d4b27db545013eea74311d37cd74caee61a2f515b6ad074e01b9e6d74",
+    "Nhom11_CafeLink_Report.pdf": "2f25bdbf62449d64b3d1e762c7eaa52aae4bf69b4bfc7a153419b9a552681db8"
+  },
+  "integrationAdjustments": [
+    "Retained original member commit and all current interface screenshots.",
+    "Legacy MANUAL browser fixtures now open through the supported API; new fixed-QR user flow remains unchanged.",
+    "Added atomic table ending, retry-after-new-guest and role-boundary checks.",
+    "VISIT_ENDED experiment checks actual credential revocation and direct rejection of a late original command; service discard scenarios still require durable barriers.",
+    "Experiment teardown leaves only its own guest session."
+  ],
+  "physicalLan": "NOT_RUN",
+  "physicalPhone": "NOT_RUN",
+  "realPaymentProvider": "NOT_INTEGRATED"
+}

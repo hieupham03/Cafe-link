@@ -25,6 +25,8 @@ Gateway nhận HTTP/WebSocket ở 8088, Core nhận TCP loopback ở 5058. Khôn
 3. Mỗi khách nhận phiên riêng; cùng QR không có nghĩa dùng chung đơn hoặc hóa đơn.
 4. Để demo hai khách trên một máy, dùng hai browser/profile độc lập. Hai tab thường hoặc các cửa sổ ẩn danh cùng phiên có thể dùng chung cookie.
 
+Mỗi lần ADMIN đăng nhập, các bàn tạm ngưng nhận khách mới và ẩn QR; **Mở tất cả bàn** bật lại nhận khách. Phiên khách đang dùng vẫn được giữ và có thể gọi món; đăng nhập STAFF không thay đổi trạng thái nhận khách.
+
 Không chỉ gõ `/join`. Link QR chứa mã trong fragment; sau khi mở, ứng dụng có thể ẩn mã khỏi thanh địa chỉ. Muốn mở lại cho khách mới, lấy nguyên link từ màn QR của quản lý.
 
 ## 3. Public HTTPS cho điện thoại
@@ -50,6 +52,9 @@ Hostname tunnel có thể đổi ở lần sau, khi đó lấy QR mới. Local/p
 | 4 | Gọi hoặc bổ sung/rút hỗ trợ | Thông báo mới, xử lý đúng ticket và version |
 | 5 | Theo dõi tiến độ | Chuyển pha chế → sẵn sàng → giao đủ |
 | 6 | Thử đặt tiếp | Giỏ/đơn thuộc đúng khách; xem lịch sử theo quyền |
+| 7 | Rời phiên khi rời quán | Phiên của khách đóng; các khách khác cùng bàn vẫn tiếp tục |
+
+Thanh toán và giao đồ không tự kết thúc phiên. Nếu khách quên rời, quản lý vào chi tiết bàn → **Kết thúc phiên** → xác nhận. Thao tác này kết thúc tất cả phiên tại bàn, chỉ thành công khi không còn đơn chưa thanh toán/chưa giao và hỗ trợ đang mở; QR nhận khách vẫn giữ. Khách cũng không được rời phiên khi còn công việc chưa xử lý.
 
 Có thể minh họa thêm giá thay đổi khi còn giỏ, món ngừng bán, thanh toán thử thất bại rồi thử lại, hủy đơn chưa trả hoặc từ chối/hoàn giả lập trước pha chế. Bật chuông bằng thao tác của người dùng trước khi thử thông báo.
 

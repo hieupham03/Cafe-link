@@ -58,7 +58,10 @@ async function serve(id: number) {
     await command(owner, "SET_ORDER_STATUS", { orderId: id, status });
   await expect(
     page.getByRole("heading", { name: "Cảm ơn bạn đã ghé quán", exact: true }),
-  ).toBeVisible();
+  ).toHaveCount(0);
+  await expect.poll(async () =>
+    (await state()).orders.some((order: any) => order.id === id && order.status === "SERVED"),
+  ).toBe(true);
 }
 test.beforeAll(async ({ browser }) => {
   owner = await browser.newContext();
@@ -85,6 +88,56 @@ test.beforeEach(async ({ browser }) => {
   await admin.goto(origin + "/admin");
 });
 test.afterEach(async () => {
+  const response = await guest.request.get(origin + "/api/session");
+  if (response.ok()) {
+    const info = await response.json();
+    if (info.identity.role === "GUEST") {
+      const current = await state();
+      for (const ticket of current.tickets.filter(
+        (item: any) =>
+          item.status === "OPEN" &&
+          item.visitId === info.identity.visitId,
+      ))
+        await command(owner, "HANDLE_TICKET", {
+          ticketId: ticket.id,
+          reply: "E2E cleanup",
+        });
+      for (const order of current.orders.filter(
+        (item: any) => item.visitId === info.identity.visitId,
+      )) {
+        if (["UNPAID", "PENDING"].includes(order.paymentState ?? ""))
+          await command(guest, "CANCEL_UNPAID_ORDER", {
+            visitId: info.identity.visitId,
+            orderId: order.id,
+          });
+        else if (
+          order.paymentState === "PAID" &&
+          order.acceptanceState === "WAITING"
+        )
+          await command(owner, "ACCEPT_ORDER", { orderId: order.id });
+        if (
+          order.paymentState === "PAID" &&
+          ["SUBMITTED", "PREPARING", "READY"].includes(order.status)
+        ) {
+          const statuses = ["SUBMITTED", "PREPARING", "READY"];
+          for (const status of statuses.slice(statuses.indexOf(order.status)))
+            await command(owner, "SET_ORDER_STATUS", {
+              orderId: order.id,
+              status:
+                status === "SUBMITTED"
+                  ? "PREPARING"
+                  : status === "PREPARING"
+                    ? "READY"
+                    : "SERVED",
+            });
+        }
+      }
+      await guest.request.post(origin + "/api/guest/leave", {
+        headers: { Origin: origin },
+        data: {},
+      });
+    }
+  }
   await guest.close();
   await admin.close();
 });
@@ -92,7 +145,7 @@ test.afterAll(async () => {
   await owner.close();
 });
 
-test("giao đơn đầu vẫn giữ giỏ tiếp theo, chuyển nháp có xác nhận và xem được đơn cũ", async () => {
+test("giao món không kết thúc phiên; khách vẫn giữ giỏ và xem được đơn", async () => {
   const order = await buy();
   await openGuestZone(page, "Thực đơn");
   await page.getByRole("button", { name: "Thêm Trà đào", exact: true }).click();
@@ -110,23 +163,12 @@ test("giao đơn đầu vẫn giữ giỏ tiếp theo, chuyển nháp có xác n
     path: "test-results/workflow-completed-draft.png",
     fullPage: true,
   });
-  await page
-    .getByRole("button", { name: "Bắt đầu lần đặt mới", exact: true })
-    .click();
-  await openGuestZone(page, "Giỏ hàng");
-  await expect(
-    page.getByRole("button", { name: "Gửi đơn gọi món", exact: true }),
-  ).toBeEnabled();
-  await openGuestZone(page, "Giỏ hàng");
-  await expect(page.getByTestId("cart-total")).toContainText("40.000");
-  expect((await state()).orders).toHaveLength(0);
   await page.reload();
   await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("40.000");
   await openGuestZone(page, "Đơn đã gọi");
-  await expect(page.getByTestId("previous-orders")).toContainText(
-    `Đơn #${order.id}`,
-  );
+  await expect(page.getByText(`Đơn #${order.id}`, { exact: true })).toBeVisible();
+  expect((await state()).orders).toHaveLength(1);
   await page.screenshot({
     path: "test-results/workflow-continued-mobile.png",
     fullPage: true,
@@ -162,7 +204,7 @@ test("rời phiên có đơn đã trả bị chặn cả UI và API; nháp cần
   await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("40.000");
 });
-test("mất phản hồi chuyển phiên vẫn phục hồi đúng một phiên kế tiếp và một giỏ nháp", async () => {
+test("sau khi giao món, phiên hiện tại vẫn dùng được để gọi món tiếp", async () => {
   const order = await buy();
   await openGuestZone(page, "Thực đơn");
   await page.getByRole("button", { name: "Thêm Trà đào", exact: true }).click();
@@ -170,29 +212,17 @@ test("mất phản hồi chuyển phiên vẫn phục hồi đúng một phiên 
   const before = await (
     await guest.request.get(origin + "/api/session")
   ).json();
-  let lost = false;
-  await page.route("**/api/guest/continue", async (route) => {
-    const response = await route.fetch();
-    expect(response.ok()).toBe(true);
-    lost = true;
-    await route.abort("failed");
-  });
-  await page
-    .getByRole("button", { name: "Bắt đầu lần đặt mới", exact: true })
-    .click();
-  await expect.poll(() => lost).toBe(true);
-  await page.reload();
   await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("40.000");
+  await expect(
+    page.getByRole("button", { name: "Gửi đơn gọi món", exact: true }),
+  ).toBeEnabled();
+  await page
+    .getByRole("button", { name: "Gửi đơn gọi món", exact: true })
+    .click();
+  await expect.poll(async () => (await state()).orders.length).toBe(2);
   const after = await (await guest.request.get(origin + "/api/session")).json();
-  expect(after.identity.visitId).not.toBe(before.identity.visitId);
-  const retry = await guest.request.post(origin + "/api/guest/continue", {
-    headers: { Origin: origin, "X-CSRF-Token": after.csrfToken },
-    data: { membershipId: before.identity.membershipId },
-  });
-  expect(retry.ok()).toBe(true);
-  expect((await retry.json()).identity.visitId).toBe(after.identity.visitId);
-  expect((await state()).orders).toHaveLength(0);
+  expect(after.identity.visitId).toBe(before.identity.visitId);
 });
 test("quầy từ chối và hoàn giả lập đơn chưa pha chế; khách thấy lý do, lịch sử giữ khoản thu gốc", async () => {
   const order = await buy();
@@ -261,7 +291,7 @@ test("thu ngân hủy đơn chưa trả bị bỏ dở mà không cần quyền 
     ),
   ).toBe(false);
 });
-test("lỗi ghi giỏ lúc chuyển phiên khóa gửi và reload phục hồi nháp từ transaction cũ", async () => {
+test("lỗi ghi giỏ không kết thúc phiên đang phục vụ", async () => {
   const order = await buy();
   await openGuestZone(page, "Thực đơn");
   await page.getByRole("button", { name: "Thêm Trà đào", exact: true }).click();
@@ -269,37 +299,27 @@ test("lỗi ghi giỏ lúc chuyển phiên khóa gửi và reload phục hồi n
   const before = await (
     await guest.request.get(origin + "/api/session")
   ).json();
-  await page.evaluate((oldMembership) => {
+  await page.evaluate(() => {
     const original = IDBObjectStore.prototype.put;
     IDBObjectStore.prototype.put = function (value: any, key?: IDBValidKey) {
-      if (
-        this.name === "carts" &&
-        value?.items?.length &&
-        typeof value.scope === "string" &&
-        !value.scope.includes(oldMembership)
-      )
+      if (this.name === "carts" && value?.items?.length)
         throw new DOMException("Simulated quota failure", "QuotaExceededError");
       return key === undefined
         ? original.call(this, value)
         : original.call(this, value, key);
     };
-  }, before.identity.membershipId);
-  await page
-    .getByRole("button", { name: "Bắt đầu lần đặt mới", exact: true })
-    .click();
-  await openGuestZone(page, "Giỏ hàng");
-  await expect(
-    page.getByRole("button", { name: "Gửi đơn gọi món", exact: true }),
-  ).toBeDisabled();
+  });
+  await openGuestZone(page, "Thực đơn");
+  await page.getByRole("button", { name: "Thêm Trà đào", exact: true }).click();
   await expect(page.getByRole("alert")).toContainText("nhật ký");
-  expect((await state()).orders).toHaveLength(0);
+  expect((await state()).orders).toHaveLength(1);
+  await expect(
+    page.getByRole("button", { name: "Rời phiên", exact: true }),
+  ).toBeEnabled();
+  expect((await (await guest.request.get(origin + "/api/session")).json()).identity.visitId).toBe(before.identity.visitId);
   await page.reload();
   await openGuestZone(page, "Giỏ hàng");
   await expect(page.getByTestId("cart-total")).toContainText("40.000");
-  await openGuestZone(page, "Giỏ hàng");
-  await expect(
-    page.getByRole("button", { name: "Gửi đơn gọi món", exact: true }),
-  ).toBeEnabled();
 });
 test("mất phản hồi hoàn giả lập được đối chiếu sau reload, không tạo khoản hoàn thứ hai", async () => {
   const order = await buy();
@@ -360,7 +380,7 @@ test("mất phản hồi hoàn giả lập được đối chiếu sau reload, k
   expect(receipts).toHaveLength(1);
   expect(receipts[0].resolution.state).toBe("REFUNDED");
 });
-test("giỏ được chuyển vẫn phải xác nhận giá mới và không tự gửi đơn", async () => {
+test("giỏ đang soạn vẫn phải xác nhận giá mới và không tự gửi đơn", async () => {
   const order = await buy();
   await openGuestZone(page, "Thực đơn");
   await page.getByRole("button", { name: "Thêm Trà đào", exact: true }).click();
@@ -372,17 +392,14 @@ test("giỏ được chuyển vẫn phải xác nhận giá mới và không t�
     expectedVersion: tea.version,
     priceVnd: 49000,
   });
-  await page
-    .getByRole("button", { name: "Bắt đầu lần đặt mới", exact: true })
-    .click();
+  await openGuestZone(page, "Giỏ hàng");
   await expect(
     page.getByRole("button", { name: "Cập nhật giỏ theo thực đơn mới" }),
   ).toBeVisible();
-  await openGuestZone(page, "Giỏ hàng");
   await expect(
     page.getByRole("button", { name: "Gửi đơn gọi món", exact: true }),
   ).toBeDisabled();
-  expect((await state()).orders).toHaveLength(0);
+  expect((await state()).orders).toHaveLength(1);
   await page
     .getByRole("button", { name: "Cập nhật giỏ theo thực đơn mới" })
     .click();

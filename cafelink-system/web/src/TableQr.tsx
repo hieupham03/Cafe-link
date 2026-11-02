@@ -14,7 +14,9 @@ export function TableQr({
     [error, setError] = useState("");
   useEffect(() => {
     let active = true;
-    if (enabled)
+    setUrl("");
+    setError("");
+    if (enabled) {
       void api
         .command<{ joinUrl: string }>(csrf, "GET_TABLE_QR", { tableId })
         .then((data) => {
@@ -26,12 +28,17 @@ export function TableQr({
         .catch(() => {
           if (active) setError("Chưa tải được QR");
         });
+    }
     return () => {
       active = false;
     };
   }, [tableId, csrf, enabled]);
   if (!enabled)
-    return <div className="table-qr-placeholder">Mở bàn để hiển thị QR</div>;
+    return (
+      <div className="table-qr-placeholder">
+        Mở tất cả bàn để tải QR
+      </div>
+    );
   return (
     <div className="table-inline-qr">
       {url ? (

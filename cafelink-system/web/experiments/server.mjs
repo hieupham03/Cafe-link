@@ -57,5 +57,11 @@ export async function cleanVisit(admin,guest){
     if(["UNPAID","PENDING"].includes(order.paymentState))await guest.command("CANCEL_UNPAID_ORDER",{visitId,orderId:order.id});
     else if(order.paymentState==="PAID")for(const status of ["SUBMITTED","PREPARING","READY","SERVED"].slice(["SUBMITTED","PREPARING","READY","SERVED"].indexOf(order.status)+1))await admin.command("SET_ORDER_STATUS",{orderId:order.id,status});
   }
-  try{await admin.command("CLOSE_VISIT",{visitId});}catch(e){if(!e.message.includes("SESSION_CLOSED"))throw e;}
+  // Clean only this fixture guest. Ending the entire table could revoke another
+  // guest that the same campaign is still observing.
+  const response=await guest.context.request.post(`${origin}/api/guest/leave`,{headers:{Origin:origin},data:{}});
+  if(!response.ok()){
+    const denied=await response.json();
+    if(response.status()!==401||denied.code!=="SESSION_REVOKED")throw new Error(`Fixture leave failed: ${denied.code??response.status()}`);
+  }
 }
