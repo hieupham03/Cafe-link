@@ -175,6 +175,77 @@ test("Quản lý kết thúc phiên bỏ quên và bàn trở về trống đang
   await expect(admin.locator(".table-inline-qr svg")).toHaveCount(6);
 });
 
+test("tạm ngưng tất cả bàn chặn khách mới nhưng khách hiện tại vẫn gọi món", async () => {
+  await admin.setViewportSize({ width: 390, height: 844 });
+  expect(await admin.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await admin.getByRole("button", { name: "Tạm ngưng tất cả bàn", exact: true }).click();
+  const dialog = admin.getByRole("alertdialog", { name: "Tạm ngưng tất cả bàn" });
+  await expect(dialog.getByRole("button", { name: "Xác nhận tạm ngưng", exact: true })).toBeVisible();
+  expect(await admin.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await dialog.getByRole("button", { name: "Xác nhận tạm ngưng", exact: true }).click();
+  await expect(dialog).not.toBeVisible();
+  await expect.poll(async () => (await state()).tables.every((table: any) => !table.acceptingOrders)).toBe(true);
+  const denied = await other.request.post("/api/guest/join", { headers: { Origin: origin }, data: { grant: qr.grant, table: true } });
+  expect(denied.status()).toBe(409);
+  expect((await denied.json()).code).toBe("TABLE_PAUSED");
+  const visitId = (await (await guest.request.get("/api/session")).json()).identity.visitId;
+  const order = await command(guest, "PLACE_ORDER", { visitId, items: [{ menuId: 2, quantity: 1, expectedVersion: 1, expectedPriceVnd: 30000 }] });
+  expect(order.orderId).toBeTruthy();
+  await command(guest, "CANCEL_UNPAID_ORDER", { visitId, orderId: order.orderId });
+});
+
+test("kết thúc tất cả phiên báo bàn còn đơn và chỉ đóng khi mọi bàn đã xử lý", async () => {
+  const secondQr = await command(owner, "GET_TABLE_QR", { tableId: 2 });
+  const joined = await other.request.post("/api/guest/join", { headers: { Origin: origin }, data: { grant: secondQr.grant, table: true } });
+  expect(joined.ok()).toBe(true);
+  const visitId = (await (await guest.request.get("/api/session")).json()).identity.visitId;
+  const order = await command(guest, "PLACE_ORDER", { visitId, items: [{ menuId: 2, quantity: 1, expectedVersion: 1, expectedPriceVnd: 30000 }] });
+  await admin.getByRole("button", { name: "Kết thúc tất cả phiên QR", exact: true }).click();
+  let dialog = admin.getByRole("alertdialog", { name: "Kết thúc tất cả phiên QR" });
+  await expect(dialog.getByRole("alert")).toContainText("Bàn 1");
+  await expect(dialog.getByRole("button", { name: "Xác nhận kết thúc tất cả phiên" })).toBeDisabled();
+  await dialog.getByRole("button", { name: "Hủy", exact: true }).click();
+  await command(guest, "CANCEL_UNPAID_ORDER", { visitId, orderId: order.orderId });
+  await admin.getByRole("button", { name: "Kết thúc tất cả phiên QR", exact: true }).click();
+  dialog = admin.getByRole("alertdialog", { name: "Kết thúc tất cả phiên QR" });
+  await expect(dialog.getByText(/Cần xử lý đơn/)).toHaveCount(0);
+  await expect(dialog).toContainText("2 phiên khách tại 2 bàn");
+  await dialog.getByRole("button", { name: "Hủy", exact: true }).click();
+  await admin.getByRole("button", { name: "Kết thúc tất cả phiên QR", exact: true }).click();
+  dialog = admin.getByRole("alertdialog", { name: "Kết thúc tất cả phiên QR" });
+  await dialog.getByRole("button", { name: "Xác nhận kết thúc tất cả phiên", exact: true }).click();
+  await expect(dialog).not.toBeVisible();
+  await expect.poll(async () => (await state()).tables.reduce((n: number, table: any) => n + table.activeSessions, 0)).toBe(0);
+  expect((await guest.request.get("/api/session")).status()).toBe(401);
+  expect((await other.request.get("/api/session")).status()).toBe(401);
+  await expect(admin.locator(".table-inline-qr svg")).toHaveCount(6);
+});
+
+test("mất phản hồi kết thúc tất cả phiên được đối chiếu, không đóng khách đến sau", async () => {
+  let intercepted = false;
+  await admin.route("**/api/command", async route => {
+    if (route.request().postDataJSON()?.action !== "END_ALL_TABLE_SESSIONS" || intercepted) return route.continue();
+    intercepted = true;
+    const response = await route.fetch();
+    expect(response.ok()).toBe(true);
+    await route.abort("failed");
+  });
+  await admin.getByRole("button", { name: "Kết thúc tất cả phiên QR", exact: true }).click();
+  const dialog = admin.getByRole("alertdialog", { name: "Kết thúc tất cả phiên QR" });
+  await dialog.getByRole("button", { name: "Xác nhận kết thúc tất cả phiên", exact: true }).click();
+  await expect.poll(() => intercepted).toBe(true);
+  const next = await join(other);
+  await admin.unrouteAll();
+  await admin.reload();
+  await expect.poll(async () => admin.evaluate(async () => {
+    const db = await new Promise<IDBDatabase>((resolve, reject) => { const r = indexedDB.open("cafelink-staff-journal", 1); r.onsuccess = () => resolve(r.result); r.onerror = () => reject(r.error); });
+    try { return await new Promise<string | undefined>((resolve, reject) => { const r = db.transaction("commands").objectStore("commands").getAll(); r.onsuccess = () => resolve(r.result.filter((entry: any) => entry.action === "END_ALL_TABLE_SESSIONS").at(-1)?.status); r.onerror = () => reject(r.error); }); }
+    finally { db.close(); }
+  })).toBe("ACCEPTED");
+  expect((await (await other.request.get("/api/session")).json()).identity.visitId).toBe(next.identity.visitId);
+  expect((await state()).tables[0].activeSessions).toBe(1);
+});
+
 test("QR cố định, mở toàn quán và hai khách cùng bàn có đơn riêng", async () => {
   const before = await (await guest.request.get("/api/session")).json(),
     second = await join(other);

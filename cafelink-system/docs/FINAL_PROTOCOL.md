@@ -62,6 +62,7 @@ Scope phải khớp chủ thể được cấp bởi Core/cookie. Role/tableId c
 | Trả trước | START_ORDER_PAYMENT, SIMULATE_PAYMENT, CANCEL_UNPAID_ORDER | PAID chỉ sau kết quả simulator hợp lệ; không tạo lần thu mới do retry |
 | Quầy | SET_ORDER_STATUS, xử lý từ chối/hoàn trước pha chế | Guard thứ tự, chỉ pha chế khi đủ điều kiện tiền, audit lý do/actor |
 | Vận hành | OPEN_ALL_TABLES, SET_TABLE_ACCEPTING, SET_STORE_ACCEPTING | Không reset phiên hiện tại; dừng đơn mới không xóa nghĩa vụ cũ |
+| Thao tác toàn quán | PAUSE_ALL_TABLES, END_ALL_TABLE_SESSIONS `{expectedRevision}` | ADMIN xác nhận trên trạng thái mới nhất; receipt chống áp lại; kết thúc tất cả phiên QR là giao dịch toàn bộ hoặc không đóng phiên nào |
 | Kết thúc phiên QR | LEAVE_VISIT qua `/api/guest/leave`; END_TABLE_SESSIONS `{tableId}` | Khách chỉ rời phiên của mình; chỉ ADMIN được kết thúc tất cả phiên tại bàn. Chặn khi còn đơn/hỗ trợ chưa xử lý |
 | Danh mục/hóa đơn | CREATE_MENU_ITEM, UPDATE_MENU_ITEM, GET_SALES_HISTORY, GET_SALES_RECEIPT | Edit version chống ghi đè; hóa đơn giữ giá/tên lúc bán |
 | Đối chiếu tại quầy | FIND_ASSISTANCE | Chỉ đọc kết quả theo command ID/số đơn; không tự gửi/thu tiền |
@@ -87,6 +88,8 @@ Với QR trả trước, `acceptanceState` bắt đầu WAITING. ADMIN hoặc ST
 Snapshot mang revision và được lọc quyền; Client không áp snapshot cũ hơn. Notification feed/read cursor là dữ liệu riêng, không thay hàng đợi công việc. Reconnect kênh đọc không tự chạy PLACE_ORDER mới. Timeout/kết nối lỗi có thể là kết quả chưa rõ, không khẳng định Server chưa commit.
 
 Phiên AUTO vẫn hoạt động sau khi thanh toán/giao món; không suy khách rời bàn từ kết nối hoặc trạng thái đơn. Rời phiên thu hồi membership/token của khách; `END_TABLE_SESSIONS` thu hồi mọi phiên AUTO đang hoạt động tại bàn trong cùng transaction và có receipt chống áp lại. Nếu còn công việc, trả `VISIT_HAS_WORK` hoặc `TABLE_HAS_WORK` và không đóng một phần các phiên. `CLOSE_VISIT`/`CLOSE_EMPTY_TABLE` không dùng để đóng phiên AUTO. Đăng nhập ADMIN tạm ngưng nhận khách mới; `OPEN_ALL_TABLES` bật lại mà không đổi mã QR hoặc xóa phiên hiện có.
+
+`PAUSE_ALL_TABLES` không thay đổi phiên đang có. `END_ALL_TABLE_SESSIONS` kiểm tra mọi visit AUTO trước khi thu hồi và đóng; khi còn việc, lỗi `TABLE_HAS_WORK` liệt kê các bàn bị chặn. Cả hai yêu cầu `expectedRevision` khớp snapshot quán, có receipt và nhật ký tại quầy. Nếu lệnh chưa được nhận mà trạng thái đã đổi, lệnh cũ bị `VERSION_CONFLICT`, tránh ảnh hưởng khách mới. Retry cùng command ID đã nhận trả lại receipt cũ. Thao tác kết thúc hàng loạt không xử lý visit MANUAL cũ và không thay đổi trạng thái nhận khách.
 
 Mã lỗi tiêu biểu: UNAUTHENTICATED/FORBIDDEN, SCOPE_CHANGED/SESSION_CLOSED, COMMAND_CONFLICT/COMMAND_DISCARDED, VERSION_CONFLICT, MENU_CHANGED/ITEM_UNAVAILABLE, RATE_LIMITED. HTTP trả mã phù hợp với lỗi auth/quyền/quá tải/guard; UI giữ yêu cầu cần đối chiếu, không đổi lỗi mạng thành receipt thành công.
 

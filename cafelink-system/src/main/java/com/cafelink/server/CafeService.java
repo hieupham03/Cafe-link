@@ -12,7 +12,7 @@ import java.util.*;
 
 /** Database and business state are serialized here; socket I/O never holds this lock. */
 public final class CafeService implements AutoCloseable {
-    private static final Set<String> STAFF_DISCARD_ACTIONS=Set.of("SET_MENU_AVAILABILITY","ACCEPT_ORDER","SAVE_TAX_SETTINGS","CREATE_EXPENSE","VOID_EXPENSE","REQUEST_CHECKOUT","ACK_CHECKOUT","REOPEN_ORDERING","PAY_AND_CLOSE","CLOSE_VISIT","CREATE_MENU_ITEM","UPDATE_MENU_ITEM","RESOLVE_ORDER");
+    private static final Set<String> STAFF_DISCARD_ACTIONS=Set.of("SET_MENU_AVAILABILITY","ACCEPT_ORDER","SAVE_TAX_SETTINGS","CREATE_EXPENSE","VOID_EXPENSE","REQUEST_CHECKOUT","ACK_CHECKOUT","REOPEN_ORDERING","PAY_AND_CLOSE","CLOSE_VISIT","CREATE_MENU_ITEM","UPDATE_MENU_ITEM","RESOLVE_ORDER","PAUSE_ALL_TABLES","END_ALL_TABLE_SESSIONS");
     private final Database db;
     private final QrAccess qr;
     private final CheckoutFlow checkout;
@@ -199,6 +199,8 @@ public final class CafeService implements AutoCloseable {
             }
             JsonObject result = switch (action) {
                 case "OPEN_ALL_TABLES" -> {qrRequired();requireAdmin(who);yield tableOrdering.enableAll();}
+                case "PAUSE_ALL_TABLES" -> {qrRequired();requireAdmin(who);checkTableActionRevision(input);JsonObject paused=new JsonObject();paused.addProperty("pausedTables",tableOrdering.pauseAll());yield paused;}
+                case "END_ALL_TABLE_SESSIONS" -> {qrRequired();requireAdmin(who);checkTableActionRevision(input);yield tableOrdering.endAllSessions();}
                 case "SET_TABLE_ACCEPTING" -> {qrRequired();requireAdmin(who);int table=integer(input,"tableId"),enabled=integer(input,"enabled");if(enabled!=0&&enabled!=1)throw problem("INVALID_INPUT","enabled phải bằng 0 hoặc 1.");if(db.update("UPDATE table_access SET enabled=? WHERE table_id=?",enabled,table)!=1)throw problem("NOT_FOUND","Hãy bật QR cố định cho toàn quán trước.");yield fields("status",enabled==1?"ACCEPTING":"PAUSED");}
                 case "END_TABLE_SESSIONS" -> {qrRequired();requireAdmin(who);yield tableOrdering.endTableSessions(integer(input,"tableId"));}
                 case "GET_TABLE_QR" -> {qrRequired();requireOperator(who);yield tableOrdering.qr(integer(input,"tableId"));}
@@ -402,6 +404,16 @@ public final class CafeService implements AutoCloseable {
         db.update("UPDATE visits SET active=0,closed_at=? WHERE id=?", Instant.now().toString(), visit);
         if(checkout!=null)db.update("UPDATE visits SET state='CLOSED',version=version+1 WHERE id=?",visit);
         return fields("visitId", visit);
+    }
+    private void checkTableActionRevision(JsonObject input) throws SQLException {
+        JsonElement value = input.get("expectedRevision");
+        if (value == null || !value.isJsonPrimitive() || !value.getAsJsonPrimitive().isNumber()) throw problem("INVALID_INPUT", "Thiếu phiên bản trạng thái quán.");
+        long expected;
+        try { expected = Long.parseLong(value.getAsString()); }
+        catch (NumberFormatException e) { throw problem("INVALID_INPUT", "Phiên bản trạng thái quán không hợp lệ."); }
+        if (expected < 0) throw problem("INVALID_INPUT", "Phiên bản trạng thái quán không hợp lệ.");
+        if (db.query("SELECT value FROM metadata WHERE name='revision'", r -> r.getLong(1)).get(0) != expected)
+            throw problem("VERSION_CONFLICT", "Trạng thái quán đã thay đổi. Hãy xem lại và xác nhận thao tác mới.");
     }
     private int activeVisit(Identity who, String visit) throws SQLException {
         List<Integer> tables = db.query("SELECT table_id FROM visits WHERE id=? AND active=1", r -> r.getInt(1), visit);

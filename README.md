@@ -33,6 +33,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-web.ps1 -Port 80
 6. **Nhân viên → Thêm nhân viên** tạo tài khoản STAFF riêng; đăng nhập ở browser/profile khác bằng cùng `/admin`. Nhân viên có bốn mục phục vụ. Khóa/đổi mật khẩu thu hồi mọi phiên cũ.
 7. **Cài đặt quán** cấu hình thuế; **Thu chi** xem dòng tiền, ghi/hủy phiếu chi có lý do và xuất CSV. Thuế mặc định 0%, tiền/thuế của đơn đã gửi được giữ nguyên.
 
+Trên sơ đồ bàn, **Tạm ngưng tất cả bàn** chặn khách mới quét QR, nhưng các khách hiện tại vẫn được phục vụ. **Kết thúc tất cả phiên QR** chỉ dùng khi khách đã rời; hệ thống liệt kê bàn còn đơn/hỗ trợ và chỉ kết thúc khi mọi phiên QR đã xử lý xong. Hai thao tác đều có xác nhận và chỉ quản lý được sử dụng.
+
 Khi khách rời quán, khách chọn **Rời phiên** để đóng phiên của mình và bàn trở về **Bàn trống · Đang nhận đơn** nếu không còn khách nào khác trong phiên. Nếu khách quên rời, quản lý mở chi tiết bàn và chọn **Kết thúc phiên**. Chỉ đóng phiên khi các đơn chưa thanh toán/chưa giao và yêu cầu hỗ trợ đã được xử lý; thao tác này không tắt QR nhận khách của bàn.
 
 SQLite tự tạo schema, tài khoản demo, sáu bàn và tám món khi dùng DB mới. Tám ảnh đồ uống được đóng kèm source; ảnh quản lý tải lên được ưu tiên. Dữ liệu cũ được giữ khi chạy lại. Nhấn **Ctrl+C** tại terminal Server để dừng. [Runbook](cafelink-system/docs/FINAL_RUNBOOK.md) giải thích trường hợp chỉ mở `/join` hoặc dùng chung cookie quản lý/khách.
@@ -107,7 +109,7 @@ Dùng **URL HTTPS và mật khẩu tạm mà terminal in ra**, chọn **Mở t�
 
 </details>
 
-Nhấn vào ảnh để xem kích thước gốc. [Hướng dẫn source](cafelink-system/README.md) · [Kết quả kiểm bản gộp phiên/bàn](report/evidence/cafelink-session-merge-20261102/summary.json).
+Nhấn vào ảnh để xem kích thước gốc. [Hướng dẫn source](cafelink-system/README.md) · [Kết quả kiểm hiện tại](report/evidence/cafelink-bulk-tables-20261102/summary.json).
 
 ## Kiến trúc và nội dung Lập trình mạng
 
@@ -137,7 +139,7 @@ Java target 17, Maven bootstrap, Jetty HTTP/WebSocket, Gson, SQLite JDBC; React/
 
 ## Kiểm thử và kết quả thực nghiệm
 
-**V10.1 sau gộp phiên/bàn (PR #4):** 204 Java, 92 Chromium và 37 kiểm công bố đạt; kiểm nhanh thực nghiệm có 24/24 ca phục hồi và hai mức 1/5 khách giả lập đạt. [Bằng chứng bản gộp](report/evidence/cafelink-session-merge-20261102/summary.json). Các lượt phân quyền trước đó gồm 8 ca trên mỗi engine Chromium/Firefox/WebKit; [phạm vi V10.1](cafelink-system/docs/UPGRADE_V10_1_ROLES.md#kết-quả-kiểm) giữ bằng chứng từng mốc. Kết quả RC4/RC3 bên dưới thuộc mốc trước nâng cấp; kiểm engine chưa thay kiểm điện thoại vật lý. Kiểm nhanh không thay bộ đo hiệu năng đầy đủ.
+**V10.1 với thao tác toàn quán:** 206 Java, 95 Chromium và 37 kiểm công bố đạt. [Kết quả hiện tại](report/evidence/cafelink-bulk-tables-20261102/summary.json). Trước đó, [đợt gộp PR #4](report/evidence/cafelink-session-merge-20261102/summary.json) kiểm nhanh 24/24 ca phục hồi và hai mức 1/5 khách giả lập; 8 ca phân quyền đạt trên mỗi engine Chromium/Firefox/WebKit ở mốc trước. [Phạm vi V10.1](cafelink-system/docs/UPGRADE_V10_1_ROLES.md#kết-quả-kiểm) giữ bằng chứng từng mốc. Kết quả RC4/RC3 bên dưới thuộc mốc trước nâng cấp; kiểm engine chưa thay kiểm điện thoại vật lý. Kiểm nhanh không thay bộ đo hiệu năng đầy đủ.
 
 Chạy tại `cafelink-system`:
 

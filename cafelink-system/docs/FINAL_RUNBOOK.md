@@ -56,6 +56,8 @@ Hostname tunnel có thể đổi ở lần sau, khi đó lấy QR mới. Local/p
 
 Thanh toán và giao đồ không tự kết thúc phiên. Nếu khách quên rời, quản lý vào chi tiết bàn → **Kết thúc phiên** → xác nhận. Thao tác này kết thúc tất cả phiên tại bàn, chỉ thành công khi không còn đơn chưa thanh toán/chưa giao và hỗ trợ đang mở; QR nhận khách vẫn giữ. Khách cũng không được rời phiên khi còn công việc chưa xử lý.
 
+Khi cần ngừng đón khách toàn quán, quản lý chọn **Tạm ngưng tất cả bàn** và xác nhận: QR không nhận khách mới, các phiên hiện có tiếp tục hoạt động. Sau khi khách rời quán, chọn **Kết thúc tất cả phiên QR** để kiểm tra và kết thúc các phiên QR. Nếu một bàn còn công việc, danh sách bàn được hiển thị và không phiên nào bị đóng. Đây là thao tác kết thúc phiên, không tự tắt QR; cần tạm ngưng bàn nếu muốn ngừng nhận khách mới. Phiên cũ MANUAL được xử lý riêng.
+
 Có thể minh họa thêm giá thay đổi khi còn giỏ, món ngừng bán, thanh toán thử thất bại rồi thử lại, hủy đơn chưa trả hoặc từ chối/hoàn giả lập trước pha chế. Bật chuông bằng thao tác của người dùng trước khi thử thông báo.
 
 ### Năm vùng trên màn hình khách

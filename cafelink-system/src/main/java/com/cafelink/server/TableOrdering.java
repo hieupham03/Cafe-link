@@ -22,9 +22,11 @@ final class TableOrdering {
         for(int table:db.query("SELECT id FROM cafe_tables",r->r.getInt(1))) { ensure(table); db.update("UPDATE table_access SET enabled=1 WHERE table_id=?",table); }
         JsonObject result=new JsonObject();result.addProperty("enabledTables",db.query("SELECT count(*) FROM table_access WHERE enabled=1",r->r.getInt(1)).get(0));return result;
     }
-    void pauseAll() throws SQLException {
-        if (db.update("UPDATE table_access SET enabled=0 WHERE enabled=1") > 0)
+    int pauseAll() throws SQLException {
+        int paused = db.update("UPDATE table_access SET enabled=0 WHERE enabled=1");
+        if (paused > 0)
             db.update("UPDATE metadata SET value=value+1 WHERE name='revision'");
+        return paused;
     }
     private void ensure(int table) throws SQLException {
         if(db.query("SELECT id FROM cafe_tables WHERE id=?",r->r.getInt(1),table).isEmpty())throw new BusinessException("NOT_FOUND","Không có bàn này.");
@@ -92,5 +94,20 @@ final class TableOrdering {
             events.append(visit,"ADMIN_END_VISIT",visit,"Quản lý đã kết thúc phiên tại bàn");
         }
         JsonObject result=new JsonObject();result.addProperty("tableId",table);result.addProperty("endedSessions",visits.size());return result;
+    }
+    JsonObject endAllSessions() throws SQLException {
+        var tables = db.query("SELECT DISTINCT table_id FROM visits WHERE service_mode='AUTO' AND active=1 ORDER BY table_id", r -> r.getInt(1));
+        List<String> blocked = new java.util.ArrayList<>();
+        for (int table : tables) {
+            var visits = db.query("SELECT id FROM visits WHERE table_id=? AND service_mode='AUTO' AND active=1", r -> r.getString(1), table);
+            for (String visit : visits) if (hasOpenWork(visit)) { blocked.add("Bàn " + table); break; }
+        }
+        if (!blocked.isEmpty()) throw new BusinessException("TABLE_HAS_WORK", "Còn đơn hoặc yêu cầu hỗ trợ chưa xử lý tại " + String.join(", ", blocked) + ". Hãy xử lý trước khi kết thúc phiên.");
+        int ended = 0;
+        for (int table : tables) ended += endTableSessions(table).get("endedSessions").getAsInt();
+        JsonObject result = new JsonObject();
+        result.addProperty("endedSessions", ended);
+        result.addProperty("affectedTables", tables.size());
+        return result;
     }
 }

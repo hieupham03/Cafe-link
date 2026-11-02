@@ -3,6 +3,7 @@ import type { SessionInfo } from "./models";
 import { fingerprint, JournalError } from "./journal";
 
 export const financialActions = new Set([
+  "PAUSE_ALL_TABLES", "END_ALL_TABLE_SESSIONS",
   "SET_MENU_AVAILABILITY", "ACCEPT_ORDER", "SAVE_TAX_SETTINGS", "CREATE_EXPENSE", "VOID_EXPENSE",
   "REQUEST_CHECKOUT",
   "ACK_CHECKOUT",
@@ -124,9 +125,11 @@ const definite = new Set([
   "FORBIDDEN",
   "NOT_FOUND",
   "COMMAND_DISCARDED",
-  "ITEM_UNAVAILABLE", "TAX_CHANGED",
+  "ITEM_UNAVAILABLE", "TAX_CHANGED", "TABLE_HAS_WORK",
 ]);
 function validResult(row: StaffIntent, result: Record<string, unknown>) {
+  if(row.action==='PAUSE_ALL_TABLES')return Number.isSafeInteger(result.pausedTables) && Number(result.pausedTables)>=0;
+  if(row.action==='END_ALL_TABLE_SESSIONS')return Number.isSafeInteger(result.endedSessions) && Number(result.endedSessions)>=0 && Number.isSafeInteger(result.affectedTables) && Number(result.affectedTables)>=0;
   if(row.action==='SET_MENU_AVAILABILITY')return result.menuId===row.data.menuId&&result.version===Number(row.data.expectedVersion)+1;
   if(row.action==='ACCEPT_ORDER')return result.orderId===row.data.orderId&&result.acceptanceState==='ACCEPTED';
   if(row.action==='SAVE_TAX_SETTINGS')return result.version===Number(row.data.expectedVersion)+1&&result.rateBps===row.data.rateBps&&result.mode===row.data.mode;
