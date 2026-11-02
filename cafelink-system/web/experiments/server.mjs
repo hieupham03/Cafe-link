@@ -57,5 +57,5 @@ export async function cleanVisit(admin,guest){
     if(["UNPAID","PENDING"].includes(order.paymentState))await guest.command("CANCEL_UNPAID_ORDER",{visitId,orderId:order.id});
     else if(order.paymentState==="PAID")for(const status of ["SUBMITTED","PREPARING","READY","SERVED"].slice(["SUBMITTED","PREPARING","READY","SERVED"].indexOf(order.status)+1))await admin.command("SET_ORDER_STATUS",{orderId:order.id,status});
   }
-  try{await admin.command("CLOSE_VISIT",{visitId});}catch(e){if(!e.message.includes("SESSION_CLOSED"))throw e;}
+  await admin.command("END_TABLE_SESSIONS",{tableId:guest.session.identity.tableId});
 }

@@ -662,6 +662,7 @@ export function App() {
                 <option value="all">Tất cả bàn</option>
                 <option value="available">Bàn trống</option>
                 <option value="occupied">Đang phục vụ</option>
+                <option value="paused">Tạm ngưng</option>
                 <option value="checkout">Đang tính tiền</option>
               </select>
             </div>
@@ -671,7 +672,13 @@ export function App() {
                   (table) =>
                     tableFilter === "all" ||
                     (tableFilter === "available"
-                      ? !table.visitId && !(table.activeSessions ?? 0)
+                      ? table.automatic &&
+                        table.acceptingOrders &&
+                        !(table.activeSessions ?? 0)
+                      : tableFilter === "paused"
+                        ? !table.visitId &&
+                          !(table.activeSessions ?? 0) &&
+                          (!table.automatic || !table.acceptingOrders)
                       : tableFilter === "checkout"
                         ? table.visitState === "CHECKOUT_REQUESTED"
                         : (!!table.visitId ||
@@ -686,16 +693,18 @@ export function App() {
                     <button type="button" className="table-card-open" aria-label={`Xem ${table.name}`} onClick={() => { setSelected(table); setBill(null); setConfirmPay(false); }} />
                     <div className="table-card-top">
                       <span className="table-icon"><Icon name="table"/></span>
-                      <span className={`pill ${table.visitId ? "green" : ""}`}>
+                      <span className={`pill ${table.visitId || (table.activeSessions ?? 0) > 0 ? "green" : ""}`}>
                         {table.automatic
-                          ? table.acceptingOrders
-                            ? "Đang nhận đơn"
-                            : "Tạm dừng"
+                          ? (table.activeSessions ?? 0) > 0
+                            ? "Đang phục vụ"
+                            : table.acceptingOrders
+                              ? "Bàn trống · Đang nhận đơn"
+                              : "Tạm ngưng"
                           : table.visitState === "CHECKOUT_REQUESTED"
                             ? "Đang tính tiền"
                             : table.visitId
                               ? "Đang phục vụ"
-                              : "Bàn trống"}
+                              : "Tạm ngưng"}
                       </span>
                     </div>
                     <div className="table-card-body"><div><h3>{table.name}</h3>
@@ -706,7 +715,7 @@ export function App() {
                           ? `${orders.filter((o) => o.tableId === table.id).length} đơn · ${table.onlineClients} kết nối`
                           : "Sẵn sàng đón khách"}
                     </p>
-                    </div><TableQr tableId={table.id} csrf={session.csrfToken} enabled={!!table.automatic}/></div><div className="table-card-foot">
+                    </div><TableQr tableId={table.id} csrf={session.csrfToken} enabled={!!table.automatic && !!table.acceptingOrders}/></div><div className="table-card-foot">
                       <strong>
                         {money(
                           orders
@@ -903,6 +912,14 @@ export function App() {
               disabled={disabled}
               run={run}
             />
+          ) : !currentTable?.visitId && session.identity.storeId ? (
+            <div className="empty">
+              <span>▦</span>
+              <h3>Tạm ngưng</h3>
+              <p>
+                Bàn sẽ nhận khách và tải QR sau khi quản lý bấm “Mở tất cả bàn”.
+              </p>
+            </div>
           ) : !currentTable?.visitId ? (
             <div className="empty">
               <span>▦</span>

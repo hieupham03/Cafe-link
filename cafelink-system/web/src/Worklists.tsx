@@ -181,7 +181,7 @@ export function CashierQueue({
               {orders.filter(o=>o.status==='SUBMITTED'&&['UNPAID','PENDING','PAID'].includes(o.paymentState??'')).map(order=><div className="table-order" key={order.id}><p>Đơn #{order.id} · {money(order.totalVnd)} · {order.paymentState==='PAID'?'Đã trả tiền':'Chưa trả tiền'}</p><OrderResolution order={order} disabled={disabled} run={run}/></div>)}
               <p className="muted">
                 {table.automatic
-                  ? "Mỗi khách thanh toán riêng; phiên tự kết thúc sau khi giao đồ và hỗ trợ xong."
+                  ? "Mỗi khách có phiên riêng. Phiên chỉ kết thúc khi khách rời phiên hoặc quản lý kết thúc phiên tại bàn."
                   : "Đơn đã trả tiền chuyển sang quầy; đóng lượt khi phục vụ xong."}
               </p>
               <button className="secondary" onClick={() => onOpen(table)}>

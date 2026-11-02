@@ -8,8 +8,8 @@
 2. `JOIN_TABLE` cấp visit AUTO/PREPAY và membership riêng cho trình duyệt mới. Quét lại bằng cookie còn hiệu lực phải xác nhận đúng bàn/visit đang hoạt động, giữ nguyên membership. Không âm thầm thay quyền khi visit đã đóng hoặc QR thuộc bàn khác.
 3. Schema 9 thêm `visits.service_mode`, thay unique-index active visit bằng unique chỉ cho MANUAL. Một bàn có nhiều AUTO visit nhưng snapshot quản lý vẫn đúng một dòng/bàn. Guest query luôn giới hạn visit/membership; receipt và event không mở phạm vi theo table_id.
 4. `OPEN_ALL_TABLES` bật nhận khách một lần, gọi lại không reset QR/phiên/đơn. Chặn bật khi còn MANUAL visit đang mở để tránh thay nghĩa dữ liệu cũ. `SET_TABLE_ACCEPTING` chỉ chặn khách mới, không gián đoạn công việc đã nhận.
-5. Tự đóng AUTO visit trong cùng transaction nghiệp vụ khi có ít nhất một đơn, mọi đơn PAID+SERVED/CANCELLED và không có ticket OPEN. Không dựa vào socket online/offline hay suy luận khách rời ghế. Receipt cũ còn đọc/trả kết quả; lệnh mới lên visit đóng bị chặn.
-6. Khách chủ động “Bắt đầu lần đặt mới” sau hoàn tất, phải giữ journal không còn unresolved và kiểm scope. Không tự rebind giỏ/ý định cũ. `GET_OWN_TABLE_QR` cũng kiểm scope tại Gateway để tab của phiên cũ không thao tác bằng cookie đã chuyển phiên.
+5. AUTO visit không tự đóng sau khi đơn/hỗ trợ hoàn tất; việc thanh toán và giao món không chứng minh khách đã rời bàn. Phiên đóng khi khách rời phiên (chỉ khi không còn đơn/hỗ trợ cần xử lý) hoặc quản lý kết thúc tất cả phiên tại bàn sau khi xử lý công việc còn mở.
+6. QR nhận khách bị tạm ngưng khi quản lý đăng nhập; `OPEN_ALL_TABLES` bật lại nhận khách và là thời điểm giao diện tải QR. Tạm ngưng không làm gián đoạn phiên hiện hữu. `GET_OWN_TABLE_QR` kiểm scope để tab của phiên cũ không thao tác bằng cookie đã chuyển phiên.
 7. Secret bàn tồn tại qua restart cùng DB/key; URL QR gồm public origin. Quick Tunnel đổi hostname khi khởi động lại, vì vậy không hứa QR in dùng vĩnh viễn. Domain cố định là bước triển khai khác.
 
 ## Triển khai Internet
@@ -39,9 +39,9 @@ Nguồn: [Quick Tunnels](https://developers.cloudflare.com/tunnel/get-started/qu
 - QR cố định là quyền công khai vào địa chỉ bàn, không chứng minh người quét đang ngồi tại quán. Không cho nó quyền đọc visit người khác. Có thể cần QR rotation/duyệt đơn/kiểm soát lạm dụng nếu triển khai thật.
 - Không có hóa đơn chung cho nhóm khách, chia tiền, theo dõi ghế trống hay gộp nhiều điện thoại vào một lượt. Đây là lựa chọn sản phẩm đã được người dùng chốt.
 - Gateway giới hạn 16 web sessions, Core 32 TCP connections. Sau proxy, rate budget theo địa chỉ loopback tổng hợp; không tin header IP tự khai để vượt hạn. Không khẳng định hỗ trợ lượng khách sản xuất lớn.
-- Phiên rỗng bỏ dở hết hạn sau 8h, dọn khi join mới; phiên có công việc đã nhận không bị tự xóa. Tối đa 512 active AUTO visits. Chưa có job tự hủy đơn không thanh toán; không chặn lượt khách mới chỉ vì khách trước chưa hoàn tất.
+- Phiên AUTO không tự đóng theo giờ; khách cần rời phiên hoặc quản lý kết thúc phiên tại bàn sau khi không còn công việc mở. Membership có thời hạn, nhưng membership hết hạn không tự giải phóng trạng thái bàn. Tối đa 512 active AUTO visits. Chưa có job tự hủy đơn không thanh toán; không chặn lượt khách mới chỉ vì khách trước chưa hoàn tất.
 - Internet demo phụ thuộc laptop/Cloudflare/mạng. Quick Tunnel không có SLA; vẫn giữ demo localhost. Thanh toán tiếp tục giả lập, không có tiền thật.
 
 ## Kiểm chứng
 
-`AutomaticTablesTest`, `QrWebIntegrationTest`, `ProxyGatewayTest` và `automatic.spec.ts` kiểm quyền riêng, stable QR/restart, giữ migration V8, mở toàn quán không reset, pause, cancellation, payment/support barriers, scope cũ, hồi phục mất phản hồi và đặt tiếp. Full regression giữ nguyên các demo MANUAL V1–V7. Smoke public xác minh HTTPS, WSS, secure browser APIs, cookie, thanh toán thử và tự hoàn tất; tách khỏi nghiệm thu camera/điện thoại thật.
+`AutomaticTablesTest`, `QrWebIntegrationTest`, `ProxyGatewayTest` và `automatic.spec.ts` kiểm quyền riêng, stable QR/restart, giữ migration V8, mở toàn quán không reset, pause, cancellation, payment/support barriers, scope cũ, hồi phục mất phản hồi và đặt tiếp. Full regression giữ nguyên các demo MANUAL V1–V7. Smoke public xác minh HTTPS, WSS, secure browser APIs, cookie, thanh toán thử và rời/kết thúc phiên; tách khỏi nghiệm thu camera/điện thoại thật.

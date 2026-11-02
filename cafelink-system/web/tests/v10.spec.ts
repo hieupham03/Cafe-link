@@ -88,6 +88,57 @@ test.beforeEach(async ({ browser }) => {
   ).toBeEnabled();
 });
 test.afterEach(async () => {
+  const response = await guest.request.get(origin + "/api/session");
+  if (response.ok()) {
+    const info = await response.json();
+    if (info.identity.role === "GUEST") {
+      const current = await snapshot();
+      for (const ticket of current.tickets.filter(
+        (item: any) =>
+          item.status === "OPEN" &&
+          item.visitId === info.identity.visitId,
+      ))
+        await cmd(owner, "HANDLE_TICKET", {
+          ticketId: ticket.id,
+          reply: "E2E cleanup",
+        });
+      for (const order of current.orders.filter(
+        (item: any) => item.visitId === info.identity.visitId,
+      )) {
+        if (["UNPAID", "PENDING"].includes(order.paymentState ?? ""))
+          await cmd(guest, "CANCEL_UNPAID_ORDER", {
+            visitId: info.identity.visitId,
+            orderId: order.id,
+          });
+        else if (
+          order.paymentState === "PAID" &&
+          order.acceptanceState === "WAITING"
+        )
+          await cmd(owner, "ACCEPT_ORDER", { orderId: order.id });
+        if (
+          order.paymentState === "PAID" &&
+          ["SUBMITTED", "PREPARING", "READY"].includes(order.status)
+        ) {
+          const statuses = ["SUBMITTED", "PREPARING", "READY"];
+          for (const status of statuses.slice(statuses.indexOf(order.status)))
+            await cmd(owner, "SET_ORDER_STATUS", {
+              orderId: order.id,
+              status:
+                status === "SUBMITTED"
+                  ? "PREPARING"
+                  : status === "PREPARING"
+                    ? "READY"
+                    : "SERVED",
+            });
+        }
+      }
+      const leave = await guest.request.post(origin + "/api/guest/leave", {
+        headers: { Origin: origin },
+        data: {},
+      });
+      expect(leave.ok(), await leave.text()).toBe(true);
+    }
+  }
   await guest.close();
   await admin.close();
 });
@@ -150,10 +201,11 @@ test("V10 chờ quán tiếp nhận, tính thuế, trả tiền rồi mới pha 
   for (const state of ["PREPARING", "READY", "SERVED"])
     await cmd(owner, "SET_ORDER_STATUS", { orderId: order.id, status: state });
   await zone("Đơn đã gọi");
-  await expect(
-    page.getByRole("heading", { name: "Cảm ơn bạn đã ghé quán", exact: true }),
-  ).toBeVisible();
   await expect(page.locator("#guest-orders")).toContainText("Đã giao");
+  await zone("Thực đơn");
+  await expect(
+    page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
+  ).toBeEnabled();
   await goAdmin("Lịch sử hóa đơn");
   await admin
     .getByRole("button", { name: new RegExp(`Bàn 1 · 32.400`) })

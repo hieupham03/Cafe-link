@@ -118,6 +118,7 @@ class RoleAccessTest {
     }
     @Test void staffFeedCannotRevealHistoricalSalesAfterAVisitEnds()throws Exception{
         long id=order().get("orderId").getAsLong();call(staff,"RESOLVE_ORDER",j("{\"orderId\":"+id+",\"resolution\":\"CANCEL_UNPAID\",\"reason\":\"Hết sữa\"}"));
+        service.logoutGuest(guest);
         assertFalse(call(admin,"GET_NOTIFICATIONS",j("{}")).getAsJsonArray("events").isEmpty());
         assertTrue(call(staff,"GET_NOTIFICATIONS",j("{}")).getAsJsonArray("events").isEmpty());
     }

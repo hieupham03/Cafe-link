@@ -85,6 +85,57 @@ test.beforeEach(async ({ browser }) => {
   await admin.goto(origin + "/admin");
 });
 test.afterEach(async () => {
+  const response = await guest.request.get(origin + "/api/session");
+  if (response.ok()) {
+    const info = await response.json();
+    if (info.identity.role === "GUEST") {
+      const current = await state();
+      for (const ticket of current.tickets.filter(
+        (item: any) =>
+          item.status === "OPEN" &&
+          item.visitId === info.identity.visitId,
+      ))
+        await command(owner, "HANDLE_TICKET", {
+          ticketId: ticket.id,
+          reply: "E2E cleanup",
+        });
+      for (const order of current.orders.filter(
+        (item: any) => item.visitId === info.identity.visitId,
+      )) {
+        if (["UNPAID", "PENDING"].includes(order.paymentState ?? ""))
+          await command(guest, "CANCEL_UNPAID_ORDER", {
+            visitId: info.identity.visitId,
+            orderId: order.id,
+          });
+        else if (
+          order.paymentState === "PAID" &&
+          order.acceptanceState === "WAITING"
+        )
+          await command(owner, "ACCEPT_ORDER", { orderId: order.id });
+        if (
+          order.paymentState === "PAID" &&
+          ["SUBMITTED", "PREPARING", "READY"].includes(order.status)
+        ) {
+          const statuses = ["SUBMITTED", "PREPARING", "READY"];
+          for (const status of statuses.slice(statuses.indexOf(order.status)))
+            await command(owner, "SET_ORDER_STATUS", {
+              orderId: order.id,
+              status:
+                status === "SUBMITTED"
+                  ? "PREPARING"
+                  : status === "PREPARING"
+                    ? "READY"
+                    : "SERVED",
+            });
+        }
+      }
+      const leave = await guest.request.post(origin + "/api/guest/leave", {
+        headers: { Origin: origin },
+        data: {},
+      });
+      expect(leave.ok(), await leave.text()).toBe(true);
+    }
+  }
   await guest.close();
   await admin.close();
 });

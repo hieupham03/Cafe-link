@@ -107,6 +107,19 @@ final class QrAccess {
         return resume(token);
     }
     void logout(Identity who) throws SQLException { validate(who); db.update("UPDATE guest_sessions SET revoked=1 WHERE token_hash=?", Commands.digest(who.credential())); }
+    void leave(Identity who) throws SQLException {
+        Identity actual = validate(who);
+        db.update("UPDATE guest_sessions SET revoked=1 WHERE membership_id=?", actual.membershipId());
+        db.update("UPDATE guest_memberships SET revoked=1 WHERE id=?", actual.membershipId());
+    }
+    boolean hasActiveMemberships(String visit) throws SQLException {
+        String now = config.clock.instant().toString();
+        return !db.query("SELECT m.id FROM guest_memberships m WHERE m.visit_id=? AND m.revoked=0 AND m.expires_at>? AND EXISTS(SELECT 1 FROM guest_sessions s WHERE s.membership_id=m.id AND s.revoked=0 AND s.expires_at>?) LIMIT 1", r -> r.getString(1), visit, now, now).isEmpty();
+    }
+    void revokeVisit(String visit) throws SQLException {
+        db.update("UPDATE guest_sessions SET revoked=1 WHERE membership_id IN(SELECT id FROM guest_memberships WHERE visit_id=?)", visit);
+        db.update("UPDATE guest_memberships SET revoked=1 WHERE visit_id=?", visit);
+    }
     Identity resume(String token) throws SQLException {
         if (token == null || !token.matches("[A-Za-z0-9_-]{43}")) throw new BusinessException("INVALID_CREDENTIAL", "Phiên khách không hợp lệ.");
         var found = db.query("SELECT m.*,s.revoked token_revoked,s.expires_at token_expires,v.table_id FROM guest_sessions s JOIN guest_memberships m ON m.id=s.membership_id JOIN visits v ON v.id=m.visit_id WHERE s.token_hash=?", r -> {

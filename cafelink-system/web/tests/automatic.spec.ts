@@ -30,6 +30,50 @@ async function command(
 async function state(context = owner) {
   return (await context.request.get("/api/state")).json();
 }
+async function leaveWhenClear(context: BrowserContext) {
+  const response = await context.request.get("/api/session");
+  if (!response.ok()) return;
+  const info = await response.json();
+  if (info.identity.role !== "GUEST") return;
+  const snapshot = await state(context);
+  for (const ticket of snapshot.tickets.filter(
+    (item: any) =>
+      item.status === "OPEN" && item.visitId === info.identity.visitId,
+  ))
+    await command(owner, "HANDLE_TICKET", {
+      ticketId: ticket.id,
+      reply: "E2E cleanup",
+    });
+  for (const order of snapshot.orders.filter(
+    (item: any) => item.visitId === info.identity.visitId,
+  )) {
+    if (["UNPAID", "PENDING"].includes(order.paymentState ?? ""))
+      await command(context, "CANCEL_UNPAID_ORDER", {
+        visitId: info.identity.visitId,
+        orderId: order.id,
+      });
+    else if (
+      order.paymentState === "PAID" &&
+      order.acceptanceState === "WAITING"
+    )
+      await command(owner, "ACCEPT_ORDER", { orderId: order.id });
+    if (
+      order.paymentState === "PAID" &&
+      ["SUBMITTED", "PREPARING", "READY"].includes(order.status)
+    ) {
+      const next = ["SUBMITTED", "PREPARING", "READY"];
+      for (const status of next.slice(next.indexOf(order.status)))
+        await command(owner, "SET_ORDER_STATUS", {
+          orderId: order.id,
+          status: status === "SUBMITTED" ? "PREPARING" : status === "PREPARING" ? "READY" : "SERVED",
+        });
+    }
+  }
+  await context.request.post("/api/guest/leave", {
+    headers: { Origin: origin },
+    data: {},
+  });
+}
 async function join(context: BrowserContext) {
   const response = await context.request.post("/api/guest/join", {
     headers: { Origin: origin },
@@ -69,16 +113,66 @@ test.beforeEach(async ({ browser }) => {
 });
 test.afterEach(async () => {
   for (const context of [guest, other]) {
-    await context.request.post("/api/guest/leave", {
-      headers: { Origin: origin },
-      data: {},
-    });
+    await leaveWhenClear(context);
     await context.close();
   }
   await admin.close();
 });
 test.afterAll(async () => {
   await owner.close();
+});
+
+test("Admin đăng nhập tạm ngưng QR; Mở tất cả bàn mới tải lại QR", async ({
+  browser,
+}) => {
+  const login = await other.request.post("/api/login", {
+    headers: { Origin: origin },
+    data: { username: "admin", password: "CafeLink@123" },
+  });
+  expect(login.ok(), await login.text()).toBe(true);
+  const snapshot = await state(other);
+  expect(snapshot.tables.every((table: any) => !table.acceptingOrders)).toBe(true);
+  expect(snapshot.tables[0].activeSessions).toBeGreaterThan(0);
+  await admin.reload();
+  await expect(admin.locator(".table-inline-qr svg")).toHaveCount(0);
+  await expect(
+    admin.locator(".table-card .pill").filter({ hasText: "Tạm ngưng" }).first(),
+  ).toBeVisible();
+
+  const visitor = await browser.newContext();
+  const denied = await visitor.request.post("/api/guest/join", {
+    headers: { Origin: origin },
+    data: { grant: qr.grant, table: true },
+  });
+  expect(denied.status()).toBe(409);
+  expect((await denied.json()).code).toBe("TABLE_PAUSED");
+
+  expect(await command(guest, "GET_OWN_TABLE_QR", {})).toHaveProperty("grant");
+  await admin
+    .getByRole("button", { name: "Mở tất cả bàn", exact: true })
+    .click();
+  await expect(admin.locator(".table-inline-qr svg")).toHaveCount(6);
+  await visitor.close();
+});
+
+test("Quản lý kết thúc phiên bỏ quên và bàn trở về trống đang nhận đơn", async () => {
+  await admin.getByRole("button", { name: "Xem Bàn 1", exact: true }).click();
+  const details = admin.getByRole("dialog", { name: "Chi tiết Bàn 1" });
+  await details.getByRole("button", { name: "Kết thúc phiên", exact: true }).click();
+  const confirmation = admin.getByRole("alertdialog", {
+    name: "Xác nhận kết thúc phiên",
+  });
+  await confirmation
+    .getByRole("button", { name: "Xác nhận kết thúc phiên", exact: true })
+    .click();
+
+  await expect
+    .poll(async () => (await state()).tables[0].activeSessions)
+    .toBe(0);
+  await expect(
+    admin.getByText("Bàn trống · Đang nhận đơn").first(),
+  ).toBeVisible();
+  await expect(admin.locator(".table-inline-qr svg")).toHaveCount(6);
 });
 
 test("QR cố định, mở toàn quán và hai khách cùng bàn có đơn riêng", async () => {
@@ -128,7 +222,7 @@ test("QR cố định, mở toàn quán và hai khách cùng bàn có đơn riê
   });
 });
 
-test("Đặt, thanh toán, giao đồ và tự kết thúc; đặt tiếp không cần nhân viên mở bàn", async () => {
+test("Đặt, thanh toán, giao đồ vẫn giữ phiên; chỉ rời phiên mới trả bàn", async () => {
   const before = await (await guest.request.get("/api/session")).json();
   await openGuestZone(page, "Thực đơn");
   await page
@@ -151,35 +245,26 @@ test("Đặt, thanh toán, giao đồ và tự kết thúc; đặt tiếp không
     await command(owner, "SET_ORDER_STATUS", { orderId: order.id, status });
   await expect(
     page.getByRole("heading", { name: "Cảm ơn bạn đã ghé quán", exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "Bắt đầu lần đặt mới", exact: true }),
-  ).toBeEnabled();
+  ).toHaveCount(0);
+  await expect.poll(async () => (await state()).tables[0].activeSessions).toBeGreaterThan(0);
   await page.screenshot({
     path: "test-results/auto-completed.png",
     fullPage: true,
   });
-  await page
-    .getByRole("button", { name: "Bắt đầu lần đặt mới", exact: true })
-    .click();
   await openGuestZone(page, "Thực đơn");
   await expect(
     page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }),
   ).toBeEnabled();
   const after = await (await guest.request.get("/api/session")).json();
-  expect(after.identity.visitId).not.toBe(before.identity.visitId);
-  expect((await state(guest)).orders).toHaveLength(0);
-  const stale = await guest.request.post("/api/command", {
-    headers: { Origin: origin, "X-CSRF-Token": after.csrfToken },
-    data: {
-      commandId: crypto.randomUUID(),
-      action: "GET_OWN_TABLE_QR",
-      data: {},
-      scope: before.identity,
-    },
-  });
-  expect(stale.status()).toBe(409);
-  expect((await stale.json()).code).toBe("SCOPE_CHANGED");
+  expect(after.identity.visitId).toBe(before.identity.visitId);
+  expect((await state(guest)).orders).toHaveLength(1);
+  await page.getByRole("button", { name: "Rời phiên", exact: true }).click();
+  await expect
+    .poll(async () => (await state()).tables[0].activeSessions)
+    .toBe(0);
+  await expect(
+    admin.getByText("Bàn trống · Đang nhận đơn").first(),
+  ).toBeVisible();
 });
 
 test("Tạm dừng chỉ chặn khách mới; phiên đang dùng vẫn gọi món", async () => {

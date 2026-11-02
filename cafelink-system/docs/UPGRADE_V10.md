@@ -57,7 +57,7 @@ Dùng URL HTTPS và mật khẩu quản lý tạm mà terminal in. Không dùng 
 6. **Thu chi:** thanh toán một đơn rồi vào Thu chi, chọn khoảng ngày. Đơn đang chờ/đơn chưa thanh toán không cộng vào thu. Ghi khoản chi, kiểm tổng chi/chênh lệch và CSV. Hủy phiếu phải có lý do, phiếu gốc còn trong sổ và không cộng vào tổng chi.
 7. **Hoàn tiền:** từ chối/hoàn giả lập một đơn đã trả nhưng chưa pha chế. Lịch sử giữ tiền thu ban đầu; báo cáo cộng khoản hoàn theo ngày hoàn, không sửa lùi ngày thu. Chênh lệch dòng tiền có thể âm, chưa phải lợi nhuận kế toán.
 8. **Phục hồi:** vẫn ghi ý định trước gửi, giữ command ID và đối chiếu khi mất phản hồi. Riêng thao tác tài chính mới dùng staff journal; mất phản hồi ghi chi không được ghi thêm phiếu để thay thế. Nhận lệnh ở Core khác bước tiếp nhận đơn của nhân viên.
-9. **Gọi tiếp:** sau khi giao đủ, bắt đầu lần đặt mới. Nếu còn giỏ nháp thì mở thẳng giỏ, yêu cầu xác nhận lại khi giá đổi; không tự gửi đơn. Hai khách cùng QR vẫn có đơn/tiền riêng.
+9. **Phiên và gọi tiếp:** sau khi giao đủ, khách vẫn ở phiên và có thể đặt thêm. Phiên chỉ kết thúc khi khách rời phiên hoặc quản lý kết thúc các phiên tại bàn; các đơn chưa thanh toán/chưa giao và hỗ trợ đang mở phải được xử lý trước.
 
 ## Tệp triển khai chính
 

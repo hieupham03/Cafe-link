@@ -33,7 +33,7 @@ try{
    if(["LOST_SERVICE_ACK_HANDLED","ACCEPT_WINS_LATE_SERVICE"].includes(test.scenario)){
     const state=await guest.page.evaluate(()=>window.cafeExperiment.read());await admin.command("HANDLE_TICKET",{ticketId:state.state.tickets[0].id,reply:"Handled while client response was unavailable"});
    }
-   if(test.scenario==="VISIT_ENDED"){await admin.command("CLOSE_VISIT",{visitId:guest.session.identity.visitId});other=await join(browser,server.origin,qr.grant);}
+   if(test.scenario==="VISIT_ENDED"){await admin.command("END_TABLE_SESSIONS",{tableId:guest.session.identity.tableId});other=await join(browser,server.origin,qr.grant);}
    await guest.page.evaluate(()=>window.cafeExperiment.startSampling());
    const recovered=await guest.page.evaluate(p=>window.cafeExperiment.recover(p),test.policy);
    record.recoveryMs=recovered.recoveryMs;record.confirmRequired=recovered.entries.filter(e=>e.status==="CONFIRM_REQUIRED").length;record.journalStatuses=recovered.entries.map(e=>e.status);record.http=await guest.page.evaluate(()=>window.cafeExperiment.samples());
