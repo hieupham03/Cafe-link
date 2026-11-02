@@ -54,14 +54,58 @@ Dùng **URL HTTPS và mật khẩu tạm mà terminal in ra**, mở tất cả b
 | Nhân viên - STAFF | QR/bàn, tiếp nhận hoặc từ chối đơn chưa trả, pha chế/giao đồ, hỗ trợ, thông báo và đánh dấu hết/còn món; không xem tài chính hoặc sửa giá |
 | Hệ thống | Xác thực và phiên riêng, kiểm giá/quyền/trạng thái tại Server, chống áp lại cùng yêu cầu, phục hồi và cập nhật trực tiếp |
 
+## Giao diện hiện hành
+
+Ảnh chụp trực tiếp bản V10.1 ngày 02/11/2026, gồm cập nhật màn hình đăng nhập và tám ảnh đồ uống. Dữ liệu trong ảnh dùng để minh họa; ảnh điện thoại được chụp bằng viewport 390 × 844 trên Chromium.
+
+**Thực đơn trên máy tính**
+
+![Thực đơn CafeLink V10.1 trên máy tính, hiển thị ảnh món, giá và các khu vực đặt món](cafelink-system/docs/images/current/guest-menu-desktop.png)
+
 <table>
   <tr>
-    <td width="32%"><img src="cafelink-system/docs/images/current/guest-menu.png" alt="Thực đơn V10 trên viewport điện thoại"><br>Giao diện khách V10.1</td>
-    <td width="68%"><img src="cafelink-system/docs/images/current/table-overview.png" alt="Sơ đồ bàn V10 có QR ngay trên từng thẻ"><br>Sơ đồ bàn và QR V10.1</td>
+    <th width="50%">Khách chọn món trên điện thoại</th>
+    <th width="50%">Khách chờ quầy tiếp nhận đơn</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="cafelink-system/docs/images/current/guest-menu.png" width="320" alt="Thực đơn trên màn hình di động với thanh điều hướng năm mục"></td>
+    <td align="center"><img src="cafelink-system/docs/images/current/guest-order-waiting.png" width="320" alt="Đơn đã gửi đang chờ quán tiếp nhận trước khi thanh toán"></td>
   </tr>
 </table>
 
-Ảnh source V10.1 tích hợp chạy trên Chromium với dữ liệu riêng, gồm tám ảnh thực đơn; không phải ảnh vận hành tại quán. [Ảnh thu chi](cafelink-system/docs/images/v10/finance-report.png) · [Cấu hình thuế](cafelink-system/docs/images/v10/tax-settings.png). [Kết quả kiểm tích hợp](report/evidence/cafelink-integration-20261102/summary.json).
+**Sơ đồ bàn - QR ngay trên từng bàn, theo dõi phiên và đơn đang phục vụ**
+
+![Sơ đồ sáu bàn CafeLink V10.1 với QR và dữ liệu đơn minh họa](cafelink-system/docs/images/current/table-overview.png)
+
+<table>
+  <tr>
+    <th width="50%">Quầy tiếp nhận đơn và pha chế</th>
+    <th width="50%">Báo cáo thu chi</th>
+  </tr>
+  <tr>
+    <td><img src="cafelink-system/docs/images/current/order-acceptance.png" alt="Quầy xử lý đơn chờ tiếp nhận và đơn đã trả tiền đang pha chế"></td>
+    <td><img src="cafelink-system/docs/images/current/finance-report.png" alt="Báo cáo thu chi hiển thị khoản thanh toán và phiếu chi minh họa"></td>
+  </tr>
+</table>
+
+<details>
+<summary>Xem thêm: đăng nhập, cấu hình thuế và tài khoản nhân viên</summary>
+
+**Đăng nhập quản lý/nhân viên**
+
+![Màn hình đăng nhập CafeLink mới](cafelink-system/docs/images/current/login.png)
+
+**Cấu hình thuế cho đơn mới**
+
+![Cấu hình tên thuế, thuế suất, cách tính và phần xem trước hóa đơn](cafelink-system/docs/images/current/tax-settings.png)
+
+**Quản lý tài khoản nhân viên**
+
+![Danh sách nhân viên và các thao tác quản lý tài khoản của chủ quán](cafelink-system/docs/images/current/staff-accounts.png)
+
+</details>
+
+Nhấn vào ảnh để xem kích thước gốc. [Hướng dẫn source](cafelink-system/README.md) · [Kết quả kiểm tích hợp](report/evidence/cafelink-integration-20261102/summary.json).
 
 ## Kiến trúc và nội dung Lập trình mạng
 

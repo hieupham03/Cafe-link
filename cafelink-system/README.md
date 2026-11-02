@@ -7,6 +7,7 @@ Source hiện hành **V10.1 / schema 13**; xem [nguồn đóng góp](../CONTRIBU
 - [Yêu cầu môi trường](#yêu-cầu-môi-trường)
 - [Cài đặt và build](#cài-đặt-và-build)
 - [Chạy Server và Client](#chạy-server-và-client)
+- [Giao diện hiện hành](#giao-diện-hiện-hành)
 - [Cấu hình và dữ liệu](#cấu-hình-và-dữ-liệu)
 - [Demo public HTTPS](#demo-public-https)
 - [Kiểm thử](#kiểm-thử)
@@ -78,6 +79,14 @@ Terminal in URL và cổng Core; giữ terminal mở. `WebMain` khởi động G
 5. Mở thêm một Client độc lập cùng QR để kiểm hai khách cùng bàn có đơn riêng.
 
 Không cần chạy thêm app Java phía khách. Tab thường dùng chung cookie; các cửa sổ ẩn danh cùng mở cũng có thể dùng chung phiên riêng tư. Hai khách độc lập nên dùng hai browser/profile/thiết bị khác nhau.
+
+## Giao diện hiện hành
+
+Ảnh chụp source V10.1 ngày 02/11/2026 với dữ liệu minh họa riêng. [Thư viện ảnh ở README chính](../README.md#giao-diện-hiện-hành) có cả màn khách trên máy tính/di động, QR bàn, quầy, thu chi, thuế và tài khoản nhân viên.
+
+| Khách chọn món | Quầy tiếp nhận và pha chế |
+|---|---|
+| ![Thực đơn CafeLink V10.1 trên máy tính](docs/images/current/guest-menu-desktop.png) | ![Quầy CafeLink V10.1 với đơn chờ tiếp nhận và đơn đang pha chế](docs/images/current/order-acceptance.png) |
 
 ## Cấu hình và dữ liệu
 
