@@ -81,7 +81,7 @@ export function StaffRecovery({ session }: { session: SessionInfo }) {
                   Mã {row.id.slice(0, 8)} · {row.action} ·{" "}
                   {row.data.visitId
                     ? `lượt ${String(row.data.visitId).slice(0, 8)}`
-                    : "thực đơn"}
+                    : ["PAUSE_ALL_TABLES", "END_ALL_TABLE_SESSIONS"].includes(row.action) ? "toàn quán" : "thực đơn"}
                 </small>
               </details>
               {row.status === "CONFIRM_REQUIRED" && (

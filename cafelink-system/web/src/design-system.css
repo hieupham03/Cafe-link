@@ -1100,6 +1100,7 @@ small,
 }
 .cart-shortcut {
   position: fixed;
+  transform: none;
   bottom: 22px;
   right: 30px;
   left: auto;

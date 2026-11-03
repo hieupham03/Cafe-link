@@ -93,6 +93,46 @@ class AutomaticTablesTest {
             assertEquals(next.membershipId(),service.resume(next.credential()).membershipId());
         }
     }
+    @Test void pauseAllPreservesCurrentGuestsAndSameCommandCannotPauseReopenedTables() throws Exception {
+        try(var service=new CafeService(temp.resolve("pause-all.db"),new QrConfig(new byte[32],Clock.systemUTC()),true)) {
+            var admin=service.authenticate("admin","CafeLink@123");service.execute(admin,"OPEN_ALL_TABLES",j("{}"));
+            var grant=service.execute(admin,"GET_TABLE_QR",j("{\"tableId\":1}")).get("grant").getAsString();
+            var guest=service.joinTable(grant);var revision=service.snapshot(admin,Map.of()).revision();
+            var input=j("{\"expectedRevision\":"+revision+"}");
+            var paused=service.execute(admin,"pause-all-once","PAUSE_ALL_TABLES",input);
+            assertEquals(6,paused.get("pausedTables").getAsInt());
+            assertEquals("TABLE_PAUSED",assertThrows(BusinessException.class,()->service.joinTable(grant)).code());
+            assertNotNull(service.execute(guest,"PLACE_ORDER",j("{\"visitId\":\""+guest.visitId()+"\",\"items\":[{\"menuId\":2,\"quantity\":1,\"expectedVersion\":1,\"expectedPriceVnd\":30000}]}")));
+            service.execute(admin,"OPEN_ALL_TABLES",j("{}"));
+            assertEquals(paused,service.execute(admin,"pause-all-once","PAUSE_ALL_TABLES",input));
+            assertTrue(service.snapshot(admin,Map.of()).tables().get(0).acceptingOrders());
+            assertEquals("VERSION_CONFLICT",assertThrows(BusinessException.class,()->service.execute(admin,"pause-all-late","PAUSE_ALL_TABLES",input)).code());
+        }
+    }
+    @Test void endAllIsAtomicReportsBlockedTablesAndFencesOldCommands() throws Exception {
+        try(var service=new CafeService(temp.resolve("end-all.db"),new QrConfig(new byte[32],Clock.systemUTC()),true)) {
+            var admin=service.authenticate("admin","CafeLink@123");service.execute(admin,"OPEN_ALL_TABLES",j("{}"));
+            var grant1=service.execute(admin,"GET_TABLE_QR",j("{\"tableId\":1}")).get("grant").getAsString();
+            var grant2=service.execute(admin,"GET_TABLE_QR",j("{\"tableId\":2}")).get("grant").getAsString();
+            var first=service.joinTable(grant1);var second=service.joinTable(grant2);
+            var order=service.execute(second,"PLACE_ORDER",j("{\"visitId\":\""+second.visitId()+"\",\"items\":[{\"menuId\":2,\"quantity\":1,\"expectedVersion\":1,\"expectedPriceVnd\":30000}]}"));
+            var blockedInput=j("{\"expectedRevision\":"+service.snapshot(admin,Map.of()).revision()+"}");
+            var blocked=assertThrows(BusinessException.class,()->service.execute(admin,"END_ALL_TABLE_SESSIONS",blockedInput));
+            assertEquals("TABLE_HAS_WORK",blocked.code());assertTrue(blocked.getMessage().contains("Bàn 2"));
+            assertEquals(first.membershipId(),service.resume(first.credential()).membershipId());
+            assertEquals(second.membershipId(),service.resume(second.credential()).membershipId());
+            service.execute(second,"CANCEL_UNPAID_ORDER",j("{\"visitId\":\""+second.visitId()+"\",\"orderId\":"+order.get("orderId")+"}"));
+            var confirmed=j("{\"expectedRevision\":"+service.snapshot(admin,Map.of()).revision()+"}");
+            var ended=service.execute(admin,"end-all-once","END_ALL_TABLE_SESSIONS",confirmed);
+            assertEquals(2,ended.get("endedSessions").getAsInt());assertEquals(2,ended.get("affectedTables").getAsInt());
+            assertEquals("SESSION_REVOKED",assertThrows(BusinessException.class,()->service.resume(first.credential())).code());
+            assertEquals("SESSION_REVOKED",assertThrows(BusinessException.class,()->service.resume(second.credential())).code());
+            var next=service.joinTable(grant1);
+            assertEquals(ended,service.execute(admin,"end-all-once","END_ALL_TABLE_SESSIONS",confirmed));
+            assertEquals("VERSION_CONFLICT",assertThrows(BusinessException.class,()->service.execute(admin,"end-all-late","END_ALL_TABLE_SESSIONS",confirmed)).code());
+            assertEquals(next.membershipId(),service.resume(next.credential()).membershipId());
+        }
+    }
     @Test void staffLoginKeepsQrEnabledAndOnlyAdminCanEndOtherSessions() throws Exception {
         try(var service=new CafeService(temp.resolve("end-permissions.db"),new QrConfig(new byte[32],Clock.systemUTC()),true)) {
             var admin=service.authenticate("admin","CafeLink@123");service.execute(admin,"OPEN_ALL_TABLES",j("{}"));
@@ -103,6 +143,10 @@ class AutomaticTablesTest {
             assertTrue(service.snapshot(admin,Map.of()).tables().get(0).acceptingOrders());
             assertEquals("FORBIDDEN",assertThrows(BusinessException.class,()->service.execute(staff,"END_TABLE_SESSIONS",j("{\"tableId\":1}"))).code());
             assertEquals("FORBIDDEN",assertThrows(BusinessException.class,()->service.execute(guest,"END_TABLE_SESSIONS",j("{\"tableId\":1}"))).code());
+            for(String action:List.of("PAUSE_ALL_TABLES","END_ALL_TABLE_SESSIONS")) {
+                assertEquals("FORBIDDEN",assertThrows(BusinessException.class,()->service.execute(staff,action,j("{}"))).code());
+                assertEquals("FORBIDDEN",assertThrows(BusinessException.class,()->service.execute(guest,action,j("{}"))).code());
+            }
             assertEquals(1,service.snapshot(admin,Map.of()).tables().get(0).activeSessions());
             assertNotNull(service.joinTable(grant));
         }

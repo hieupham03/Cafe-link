@@ -98,6 +98,38 @@ test("storefront co giãn, ảnh món cục bộ và danh mục không tràn ở
   });
 });
 
+test("thanh giỏ hàng hiển thị đầy đủ và không bị menu dưới che trên màn hình nhỏ", async () => {
+  await page.getByRole("button", { name: "Thêm Cà phê sữa", exact: true }).click();
+  const shortcut = page.getByRole("link", { name: /Xem giỏ · 1 phần/ });
+  const navigation = page.getByRole("navigation", { name: "Điều hướng tại bàn" });
+  for (const width of [320, 360, 390, 600, 768, 850]) {
+    await page.setViewportSize({ width, height: 844 });
+    await expect(shortcut).toBeVisible();
+    const bounds = await shortcut.boundingBox();
+    expect(bounds).not.toBeNull();
+    expect(bounds!.x, `Lề trái ở ${width}px`).toBeGreaterThanOrEqual(12);
+    expect(bounds!.x + bounds!.width, `Lề phải ở ${width}px`).toBeLessThanOrEqual(width - 12);
+    expect(bounds!.y).toBeGreaterThanOrEqual(0);
+    expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(844);
+    if (width <= 600) {
+      const navBounds = await navigation.boundingBox();
+      expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(navBounds!.y - 4);
+    }
+    // Verify the visible shortcut can actually receive a tap across its width.
+    for (const fraction of [0.1, 0.5, 0.9]) {
+      expect(await shortcut.evaluate((element, ratio) => {
+        const rect = element.getBoundingClientRect();
+        return document.elementFromPoint(rect.x + rect.width * ratio, rect.y + rect.height / 2)?.closest('.cart-shortcut') === element;
+      }, fraction)).toBe(true);
+    }
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: "test-results/shop-cart-shortcut-mobile.png" });
+  await shortcut.click();
+  await expect(navigation.getByRole("link", { name: /^Giỏ hàng \d+$/ })).toHaveAttribute("aria-current", "location");
+  await expect(shortcut).not.toBeVisible();
+});
+
 test("năm ô chức năng dẫn đúng vùng và cập nhật giỏ, đơn, thanh toán, hỗ trợ", async () => {
   const nav = page.getByRole("navigation", { name: "Điều hướng tại bàn" });
   const link = (name: string) => nav.getByRole("link", { name: new RegExp(`^${name} [0-9]+$`) });

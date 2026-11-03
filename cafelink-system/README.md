@@ -80,6 +80,8 @@ Terminal in URL và cổng Core; giữ terminal mở. `WebMain` khởi động G
 
 Sau thanh toán và giao đồ, khách vẫn giữ phiên để đặt thêm. **Rời phiên** kết thúc phiên của khách; quản lý có thể **Kết thúc phiên** trong chi tiết bàn nếu khách quên rời. Cả hai đều bị chặn khi còn đơn chưa thanh toán/chưa giao hoặc hỗ trợ chưa xử lý. Kết thúc phiên không tắt QR nhận khách. Mỗi lần ADMIN đăng nhập, các bàn tạm ngưng nhận khách mới; bấm **Mở tất cả bàn** để bật lại. Đăng nhập STAFF không tạm ngưng bàn.
 
+Quản lý có thể chọn **Tạm ngưng tất cả bàn** để ngăn khách mới vào bằng QR mà không ảnh hưởng phiên hiện có. **Kết thúc tất cả phiên QR** kiểm tra các bàn và chỉ đóng tất cả khi không còn đơn hoặc hỗ trợ chưa xử lý; cửa sổ xác nhận hiển thị bàn cần xử lý. Nếu trạng thái quán thay đổi trong lúc xác nhận, mở lại hộp thoại để kiểm tra. Hai thao tác có nhật ký đối chiếu khi mất phản hồi.
+
 Không cần chạy thêm app Java phía khách. Tab thường dùng chung cookie; các cửa sổ ẩn danh cùng mở cũng có thể dùng chung phiên riêng tư. Hai khách độc lập nên dùng hai browser/profile/thiết bị khác nhau.
 
 ## Giao diện hiện hành
@@ -130,7 +132,7 @@ Máy chủ phải bật và có Internet. Tunnel đổi hostname khi chạy lạ
 
 ## Kiểm thử
 
-Bản V10.1 sau gộp phiên/bàn (PR #4) đã chạy đạt 204 Java, 92 Chromium và 37 kiểm công bố; kiểm nhanh thực nghiệm đạt 24/24 ca phục hồi và hai mức 1/5 khách giả lập. [Kết quả bản gộp](../report/evidence/cafelink-session-merge-20261102/summary.json). Các lượt phân quyền trước đó có 8 ca đạt trên mỗi engine Chromium/Firefox/WebKit; [chi tiết nghiệm thu V10.1](docs/UPGRADE_V10_1_ROLES.md#kết-quả-kiểm) giữ phạm vi từng mốc. Kiểm engine chưa thay điện thoại vật lý, kiểm nhanh chưa thay bộ đo hiệu năng đầy đủ.
+Bản V10.1 với thao tác toàn quán đã chạy đạt 206 Java, 95 Chromium và 37 kiểm công bố. [Kết quả hiện tại](../report/evidence/cafelink-bulk-tables-20261102/summary.json). [Đợt gộp PR #4 trước đó](../report/evidence/cafelink-session-merge-20261102/summary.json) kiểm nhanh đạt 24/24 ca phục hồi và hai mức 1/5 khách giả lập; các lượt phân quyền trước đó có 8 ca đạt trên mỗi engine Chromium/Firefox/WebKit. [Chi tiết nghiệm thu V10.1](docs/UPGRADE_V10_1_ROLES.md#kết-quả-kiểm) giữ phạm vi từng mốc. Kiểm engine chưa thay điện thoại vật lý, kiểm nhanh chưa thay bộ đo hiệu năng đầy đủ.
 
 Trước push hoặc đóng gói, xem [kiểm nội dung công bố](docs/PUBLICATION.md). CI dùng chung policy với script đóng gói để chặn hướng dẫn phiên bản cũ, liên kết hỏng và các cặp báo cáo bị trộn.
 

@@ -54,6 +54,8 @@ export function App() {
   const [selected, setSelected] = useState<Table | null>(null);
   const [bill, setBill] = useState<Bill | null>(null);
   const [confirmPay, setConfirmPay] = useState(false);
+  const [confirmAll, setConfirmAll] = useState<"pause" | "end" | null>(null);
+  const [confirmRevision, setConfirmRevision] = useState<number | null>(null);
   const [query, setQuery] = useState("");
   const [requestQuery, setRequestQuery] = useState(""),
     [showHandled, setShowHandled] = useState(false),
@@ -406,6 +408,12 @@ export function App() {
     tickets = state?.tickets ?? [],
     tables = state?.tables ?? [];
   const openTickets = tickets.filter((ticket) => ticket.status === "OPEN");
+  const qrTablesWithSessions = tables.filter(table => table.automatic && (table.activeSessions ?? 0) > 0);
+  const activeQrSessions = qrTablesWithSessions.reduce((count, table) => count + (table.activeSessions ?? 0), 0);
+  const blockedQrTables = qrTablesWithSessions.filter(table =>
+    orders.some(order => order.tableId === table.id && !["CANCELLED", "REFUNDED"].includes(order.paymentState ?? "") && (order.paymentState !== "PAID" || order.status !== "SERVED")) ||
+    openTickets.some(ticket => ticket.tableId === table.id),
+  );
   const currentTable = tables.find((table) => table.id === selected?.id);
   const tableOrders = orders.filter((order) => order.tableId === selected?.id);
   const tableTickets = openTickets.filter(
@@ -653,6 +661,8 @@ export function App() {
               >
                 Mở tất cả bàn
               </button>}
+              {isManager && <button className="secondary" disabled={disabled || !tables.some(table => table.automatic && table.acceptingOrders)} onClick={() => { setError(""); setConfirmRevision(state?.revision ?? null); setConfirmAll("pause"); }}>Tạm ngưng tất cả bàn</button>}
+              {isManager && <button className="secondary" disabled={disabled || activeQrSessions === 0} onClick={() => { setError(""); setConfirmRevision(state?.revision ?? null); setConfirmAll("end"); }}>Kết thúc tất cả phiên QR</button>}
               <label htmlFor="table-filter">Lọc bàn</label>
               <select
                 id="table-filter"
@@ -666,6 +676,26 @@ export function App() {
                 <option value="checkout">Đang tính tiền</option>
               </select>
             </div>
+            {isManager && confirmAll && <Dialog label={confirmAll === "pause" ? "Tạm ngưng tất cả bàn" : "Kết thúc tất cả phiên QR"} role="alertdialog" onClose={() => { if (!busy) setConfirmAll(null); }}>
+              {confirmAll === "pause" ? <>
+                <h2>Tạm ngưng nhận khách mới?</h2>
+                <p>Khách mới sẽ không thể vào bằng QR ở tất cả bàn. Các phiên và yêu cầu hiện có vẫn được giữ để tiếp tục phục vụ.</p>
+              </> : <>
+                <h2>Kết thúc tất cả phiên QR?</h2>
+                <p>Thao tác sẽ đăng xuất {activeQrSessions} phiên khách tại {qrTablesWithSessions.length} bàn. QR nhận khách giữ nguyên trạng thái.</p>
+                {blockedQrTables.length > 0 ? <p className="warning banner" role="alert">Cần xử lý đơn chưa thanh toán/chưa giao hoặc yêu cầu hỗ trợ tại: {blockedQrTables.map(table => table.name).join(", ")}.</p> : <p>Chỉ tiếp tục khi khách đã rời quán. Các đơn và yêu cầu sẽ được kiểm tra lại trước khi kết thúc.</p>}
+              </>}
+              {(confirmRevision === null || confirmRevision !== state?.revision) && <p className="warning banner" role="alert">Trạng thái quán đã thay đổi. Hãy hủy và mở lại để kiểm tra trước khi xác nhận.</p>}
+              {error && <p className="error" role="alert">{error}</p>}
+              <div className="button-row">
+                <button type="button" className="secondary" disabled={busy} onClick={() => setConfirmAll(null)}>Hủy</button>
+                <button type="button" disabled={disabled || confirmRevision === null || confirmRevision !== state?.revision || (confirmAll === "end" && (blockedQrTables.length > 0 || activeQrSessions === 0))} onClick={async () => {
+                  const action = confirmAll === "pause" ? "PAUSE_ALL_TABLES" : "END_ALL_TABLE_SESSIONS";
+                  const result = await run<{pausedTables?: number; endedSessions?: number}>(action, { expectedRevision: confirmRevision });
+                  if (result) { setConfirmAll(null); setNotice(action === "PAUSE_ALL_TABLES" ? `Đã tạm ngưng nhận khách mới ở ${result.pausedTables} bàn.` : `Đã kết thúc ${result.endedSessions} phiên QR.`); }
+                }}>{confirmAll === "pause" ? "Xác nhận tạm ngưng" : "Xác nhận kết thúc tất cả phiên"}</button>
+              </div>
+            </Dialog>}
             <section className="table-grid">
               {tables
                 .filter(

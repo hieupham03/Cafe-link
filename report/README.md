@@ -9,7 +9,7 @@
 
 Bản rà soát ngày **31/10/2026**, **51 trang**, nội dung chính Times New Roman 13. Đầu vào là bản Word Discussion được người dùng sửa mới nhất; bìa, phân công, số liệu và hình được giữ. Báo cáo có đủ 19 thành phần của technical paper, gồm công trình liên quan, mô tả toàn hệ thống, giao tiếp mạng, kết quả và thảo luận. Đã bổ sung vòng đời kết nối, phiên bản thư viện, chỉnh cột MSSV và cập nhật mục lục/Word/PDF. [Phiếu rà soát trước nộp](CafeLink_Submission_Review_20261031.md).
 
-Word là bản có thể tiếp tục chỉnh; PDF dùng đọc và kiểm bố cục. Đây là cặp hiện hành trong workspace, được chọn làm cặp công bố duy nhất. Bản mới được tạo từ DOCX, không lấy Markdown cũ để ghi đè chỉnh sửa của người dùng. [Kết quả kiểm đúng cặp tệp](submission-20261031/VALIDATION.json). Compilatio chưa có kết quả.
+Word là bản có thể tiếp tục chỉnh; PDF dùng đọc và kiểm bố cục. Bản mới được tạo từ DOCX, không lấy Markdown cũ để ghi đè chỉnh sửa của người dùng. [Kết quả kiểm đúng cặp tệp](submission-20261031/VALIDATION.json).
 
 ## Đọc số liệu đúng phiên bản
 
@@ -36,9 +36,3 @@ Nhóm đã xác nhận hoàn thành kiểm thao tác thực tế. Các phiếu t
 Bản công bố chỉ giữ cặp Word/PDF hiện hành trong bảng đầu trang. Bản cũ chỉ còn trong lịch sử Git. Báo cáo RC1, bản Evidence13, ảnh kiểm bố cục và bản nháp trước đó giữ local, không đưa lại vào repo. Lịch sử Git vẫn ghi nhận các lần công bố trước.
 
 Dữ liệu thực nghiệm V9.3 trong phụ lục, phép đo V9.4 và kết quả kiểm RC4 được giữ để kiểm chứng báo cáo. Chúng là bằng chứng theo từng phép thử, không phải các bản ứng dụng hoặc báo cáo để lựa chọn. Công cụ tạo báo cáo và skill AI giữ local.
-
-## Chuẩn bị nộp
-
-Theo [Submission](../final-project-2/final-project/Submission.md), bộ cuối có `Source/` và `Report/`. Bản mới đã mang tên `Nhom11_CafeLink_Report.docx`; chỉ nộp một báo cáo trên Compilatio. Thông tin bìa, phần việc và tỷ lệ được giữ theo bản Word người dùng đã điền; nhóm chịu trách nhiệm xác nhận đúng thực tế. Thư mục `submission-20261031/` hiện chứa báo cáo và phiếu kiểm, chưa phải bộ source bàn giao hoàn chỉnh.
-
-Xuất Word/PDF, CI đạt hoặc nhóm kiểm chức năng xong không thay kết quả Compilatio và thủ tục nộp chính thức. Không ghi đã có chứng nhận khi chưa có kết quả thật.
