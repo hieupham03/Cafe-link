@@ -136,7 +136,7 @@ Java target 17, Jetty HTTP/WebSocket, Gson, SQLite JDBC; React/TypeScript/Vite, 
 Cafe-link/
 ├── README.md
 ├── cafelink-system/     Java/web, test, script, tài liệu kỹ thuật
-├── report/              Hướng dẫn hồ sơ báo cáo học phần
+├── report/              Báo cáo Word/PDF chính thức và chỉ mục
 ├── dist/                Fixture đối chứng niêm phong cho kiểm thử
 └── .github/workflows/   CI Windows
 ```
@@ -144,6 +144,15 @@ Cafe-link/
 ## Phạm vi
 
 Sản phẩm dành cho một quán, thanh toán/hoàn giả lập. Không tích hợp ngân hàng, kho nguyên liệu, giao từng phần hoặc nhiều chi nhánh. QR có thể được chia sẻ; phục hồi phụ thuộc quyền và dữ liệu Browser còn giữ. Giới hạn tài nguyên là cấu hình bảo vệ, không phải công suất phục vụ đã đo. Quick Tunnel phù hợp demo; triển khai lâu dài cần địa chỉ HTTPS ổn định.
+
+## Báo cáo
+
+| Định dạng | Tệp |
+|---|---|
+| Word | [Nhom11_CafeLink_Report.docx](report/Nhom11_CafeLink_Report.docx) |
+| PDF | [Nhom11_CafeLink_Report.pdf](report/Nhom11_CafeLink_Report.pdf) |
+
+Báo cáo trình bày bài toán, công trình liên quan, giải pháp, kiến trúc/giao tiếp mạng, triển khai, kiểm thử/thực nghiệm và đánh giá. [Chỉ mục báo cáo](report/README.md).
 
 ## Nhóm thực hiện
 

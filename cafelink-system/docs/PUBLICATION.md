@@ -9,7 +9,7 @@ Repository chứa một bộ tài liệu hiện hành cho source, cùng test/scr
 - Lệnh kiểm, phương pháp thực nghiệm và CI.
 - Template/công cụ phân phối và fixture kiểm tương thích có mục đích rõ.
 
-Báo cáo học phần bàn giao riêng theo [chỉ mục hồ sơ](../../report/README.md). Không đưa công cụ/skill AI, bản nháp, nhật ký nâng cấp, tài liệu thay thế, cache, DB, khóa hoặc backup vào cây công bố. ZIP đối chứng có hash cố định là fixture, không là bản ứng dụng để người dùng lựa chọn.
+Repository công bố một cặp báo cáo Word/PDF chính thức tại [thư mục báo cáo](../../report/README.md), được xác định bằng manifest SHA-256 và liên kết từ README. Không đưa công cụ/skill AI, bản nháp, nhật ký nâng cấp, tài liệu thay thế, cache, DB, khóa hoặc backup vào cây công bố. ZIP đối chứng có hash cố định là fixture, không là bản ứng dụng để người dùng lựa chọn.
 
 ## Kiểm tra
 

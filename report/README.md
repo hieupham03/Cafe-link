@@ -1,6 +1,15 @@
-# CafeLink - Hồ sơ báo cáo học phần
+# CafeLink - Báo cáo bài tập lớn
 
-Báo cáo Word/PDF và hồ sơ nộp môn học được nhóm bàn giao riêng. Repository cung cấp mã nguồn, test, script và tài liệu kỹ thuật để build, chạy và kiểm chứng ứng dụng.
+Báo cáo môn Lập trình mạng của nhóm 11, giảng viên hướng dẫn Ngô Văn Quyền.
+
+| Định dạng | Báo cáo chính thức |
+|---|---|
+| Word | [Nhom11_CafeLink_Report.docx](Nhom11_CafeLink_Report.docx) |
+| PDF | [Nhom11_CafeLink_Report.pdf](Nhom11_CafeLink_Report.pdf) |
+
+Báo cáo có 57 trang, gồm bài toán, công trình liên quan, giải pháp, kiến trúc Client/Server, giao tiếp TCP, triển khai, kiểm thử/thực nghiệm, thảo luận, đóng góp kỹ thuật, hạn chế, kết luận và phụ lục. Word dùng để chỉnh sửa, PDF dùng để đọc và in. [Manifest](PUBLICATION.json) xác định cặp tệp bằng SHA-256.
+
+## Tài liệu kỹ thuật
 
 | Nội dung về dự án | Tài liệu |
 |---|---|

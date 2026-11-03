@@ -172,6 +172,8 @@ def source_checks(tree):
         if retired and retired[1].replace('_', '.') != policy['version']:
             errors.append(f'Retired guide is published: {path}')
     reports = sorted(p for p in tree.paths if p.startswith('report/') and p.endswith(('.docx', '.pdf')))
+    if policy.get('requireReport') and not reports:
+        errors.append('Required current report Word/PDF pair is missing')
     if reports and (len(reports) != 2 or {Path(p).suffix for p in reports} != {'.docx', '.pdf'} or len({str(Path(p).with_suffix('')) for p in reports}) != 1):
         errors.append('Publish either no report files or exactly one matching Word/PDF pair')
     manifest_path = policy.get('reportManifest')

@@ -65,6 +65,16 @@ class PublicationTest(unittest.TestCase):
         self.files['report/README.md'] = b'# Report\n'
         self.assertEqual('PASS', self.result()['status'])
 
+    def test_required_report_pair_cannot_be_removed(self):
+        self.change_policy(lambda p: p.update(requireReport=True))
+        del self.files['report/current.docx']
+        del self.files['report/current.pdf']
+        self.fails('Required current report Word/PDF pair is missing')
+
+    def test_required_report_pair_passes_when_present_and_verified(self):
+        self.change_policy(lambda p: p.update(requireReport=True))
+        self.assertEqual('PASS', self.result()['status'])
+
     def test_local_only_link_fails_even_when_private_file_exists(self):
         published = set(self.files)
         self.files['cafelink-system/docs/README.md'] = b'[old](local-draft.md)'

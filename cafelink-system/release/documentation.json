@@ -2,6 +2,8 @@
   "format": "CafeLinkDocumentation/1",
   "version": "V10.1",
   "schema": 13,
+  "reportManifest": "report/PUBLICATION.json",
+  "requireReport": true,
   "currentPackage": "CafeLink-Web-V10.1-RC1",
   "repository": "https://github.com/hieupham03/Cafe-link",
   "generatedLaunchers": [

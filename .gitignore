@@ -9,6 +9,9 @@
 /*.pdf
 /report/**
 !/report/README.md
+!/report/Nhom11_CafeLink_Report.docx
+!/report/Nhom11_CafeLink_Report.pdf
+!/report/PUBLICATION.json
 
 # Test fixture and repository guide are the only distributed dist files.
 /dist/*
