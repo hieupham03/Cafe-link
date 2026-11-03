@@ -1,8 +1,7 @@
 param([switch]$Quick, [switch]$SkipBuild, [string]$OutputPath='')
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'runtime.ps1')
-$workspaceRoot=Split-Path $ProjectRoot -Parent
-if(-not $OutputPath) { $OutputPath=Join-Path $workspaceRoot ('report\evidence\cafelink-v2\v8\'+(Get-Date -Format 'yyyyMMdd-HHmmss')+'-'+[guid]::NewGuid().ToString('N').Substring(0,8)) }
+if(-not $OutputPath) { $OutputPath=Join-Path $ProjectRoot ('target\evidence\cafelink-v2\v8\'+(Get-Date -Format 'yyyyMMdd-HHmmss')+'-'+[guid]::NewGuid().ToString('N').Substring(0,8)) }
 $OutputPath=[IO.Path]::GetFullPath($OutputPath)
 if((Test-Path -LiteralPath $OutputPath) -and @(Get-ChildItem -LiteralPath $OutputPath -Force).Count -gt 0) { throw 'Use a fresh output directory; evidence is never overwritten.' }
 New-Item -ItemType Directory -Path $OutputPath -Force | Out-Null

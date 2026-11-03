@@ -3,7 +3,7 @@ $ErrorActionPreference='Stop'
 $projectRoot=Split-Path $PSScriptRoot -Parent
 Push-Location $projectRoot
 try {
-    $publicationArgs=@('tools/verify_publication.py','--root','..','--output','../report/evidence/cafelink-v2/v9.4-gate/publication.json')
+    $publicationArgs=@('tools/verify_publication.py','--root','..','--output','target/evidence/cafelink-v2/v9.4-gate/publication.json')
     if(Test-Path -LiteralPath (Join-Path $projectRoot '../.git')){$publicationArgs+='--index'}
     & python @publicationArgs
     if($LASTEXITCODE -ne 0){throw 'Published documentation/report checks failed'}

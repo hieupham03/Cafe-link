@@ -1,4 +1,3 @@
-# Preserve exact bytes of report evidence and hash-verified source documents.
+# Preserve exact bytes of report documents and hash-verified source documents.
 /report/** -text
 /final-project/** -text
-/final-project-2/** -text

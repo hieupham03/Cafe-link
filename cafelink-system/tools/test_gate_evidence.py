@@ -34,7 +34,7 @@ class JavaFailureEvidence(unittest.TestCase):
                                      "-SkipInstall", "-SkipBrowserInstall"],
                                     cwd=project, capture_output=True, text=True, timeout=45)
             self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
-            gate_root = workspace / "report/evidence/cafelink-v2/v9.4-gate"
+            gate_root = project / "target/evidence/cafelink-v2/v10.1-gate"
             latest = json.loads((gate_root / "latest.json").read_text(encoding="utf-8-sig"))
             run = gate_root / latest["runId"]
             summary = json.loads((run / "summary.json").read_text(encoding="utf-8-sig"))

@@ -1,9 +1,27 @@
 name: CafeLink verification
 on:
   push:
-    paths: ['cafelink-system/**', '.github/workflows/cafelink-v8.yml', 'dist/CafeLink-Original-1.0.0-Baseline.zip', 'README.md', '.gitignore', 'report/*.md', 'report/*.docx', 'report/*.pdf', 'report/submission-20261031/**', 'CONTRIBUTIONS.md', 'report/assets/**', 'final-project-2/**']
+    paths:
+      - 'cafelink-system/**'
+      - '.github/workflows/cafelink-v8.yml'
+      - 'dist/CafeLink-Original-1.0.0-Baseline.zip'
+      - 'README.md'
+      - '.gitignore'
+      - 'report/*.md'
+      - 'report/*.docx'
+      - 'report/*.pdf'
+      - 'report/assets/**'
   pull_request:
-    paths: ['cafelink-system/**', '.github/workflows/cafelink-v8.yml', 'dist/CafeLink-Original-1.0.0-Baseline.zip', 'README.md', '.gitignore', 'report/*.md', 'report/*.docx', 'report/*.pdf', 'report/submission-20261031/**', 'CONTRIBUTIONS.md', 'report/assets/**', 'final-project-2/**']
+    paths:
+      - 'cafelink-system/**'
+      - '.github/workflows/cafelink-v8.yml'
+      - 'dist/CafeLink-Original-1.0.0-Baseline.zip'
+      - 'README.md'
+      - '.gitignore'
+      - 'report/*.md'
+      - 'report/*.docx'
+      - 'report/*.pdf'
+      - 'report/assets/**'
   workflow_dispatch:
     inputs:
       full_experiments:
@@ -48,7 +66,7 @@ jobs:
           if (-not (Test-Path ../dist/CafeLink-Original-1.0.0-Baseline.zip)) { throw 'Include the sealed baseline ZIP in the repository before enabling CI; never recreate it from current sources.' }
       - name: Verify publication, Java and browser workflows
         run: |
-          python tools/verify_publication.py --root .. --output ../report/evidence/cafelink-v2/v10.1-gate/publication.json
+          python tools/verify_publication.py --root .. --output target/evidence/cafelink-v2/v10.1-gate/publication.json
           if ($LASTEXITCODE -ne 0) { throw 'Publication check failed' }
           python -m unittest discover -s tools -p test_publication.py -v
           if ($LASTEXITCODE -ne 0) { throw 'Publication guard tests failed' }
@@ -67,10 +85,10 @@ jobs:
         with:
           name: cafelink-v8-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
-            report/evidence/cafelink-v2/v8/**
-            report/evidence/cafelink-v2/v8-gate/**
-            report/evidence/cafelink-v2/v9.3-gate/**
-            report/evidence/cafelink-v2/v9.4-gate/**
-            report/evidence/cafelink-v2/v10.1-gate/**
+            cafelink-system/target/evidence/cafelink-v2/v8/**
+            cafelink-system/target/evidence/cafelink-v2/v8-gate/**
+            cafelink-system/target/evidence/cafelink-v2/v9.3-gate/**
+            cafelink-system/target/evidence/cafelink-v2/v9.4-gate/**
+            cafelink-system/target/evidence/cafelink-v2/v10.1-gate/**
           if-no-files-found: warn
           retention-days: 14

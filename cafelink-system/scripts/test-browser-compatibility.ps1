@@ -2,7 +2,7 @@ param([ValidateSet('firefox','webkit')][string[]]$Engines=@('firefox','webkit'),
 $ErrorActionPreference='Stop'
 $projectRoot=Split-Path $PSScriptRoot -Parent
 $runId=(Get-Date -Format 'yyyyMMdd-HHmmss')+'-'+[guid]::NewGuid().ToString('N').Substring(0,8)
-$evidence=Join-Path (Split-Path $projectRoot -Parent) ('report/evidence/cafelink-v2/v9.4-hardening/compatibility-'+$runId)
+$evidence=Join-Path $projectRoot ('target/evidence/cafelink-v2/v9.4-hardening/compatibility-'+$runId)
 $previousEngine=$env:CAFELINK_E2E_ENGINE;$previousGroup=$env:CAFELINK_E2E_GROUP
 $summary=[ordered]@{status='RUNNING';runId=$runId;startedAt=(Get-Date).ToString('o');platform='Windows browser engines, including 390px viewport tests';physicalPhone='NOT_RUN';physicalLan='NOT_RUN';gates=@();failedGroups=0}
 New-Item -ItemType Directory -Path $evidence -Force | Out-Null

@@ -2,9 +2,9 @@
 
 Tài liệu mô tả cơ chế đang có trong source V9.4/schema 11. Gói được kiểm cuối là RC4; cách chạy nằm ở [FINAL_RUNBOOK](FINAL_RUNBOOK.md), kết quả hiện hành ở [TESTING](TESTING.md).
 
-Kiểm cuối RC4 ghi nhận **164 Java, 71 Chromium, 20 Firefox, 20 WebKit, 23 nhóm kiểm gói và 8 kiểm public**. [Biên bản đo ngày 30/10](../../report/CafeLink_Hardening_20261030.md) giữ riêng 120 ca phục hồi và 12 lượt tải của RC3, gồm 94 slot chưa phát ở mức 14 khách. Số đo RC3 không trở thành benchmark RC4.
+Kiểm cuối RC4 ghi nhận **164 Java, 71 Chromium, 20 Firefox, 20 WebKit, 23 nhóm kiểm gói và 8 kiểm public**. Biên bản đo ngày 30/10 ghi riêng 120 ca phục hồi và 12 lượt tải của RC3, gồm 94 slot chưa phát ở mức 14 khách. Số đo RC3 không trở thành benchmark RC4; hồ sơ chi tiết đã được gỡ khỏi repository.
 
-RC4 bổ sung phản hồi HTTP khi từ chối yêu cầu chưa gửi đủ nội dung. [Checkpoint](../../report/CafeLink_PreFeature_Readiness_20261030.md) lưu biên bản kỹ thuật tại thời điểm tạo mốc, không phải hướng dẫn chọn một bản cũ để chạy.
+RC4 bổ sung phản hồi HTTP khi từ chối yêu cầu chưa gửi đủ nội dung. Hồ sơ checkpoint kỹ thuật tại thời điểm tạo mốc đã được gỡ khỏi repository; đây không phải hướng dẫn chọn một bản cũ để chạy.
 
 ## Cách thực hiện
 
@@ -42,7 +42,7 @@ Invoke-RestMethod http://127.0.0.1:19588/api/ready
 
 Kiểm mới nằm ở `ReadinessIntegrationTest`: HTTP/TCP/SQLite thật, Core dừng, DB đóng, TCP không trả lời, dữ liệu sai giao thức, mã phản hồi sai, phản hồi nhỏ giọt và cache. Tình huống nhỏ giọt đã làm test đỏ trước khi áp thời hạn chung.
 
-Kết quả phần 1: **150 Java PASS**, gồm tám test readiness mới; **8 Chromium PASS** ở nhóm dashboard/QR. [Summary của phần 1](../../report/evidence/cafelink-v2/v9.4-hardening/phase1-readiness/summary.json). Đây chưa phải lượt nghiệm thu điện thoại hoặc đo hiệu năng lại trên V9.4.
+Kết quả phần 1: **150 Java PASS**, gồm tám test readiness mới; **8 Chromium PASS** ở nhóm dashboard/QR. Đây chưa phải lượt nghiệm thu điện thoại hoặc đo hiệu năng lại trên V9.4.
 
 ## Chẩn đoán dành cho quản lý
 
@@ -58,7 +58,7 @@ Endpoint yêu cầu ADMIN ở cả Gateway lẫn Core; khách và người chưa
 
 Các ca mới: `DiagnosticsIntegrationTest` kiểm phân quyền web/TCP, bộ đếm thực, giới hạn lịch sử và không lộ dữ liệu; `web/tests/diagnostics.spec.ts` kiểm tra/filter mã, lỗi cập nhật/phục hồi, layout 390 px, ngừng polling khi rời trang và endpoint công khai. Nhóm `diagnostics` được đưa vào `npm run test:e2e`; script gate mặc định ghi nhãn V9.4 và giữ ảnh desktop/mobile.
 
-Kết quả phần 2: **154 Java PASS**, **69 Chromium PASS**, không skip/flaky; build production/experiment đạt và listener test đã đóng. Đã xem ảnh desktop/mobile. [Summary phần 2](../../report/evidence/cafelink-v2/v9.4-hardening/phase2-diagnostics/summary.json) liên kết gate/raw.
+Kết quả phần 2: **154 Java PASS**, **69 Chromium PASS**, không skip/flaky; build production/experiment đạt và listener test đã đóng. Đã xem ảnh desktop/mobile. Gate/raw của lượt này không còn trong repository.
 
 ## Hạn thanh toán và thao tác đồng thời
 
@@ -68,7 +68,7 @@ Phần sửa đọc hạn bằng `Instant`, lấy một mốc kiểm cho thao t�
 
 `PaymentDeadlineTest` kiểm tám trường hợp: ba tình huống khác độ chính xác/ranh giới khi tạo giao dịch, xác nhận trước/đúng/sau hạn một nano giây, callback cũ sau lần thay thế, hai luồng cùng bắt đầu/xác nhận. Mốc quyết định là thời điểm Core xử lý bằng clock Server, không dùng thời gian trên điện thoại. Trước sửa có 5/8 ca thất bại; sau sửa 29 ca trong nhóm thanh toán/phiên/nghiệp vụ đều đạt.
 
-Kết quả hồi quy phần 3: **162 Java PASS**, **69 Chromium PASS**, không skip/flaky. [Summary phần 3](../../report/evidence/cafelink-v2/v9.4-hardening/phase3-payment-deadline/summary.json).
+Kết quả hồi quy phần 3: **162 Java PASS**, **69 Chromium PASS**, không skip/flaky.
 
 ## Thứ tự phản hồi trong kiểm thử desktop lịch sử
 
@@ -84,7 +84,7 @@ Launcher public chờ `/api/ready` ở local, chờ Cloudflare báo đã nối e
 
 Gói thử được giải nén vào đường dẫn có khoảng trắng; chạy bằng JRE đi kèm khi PATH của tiến trình không có Java/Node/npm máy phát triển. Bộ kiểm bao gồm manifest/tamper, UI, ảnh menu, quyền khách, phục hồi, thanh toán, restart, backup/restore, khóa dữ liệu, path escape và cổng đã dùng. Bằng chứng gồm cả lượt public thất bại ban đầu; không sửa kết quả cũ thành PASS khi thử lại.
 
-Gói được kiểm cuối là RC4; [phiếu kiểm và hash](../../report/evidence/cafelink-v2/pre-feature-20261030/final-verification.json) ghi nhận **23 nhóm kiểm gói** và **8 kiểm public HTTPS/WSS** đạt. Các [kết quả RC2](../../report/evidence/cafelink-v2/v9.4-hardening/phase5-release-rc2/summary.json) và [lượt public thất bại trước sửa](../../report/evidence/cafelink-v2/v9.4-hardening/phase5-release/summary.json) chỉ là bằng chứng lịch sử. URL của các lượt tự động đã dừng; khi demo lấy URL của launcher hiện tại.
+Gói được kiểm cuối là RC4; phiếu kiểm ghi nhận **23 nhóm kiểm gói** và **8 kiểm public HTTPS/WSS** đạt. Các kết quả RC2 và lượt public thất bại trước sửa chỉ là bằng chứng lịch sử; các tệp này đã được gỡ khỏi repository. URL của các lượt tự động đã dừng; khi demo lấy URL của launcher hiện tại.
 
 ## Trình duyệt khác và lỗi âm thanh
 
@@ -103,4 +103,4 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-browser-compati
 
 Đây là engine Firefox/WebKit chạy trên Windows và các viewport nhỏ, chưa phải nghiệm thu Safari/iPhone, Android, camera QR hoặc loa thật. Không thay kết quả thiết bị vật lý bằng tên engine.
 
-Lượt sau sửa đạt 20 ca mỗi engine, không skip/flaky; hash JAR/giao diện khớp gate đầy đủ 162 Java/71 Chromium. [Summary phần 6](../../report/evidence/cafelink-v2/v9.4-hardening/phase6-audio-and-compatibility/summary.json). Sau đó RC3 được kiểm lại trên JRE đi kèm và HTTPS/WSS public; các run/giới hạn nằm trong báo cáo kết quả đầu trang.
+Lượt sau sửa đạt 20 ca mỗi engine, không skip/flaky; hash JAR/giao diện khớp gate đầy đủ 162 Java/71 Chromium. Sau đó RC3 được kiểm lại trên JRE đi kèm và HTTPS/WSS public; các run/giới hạn nằm trong báo cáo kết quả đầu trang.

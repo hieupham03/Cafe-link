@@ -4,7 +4,7 @@
 
 Khách quét QR tại bàn để xem món, gửi đơn, chờ quầy tiếp nhận rồi mới thanh toán giả lập và theo dõi phục vụ. Quầy quản lý thực đơn, tiếp nhận hoặc từ chối đơn, điều phối pha chế/giao đồ, xử lý hỗ trợ và theo dõi thu chi. Nhiều khách cùng bàn dùng chung QR nhưng có phiên, giỏ và đơn riêng.
 
-**Source hiện hành:** V10.1, schema 13; đã tích hợp các nhánh thành viên. [Nguồn đóng góp](CONTRIBUTIONS.md). [Phân quyền V10.1](cafelink-system/docs/UPGRADE_V10_1_ROLES.md) · [UI/tiếp nhận/thuế/thu chi V10](cafelink-system/docs/UPGRADE_V10.md). Báo cáo đã chốt được giữ tại [thư mục báo cáo](report/README.md); nội dung báo cáo và bằng chứng V9.4 không bị thay bằng số liệu mới. Thanh toán dùng `LOCAL_SIMULATOR`, không thu tiền thật.
+**Source hiện hành:** V10.1, schema 13; đã tích hợp các nhánh thành viên. Lịch sử đóng góp được lưu trong Git. [Phân quyền V10.1](cafelink-system/docs/UPGRADE_V10_1_ROLES.md) · [UI/tiếp nhận/thuế/thu chi V10](cafelink-system/docs/UPGRADE_V10.md). [Chỉ mục báo cáo](report/README.md) ghi rõ phạm vi tài liệu còn trong repository; bản Word/PDF và evidence đã được gỡ khỏi repository. Thanh toán dùng `LOCAL_SIMULATOR`, không thu tiền thật.
 
 | Bắt đầu tại đây | Nội dung |
 |---|---|
@@ -109,7 +109,7 @@ Dùng **URL HTTPS và mật khẩu tạm mà terminal in ra**, chọn **Mở t�
 
 </details>
 
-Nhấn vào ảnh để xem kích thước gốc. [Hướng dẫn source](cafelink-system/README.md) · [Kết quả kiểm hiện tại](report/evidence/cafelink-bulk-tables-20261102/summary.json).
+Nhấn vào ảnh để xem kích thước gốc. [Hướng dẫn source](cafelink-system/README.md) · [Phạm vi kiểm thử](cafelink-system/docs/TESTING.md).
 
 ## Kiến trúc và nội dung Lập trình mạng
 
@@ -139,7 +139,7 @@ Java target 17, Maven bootstrap, Jetty HTTP/WebSocket, Gson, SQLite JDBC; React/
 
 ## Kiểm thử và kết quả thực nghiệm
 
-**V10.1 với thao tác toàn quán:** 206 Java, 95 Chromium và 37 kiểm công bố đạt. [Kết quả hiện tại](report/evidence/cafelink-bulk-tables-20261102/summary.json). Trước đó, [đợt gộp PR #4](report/evidence/cafelink-session-merge-20261102/summary.json) kiểm nhanh 24/24 ca phục hồi và hai mức 1/5 khách giả lập; 8 ca phân quyền đạt trên mỗi engine Chromium/Firefox/WebKit ở mốc trước. [Phạm vi V10.1](cafelink-system/docs/UPGRADE_V10_1_ROLES.md#kết-quả-kiểm) giữ bằng chứng từng mốc. Kết quả RC4/RC3 bên dưới thuộc mốc trước nâng cấp; kiểm engine chưa thay kiểm điện thoại vật lý. Kiểm nhanh không thay bộ đo hiệu năng đầy đủ.
+**V10.1 với thao tác toàn quán:** 206 Java, 95 Chromium và 37 kiểm công bố đạt. Trước đó, đợt gộp PR #4 kiểm nhanh 24/24 ca phục hồi và hai mức 1/5 khách giả lập; 8 ca phân quyền đạt trên mỗi engine Chromium/Firefox/WebKit ở mốc trước. [Phạm vi V10.1](cafelink-system/docs/UPGRADE_V10_1_ROLES.md#kết-quả-kiểm) mô tả kết quả từng mốc. Tệp evidence của các lượt kiểm không còn được lưu trong repository. Kết quả RC4/RC3 bên dưới thuộc mốc trước nâng cấp; kiểm engine chưa thay kiểm điện thoại vật lý. Kiểm nhanh không thay bộ đo hiệu năng đầy đủ.
 
 Chạy tại `cafelink-system`:
 
@@ -155,7 +155,7 @@ Kiểm cuối RC4: **164 Java, 71 Chromium, 20 Firefox, 20 WebKit, 23 nhóm ki�
 | Tải: 1/5/10/14 khách giả lập, 3 lượt mỗi mức | **1.256/1.350** lượt hoàn tất; **94 lượt chưa phát**, đều ở mức 14 khách |
 | Các thao tác đã phát | 0 lỗi flow/HTTP đã ghi; p95 đặt món ở mức 14 khách: **674,6-733,7 ms** |
 
-Các thành phần cùng chạy trên một máy qua loopback. Lượt chưa phát khác với đơn đã nhận bị mất; đây chưa phải công suất tối đa. Số đo RC3 không được gọi là benchmark RC4. [Phương pháp và raw](cafelink-system/docs/WEB_EXPERIMENTS.md) · [Phiếu kiểm RC4](report/evidence/cafelink-v2/pre-feature-20261030/final-verification.json).
+Các thành phần cùng chạy trên một máy qua loopback. Lượt chưa phát khác với đơn đã nhận bị mất; đây chưa phải công suất tối đa. Số đo RC3 không được gọi là benchmark RC4. [Phương pháp và raw](cafelink-system/docs/WEB_EXPERIMENTS.md) · [Phạm vi kiểm RC4](cafelink-system/docs/TESTING.md).
 
 ## Đóng góp kỹ thuật
 
@@ -170,9 +170,8 @@ Các phương án đối chứng giữ chung chống trùng và kiểm quyền/p
 Cafe-link/
 ├── README.md                Tổng quan và đường vào dự án
 ├── cafelink-system/         Source Java/web, test, script, tài liệu kỹ thuật
-├── report/                  Báo cáo Word/PDF, hình và evidence theo từng mốc
+├── report/                  Chỉ mục và tài liệu báo cáo còn được công bố
 ├── dist/                    Baseline E0 niêm phong phục vụ test/CI
-├── final-project-2/         Bộ yêu cầu học phần hiện hành
 └── .github/workflows/       CI Windows
 ```
 
@@ -194,10 +193,10 @@ Giảng viên hướng dẫn: **Ngô Văn Quyền**. Thành viên theo báo cáo
 
 ## Tài liệu và yêu cầu nộp
 
-Ưu tiên [Instruction](final-project-2/final-project/Instruction.md), [Topics](final-project-2/final-project/Topics.md) và [Submission](final-project-2/final-project/Submission.md). README/SPECIFICATION trong bộ môn là mẫu; [đặc tả CafeLink](cafelink-system/docs/PROJECT_SPECIFICATION.md) áp dụng riêng cho sản phẩm.
+Yêu cầu học phần được đối chiếu với nhóm theo tài liệu gốc lưu ngoài repository. [Đặc tả CafeLink](cafelink-system/docs/PROJECT_SPECIFICATION.md) áp dụng riêng cho sản phẩm.
 
-Trước bàn giao, tổ chức `Source/` và `Report/`, dùng cặp `Nhom11_CafeLink_Report.docx`/PDF hiện hành và hoàn tất Compilatio theo quy định. GitHub không thay bước nộp chính thức. [Chỉ mục báo cáo](report/README.md) dẫn đến cặp Word/PDF hiện hành; các bản báo cáo cũ và bản nháp giữ local.
+Trước bàn giao, tổ chức `Source/` và `Report/`, dùng cặp Word/PDF của nhóm và hoàn tất Compilatio theo quy định học phần. GitHub không thay bước nộp chính thức. [Chỉ mục báo cáo](report/README.md) nêu rõ hồ sơ nào còn trong repository.
 
 Nguồn kỹ thuật: [RFC 9293 - TCP](https://www.rfc-editor.org/rfc/rfc9293.html), [RFC 6455 - WebSocket](https://www.rfc-editor.org/rfc/rfc6455.html), [RFC 9110 - HTTP](https://www.rfc-editor.org/rfc/rfc9110.html), [SQLite transactions](https://www.sqlite.org/lang_transaction.html), [IndexedDB](https://www.w3.org/TR/IndexedDB/).
 
-Báo cáo đã chốt: [Word](report/submission-20261031/Nhom11_CafeLink_Report.docx) · [PDF](report/submission-20261031/Nhom11_CafeLink_Report.pdf). Nội dung báo cáo giữ mốc đã duyệt; nâng cấp V10.1 được ghi riêng trong tài liệu source.
+Bản Word/PDF đã chốt và các tệp evidence đã được xóa khỏi repository theo yêu cầu; các tài liệu Markdown còn lại chỉ ghi nhận phạm vi và kết quả lịch sử.

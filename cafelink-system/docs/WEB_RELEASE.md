@@ -6,4 +6,4 @@ SQLite tự tạo sáu bàn, tám món và tài khoản quản lý khi mở DB m
 
 Trước nâng cấp DB cũ, dừng Server và sao lưu DB, file `.qr-key` và thư mục `.media` cùng tên. Không dùng runtime cũ mở ngược schema 13. Local/public dùng profile riêng; public dùng mật khẩu tạm terminal in, không dùng mật khẩu local. URL tunnel đổi thì lấy lại QR.
 
-GitHub chứa source, manifest dependency, tài liệu và một cặp báo cáo hiện hành. Không công bố cache, DB/khóa/mật khẩu, skill AI và công cụ biên soạn báo cáo. ZIP E0 trong `dist/` là đối chứng niêm phong, không phải bản web mới. Các công cụ portable trong source phục vụ bản phát hành sau; đường chạy được kiểm ở mốc nộp này là source theo README.
+GitHub chứa source, manifest dependency và tài liệu Markdown; bản Word/PDF, evidence, cache, DB/khóa/mật khẩu, skill AI và công cụ biên soạn báo cáo không được lưu trong repository. ZIP E0 trong `dist/` là đối chứng niêm phong, không phải bản web mới. Các công cụ portable trong source phục vụ bản phát hành sau; đường chạy được kiểm ở mốc nộp này là source theo README.
