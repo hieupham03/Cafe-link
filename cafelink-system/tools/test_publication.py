@@ -14,7 +14,7 @@ def fixture():
     policy = {'format': 'CafeLinkDocumentation/1', 'version': 'V9.4', 'schema': 11,
               'currentPackage': 'CafeLink-Web-V9.4-RC4', 'guides': ['FINAL_RUNBOOK.md'],
               'repository': 'https://github.com/hieupham03/Cafe-link',
-              'reportManifest': 'report/evidence/current/report.json'}
+              'reportManifest': 'report/current/PUBLICATION.json'}
     files = {
         POLICY: json.dumps(policy),
         'README.md': '# CafeLink\n[Word](report/current.docx) [PDF](report/current.pdf)\n',
@@ -53,6 +53,16 @@ class PublicationTest(unittest.TestCase):
         self.files[POLICY] = json.dumps(policy).encode()
 
     def test_coherent_publication_passes(self):
+        self.assertEqual('PASS', self.result()['status'])
+
+    def test_source_can_be_published_without_report_files(self):
+        for path in ('report/current.docx', 'report/current.pdf', 'report/current/PUBLICATION.json'):
+            del self.files[path]
+        policy = json.loads(self.files[POLICY])
+        policy.pop('reportManifest')
+        self.files[POLICY] = json.dumps(policy).encode()
+        self.files['README.md'] = b'# CafeLink\n[Report index](report/README.md)\n'
+        self.files['report/README.md'] = b'# Report\n'
         self.assertEqual('PASS', self.result()['status'])
 
     def test_local_only_link_fails_even_when_private_file_exists(self):

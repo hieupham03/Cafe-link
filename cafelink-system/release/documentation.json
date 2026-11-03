@@ -4,7 +4,6 @@
   "schema": 13,
   "currentPackage": "CafeLink-Web-V10.1-RC1",
   "repository": "https://github.com/hieupham03/Cafe-link",
-  "reportManifest": "report/submission-20261031/PUBLICATION.json",
   "generatedLaunchers": [
     "START-LOCAL.cmd",
     "START-PUBLIC.cmd"

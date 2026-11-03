@@ -3,7 +3,7 @@
 [Workflow](../../.github/workflows/cafelink-v8.yml) chạy trên push/PR ảnh hưởng source/tài liệu và khi gọi thủ công. Tên file giữ để liên kết lịch sử; bộ kiểm hiện dùng V10.1.
 
 1. Checkout; cài Temurin JDK 17, Node 22, Python 3.13 và dependency được ghim. GitHub Actions dùng commit SHA cố định.
-2. Xác nhận baseline E0 nguyên vẹn, quét file công bố, liên kết, phiên bản và đúng một cặp báo cáo khớp hash; kiểm hồi quy publication và cấu hình workflow.
+2. Xác nhận baseline E0 nguyên vẹn, quét file công bố, liên kết và phiên bản; nếu có cặp báo cáo Word/PDF thì xác minh cặp và manifest hash. Chạy kiểm hồi quy publication và cấu hình workflow.
 3. Chạy `scripts/test-web.ps1 -Phase V10.1`: Java verify, build production/experiment và toàn bộ nhóm Chromium. Mỗi nhóm có Core/Gateway/DB riêng; không bỏ guard để chạy test.
 4. Upload kết quả allowlist kể cả khi lỗi. Chỉ thực nghiệm tải đầy đủ khi chọn `full_experiments` trong workflow_dispatch; kết quả lịch sử không đổi nhãn thành benchmark mới.
 

@@ -5,7 +5,7 @@ $workspaceRoot = Split-Path $projectRoot -Parent
 $previousEngine=$env:CAFELINK_E2E_ENGINE
 $env:CAFELINK_E2E_ENGINE='chromium'
 $runId = (Get-Date -Format 'yyyyMMdd-HHmmss') + '-' + [guid]::NewGuid().ToString('N').Substring(0, 8)
-$evidenceRoot = Join-Path $workspaceRoot ("report\evidence\cafelink-v2\"+$Phase.ToLower()+'-gate')
+$evidenceRoot = Join-Path $projectRoot ("target\evidence\cafelink-v2\"+$Phase.ToLower()+'-gate')
 $runRoot = Join-Path $evidenceRoot $runId
 New-Item -ItemType Directory -Path $runRoot -Force | Out-Null
 $summary = [ordered]@{ phase=$Phase; includedPhases=@('V5a','V6','V7','prepaid-simulator','automatic-private-visits','trusted-loopback-proxy','storefront-ui','web-policy-experiment','readiness-and-admin-diagnostics','bounded-audio','staff-acceptance','tax-snapshot','store-finance','staff-role-access','account-session-revocation','bundled-menu-photos'); browserEngine='chromium'; runId=$runId; startedAt=(Get-Date).ToString('o'); status='RUNNING'; gates=@(); physicalLan='NOT_RUN'; physicalPhone='NOT_RUN'; realPaymentProvider='NOT_INTEGRATED' }

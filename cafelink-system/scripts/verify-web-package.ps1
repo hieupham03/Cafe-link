@@ -1,11 +1,10 @@
 param([Parameter(Mandatory=$true)][string]$Archive,[switch]$PublicSmoke,[string]$EvidenceDirectory='')
 $ErrorActionPreference='Stop'
 $projectRoot=Split-Path $PSScriptRoot -Parent
-$workspaceRoot=Split-Path $projectRoot -Parent
 $archivePath=[IO.Path]::GetFullPath($Archive)
 if(-not (Test-Path -LiteralPath $archivePath -PathType Leaf)){throw 'Release ZIP does not exist.'}
 $runId=(Get-Date -Format 'yyyyMMdd-HHmmss')+'-'+[guid]::NewGuid().ToString('N').Substring(0,8)
-if(-not $EvidenceDirectory){$EvidenceDirectory=Join-Path $workspaceRoot ('report/evidence/cafelink-v2/v9/'+$runId)}
+if(-not $EvidenceDirectory){$EvidenceDirectory=Join-Path $projectRoot ('target/evidence/cafelink-v2/v9/'+$runId)}
 $EvidenceDirectory=[IO.Path]::GetFullPath($EvidenceDirectory)
 if(Test-Path -LiteralPath $EvidenceDirectory){throw 'Select a new evidence directory.'}
 $fresh=Join-Path $projectRoot ('target/v9-package-check/'+$runId+'/Fresh copy with spaces CafeLink')

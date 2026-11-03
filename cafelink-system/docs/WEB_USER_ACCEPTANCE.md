@@ -2,7 +2,7 @@
 
 Ưu tiên kiểm V10.1: ảnh cả tám món, gửi đơn → chờ quầy tiếp nhận → thanh toán → giao đồ; ADMIN cấu hình thuế/thu chi và tạo STAFF; khóa/đổi mật khẩu thu hồi mọi tab cũ. [Bảng quyền và kịch bản](UPGRADE_V10_1_ROLES.md). Các phần bên dưới giữ các tình huống hồi quy kế thừa.
 
-**Bản phần mềm hiện tại:** RC4, schema 11. Kết quả tự động và hash nằm trong [báo cáo V9.4](../../report/CafeLink_Hardening_20261030.md). Các dòng dưới đây vẫn là kết quả của người kiểm, không tự chuyển thành Đạt vì test máy đã qua. [Bộ nghiệm thu thiết bị](WEB_DEVICE_ACCEPTANCE.md) chuẩn bị profile riêng, launcher và mẫu ghi kết quả để thử sau.
+**Bản phần mềm hiện tại:** RC4, schema 11. Kết quả tự động và hash đã được ghi nhận tại thời điểm kiểm; hồ sơ chi tiết đã được gỡ khỏi repository. Các dòng dưới đây vẫn là kết quả của người kiểm, không tự chuyển thành Đạt vì test máy đã qua. [Bộ nghiệm thu thiết bị](WEB_DEVICE_ACCEPTANCE.md) chuẩn bị profile riêng, launcher và mẫu ghi kết quả để thử sau.
 
 **Cập nhật:** người dùng đã xác nhận hoàn thành kiểm thao tác thực tế. Bảng dưới giữ mẫu/trạng thái ban đầu để dùng cho lần kiểm lại; không tự tạo kết quả thiết bị chi tiết khi chưa có phiếu từng ca. Kiểm phần mềm tự động và xác nhận thực tế được phân biệt trong [TESTING](TESTING.md).
 

@@ -77,7 +77,7 @@ Không thêm API bỏ qua TCP hoặc quyền để tiện demo. Core vẫn quy�
 
 - Trước nâng cấp: `dist/CafeLink-UI-Before-20261101/index.html` tại gốc workspace, 20 ảnh.
 - Sau nâng cấp: `dist/CafeLink-UI-V10-20261101/index.html`, 31 ảnh, có bộ lọc màn khách/quầy/tài chính. Đây là ảnh ứng dụng chạy với dữ liệu riêng, không phải mockup hoặc dữ liệu quán.
-- Báo cáo Word/PDF đã chốt và evidence lịch sử được giữ nguyên. Số đo cũ không đổi nhãn thành V10.
+- Báo cáo Word/PDF và evidence lịch sử đã được gỡ khỏi repository. Số đo cũ không đổi nhãn thành V10.
 - Chưa push; để người dùng nghiệm thu trước. CafeLive tiếp tục tạm dừng.
 - V10 hiện chạy từ source; chưa phát hành portable mới. Script đóng gói đã chặn việc gắn source 10.0.0/schema 12 vào nhãn V9.4/schema 11. Gói cũ giữ nguyên.
 - Chưa xác nhận bằng điện thoại vật lý, chưa có ngân hàng/hoá đơn điện tử pháp lý, quản lý tồn kho theo định lượng hoặc kế toán đầy đủ. Đây là các giới hạn thực tế, không được suy từ test browser.

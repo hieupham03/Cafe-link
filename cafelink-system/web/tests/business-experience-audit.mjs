@@ -9,7 +9,7 @@ import { PNG } from 'pngjs';
 
 const options=Object.fromEntries(process.argv.slice(2).map(v=>{const i=v.indexOf('=');return[v.slice(2,i),v.slice(i+1)];}));
 const release=resolve(options.release??'../../dist/CafeLink-Web-V9');
-const output=resolve(options.output??`../../report/evidence/cafelink-v2/experience-audit/${new Date().toISOString().replace(/[:.]/g,'-')}`);
+const output=resolve(options.output??`../target/evidence/cafelink-v2/experience-audit/${new Date().toISOString().replace(/[:.]/g,'-')}`);
 const privateRoot=resolve('../target/experience-audit',crypto.randomUUID());
 await mkdir(output,{recursive:true});await mkdir(privateRoot,{recursive:true});
 const observations=[],contexts=[];

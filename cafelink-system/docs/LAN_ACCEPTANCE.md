@@ -6,7 +6,7 @@ Tài liệu này dành cho luồng desktop gốc còn giữ trong source để �
 
 ## Chuẩn bị
 
-Hai máy Windows cùng mạng riêng, có Java theo launcher source; bản đóng gói chứa JAR + `target/lib` nên không cần tải Maven/dependency để chạy. Chạy `scripts/verify-package.ps1` trước sử dụng. JDK 24.0.2 đã kiểm; năm ca desktop Swing cũng đã đạt trên JRE 17.0.20.1 trong [kiểm phần 4](../../report/evidence/cafelink-v2/v9.4-hardening/phase4-ui-ordering/summary.json). Các phép kiểm đó dùng loopback, chưa xác nhận hai máy LAN. Ghi OS/Java/IP và loại kết nối Wi-Fi/Ethernet vào biên bản.
+Hai máy Windows cùng mạng riêng, có Java theo launcher source; bản đóng gói chứa JAR + `target/lib` nên không cần tải Maven/dependency để chạy. Chạy `scripts/verify-package.ps1` trước sử dụng. JDK 24.0.2 đã kiểm; năm ca desktop Swing cũng đã đạt trên JRE 17.0.20.1 trong đợt kiểm phần 4. Các phép kiểm đó dùng loopback, chưa xác nhận hai máy LAN. Ghi OS/Java/IP và loại kết nối Wi-Fi/Ethernet vào biên bản.
 
 Giải nén vào đường dẫn ASCII, có thể có khoảng trắng như `D:\CafeLink Demo\`. Trên máy kiểm tra JDK24/Windows Cp1252, tên thư mục tiếng Việt làm hỏng tham số launcher; ca này chưa đạt, không coi là được hỗ trợ.
 
@@ -42,4 +42,4 @@ Nếu probe không kết nối: xác nhận IP/cổng, server bind `0.0.0.0`, m�
 
 Mỗi ca ghi thời điểm, số đơn/ticket, ID lượt và ảnh hai màn hình. L06/L07 là fault tại tầng ứng dụng; L05 là ngắt mạng thật. Không xem chúng là cùng một loại thử nghiệm. Dùng DB mới riêng cho từng fault demo; giữ journal cũ để kiểm tra phục hồi, không xóa để né lỗi. Khi mở lại terminal cho khách mới, dùng “Bắt đầu lượt khách mới” đúng điều kiện lượt cũ đã đóng.
 
-Khi xong, lưu biên bản và log đã loại credential/password vào `report/evidence/lan-acceptance/`. Không đưa file `data/client-state/*.json` lên sheet/repo. Chưa có biên bản thực tế thì giữ trạng thái NOT RUN.
+Khi xong, lưu biên bản và log đã loại credential/password vào `cafelink-system/target/evidence/lan-acceptance/`. Không đưa file `data/client-state/*.json` lên sheet/repo. Chưa có biên bản thực tế thì giữ trạng thái NOT RUN.

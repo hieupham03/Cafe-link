@@ -1,6 +1,6 @@
 # CafeLink - Đặc tả dự án theo bộ yêu cầu đầy đủ
 
-Source hiện hành **V10.1/schema 13** được đối chiếu với `final-project-2/final-project/`. V10 bổ sung tiếp nhận trước thanh toán, thuế/thu chi và giao diện; V10.1 bổ sung phân quyền và ảnh đồ uống. Cơ chế phục hồi/giao tiếp kế thừa các mốc trước; số đo lịch sử vẫn giữ đúng phiên bản. Không sửa nội dung bộ yêu cầu giảng viên.
+Source hiện hành **V10.1/schema 13** được đối chiếu với yêu cầu học phần lưu ngoài repository. V10 bổ sung tiếp nhận trước thanh toán, thuế/thu chi và giao diện; V10.1 bổ sung phân quyền và ảnh đồ uống. Cơ chế phục hồi/giao tiếp kế thừa các mốc trước; số đo lịch sử vẫn giữ đúng phiên bản. Tài liệu yêu cầu gốc không được lưu trong repository.
 
 ## 1. Thông tin và phạm vi
 
@@ -71,6 +71,6 @@ Oracle mở DB read-only, đối chiếu dữ liệu thật. Các phép đo chư
 
 ## 9. Sản phẩm và trạng thái bàn giao
 
-Source có README build/run/test, script runtime/maintenance, test, experiment và dependency pin. Báo cáo technical paper có Word/PDF, ảnh/sơ đồ chỉnh sửa được và evidence. Xem [runbook](FINAL_RUNBOOK.md), [checklist người dùng](WEB_USER_ACCEPTANCE.md) và [báo cáo hiện tại](../../report/README.md).
+Source có README build/run/test, script runtime/maintenance, test, experiment và dependency pin. Bộ nộp technical paper theo yêu cầu học phần cần có Word/PDF, ảnh/sơ đồ và evidence; các tệp này đã được gỡ khỏi repository. Xem [runbook](FINAL_RUNBOOK.md), [checklist người dùng](WEB_USER_ACCEPTANCE.md) và [chỉ mục tài liệu báo cáo](../../report/README.md).
 
 Nhóm đã xác nhận hoàn thành kiểm thao tác thực tế. Phần việc/tỷ lệ thực tế, Compilatio, chốt tên/bộ nộp và bàn giao chính thức được xác nhận riêng. Nộp theo Submission của bộ mới: một DOCX theo tên nhóm và bộ Source/Report; GitHub không thay quy trình nộp môn học.

@@ -1,10 +1,10 @@
 # CafeLink - Kiểm thử và đánh giá
 
-Mục đích là kiểm đúng chức năng của quán, giao tiếp Client/Server và hành vi khi có lỗi; thực nghiệm đo hiệu năng/phục hồi được tách riêng. Yêu cầu môn ở [Instruction, mục 8-9](../../final-project-2/final-project/Instruction.md); [báo cáo hiện tại](../../report/README.md) trình bày kết quả theo cấu trúc technical paper.
+Mục đích là kiểm đúng chức năng của quán, giao tiếp Client/Server và hành vi khi có lỗi; thực nghiệm đo hiệu năng/phục hồi được tách riêng. Yêu cầu gốc của học phần được lưu ngoài repository; [báo cáo hiện tại](../../report/README.md) trình bày kết quả theo cấu trúc technical paper.
 
 V10.1 bổ sung `RoleAccessTest`, `StaffRoleIntegrationTest` và `web/tests/roles.spec.ts`: quyền tại Core/HTTP/TCP, thu hồi nhiều tab, đổi mật khẩu, journal/audit không có mật khẩu, migration giữ dữ liệu và tiếp nhận khi mất phản hồi. [Chi tiết V10.1](UPGRADE_V10_1_ROLES.md) tách khỏi bằng chứng các mốc trước.
 
-Bản tích hợp thành viên có **201 Java và 90 Chromium đạt**, gồm 7 kịch bản tài chính chuyển từ nhánh thành viên và 2 ca ảnh món. [Phiếu kiểm tích hợp](../../report/evidence/cafelink-integration-20261102/summary.json) giữ số liệu và hash ảnh; kết quả các mốc trước ở dưới không bị đổi nhãn.
+Bản tích hợp thành viên có **201 Java và 90 Chromium đạt**, gồm 7 kịch bản tài chính chuyển từ nhánh thành viên và 2 ca ảnh món. Số liệu và hash ảnh được ghi nhận tại thời điểm kiểm; tệp evidence không còn được lưu trong repository.
 
 ## Các nhóm hành vi được kiểm
 
@@ -20,7 +20,7 @@ V10 bổ sung `StoreOperationsTest` và `web/tests/v10.spec.ts`: chặn trả ti
 | Phục hồi | Đã nhận thì lấy kết quả cũ; bỏ trước chặn lệnh muộn; nhận trước giữ kết quả | `RecoveryIntegrationTest`, `web/tests/orders.spec.ts` |
 | Vận hành | Readiness, chẩn đoán quản lý, hạn tiền, âm thanh và API từ chối sớm | `ReadinessIntegrationTest`, `DiagnosticsIntegrationTest`, `PaymentDeadlineTest`, các nhóm E2E |
 | Gói chạy | Manifest, JRE đi kèm, profile, launcher, nghiệp vụ và public | `web/tests/release-smoke.mjs`, `release-public-smoke.mjs` |
-| Công bố và tài liệu | Phiên bản/RC đúng, một cặp báo cáo, liên kết từ file thực sự công bố, tài liệu portable không trỏ file thiếu | `tools/verify_publication.py`, `tools/test_publication.py` |
+| Công bố và tài liệu | Phiên bản/RC đúng, liên kết tài liệu hợp lệ, tài liệu portable không trỏ file thiếu | `tools/verify_publication.py`, `tools/test_publication.py` |
 
 Test TCP 12 Client đồng thời khác workload 14 khách của phép đo tải. Giới hạn cấu hình 64 reader hoặc 32 bridge không phải kết luận công suất đã đo.
 
@@ -58,7 +58,7 @@ Xem [CI](CI.md) để chạy toàn bộ bộ kiểm có analyzer và campaign Qu
 | Portable | 23 nhóm đạt | Gói RC4, JRE đi kèm |
 | Public | 8 kiểm đạt | HTTPS/WSS từ gói RC4 |
 
-[Phiếu kiểm RC4](../../report/evidence/cafelink-v2/pre-feature-20261030/final-verification.json), [gate Java/Chromium](../../report/evidence/cafelink-v2/pre-feature-20261030/web-gate.json), [tương thích](../../report/evidence/cafelink-v2/pre-feature-20261030/browser-compatibility.json), [kiểm gói](../../report/evidence/cafelink-v2/pre-feature-20261030/rc4-release/summary.json) và [CI](CI.md) giữ kết quả cụ thể. Không cộng số ca giữa các lớp hoặc phiên bản thành tỷ lệ bao phủ.
+Phiếu kiểm RC4, gate Java/Chromium, kiểm tương thích và kiểm gói đã được lưu tại thời điểm chạy nhưng không còn trong repository; xem [CI](CI.md) để biết quy trình kiểm hiện hành. Không cộng số ca giữa các lớp hoặc phiên bản thành tỷ lệ bao phủ.
 
 Người dùng đã xác nhận hoàn thành kiểm thao tác thực tế. Đây là xác nhận định tính của luồng sử dụng, không có số đo thiết bị được thêm vào bảng benchmark. Các JSON/checklist cũ ghi `NOT_RUN` là snapshot của thời điểm chạy tự động, không được sửa ngược để tạo dữ liệu thực nghiệm mới. Checklist vẫn có thể dùng cho lần kiểm lại.
 

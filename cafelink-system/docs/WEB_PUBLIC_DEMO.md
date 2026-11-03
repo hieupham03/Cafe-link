@@ -2,7 +2,7 @@
 
 > **Bản hiện tại V9.4:** gói đã kiểm tại workspace là `dist/CafeLink-Web-V10.1-RC1.zip`; giải nén rồi chạy START-PUBLIC.cmd, không cần build/JDK/Node. ZIP giữ local, không tải kèm khi clone GitHub. [Bộ nghiệm thu thiết bị](WEB_DEVICE_ACCEPTANCE.md) tạo bản sao/profile riêng từ RC4 để thử điện thoại mà không đổi dữ liệu đang dùng. Khi clone source, chạy các lệnh bên dưới.
 
-Màn khách chia năm vùng: Thực đơn, Đơn đã gọi, Hỗ trợ, Thanh toán và Giỏ hàng. Kết quả public/phiên bản/hash nằm trong [báo cáo nâng cấp V9.4](../../report/CafeLink_Hardening_20261030.md), báo cáo Word/PDF nằm ở [chỉ mục báo cáo](../../report/README.md). Nhóm đã xác nhận hoàn tất kiểm thao tác thực tế; [checklist](WEB_USER_ACCEPTANCE.md) được giữ cho lần kiểm lại.
+Màn khách chia năm vùng: Thực đơn, Đơn đã gọi, Hỗ trợ, Thanh toán và Giỏ hàng. Kết quả public/phiên bản/hash của V9.4 đã được ghi nhận tại thời điểm kiểm; hồ sơ chi tiết và bản Word/PDF đã được gỡ khỏi repository. Nhóm đã xác nhận hoàn tất kiểm thao tác thực tế; [checklist](WEB_USER_ACCEPTANCE.md) được giữ cho lần kiểm lại.
 
 **Luồng hiện tại:** mỗi lần quản lý đăng nhập, QR các bàn được tạm ngưng; bấm **Mở tất cả bàn** để bật nhận khách và tải QR. Khách quét QR sẽ có phiên riêng, gọi món và thanh toán giả lập. Bàn vẫn **Đang phục vụ** sau khi món được giao; phiên chỉ đóng khi khách bấm **Rời phiên** hoặc quản lý bấm **Kết thúc phiên**.
 
@@ -105,6 +105,6 @@ Mở `http://127.0.0.1:19088/admin`, đăng nhập `admin / CafeLink@123`, bấm
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V10.1 -SkipInstall -SkipBrowserInstall
 ```
 
-Kiểm hiện hành V9.4/RC4 gồm 164 Java và 71 Chromium, xem [TESTING](TESTING.md), [phiếu kiểm cuối](../../report/evidence/cafelink-v2/pre-feature-20261030/final-verification.json) và [báo cáo hiện tại](../../report/README.md). Smoke Internet chạy tách trên DB fixture qua `web/tests/public-smoke.mjs`, nhận origin/mật khẩu bằng biến môi trường và không ghi mật khẩu vào kết quả. Không chạy smoke tạo đơn trên profile khách đang dùng.
+Kiểm hiện hành V9.4/RC4 gồm 164 Java và 71 Chromium; xem [TESTING](TESTING.md) và [báo cáo hiện tại](../../report/README.md). Tệp evidence của lượt kiểm cuối đã được gỡ khỏi repository. Smoke Internet chạy tách trên DB fixture qua `web/tests/public-smoke.mjs`, nhận origin/mật khẩu bằng biến môi trường và không ghi mật khẩu vào kết quả. Không chạy smoke tạo đơn trên profile khách đang dùng.
 
 Các run tự động lưu tại repo thử đường Internet bằng Chromium trên một máy; chúng không cung cấp số đo camera, Android/iOS hoặc LAN vật lý. Nhóm đã xác nhận hoàn thành kiểm thao tác thực tế riêng, không quy đổi xác nhận đó thành số đo tự động. WebSocket qua Cloudflare được hỗ trợ theo [FAQ chính thức](https://developers.cloudflare.com/cloudflare-one/faq/cloudflare-tunnels-faq/).

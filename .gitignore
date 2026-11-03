@@ -20,7 +20,7 @@
 /cafelink-system/web/dist/
 /cafelink-system/web/experiment-dist/
 /cafelink-system/docs/WEB_V9_3.md
-/report/evidence/cafelink-v2/v10.1-gate/
+/report/evidence/
 
 # Runtime profiles, uploaded media, local secrets and backup archives.
 /cafelink-system/data/
@@ -43,16 +43,11 @@
 
 # Reference documents from teachers/other groups remain local.
 /*.pdf
-/final-project-2/references/
-/final-project-2/**/*.pdf
-/final-project-2/*.pdf
-/final-project-2/**/__MACOSX/
-/final-project-2/__MACOSX/
 ._*
 /viet-bao-cao-lt-mang/references/*.pdf
 /viet-bao-cao-lt-mang/references/lecturer-transcript-and-guidance.txt
 
-# Publish the current report; keep previous rendered drafts locally.
+# Keep report binaries and private drafts local.
 /report/NhomXX_CafeLink_Report_*.docx
 /report/NhomXX_CafeLink_Report_*.pdf
 !/report/NhomXX_CafeLink_Report_Current_20261030.docx
@@ -76,9 +71,6 @@
 /report/CafeLink_Report_*.md
 /report/assets/cafelink-student-paper/README.md
 /report/assets/cafelink-student-paper/provenance.json
-/report/evidence/cafelink-student-paper/*
-/report/evidence/cafelink-final/layout/
-/report/evidence/cafelink-final/word-render.json
 /report/assets/cafelink-final/
 /report/assets/cafelink-student-paper/business-flow.*
 /report/assets/cafelink-student-paper/recovery-decision.*

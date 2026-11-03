@@ -1,6 +1,6 @@
 # CafeLink - Hướng dẫn source
 
-Source hiện hành **V10.1 / schema 13**; xem [nguồn đóng góp](../CONTRIBUTIONS.md). [V10.1](docs/UPGRADE_V10_1_ROLES.md) mô tả phân quyền ADMIN/STAFF và quản lý tài khoản. [V10](docs/UPGRADE_V10.md) mô tả tiếp nhận trước thanh toán, QR trên thẻ bàn, thu chi và thuế. Gói **V9.4/RC4** và báo cáo đã chốt là mốc trước nâng cấp; chạy V10.1 từ source theo hướng dẫn dưới.
+Source hiện hành **V10.1 / schema 13**; lịch sử đóng góp nằm trong Git. [V10.1](docs/UPGRADE_V10_1_ROLES.md) mô tả phân quyền ADMIN/STAFF và quản lý tài khoản. [V10](docs/UPGRADE_V10.md) mô tả tiếp nhận trước thanh toán, QR trên thẻ bàn, thu chi và thuế. Gói **V9.4/RC4** và báo cáo đã chốt là mốc trước nâng cấp; chạy V10.1 từ source theo hướng dẫn dưới.
 
 ## Mục lục
 
@@ -132,9 +132,9 @@ Máy chủ phải bật và có Internet. Tunnel đổi hostname khi chạy lạ
 
 ## Kiểm thử
 
-Bản V10.1 với thao tác toàn quán đã chạy đạt 206 Java, 95 Chromium và 37 kiểm công bố. [Kết quả hiện tại](../report/evidence/cafelink-bulk-tables-20261102/summary.json). [Đợt gộp PR #4 trước đó](../report/evidence/cafelink-session-merge-20261102/summary.json) kiểm nhanh đạt 24/24 ca phục hồi và hai mức 1/5 khách giả lập; các lượt phân quyền trước đó có 8 ca đạt trên mỗi engine Chromium/Firefox/WebKit. [Chi tiết nghiệm thu V10.1](docs/UPGRADE_V10_1_ROLES.md#kết-quả-kiểm) giữ phạm vi từng mốc. Kiểm engine chưa thay điện thoại vật lý, kiểm nhanh chưa thay bộ đo hiệu năng đầy đủ.
+Bản V10.1 với thao tác toàn quán đã chạy đạt 206 Java, 95 Chromium và 37 kiểm công bố. Đợt gộp PR #4 trước đó kiểm nhanh đạt 24/24 ca phục hồi và hai mức 1/5 khách giả lập; các lượt phân quyền trước đó có 8 ca đạt trên mỗi engine Chromium/Firefox/WebKit. [Chi tiết nghiệm thu V10.1](docs/UPGRADE_V10_1_ROLES.md#kết-quả-kiểm) giữ phạm vi từng mốc. Tệp evidence của các lượt kiểm không còn trong repository; kết quả mới được tạo cục bộ trong `cafelink-system/target/evidence/`. Kiểm engine chưa thay điện thoại vật lý, kiểm nhanh chưa thay bộ đo hiệu năng đầy đủ.
 
-Trước push hoặc đóng gói, xem [kiểm nội dung công bố](docs/PUBLICATION.md). CI dùng chung policy với script đóng gói để chặn hướng dẫn phiên bản cũ, liên kết hỏng và các cặp báo cáo bị trộn.
+Trước push hoặc đóng gói, xem [kiểm nội dung công bố](docs/PUBLICATION.md). CI dùng chung policy với script đóng gói để chặn hướng dẫn phiên bản cũ và liên kết hỏng; nếu có báo cáo được công bố, cặp Word/PDF phải khớp.
 
 | Lệnh | Phạm vi |
 |---|---|
@@ -145,7 +145,7 @@ Trước push hoặc đóng gói, xem [kiểm nội dung công bố](docs/PUBLIC
 
 Lệnh `test-v8.ps1` là bộ nghiệm thu/phát hành của mốc V9.4. Dùng `test-web.ps1 -Phase V10.1` cho nâng cấp hiện tại; [V10.1](docs/UPGRADE_V10_1_ROLES.md) ghi phạm vi và kết quả đã chạy. Kiểm Firefox/WebKit mới cũng được phân biệt với kết quả RC4 bên dưới.
 
-Cổng test **18080/18081** phải trống. Script tạo DB và tiến trình riêng, không dùng lại demo của bạn. Evidence mới nằm trong `../report/evidence/cafelink-v2/v9.4-gate/<run>/`; các bản đã chốt được giữ riêng. Chỉ thêm `-SkipInstall -SkipBrowserInstall` khi dependencies/browser đã có.
+Cổng test **18080/18081** phải trống. Script tạo DB và tiến trình riêng, không dùng lại demo của bạn. Kết quả mới nằm trong `target/evidence/cafelink-v2/v10.1-gate/<run>/`; thư mục này bị ignore khỏi Git. Chỉ thêm `-SkipInstall -SkipBrowserInstall` khi dependencies/browser đã có.
 
 Kiểm cuối RC4 đã ghi nhận **164 Java, 71 Chromium, 20 Firefox, 20 WebKit, 23 nhóm kiểm gói và 8 kiểm public**. [TESTING](docs/TESTING.md) nối kết quả với nhóm hành vi và nguồn bằng chứng; [CI](docs/CI.md) ghi đúng commit/run đã kiểm. Test engine trên Windows và xác nhận thao tác thực tế được phân biệt với số đo hiệu năng.
 
@@ -155,7 +155,7 @@ Sau build/kiểm hồi quy, cài dependency và chọn thư mục kết quả m�
 
 ```powershell
 python -m pip install -r tools/requirements-v8.txt
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/experiment-web.ps1 -OutputPath ..\report\evidence\cafelink-runs\my-new-run
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/experiment-web.ps1 -OutputPath target\evidence\cafelink-runs\my-new-run
 ```
 
 Chạy lại với tên output khác; script từ chối ghi đè thư mục đã có dữ liệu. Full campaign gồm 120 ca phục hồi và 12 lượt tải, warmup 3 giây/đo 15 giây, các mức 1/5/10/14 khách. Có thể dùng `-Quick` cho lượt kiểm ngắn.
@@ -219,8 +219,8 @@ Manifest gốc: [pom.xml](pom.xml), [package.json](web/package.json), [lockfile]
 ## Tài liệu và giới hạn
 
 - [Chỉ mục kỹ thuật](docs/README.md): giao thức, kiến trúc, demo, lỗi, thực nghiệm và CI.
-- [Báo cáo hiện tại](../report/README.md): Word/PDF mới và dữ liệu theo từng phiên bản.
-- [Yêu cầu học phần](../final-project-2/README.md): căn cứ ưu tiên để đối chiếu nội dung.
+- [Chỉ mục báo cáo](../report/README.md): tài liệu Markdown và kết quả lịch sử còn trong repository; bản Word/PDF và evidence đã được gỡ.
+- Yêu cầu gốc học phần và bảng đối chiếu được lưu ngoài repository.
 - [Đặc tả CafeLink](docs/PROJECT_SPECIFICATION.md): phạm vi và điều kiện nghiệp vụ.
 
 Thanh toán/hoàn tiền giả lập, QR có thể chia sẻ và không chứng minh hiện diện. Phục hồi cần quyền/storage còn phù hợp. Chưa có ngân hàng thật, nhiều chi nhánh hoặc công suất tối đa đã chứng minh. Nghiệm thu thao tác thực tế đã được người dùng xác nhận hoàn tất; các phiếu tự động cũ giữ nguyên phạm vi và thời điểm của chúng.

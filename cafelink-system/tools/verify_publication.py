@@ -11,10 +11,8 @@ from urllib.parse import unquote, urlsplit
 
 
 POLICY = 'cafelink-system/release/documentation.json'
-COURSE = 'final-project-2/final-project/'
 PRIVATE = ('viet-bao-cao-lt-mang/', 'report/tools/', 'report/templates/',
-           'final-project/', 'final-project-2/references/',
-           'report/evidence/cafelink-final/layout/', 'report/evidence/cafelink-student-paper/',
+           'final-project/', 'report/evidence/',
            'report/assets/cafelink-final/', 'report/CafeLink_Technical_Paper_')
 BASELINE = 'dist/CafeLink-Original-1.0.0-Baseline.zip'
 
@@ -161,19 +159,22 @@ def source_checks(tree):
         if retired and retired[1].replace('_', '.') != policy['version']:
             errors.append(f'Retired guide is published: {path}')
     reports = sorted(p for p in tree.paths if p.startswith('report/') and p.endswith(('.docx', '.pdf')))
-    if len(reports) != 2 or {Path(p).suffix for p in reports} != {'.docx', '.pdf'} or len({str(Path(p).with_suffix('')) for p in reports}) != 1:
-        errors.append('Publish exactly one matching Word/PDF report pair')
-    manifest_path = policy['reportManifest']
-    if not tree.exists(manifest_path):
+    if reports and (len(reports) != 2 or {Path(p).suffix for p in reports} != {'.docx', '.pdf'} or len({str(Path(p).with_suffix('')) for p in reports}) != 1):
+        errors.append('Publish either no report files or exactly one matching Word/PDF pair')
+    manifest_path = policy.get('reportManifest')
+    if manifest_path:
+        if not tree.exists(manifest_path):
+            errors.append('Current report validation manifest is missing')
+        elif reports:
+            manifest = json.loads(tree.text(manifest_path))
+            for kind in ('docx', 'pdf'):
+                path = manifest.get(kind)
+                if path not in reports:
+                    errors.append(f'Report manifest points outside the current pair: {path}')
+                elif hashlib.sha256(tree.reader(path)).hexdigest().upper() != manifest.get(kind + 'Sha256', '').upper():
+                    errors.append(f'Report changed without a matching publication check: {path}')
+    elif reports:
         errors.append('Current report validation manifest is missing')
-    else:
-        manifest = json.loads(tree.text(manifest_path))
-        for kind in ('docx', 'pdf'):
-            path = manifest.get(kind)
-            if path not in reports:
-                errors.append(f'Report manifest points outside the current pair: {path}')
-            elif hashlib.sha256(tree.reader(path)).hexdigest().upper() != manifest.get(kind + 'Sha256', '').upper():
-                errors.append(f'Report changed without a matching publication check: {path}')
     for entry in ['README.md', 'report/README.md']:
         if not tree.exists(entry):
             errors.append(f'Missing entry point: {entry}')
@@ -183,7 +184,7 @@ def source_checks(tree):
         for report in reports:
             if report not in resolved:
                 errors.append(f'{entry}: does not link the current report {report}')
-    documents = sorted(p for p in tree.paths if p.endswith('.md') and not p.startswith(COURSE))
+    documents = sorted(p for p in tree.paths if p.endswith('.md'))
     metrics = check_links(tree, documents, errors)
     active = [p for p in documents if p in ('README.md', 'cafelink-system/README.md', 'cafelink-system/release/windows/START-HERE.md')
               or (p.startswith('cafelink-system/docs/') and '/architecture/' not in p)]

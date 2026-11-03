@@ -73,7 +73,7 @@ Fingerprint dùng JSON sắp khóa, giữ thứ tự mảng và escaping U+2028/
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V10.1
 ```
 
-Runner tạo fixture DB/server riêng trên cổng 18080/18081, không chiếm/dừng demo đang chạy. Giữ hai cổng test trống trước khi chạy. Bản V9.4/RC4 có 164 Java + 71 Chromium PASS; xem [phạm vi kiểm thử](TESTING.md), [phiếu kiểm cuối](../../report/evidence/cafelink-v2/pre-feature-20261030/final-verification.json) và [báo cáo hiện tại](../../report/README.md).
+Runner tạo fixture DB/server riêng trên cổng 18080/18081, không chiếm/dừng demo đang chạy. Giữ hai cổng test trống trước khi chạy. Bản V9.4/RC4 có 164 Java + 71 Chromium PASS; xem [phạm vi kiểm thử](TESTING.md) và [báo cáo hiện tại](../../report/README.md). Tệp evidence của lượt kiểm cuối đã được gỡ khỏi repository.
 
 Chạy riêng các ca phục hồi sau khi đã build:
 
@@ -96,4 +96,3 @@ Playwright chuyển request đến Core thật rồi làm mất phản hồi, ho
 AMEND_SERVICE bổ sung ticket theo expectedVersion; CANCEL_SERVICE rút ticket đang mở. Cả hai được ghi journal trước gửi và tra receipt khi mất ACK. AMEND_SERVICE chưa được nhận được bỏ theo SEMANTIC; nhu cầu còn thì khách bổ sung lại. CANCEL_SERVICE chưa nhận cần khách xác nhận/bỏ, không tự replay. Không sửa payload của command ID đã phát. Lệnh version cũ bị từ chối, kết quả đã nhận luôn được lookup trước khi đánh giá phiên hiện tại.
 
 Nhân viên có Tra cứu hỗ trợ bằng command ID đầy đủ hoặc số đơn. Đây là tra cứu chỉ đọc; không cấp lại quyền browser hoặc tự làm lại giao dịch. Xem [luồng khách và quầy hiện hành](FINAL_RUNBOOK.md#4-kịch-bản-chức-năng).
-

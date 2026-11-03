@@ -1,6 +1,6 @@
 # CafeLink V10.1 - Quản lý và nhân viên
 
-V10.1 bổ sung tài khoản nhân viên riêng và phân quyền trên nền [V10](UPGRADE_V10.md). Source hiện dùng schema 13, được công bố trên GitHub; chưa phát hành portable mới. Báo cáo Word/PDF đã chốt và bằng chứng V9.4/V10 được giữ nguyên.
+V10.1 bổ sung tài khoản nhân viên riêng và phân quyền trên nền [V10](UPGRADE_V10.md). Source hiện dùng schema 13, được công bố trên GitHub; chưa phát hành portable mới. Báo cáo Word/PDF và evidence lịch sử đã được gỡ khỏi repository.
 
 ## Quyền sử dụng
 
