@@ -1,4 +1,4 @@
-# CafeLink V10.1 - Thu chi và thuế
+# CafeLink - Thu chi và thuế
 
 ADMIN mở **Thu chi** để xem dòng tiền, ghi/hủy phiếu chi và xuất CSV; mở **Cài đặt quán** để đặt tên, tỷ lệ và cách tính thuế. STAFF và khách không có các quyền này.
 
@@ -11,4 +11,4 @@ ADMIN mở **Thu chi** để xem dòng tiền, ghi/hủy phiếu chi và xuất 
 
 `StoreFinance.java`, `FinanceReport.tsx`, `TaxSettingsPanel.tsx`, `OrderTotals.tsx` là các thành phần hiện hành. Lệnh: `GET_TAX_SETTINGS`, `SAVE_TAX_SETTINGS`, `GET_FINANCE_REPORT`, `CREATE_EXPENSE`, `VOID_EXPENSE`. Lưu thuế có `expectedVersion`; giỏ gửi `expectedTaxVersion`. Schema hiện hành 13.
 
-7 kịch bản `FinanceTest` từ nhánh thành viên được chuyển sang contract hiện tại; browser được kiểm trong `v10.spec.ts`. Không giữ hai sổ/CSS/tính thuế song song. Lịch sử hợp nhất được lưu trong Git. [Quyền](UPGRADE_V10_1_ROLES.md) · [Giao thức](FINAL_PROTOCOL.md). Thanh toán/hoàn vẫn giả lập.
+Kiểm nghiệp vụ tại `FinanceTest`, kiểm Browser tại `web/tests/v10.spec.ts`. [Quyền](ACCESS_CONTROL.md) · [Giao thức](PROTOCOL.md). Thanh toán và hoàn tiền là giả lập.

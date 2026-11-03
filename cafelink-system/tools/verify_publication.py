@@ -13,7 +13,8 @@ from urllib.parse import unquote, urlsplit
 POLICY = 'cafelink-system/release/documentation.json'
 PRIVATE = ('viet-bao-cao-lt-mang/', 'report/tools/', 'report/templates/',
            'final-project/', 'report/evidence/',
-           'report/assets/cafelink-final/', 'report/CafeLink_Technical_Paper_')
+           'report/assets/', 'report/CafeLink_Technical_Paper_',
+           'report/CafeLink_Giao_Trinh_')
 BASELINE = 'dist/CafeLink-Original-1.0.0-Baseline.zip'
 
 
@@ -105,6 +106,14 @@ def check_current_guides(tree, documents, policy, errors, check_scripts=True):
         for found in re.findall(r'\bV\d+(?:\.\d+)+\b', first):
             if found != version:
                 errors.append(f'{path}: stale guide heading {found}, expected {version}')
+        prose = re.sub(r'```[^\n]*\n[\s\S]*?```', '', text)
+        for found in sorted(set(re.findall(r'\bV\d+(?:\.\d+)+\b', prose))):
+            if found != version:
+                errors.append(f'{path}: historical version reference {found}, expected {version}')
+        if re.search(r'(?im)^\s*\|[^\n]*\bNOT[ _]RUN\b|^\s*\|[^\n]*Chưa chạy', prose):
+            errors.append(f'{path}: unfinished rollout checklist in a product guide')
+        if re.search(r'(?im)^#{1,6}\s+(?:Bổ sung V\d|Nâng cấp\b|Upgrade\b|Changelog\b|Nhật ký triển khai\b)', prose):
+            errors.append(f'{path}: change-history heading in a product guide')
         for block in re.findall(r'```[^\n]*\n([\s\S]*?)```', text):
             for found in re.findall(r'CafeLink-Web-(V\d+(?:\.\d+)+)(?:-RC\d+)?', block):
                 if found != version:
@@ -141,7 +150,11 @@ def source_checks(tree):
     for guide in guides:
         if '/' in guide or '\\' in guide or not guide.endswith('.md') or not tree.exists('cafelink-system/docs/' + guide):
             errors.append(f'Unpublished portable guide: {guide}')
+    listed_guides = {'cafelink-system/docs/' + guide for guide in guides}
+    listed_guides.add('cafelink-system/docs/README.md')
     for path in sorted(tree.paths):
+        if path.startswith('cafelink-system/docs/') and path.endswith('.md') and path not in listed_guides:
+            errors.append(f'Unlisted project guide: {path}')
         if path.startswith(PRIVATE):
             errors.append(f'Local-only content is published: {path}')
         if path in ('report/CafeLink_Final_Report.md', 'report/CafeLink_Final_Handoff.md'):

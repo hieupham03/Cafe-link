@@ -1,226 +1,121 @@
-# CafeLink - Hướng dẫn source
+# CafeLink - Source và hướng dẫn phát triển
 
-Source hiện hành **V10.1 / schema 13**; lịch sử đóng góp nằm trong Git. [V10.1](docs/UPGRADE_V10_1_ROLES.md) mô tả phân quyền ADMIN/STAFF và quản lý tài khoản. [V10](docs/UPGRADE_V10.md) mô tả tiếp nhận trước thanh toán, QR trên thẻ bàn, thu chi và thuế. Gói **V9.4/RC4** và báo cáo đã chốt là mốc trước nâng cấp; chạy V10.1 từ source theo hướng dẫn dưới.
+Ứng dụng V10.1, schema 13: gọi món QR, tiếp nhận trước thanh toán giả lập, điều phối phục vụ, hỗ trợ, thuế/thu chi và phân quyền quản lý/nhân viên. [Tổng quan và giao diện](../README.md) · [Tài liệu kỹ thuật](docs/README.md).
 
-## Mục lục
+## Môi trường
 
-- [Yêu cầu môi trường](#yêu-cầu-môi-trường)
-- [Cài đặt và build](#cài-đặt-và-build)
-- [Chạy Server và Client](#chạy-server-và-client)
-- [Giao diện hiện hành](#giao-diện-hiện-hành)
-- [Cấu hình và dữ liệu](#cấu-hình-và-dữ-liệu)
-- [Demo public HTTPS](#demo-public-https)
-- [Kiểm thử](#kiểm-thử)
-- [Thực nghiệm](#thực-nghiệm)
-- [Đóng gói](#đóng-gói)
-- [Kiến trúc và source](#kiến-trúc-và-source)
-- [Công nghệ và thư viện](#công-nghệ-và-thư-viện)
-- [Tài liệu và giới hạn](#tài-liệu-và-giới-hạn)
-
-## Yêu cầu môi trường
-
-| Mục đích | Phần mềm |
+| Thành phần | Yêu cầu |
 |---|---|
-| Build source trên Windows x64 | PowerShell 5.1+, JDK 17+ có `java`/`javac`, Node.js 22.12+ và npm |
-| Kiểm Java và Browser | Môi trường build; Playwright tự tải Chromium trong script test |
-| Thực nghiệm, kiểm toàn workflow | Python 3.13; `tools/requirements-v8.txt` |
-| Chạy gói portable được cấp riêng | Windows x64; JRE có sẵn trong gói, không cần JDK/Node |
-| Khách/quầy | Trình duyệt; điện thoại dùng URL HTTPS khi demo public |
+| Server | Windows, PowerShell 5.1+, JDK 17+ |
+| Frontend build | Node.js 22.12+ và npm; manifest cũng hỗ trợ nhánh Node 20.19+ |
+| Công cụ đo | Python 3.13 và dependency trong `tools/requirements-v8.txt` |
+| Browser | Trình duyệt hỗ trợ IndexedDB, Web Locks và Web Crypto; điện thoại truy cập HTTPS |
 
-Node cũng chấp nhận nhánh 20 từ 20.19 theo `web/package.json`; các lệnh Windows và CI dùng Node 22. Maven bootstrap trong script nên không cần cài Maven riêng. Lần build đầu cần Internet tải dependency. Linux/macOS chưa có runbook tương đương đã nghiệm thu.
+Internet cần để tải dependency/browser/runtime cho lần đầu. Script bootstrap Maven; không cần cài Maven hoặc SQLite server riêng.
 
-Kiểm công cụ trước khi build:
+## Build và chạy
 
-```powershell
-java -version
-javac -version
-node --version
-npm.cmd --version
-```
-
-## Cài đặt và build
-
-Clone tại một thư mục của bạn, rồi chạy:
+Từ thư mục `cafelink-system`:
 
 ```powershell
-git clone https://github.com/hieupham03/Cafe-link.git
-cd Cafe-link\cafelink-system
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-web.ps1
-```
-
-Nếu đã clone, mở PowerShell tại **`cafelink-system/`**. Tất cả lệnh còn lại trong README dùng thư mục này, trừ khi ghi khác.
-
-Build dùng `npm ci`, typecheck/build frontend và Maven package Java. Output:
-
-```text
-target/cafelink-1.0.0.jar     Java Gateway/Core
-target/lib/                 Dependency Java
-web/dist/                   Website production
-```
-
-Tên Maven artifact `1.0.0` giữ để tương thích script; bản ứng dụng local hiện là V10.1. Build không thay thế kiểm thử đầy đủ. Sau khi code hoặc lockfile đổi, build lại; `-SkipInstall` chỉ dùng khi npm dependencies đã khớp lock.
-
-## Chạy Server và Client
-
-### Khởi động Server
-
-```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-web.ps1 -Port 8088 -TcpPort 5058 -DatabasePath data/local-demo/cafelink.db
 ```
 
-Terminal in URL và cổng Core; giữ terminal mở. `WebMain` khởi động Gateway và Core trong cùng tiến trình, kết nối bằng TCP loopback thật. Nhấn **Ctrl+C** để dừng.
+`build-web.ps1` cài dependency bằng lockfile, kiểm TypeScript, build Vite và package Java. Mở **http://127.0.0.1:8088/admin**, dùng local **`admin` / `CafeLink@123`**. Giữ terminal mở, dùng Ctrl+C để dừng.
 
-### Mở Client quản lý và khách
+Quản lý bấm **Mở tất cả bàn**, lấy QR/link đặt món rồi mở ở profile khách độc lập. Khách gửi đơn → quầy tiếp nhận → khách thanh toán giả lập → quầy pha chế/giao. Hai tab cùng profile có thể dùng chung phiên. [Thao tác đầy đủ](docs/USER_GUIDE.md) · [Kịch bản demo](docs/RUNBOOK.md).
 
-1. Quản lý vào **http://127.0.0.1:8088/admin**, đăng nhập **`admin` / `CafeLink@123`**.
-2. Chọn **Mở tất cả bàn** để hiện QR ngay trên từng thẻ. Có thể vào **Bàn 1**, lấy **Sao chép link đặt món**.
-3. Khách dùng browser/profile khác mở nguyên link. Link có mã bàn trong fragment `#table=...`; trang chỉ có `/join` không đủ thông tin.
-4. Khách gửi đơn; quầy chọn **Quầy pha chế → Tiếp nhận đơn** hoặc từ chối kèm lý do. Chỉ sau tiếp nhận, khách mới được thanh toán giả lập. Quầy pha chế rồi giao.
-5. Mở thêm một Client độc lập cùng QR để kiểm hai khách cùng bàn có đơn riêng.
+## Cấu hình
 
-Sau thanh toán và giao đồ, khách vẫn giữ phiên để đặt thêm. **Rời phiên** kết thúc phiên của khách; quản lý có thể **Kết thúc phiên** trong chi tiết bàn nếu khách quên rời. Cả hai đều bị chặn khi còn đơn chưa thanh toán/chưa giao hoặc hỗ trợ chưa xử lý. Kết thúc phiên không tắt QR nhận khách. Mỗi lần ADMIN đăng nhập, các bàn tạm ngưng nhận khách mới; bấm **Mở tất cả bàn** để bật lại. Đăng nhập STAFF không tạm ngưng bàn.
-
-Quản lý có thể chọn **Tạm ngưng tất cả bàn** để ngăn khách mới vào bằng QR mà không ảnh hưởng phiên hiện có. **Kết thúc tất cả phiên QR** kiểm tra các bàn và chỉ đóng tất cả khi không còn đơn hoặc hỗ trợ chưa xử lý; cửa sổ xác nhận hiển thị bàn cần xử lý. Nếu trạng thái quán thay đổi trong lúc xác nhận, mở lại hộp thoại để kiểm tra. Hai thao tác có nhật ký đối chiếu khi mất phản hồi.
-
-Không cần chạy thêm app Java phía khách. Tab thường dùng chung cookie; các cửa sổ ẩn danh cùng mở cũng có thể dùng chung phiên riêng tư. Hai khách độc lập nên dùng hai browser/profile/thiết bị khác nhau.
-
-## Giao diện hiện hành
-
-Ảnh chụp source V10.1 ngày 02/11/2026 với dữ liệu minh họa riêng. [Thư viện ảnh ở README chính](../README.md#giao-diện-hiện-hành) có cả màn khách trên máy tính/di động, QR bàn, quầy, thu chi, thuế và tài khoản nhân viên.
-
-| Khách chọn món | Quầy tiếp nhận và pha chế |
-|---|---|
-| ![Thực đơn CafeLink V10.1 trên máy tính](docs/images/current/guest-menu-desktop.png) | ![Quầy CafeLink V10.1 với đơn chờ tiếp nhận và đơn đang pha chế](docs/images/current/order-acceptance.png) |
-
-## Cấu hình và dữ liệu
-
-### Tham số chạy
-
-| Tham số `run-web.ps1` | Mặc định của script | Ý nghĩa |
+| Tham số `run-web.ps1` | Mặc định | Ý nghĩa |
 |---|---|---|
-| `-Port` | `8080` | HTTP/WebSocket của Gateway; ví dụ README chọn 8088 |
-| `-TcpPort` | `5051` | TCP Core; ví dụ README chọn 5058 |
+| `-Port` | `8080` | HTTP/WebSocket Gateway |
+| `-TcpPort` | `5051` | TCP Core, bind loopback |
 | `-DatabasePath` | `data/v2/cafelink.db` | File SQLite; dùng profile riêng theo mục đích |
-| `-BindAddress` | `127.0.0.1` | HTTP phát triển chỉ trên loopback; LAN trực tiếp cần TLS |
-| `-OrderingMode` | `prepay` | Luồng QR trả trước; `postpay` giữ cho tương thích |
-| `-AssetsPath` | `web/dist` | Thư mục website production |
-| `-QrKeyFile` | File cạnh DB khi không chỉ định | Khóa ký quyền QR |
-| `-PublicOrigin`, `-TrustedProxy` | Không bật | Public HTTPS qua proxy; dùng launcher public để cấu hình đồng bộ |
-| `-KeyStore` | Không bật | Keystore cho TLS trực tiếp; đọc mật khẩu từ biến môi trường |
+| `-BindAddress` | `127.0.0.1` | HTTP local; truy cập từ thiết bị cần HTTPS hợp lệ |
+| `-OrderingMode` | `prepay` | Chế độ cấu hình; phiên QR AUTO được tạo theo luồng PREPAY |
+| `-AssetsPath` | `web/dist` | Assets production |
+| `-QrKeyFile` | Cạnh DB | Khóa QR; giữ cùng profile dữ liệu |
+| `-KeyStore` | Không bật | TLS trực tiếp; mật khẩu từ `CAFELINK_KEYSTORE_PASSWORD` |
+| `-PublicOrigin`, `-TrustedProxy` | Không bật | HTTPS qua proxy; dùng launcher public để cấu hình đồng bộ |
 
-Các đường dẫn dữ liệu tương đối được giải theo project `cafelink-system`. Luồng web hiện tại không tự đọc file `.env`. `CAFELINK_KEYSTORE_PASSWORD` dùng khi cấu hình TLS; `CAFELINK_QR_KEY` là lựa chọn cấp khóa từ môi trường. Public launcher tự cấu hình mật khẩu demo tạm, không cần điền secret để chạy Quick Tunnel.
+Đường dẫn tương đối được giải từ `cafelink-system`. Website không tự đọc `.env`. `CAFELINK_QR_KEY` là tùy chọn cấp khóa từ môi trường. [Triển khai và dữ liệu](docs/DEPLOYMENT.md).
 
-### Khởi tạo và giữ dữ liệu
+### Dữ liệu
 
-SQLite tự tạo/migrate schema 13, tài khoản demo, sáu bàn và tám món khi mở DB mới; không cần cài database server hoặc nhập SQL. Seed không reset DB cũ. Để nghiệm thu V10.1 lần đầu, dùng DB riêng như `data/v10-roles-review/cafelink.db`.
+SQLite tự tạo/migrate schema, sáu bàn, tám món và tài khoản quản lý khi mở DB mới. Ảnh mẫu nằm tại `web/public/images/menu/`; ảnh do quản lý tải lên được ưu tiên. Seed không reset dữ liệu.
 
-Profile local trong ví dụ chứa DB, khóa QR cạnh DB và thư mục ảnh. Browser giữ cookie và IndexedDB riêng theo origin. Chạy lại cùng profile còn dữ liệu là hành vi lưu bền có chủ đích. Muốn thử sạch, dùng một `DatabasePath` mới và browser/profile khách mới. Không xóa DB đang chạy hoặc chỉ chép file DB khi còn ghi WAL.
+Profile gồm DB, file khóa QR cạnh DB và thư mục media. Browser giữ cookie/journal theo origin. Muốn chạy dữ liệu sạch, dùng đường dẫn DB mới và profile Browser riêng; không xóa DB đang chạy hoặc xóa journal khi còn yêu cầu chưa rõ kết quả.
 
-[Backup/reset/restore](docs/WEB_RELEASE.md) áp dụng cho gói portable; [runbook](docs/FINAL_RUNBOOK.md) phân biệt dữ liệu Client và Server.
+### Public HTTPS
 
-## Demo public HTTPS
-
-Dừng local trước khi đổi chế độ. Sau build:
+Sau build, chọn cặp cổng trống:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/public-demo.ps1 -SkipBuild -Port 19088 -TcpPort 19058 -DurationSeconds 1800
 ```
 
-Script dùng Cloudflare Quick Tunnel đã ghim checksum, tạo profile public và mật khẩu quản lý tạm, in HTTPS để demo. Đăng nhập bằng mật khẩu vừa in; mở các bàn rồi lấy QR mới. Điện thoại không cần chung Wi-Fi với máy chủ.
-
-Máy chủ phải bật và có Internet. Tunnel đổi hostname khi chạy lại; cookie/IndexedDB ở hostname cũ không tự chuyển sang hostname mới. Core vẫn loopback, không mở cổng TCP ra Internet. Xem [public demo](docs/WEB_PUBLIC_DEMO.md) hoặc [LAN có TLS](docs/LAN_ACCEPTANCE.md). Cổng bận thì chọn cặp trống; launcher không tự dừng tiến trình đang chiếm cổng.
+Dùng URL và mật khẩu tạm do terminal cấp. Core vẫn loopback. Local/public có DB riêng; tunnel đổi địa chỉ thì lấy lại QR. [Public demo](docs/PUBLIC_DEMO.md).
 
 ## Kiểm thử
 
-Bản V10.1 với thao tác toàn quán đã chạy đạt 206 Java, 95 Chromium và 37 kiểm công bố. Đợt gộp PR #4 trước đó kiểm nhanh đạt 24/24 ca phục hồi và hai mức 1/5 khách giả lập; các lượt phân quyền trước đó có 8 ca đạt trên mỗi engine Chromium/Firefox/WebKit. [Chi tiết nghiệm thu V10.1](docs/UPGRADE_V10_1_ROLES.md#kết-quả-kiểm) giữ phạm vi từng mốc. Tệp evidence của các lượt kiểm không còn trong repository; kết quả mới được tạo cục bộ trong `cafelink-system/target/evidence/`. Kiểm engine chưa thay điện thoại vật lý, kiểm nhanh chưa thay bộ đo hiệu năng đầy đủ.
-
-Trước push hoặc đóng gói, xem [kiểm nội dung công bố](docs/PUBLICATION.md). CI dùng chung policy với script đóng gói để chặn hướng dẫn phiên bản cũ và liên kết hỏng; nếu có báo cáo được công bố, cặp Word/PDF phải khớp.
-
 | Lệnh | Phạm vi |
 |---|---|
-| `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maven.ps1 -B test` | Java: protocol, TCP, service, DB, Gateway và hồi quy desktop |
-| `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V10.1` | Java verify + build production/experiment + Chromium E2E, gồm phân quyền/thu hồi phiên/tiếp nhận/thuế/thu chi |
-| `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-browser-compatibility.ps1` | Các nhóm chọn lọc trên Firefox và WebKit |
-| `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-v8.ps1 -Quick` | Bộ workflow: cấu hình, guard, test Java/web, analyzer và campaign ngắn |
+| `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maven.ps1 -B test` | Java: codec, TCP, service, DB, Gateway và hồi quy Client |
+| `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V10.1` | Java verify, build production/experiment và Chromium E2E |
+| `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-browser-compatibility.ps1` | Các nhóm tương thích trên Firefox và WebKit |
+| `python tools/verify_publication.py --root ..` | Tài liệu, phiên bản, liên kết và nội dung công bố |
+| `python -m unittest discover -s tools -p test_publication.py` | Hồi quy kiểm tài liệu và đóng gói hướng dẫn |
 
-Lệnh `test-v8.ps1` là bộ nghiệm thu/phát hành của mốc V9.4. Dùng `test-web.ps1 -Phase V10.1` cho nâng cấp hiện tại; [V10.1](docs/UPGRADE_V10_1_ROLES.md) ghi phạm vi và kết quả đã chạy. Kiểm Firefox/WebKit mới cũng được phân biệt với kết quả RC4 bên dưới.
-
-Cổng test **18080/18081** phải trống. Script tạo DB và tiến trình riêng, không dùng lại demo của bạn. Kết quả mới nằm trong `target/evidence/cafelink-v2/v10.1-gate/<run>/`; thư mục này bị ignore khỏi Git. Chỉ thêm `-SkipInstall -SkipBrowserInstall` khi dependencies/browser đã có.
-
-Kiểm cuối RC4 đã ghi nhận **164 Java, 71 Chromium, 20 Firefox, 20 WebKit, 23 nhóm kiểm gói và 8 kiểm public**. [TESTING](docs/TESTING.md) nối kết quả với nhóm hành vi và nguồn bằng chứng; [CI](docs/CI.md) ghi đúng commit/run đã kiểm. Test engine trên Windows và xác nhận thao tác thực tế được phân biệt với số đo hiệu năng.
+Giữ cổng fixture **18080/18081** trống. Mỗi nhóm E2E có Core/Gateway/DB riêng; không dùng lại demo đang chạy. Chỉ dùng `-SkipInstall -SkipBrowserInstall` khi dependency và browser đã được cài. [Phạm vi, kết quả và nghiệm thu](docs/TESTING.md).
 
 ## Thực nghiệm
 
-Sau build/kiểm hồi quy, cài dependency và chọn thư mục kết quả mới:
+Sau build và kiểm hồi quy:
 
 ```powershell
 python -m pip install -r tools/requirements-v8.txt
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/experiment-web.ps1 -OutputPath target\evidence\cafelink-runs\my-new-run
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/experiment-web.ps1 -OutputPath target/experiments/my-run
 ```
 
-Chạy lại với tên output khác; script từ chối ghi đè thư mục đã có dữ liệu. Full campaign gồm 120 ca phục hồi và 12 lượt tải, warmup 3 giây/đo 15 giây, các mức 1/5/10/14 khách. Có thể dùng `-Quick` cho lượt kiểm ngắn.
+Chọn output mới cho từng lượt; script không ghi đè dữ liệu đã có. Full campaign gồm 120 ca phục hồi và 12 lượt tải; thêm `-Quick` cho lượt ngắn. Sản phẩm dùng SEMANTIC; harness so sánh các policy trên cùng cơ chế nền. [Phương pháp và cách đọc kết quả](docs/EXPERIMENTS.md).
 
-R0 gửi lại, R1 chờ xem xét, R2 xử lý theo loại yêu cầu. Các phương án cùng giữ chống trùng và quyền/phiên. Sản phẩm dùng R2; harness không phục vụ trong website production. [Phương pháp, metric và dữ liệu](docs/WEB_EXPERIMENTS.md) giải thích timer, mẫu số, slot chưa phát và oracle.
-
-Số đo gần nhất thuộc **V9.4/RC3 ngày 30/10**: 120 ca phục hồi; tải hoàn tất **1.256/1.350** lượt, **94 lượt chưa phát** ở 14 khách, không ghi lỗi flow/HTTP đã gửi. Đây là đo cùng máy qua loopback; không gán kết quả đó cho RC4 hoặc coi giới hạn cấu hình là công suất tối đa.
-
-## Đóng gói
-
-Bản hiện hành chạy từ source theo README. Portable V10.1 chưa phát hành; `release/documentation.json` ghi `NOT_RELEASED` và script chặn tạo gói chưa được nghiệm thu. Các template/công cụ được giữ cho bản phát hành sau. Gói V9.4/RC4 và baseline E0 là mốc lịch sử, không chứa các tính năng mới. [Dữ liệu và phiên bản](docs/WEB_RELEASE.md).
-
-## Kiến trúc và source
-
-```text
-Browser -- HTTP/WS --> WebGateway / SessionBridge
-                            |
-                    NetworkClient: TCP
-                            |
-                       CafeServer
-                            |
-                       CafeService
-                            |
-                    SQLite transaction
-```
+## Cấu trúc source
 
 ```text
 src/main/java/com/cafelink/
-  common/        FrameCodec, Message, model và lệnh
-  client/        NetworkClient; desktop cũ cho hồi quy
-  server/        TCP, xác thực, nghiệp vụ và SQLite
-  web/           HTTP/WebSocket, phiên web và chẩn đoán
-src/test/        Java tests
-web/src/         Giao diện khách/quầy và nhật ký
-web/tests/       Browser E2E, kiểm portable/public
-web/experiments/ Phục hồi có kiểm soát và phát tải
-scripts/         Build, chạy, test, đo và đóng gói
-tools/           Đọc DB, phân tích số đo, kiểm workflow
-release/         Launcher, runtime pin và UAT kit
-docs/            Tài liệu kỹ thuật
+  common/         FrameCodec, Message, model, command và quyền
+  client/         NetworkClient và Client phục vụ kiểm tương thích
+  server/         TCP, danh tính, nghiệp vụ và SQLite
+  web/            HTTP/WebSocket, cookie, bridge và chẩn đoán
+src/test/         Java unit/integration tests
+web/src/          React khách/quầy và nhật ký Browser
+web/tests/        Browser E2E và kiểm triển khai
+web/experiments/  Fault có kiểm soát và phát tải
+scripts/          Build, run, test, đo và đóng gói
+tools/            Oracle read-only, analyzer và guard
+release/          Template launcher, runtime pin và công cụ kit
+docs/             Tài liệu kỹ thuật
 ```
 
-Core tách đọc socket, xử lý trạng thái và writer/hàng đợi. `CafeService` đồng bộ quyết định nghiệp vụ; transaction ghi dữ liệu và receipt. `NetworkClient` dùng một reader, `pending/requestId` và khóa ghi để phân biệt phản hồi/sự kiện, tránh xen byte giữa frame. [Kiến trúc](docs/FINAL_ARCHITECTURE.md) và [protocol](docs/FINAL_PROTOCOL.md) có mô tả đầy đủ.
+`WebMain` khởi tạo Gateway và Core cùng tiến trình; chúng trao đổi qua socket TCP thật. `SessionBridge` giữ một TCP Client cho phiên web. `CafeService` quyết định nghiệp vụ trong transaction; Gateway không ghi trực tiếp bảng đơn/ticket/payment. [Kiến trúc](docs/ARCHITECTURE.md) · [Giao thức](docs/PROTOCOL.md).
 
-## Công nghệ và thư viện
+## Công nghệ
 
 | Thành phần | Phiên bản ghim | Mục đích |
 |---|---|---|
-| Java / Maven | Target 17 / bootstrap 3.9.11 | Core, TCP, Gateway, build và dependency |
-| Jetty WebSocket | 12.0.40 | HTTP/API và WebSocket phía Browser |
-| Gson | 2.11.0 | JSON của bản tin và DTO |
-| SQLite JDBC | 3.50.3.0 | Dữ liệu nhúng và transaction |
-| SLF4J Simple | 2.0.16 | Logging |
-| React / TypeScript / Vite | 19.3.1 / 5.9.3 / 8.3.5 | UI, kiểm kiểu và build |
+| Java / Maven bootstrap | Target 17 / 3.9.11 | Core, TCP, Gateway và build |
+| Jetty | 12.0.40 | HTTP/API và WebSocket |
+| Gson | 2.11.0 | JSON |
+| SQLite JDBC | 3.50.3.0 | DB nhúng và transaction |
+| SLF4J Simple | 2.0.16 | Log |
+| React / TypeScript / Vite | 19.3.1 / 5.9.3 / 8.3.5 | UI, kiểm kiểu và assets |
 | qrcode.react | 4.2.0 | Hiển thị QR |
-| JUnit / Playwright | 5.11.4 / 1.64.1 | Kiểm Java và Browser |
-| Python / Matplotlib | Theo `tools/requirements-v8.txt` | Đối chiếu DB, số liệu và biểu đồ |
+| JUnit / Playwright | 5.11.4 / 1.64.1 | Java và Browser tests |
 
-Manifest gốc: [pom.xml](pom.xml), [package.json](web/package.json), [lockfile](web/package-lock.json), [requirements](tools/requirements-v8.txt). JDK đo local, target bytecode và JRE trong gói là ba khái niệm riêng.
+Manifest: [pom.xml](pom.xml), [package.json](web/package.json), [package-lock.json](web/package-lock.json), [Python requirements](tools/requirements-v8.txt). Phiên bản JDK máy chạy, target bytecode và runtime trong một gói phân phối là các khái niệm riêng.
 
-## Tài liệu và giới hạn
+## Phân phối và vận hành
 
-- [Chỉ mục kỹ thuật](docs/README.md): giao thức, kiến trúc, demo, lỗi, thực nghiệm và CI.
-- [Chỉ mục báo cáo](../report/README.md): tài liệu Markdown và kết quả lịch sử còn trong repository; bản Word/PDF và evidence đã được gỡ.
-- Yêu cầu gốc học phần và bảng đối chiếu được lưu ngoài repository.
-- [Đặc tả CafeLink](docs/PROJECT_SPECIFICATION.md): phạm vi và điều kiện nghiệp vụ.
-
-Thanh toán/hoàn tiền giả lập, QR có thể chia sẻ và không chứng minh hiện diện. Phục hồi cần quyền/storage còn phù hợp. Chưa có ngân hàng thật, nhiều chi nhánh hoặc công suất tối đa đã chứng minh. Nghiệm thu thao tác thực tế đã được người dùng xác nhận hoàn tất; các phiếu tự động cũ giữ nguyên phạm vi và thời điểm của chúng.
+Đường chạy được hướng dẫn cho repository là build từ source. `release/` chứa template và kiểm định cho quy trình tạo gói; chỉ sử dụng một gói có manifest/kiểm định khớp chính gói đó. Chính sách đóng gói tại `release/documentation.json` chặn công bố runtime chưa đủ điều kiện. [Vận hành](docs/OPERATIONS.md) · [Dữ liệu và triển khai](docs/DEPLOYMENT.md).

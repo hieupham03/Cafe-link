@@ -21,7 +21,8 @@ class DeviceKitChecks(unittest.TestCase):
         self.output = self.root / "new kit with spaces"
         self.guide = self.root / "guide.md"
         self.guide.write_text("Human tests remain NOT_RUN", encoding="utf-8")
-        self.files = {"RELEASE.json": json.dumps({"release": "V9.4", "schema": 11}),
+        self.policy = json.loads((PROJECT / "release/documentation.json").read_text(encoding="utf-8"))
+        self.files = {"RELEASE.json": json.dumps({"release": self.policy["version"], "schema": self.policy["schema"]}),
                       "SHA256-MANIFEST.json": "{}", "runtime/bin/java.exe": "fixture-only"}
         self.write_archive()
 
@@ -44,6 +45,7 @@ class DeviceKitChecks(unittest.TestCase):
         self.assertTrue(record["cases"])
         self.assertEqual({case["result"] for case in record["cases"]}, {"NOT_RUN"})
         self.assertEqual(record["reviewer"], "")
+        self.assertEqual(record["release"], self.policy["version"])
         self.assertFalse((self.output / "app/data").exists())
         self.assertTrue((self.output / "START-PUBLIC.cmd").is_file())
 
@@ -88,11 +90,27 @@ class DeviceKitChecks(unittest.TestCase):
         self.assertFalse(self.output.exists())
 
     def test_other_release_cannot_silently_use_this_checkpoint(self):
-        self.files["RELEASE.json"] = json.dumps({"release": "V9.3", "schema": 11})
+        self.files["RELEASE.json"] = json.dumps({"release": "V9.4", "schema": 11})
         self.write_archive()
-        with self.assertRaisesRegex(ValueError, "V9.4"):
+        with self.assertRaisesRegex(ValueError, self.policy["version"]):
             self.prepare()
         self.assertFalse(self.output.exists())
+
+    def test_matching_version_with_wrong_schema_is_rejected(self):
+        self.files["RELEASE.json"] = json.dumps({"release": self.policy["version"], "schema": self.policy["schema"] - 1})
+        self.write_archive()
+        with self.assertRaisesRegex(ValueError, "schema"):
+            self.prepare()
+        self.assertFalse(self.output.exists())
+
+    def test_repository_checklist_is_self_contained_in_the_generated_kit(self):
+        self.guide = PROJECT / "release/device-acceptance/CHECKLIST.md"
+        self.prepare()
+        checklist = (self.output / "CHECKLIST.md").read_text(encoding="utf-8")
+        self.assertEqual(checklist, self.guide.read_text(encoding="utf-8"))
+        self.assertIn("P01", checklist)
+        self.assertIn("U01", checklist)
+        self.assertNotIn("](../", checklist)
 
     def test_runner_keeps_local_and_public_profiles_separate_and_bounds_public_duration(self):
         self.prepare()

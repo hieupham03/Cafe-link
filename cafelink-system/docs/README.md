@@ -1,43 +1,36 @@
-# CafeLink - Chỉ mục tài liệu kỹ thuật
+# CafeLink - Tài liệu kỹ thuật
 
-Đọc [README gốc](../../README.md) để hiểu sản phẩm, hoặc [README source](../README.md) để build/run/test. Bản local hiện tại là [V10.1, schema 13](UPGRADE_V10_1_ROLES.md), đang chờ người dùng nghiệm thu. Gói RC4 và các số đo V9.4 được giữ nguyên mốc; không coi đó là kết quả của V10.1.
+Tài liệu mô tả source V10.1, schema 13. Bắt đầu ở [tổng quan](../../README.md), dùng [README source](../README.md) để build/run/test.
 
-## Chạy và trải nghiệm
-
-| Tài liệu | Dùng khi |
-|---|---|
-| [Phân quyền V10.1](UPGRADE_V10_1_ROLES.md) | Tạo nhân viên, quyền quầy/quản lý, khóa và thu hồi phiên |
-| [FINAL_RUNBOOK](FINAL_RUNBOOK.md) | Chạy local/public, vào bàn, demo khách - quầy và xử lý lỗi |
-| [WEB_PUBLIC_DEMO](WEB_PUBLIC_DEMO.md) | Quét QR từ điện thoại qua Internet bằng Quick Tunnel |
-| [WEB_RELEASE](WEB_RELEASE.md) | Kiểm gói, profile dữ liệu, backup/reset/restore |
-| [WEB_USER_ACCEPTANCE](WEB_USER_ACCEPTANCE.md) | Danh sách thao tác kiểm chức năng/trải nghiệm |
-| [WEB_DEVICE_ACCEPTANCE](WEB_DEVICE_ACCEPTANCE.md) | Tạo kit kiểm riêng khi muốn kiểm lại trên thiết bị |
-| [LAN_ACCEPTANCE](LAN_ACCEPTANCE.md) | Kết nối hai máy qua LAN; phân biệt web TLS với TCP desktop lịch sử |
-
-## Hiểu code và thiết kế mạng
+## Sử dụng và triển khai
 
 | Tài liệu | Nội dung |
 |---|---|
-| [PROJECT_SPECIFICATION](PROJECT_SPECIFICATION.md) | Bài toán CafeLink, tác nhân, phạm vi và điều kiện nghiệp vụ |
-| [FINAL_ARCHITECTURE](FINAL_ARCHITECTURE.md) | Browser, Gateway, TCP Core, DB; xử lý đồng thời và dữ liệu |
-| [FINAL_PROTOCOL](FINAL_PROTOCOL.md) | HTTP/WS và TCP; frame, JSON, request/response/event và lỗi |
-| [WEB_RECOVERY](WEB_RECOVERY.md) | Nhật ký, lấy kết quả đã nhận, quyết định bỏ và bảo vệ phiên |
-| [WEB_HARDENING](WEB_HARDENING.md) | Readiness, chẩn đoán, hạn thanh toán và các sửa độ tin cậy |
+| [Hướng dẫn sử dụng](USER_GUIDE.md) | Khách, quầy, quản lý; đơn, hỗ trợ, thực đơn và phiên |
+| [Chạy và demo](RUNBOOK.md) | Local, hai demo trọng tâm và xử lý lỗi |
+| [Public HTTPS](PUBLIC_DEMO.md) | Điện thoại qua Internet, tunnel, QR và tài khoản |
+| [Triển khai và dữ liệu](DEPLOYMENT.md) | Cấu hình, TLS/LAN, lưu bền, sao lưu và khôi phục |
+| [Phân quyền](ACCESS_CONTROL.md) | GUEST/STAFF/ADMIN, tài khoản và thu hồi phiên |
+| [Thuế và thu chi](FINANCE.md) | Cách tính tiền, báo cáo, phiếu chi và CSV |
 
-Đường đọc code ngắn: `WebMain` → `WebGateway` → `SessionBridge` → `NetworkClient` → `FrameCodec` → `CafeServer` → `CafeService`. Một thao tác đi qua HTTP rồi TCP; cập nhật đi ngược từ Core qua TCP rồi WebSocket tới Browser.
-
-## Kiểm thử, thực nghiệm và báo cáo
+## Thiết kế và giao tiếp mạng
 
 | Tài liệu | Nội dung |
 |---|---|
-| [TESTING](TESTING.md) | Nhóm kiểm theo hành vi, lệnh chạy và kết quả RC4 |
-| [WEB_EXPERIMENTS](WEB_EXPERIMENTS.md) | Đối chứng phục hồi, tải, timer, raw và oracle |
-| [CI](CI.md) | Workflow Windows, lệnh local và run GitHub đã xác minh |
-| [PUBLICATION](PUBLICATION.md) | Chặn hướng dẫn cũ, liên kết hỏng và nhiều bản báo cáo; kiểm tài liệu portable |
-| [Chỉ mục báo cáo](../../report/README.md) | Tài liệu Markdown và kết quả lịch sử còn trong repository |
+| [Đặc tả dự án](PROJECT_SPECIFICATION.md) | Bài toán, phạm vi và điều kiện nghiệp vụ |
+| [Kiến trúc](ARCHITECTURE.md) | Thành phần, luồng dữ liệu, đồng thời và thiết kế phiên |
+| [Giao thức](PROTOCOL.md) | TCP framing, HTTP/WS, action, trạng thái và lỗi |
+| [Phục hồi](RECOVERY.md) | Journal, receipt, scope và quyết định bỏ |
+| [Vận hành](OPERATIONS.md) | Readiness, chẩn đoán, âm thanh và xử lý sự cố |
 
-## Lịch sử thiết kế
+Đường đọc code: `WebMain` → `WebGateway` → `SessionBridge` → `NetworkClient` → `FrameCodec` → `CafeServer` → `CafeService`. Lệnh đi từ HTTP sang TCP; cập nhật trở về qua TCP rồi WebSocket. Core là nơi kiểm và ghi nghiệp vụ.
 
-[ADR-002](architecture/ADR-002-recovery.md) và các [ADR nâng cấp](architecture/ADR-003-upgrade-scope.md) lưu quyết định tại thời điểm viết. Các mốc [web/TCP](architecture/ADR-004-web-tcp-foundation.md), [QR](architecture/ADR-005-qr-membership.md), [trả trước](architecture/ADR-007-prepaid-simulator-and-events.md), [QR cố định/public](architecture/ADR-008-fixed-table-qr-and-public-demo.md), [thực nghiệm](architecture/ADR-009-web-experiments-and-ci.md) và [portable](architecture/ADR-010-portable-web-release.md) giải thích vì sao thiết kế thay đổi.
+## Kiểm tra và đánh giá
 
-Các ADR ghi lại quyết định tại thời điểm thiết kế. Khi chạy hoặc demo, dùng [README source](../README.md) và [FINAL_RUNBOOK](FINAL_RUNBOOK.md) hiện hành; hướng dẫn chạy từng phiên bản cũ được giữ local hoặc xem trong lịch sử Git.
+| Tài liệu | Nội dung |
+|---|---|
+| [Kiểm thử](TESTING.md) | Lệnh, nhóm hành vi, kết quả và tiêu chí kiểm thực tế |
+| [Thực nghiệm](EXPERIMENTS.md) | Baseline, fault, tải, oracle và metric |
+| [CI](CI.md) | Workflow Windows và artifact theo commit |
+| [Quy tắc công bố](PUBLICATION.md) | Một bộ tài liệu hiện hành, liên kết, phiên bản và dữ liệu riêng |
+| [Hồ sơ báo cáo](../../report/README.md) | Phạm vi hồ sơ học phần |

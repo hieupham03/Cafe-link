@@ -13,13 +13,21 @@
     "npx.cmd"
   ],
   "guides": [
+    "ACCESS_CONTROL.md",
+    "ARCHITECTURE.md",
+    "CI.md",
+    "DEPLOYMENT.md",
+    "EXPERIMENTS.md",
     "FINANCE.md",
-    "FINAL_ARCHITECTURE.md",
-    "FINAL_PROTOCOL.md",
-    "FINAL_RUNBOOK.md",
-    "WEB_RELEASE.md",
-    "WEB_USER_ACCEPTANCE.md",
-    "WEB_HARDENING.md"
+    "OPERATIONS.md",
+    "PROJECT_SPECIFICATION.md",
+    "PROTOCOL.md",
+    "PUBLICATION.md",
+    "PUBLIC_DEMO.md",
+    "RECOVERY.md",
+    "RUNBOOK.md",
+    "TESTING.md",
+    "USER_GUIDE.md"
   ],
   "portableStatus": "NOT_RELEASED"
 }

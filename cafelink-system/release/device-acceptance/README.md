@@ -1,21 +1,13 @@
-# CafeLink V9.4 - Bộ nghiệm thu thiết bị
+# CafeLink - Công cụ kiểm thiết bị
 
-Ứng dụng ở `app/` lấy từ ZIP đã kiểm SHA-256, ghi rõ trong `AUTOMATED_BASELINE.json`. Bộ này dùng JRE đi kèm; máy chạy không cần JDK, Node hoặc Python. Tất cả ca trong `RESULTS.json` ban đầu là `NOT_RUN`. Bằng chứng phần mềm không thay nghiệm thu thiết bị thật.
+Bộ kit tạo một lượt kiểm từ gói ứng dụng có checksum/manifest phù hợp. `AUTOMATED_BASELINE.json` ghi nguồn gói; `CHECKLIST.md` mô tả thao tác và `RESULTS.json` dành cho kết quả do người kiểm ghi. Các trường chưa điền là dữ liệu của lượt kiểm đó, không là kết luận về toàn dự án.
 
-1. Mở `START-PUBLIC.cmd`, đợi terminal in địa chỉ HTTPS và mật khẩu tạm.
-2. Đăng nhập bằng địa chỉ/mật khẩu đó, bấm **Mở tất cả bàn**, mở **Bàn 1** và hiển thị QR.
-3. Làm lần lượt `CHECKLIST.md`. Điện thoại có thể dùng mạng di động; giữ laptop và terminal chạy.
-4. Điền người kiểm, thiết bị, thời điểm và kết quả thật vào `RESULTS.json`. Nếu chưa đủ thiết bị, giữ ca đó là `NOT_RUN`.
-5. Dừng bằng Ctrl+C. Khi cần làm lại từ đầu, tạo bộ kit mới; không xóa journal/dữ liệu để che kết quả chưa rõ.
+1. Xác minh đúng gói, phiên bản và cấu hình trong kit.
+2. Chạy START-PUBLIC, đợi HTTPS/mật khẩu tạm; đăng nhập và mở nhận khách QR.
+3. Điện thoại quét, làm checklist, ghi thiết bị/Browser/mạng và kết quả quan sát.
+4. Kiểm quầy, chuông thật và tình huống mạng bằng thao tác phù hợp. Không dùng viewport thay camera/thiết bị.
+5. Dừng bằng Ctrl+C, giữ kết quả đã loại thông tin riêng. Lượt kiểm lại dùng hồ sơ riêng, không sửa run trước để đổi kết quả.
 
-Mặc định dùng cổng 19588/19558, public tối đa 30 phút. Chọn cặp cổng khác khi cần:
+`Run-UAT.ps1` hỗ trợ Local/Public và chọn cổng/thời hạn. Không dùng địa chỉ localhost của laptop trên điện thoại. Local/public có profile riêng; thanh toán là giả lập. Không chia sẻ mật khẩu tạm, cookie, DB/key hoặc toàn bộ kit có quyền phiên.
 
-```powershell
-.\Run-UAT.ps1 -Mode Public -Port 19688 -TcpPort 19658 -DurationSeconds 1800
-```
-
-Kiểm quầy/loa trên máy tính bằng `START-LOCAL.cmd`; mở `http://127.0.0.1:19588/admin`, tài khoản `admin / CafeLink@123`. Local/public có profile riêng dưới `app/data/device-uat-*`; cần dừng phiên đang chạy trước khi đổi chế độ.
-
-Không dùng địa chỉ 127.0.0.1 của laptop trên điện thoại. Không nhập thông tin ngân hàng thật: thanh toán là giả lập. Không chia sẻ mật khẩu tạm, QR hoạt động, cookie, DB/key hoặc toàn bộ thư mục kit. Khi báo lỗi, gửi mã ca, bước làm, thiết bị/browser, kết quả mong đợi/thực tế và thông báo đã loại thông tin phiên.
-
-L01 cần hai máy vật lý và runbook LAN riêng trong source. Hai browser trên một máy hoặc hai máy đi qua tunnel Internet không thay phép thử LAN trực tiếp. Các ca nghe chuông/đánh giá tiện dụng cần người thực hiện; script không tự xác nhận thay người kiểm.
+Nghiệm thu LAN trực tiếp cần hai thiết bị và TLS hợp lệ; hai tab trên một máy hoặc hai thiết bị qua tunnel Internet kiểm các điều kiện khác. Kết quả nghe chuông/tiện dụng do người thực hiện xác nhận, script không tự đánh dấu thay.

@@ -1,69 +1,79 @@
-# CafeLink - Kiểm thử và đánh giá
+# CafeLink - Kiểm thử
 
-Mục đích là kiểm đúng chức năng của quán, giao tiếp Client/Server và hành vi khi có lỗi; thực nghiệm đo hiệu năng/phục hồi được tách riêng. Yêu cầu gốc của học phần được lưu ngoài repository; [báo cáo hiện tại](../../report/README.md) trình bày kết quả theo cấu trúc technical paper.
+Kiểm thử đi qua các lớp Java, TCP, HTTP/WebSocket và Browser. Mỗi kết quả chỉ áp dụng cho commit, môi trường và phạm vi của lượt chạy. Không dùng số ca của một lượt khác làm kết quả mặc định cho source đang xem.
 
-V10.1 bổ sung `RoleAccessTest`, `StaffRoleIntegrationTest` và `web/tests/roles.spec.ts`: quyền tại Core/HTTP/TCP, thu hồi nhiều tab, đổi mật khẩu, journal/audit không có mật khẩu, migration giữ dữ liệu và tiếp nhận khi mất phản hồi. [Chi tiết V10.1](UPGRADE_V10_1_ROLES.md) tách khỏi bằng chứng các mốc trước.
+## Chạy kiểm
 
-Bản tích hợp thành viên có **201 Java và 90 Chromium đạt**, gồm 7 kịch bản tài chính chuyển từ nhánh thành viên và 2 ca ảnh món. Số liệu và hash ảnh được ghi nhận tại thời điểm kiểm; tệp evidence không còn được lưu trong repository.
-
-## Các nhóm hành vi được kiểm
-
-V10 bổ sung `StoreOperationsTest` và `web/tests/v10.spec.ts`: chặn trả tiền trước tiếp nhận, kiểm món lúc quầy nhận, từ chối, giữ nguyên thuế đơn cũ, làm tròn, hoàn, thu chi/ngày quán, quyền, mất phản hồi ghi chi, QR, responsive và điều hướng từ thông báo. [Kết quả V10](UPGRADE_V10.md) tách khỏi số liệu RC4 trong tài liệu này.
-
-| Nhóm | Điều cần chứng minh | Điểm vào test |
-|---|---|---|
-| QR và phiên riêng | Hai khách cùng bàn không dùng chung đơn; phiên cũ không áp sang khách mới | `AutomaticTablesTest`, `web/tests/automatic.spec.ts` |
-| Đơn và thanh toán | Giá/số lượng đúng, trả trước mới pha chế, gửi lặp không thu thêm | `PrepaidFlowTest`, `PaymentAcceptanceTest`, `web/tests/v7.spec.ts` |
-| TCP framing | Unicode, đọc thiếu/nhiều frame, length sai và dữ liệu đứt giữa chừng | `FrameCodecTest` |
-| Đồng thời | Nhiều socket, lệnh trùng, ghi lỗi rollback và Client chậm | `NetworkIntegrationTest`, `CommandReceiptTest` |
-| Push và quyền | Thay đổi từ TCP Client tới tab web; dữ liệu chỉ trả theo quyền | `WebGatewayIntegrationTest`, `QrWebIntegrationTest` |
-| Phục hồi | Đã nhận thì lấy kết quả cũ; bỏ trước chặn lệnh muộn; nhận trước giữ kết quả | `RecoveryIntegrationTest`, `web/tests/orders.spec.ts` |
-| Vận hành | Readiness, chẩn đoán quản lý, hạn tiền, âm thanh và API từ chối sớm | `ReadinessIntegrationTest`, `DiagnosticsIntegrationTest`, `PaymentDeadlineTest`, các nhóm E2E |
-| Gói chạy | Manifest, JRE đi kèm, profile, launcher, nghiệp vụ và public | `web/tests/release-smoke.mjs`, `release-public-smoke.mjs` |
-| Công bố và tài liệu | Phiên bản/RC đúng, liên kết tài liệu hợp lệ, tài liệu portable không trỏ file thiếu | `tools/verify_publication.py`, `tools/test_publication.py` |
-
-Test TCP 12 Client đồng thời khác workload 14 khách của phép đo tải. Giới hạn cấu hình 64 reader hoặc 32 bridge không phải kết luận công suất đã đo.
-
-## Cách chạy
-
-Tại `cafelink-system`, sau khi chuẩn bị môi trường theo [README](../README.md):
+Từ `cafelink-system`:
 
 ```powershell
+python tools/verify_publication.py --root ..
+python -m unittest discover -s tools -p test_publication.py
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V10.1
 ```
 
-Lệnh chạy Java verify, build frontend/experiment và Chromium E2E. Các test dùng socket, Gateway, Core và SQLite thật với dữ liệu riêng. Cổng 18080/18081 phải trống. Nếu đã cài đúng dependencies/browser, có thể thêm `-SkipInstall -SkipBrowserInstall`.
+Gate chạy Java verify, build TypeScript/Vite production và experiment, cài Chromium khi cần và chạy các nhóm E2E. Chỉ dùng `-SkipInstall -SkipBrowserInstall` khi dependencies/browser đã có. Cần cổng **18080/18081** trống; mỗi nhóm sở hữu JVM/DB riêng và không dùng lại demo của người chạy.
 
-Kiểm chọn lọc Firefox/WebKit:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-browser-compatibility.ps1
-```
-
-Kiểm Java riêng:
+Java riêng:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maven.ps1 -B test
 ```
 
-Xem [CI](CI.md) để chạy toàn bộ bộ kiểm có analyzer và campaign Quick. Các script tạo thư mục kết quả mới; không sửa kết quả FAIL cũ thành PASS.
+Tương thích Firefox/WebKit:
 
-## Kết quả bản chốt
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-browser-compatibility.ps1
+```
 
-| Lớp kiểm | Kết quả ghi nhận | Phiên bản/phạm vi |
-|---|---|---|
-| Java | 164 đạt, không fail/error/skip | Source V9.4 được đóng RC4 |
-| Chromium | 71 đạt, không unexpected/flaky/skip | Browser tự động |
-| Firefox / WebKit | 20 đạt mỗi engine | Nhóm chọn lọc trên Windows |
-| Portable | 23 nhóm đạt | Gói RC4, JRE đi kèm |
-| Public | 8 kiểm đạt | HTTPS/WSS từ gói RC4 |
+Sau build, chạy nhóm storefront tại `web`:
 
-Phiếu kiểm RC4, gate Java/Chromium, kiểm tương thích và kiểm gói đã được lưu tại thời điểm chạy nhưng không còn trong repository; xem [CI](CI.md) để biết quy trình kiểm hiện hành. Không cộng số ca giữa các lớp hoặc phiên bản thành tỷ lệ bao phủ.
+```powershell
+cd web
+npx.cmd playwright test tests/shop.spec.ts
+```
 
-Người dùng đã xác nhận hoàn thành kiểm thao tác thực tế. Đây là xác nhận định tính của luồng sử dụng, không có số đo thiết bị được thêm vào bảng benchmark. Các JSON/checklist cũ ghi `NOT_RUN` là snapshot của thời điểm chạy tự động, không được sửa ngược để tạo dữ liệu thực nghiệm mới. Checklist vẫn có thể dùng cho lần kiểm lại.
+## Nhóm hành vi
 
-## Thực nghiệm và cách đọc số liệu
+| Nhóm | Nội dung kiểm |
+|---|---|
+| Giao thức/TCP | Header/body chia nhỏ hoặc liền nhau, UTF-8/JSON/length sai, request ID, nhiều peer và Client chậm |
+| Danh tính/quyền | Đăng nhập, QR riêng, scope, khách khác phiên, STAFF không có quyền quản lý, thu hồi phiên |
+| Đơn/tiền | Menu đổi, tiếp nhận trước thanh toán, tính tiền/thuế, hạn giao dịch, retry và guard phục vụ |
+| Hỗ trợ | Một lời gọi mở cùng loại, bổ sung/rút/xử lý theo version |
+| Phục hồi | Journal trước gửi, mất response sau commit, chưa nhận, barrier, accept/discard, reload/nhiều tab |
+| Bàn/toàn quán | Bật/tạm ngưng, rời phiên, kết thúc phiên đơn lẻ/hàng loạt, không đóng khi còn việc |
+| Tài chính | Chốt thuế, ngày thu/hoàn, phiếu chi/hủy, tổng/phân trang và quyền |
+| UI | Năm vùng, menu ảnh, focus dialog, thanh giỏ trong viewport, không che điều hướng |
+| Vận hành | Readiness, chẩn đoán, âm thanh fallback, origin/CSRF, upload ảnh và dữ liệu riêng |
+| Công bố | Phiên bản, link/anchor, tài liệu hiện hành, manifest, loại tệp và nội dung riêng |
 
-Số đo đầy đủ ngày 30/10 là V9.4/RC3: 120 ca phục hồi và 12 lượt tải trên một máy loopback. Đã hoàn tất 1.256/1.350 lượt dự kiến; 94 lượt chưa phát ở 14 khách, không có lỗi flow/HTTP đã ghi ở các thao tác đã gửi. Các kết quả này không tự trở thành benchmark RC4.
+Các file chính: `src/test/java/`, `web/tests/shop.spec.ts`, `automatic.spec.ts`, `orders.spec.ts`, `v10.spec.ts`, `roles.spec.ts`, `diagnostics.spec.ts`, `audio.spec.ts`. Runner liệt kê các nhóm tại `web/tests/run-e2e.mjs`.
 
-[WEB_EXPERIMENTS](WEB_EXPERIMENTS.md) mô tả cách tạo lỗi và timer. Khi đọc bảng cần tách: đơn được Server nhận, công việc hoàn tất, slot chưa phát và lỗi yêu cầu đã gửi. Khi bảo vệ cần giải thích chỉ số được đo từ đâu đến đâu, vì sao dùng và kết quả bị giới hạn ở điều kiện nào.
+## Kết quả và bằng chứng
+
+Gate ghi summary cùng JAR/assets/source manifest vào output của lần chạy. Playwright ghi JSON, screenshot/trace theo cấu hình; Java ghi JUnit XML trong `target/surefire-reports`. [CI](CI.md) upload artifact theo allowlist cả khi lỗi; xem đúng run/commit tại [GitHub Actions](https://github.com/hieupham03/Cafe-link/actions).
+
+Giữ nguyên run FAIL để phân tích; sửa nguyên nhân rồi tạo run mới. Không xóa ca hoặc đổi số liệu để thành PASS. Kết quả của một engine không tự đại diện mọi Browser/thiết bị. Các nhóm có phạm vi riêng, không cộng số ca thành tỷ lệ bao phủ phần trăm.
+
+## Kiểm trên thiết bị
+
+Người kiểm ghi thiết bị/Browser, origin và mạng của lần thực hiện, bước thao tác, kết quả mong đợi/thực tế. Đây là tiêu chí kiểm thao tác, không phải bảng trạng thái của dự án.
+
+| Tình huống | Điều kiện đạt |
+|---|---|
+| Hai khách quét cùng QR | Visit/giỏ/đơn riêng, quầy vẫn thấy cùng địa chỉ giao |
+| Tiếp nhận và thanh toán | Khách không trả sớm; từ chối có lý do; không pha chế trước đủ điều kiện tiền |
+| Trạng thái và hỗ trợ | Hai phía nhận tiến độ/nhắn tin; một ticket OPEN cùng loại |
+| Màn hình nhỏ | Thanh giỏ đủ nội dung, bấm được, không tràn hoặc che menu dưới; bàn phím không khóa thao tác |
+| Camera/public | QR mở đúng HTTPS hiện tại trên mạng được dùng |
+| Âm thanh | Nghe thực tế khi Browser cho phép; khi bị chặn vẫn có chữ/hàng đợi |
+| Mất kết nối | Không tự tạo đơn khác, không đóng visit vì offline; đối chiếu khi trở lại |
+| Rời/đóng phiên | Chặn khi còn nghĩa vụ; đóng xong không tác động khách khác |
+| Quyền nhân viên | Đúng bốn mục phục vụ, API tài chính bị chặn, khóa tài khoản thu hồi tab cũ |
+
+Ngắt Wi-Fi không xác định chính xác mất response sau commit. Các tình huống đó cần fault có kiểm soát trong [runbook](RUNBOOK.md#demo-2---phục-hồi-có-kiểm-soát) hoặc [harness](EXPERIMENTS.md). Mô phỏng viewport và WebKit Windows không thay iPhone/Android vật lý. Bộ `release/device-acceptance` tạo hồ sơ cho một lượt kiểm cụ thể từ gói có manifest phù hợp, không tự đánh dấu kết quả thay người kiểm.
+
+## Thực nghiệm
+
+Thử phục hồi/tải có cấu hình, raw, oracle và metric riêng. Quick campaign chỉ kiểm ngắn; full campaign theo [phương pháp thực nghiệm](EXPERIMENTS.md). Công suất và độ trễ phải được đo trong môi trường được nêu, không suy từ giới hạn reader/bridge.

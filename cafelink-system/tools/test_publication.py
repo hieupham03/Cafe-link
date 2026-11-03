@@ -12,15 +12,15 @@ from verify_publication import POLICY, Tree, load_tree, package_checks, source_c
 
 def fixture():
     policy = {'format': 'CafeLinkDocumentation/1', 'version': 'V9.4', 'schema': 11,
-              'currentPackage': 'CafeLink-Web-V9.4-RC4', 'guides': ['FINAL_RUNBOOK.md'],
+              'currentPackage': 'CafeLink-Web-V9.4-RC4', 'guides': ['RUNBOOK.md'],
               'repository': 'https://github.com/hieupham03/Cafe-link',
               'reportManifest': 'report/current/PUBLICATION.json'}
     files = {
         POLICY: json.dumps(policy),
         'README.md': '# CafeLink\n[Word](report/current.docx) [PDF](report/current.pdf)\n',
         'report/README.md': '# Report\n[Word](current.docx) [PDF](current.pdf)\n',
-        'cafelink-system/README.md': '# CafeLink V9.4\n[Run](docs/FINAL_RUNBOOK.md#start)\n',
-        'cafelink-system/docs/FINAL_RUNBOOK.md': '# CafeLink V9.4\n## Start\n',
+        'cafelink-system/README.md': '# CafeLink V9.4\n[Run](docs/RUNBOOK.md#start)\n',
+        'cafelink-system/docs/RUNBOOK.md': '# CafeLink V9.4\n## Start\n',
         'cafelink-system/src/main/java/com/cafelink/common/ApplicationInfo.java': 'public static final String VERSION = "V9.4";',
         'cafelink-system/web/package.json': '{"version":"9.4.0"}',
         'cafelink-system/web/package-lock.json': '{"version":"9.4.0","packages":{"":{"version":"9.4.0"}}}',
@@ -88,27 +88,43 @@ class PublicationTest(unittest.TestCase):
         self.fails('Retired guide')
 
     def test_stale_command_version_fails(self):
-        self.files['cafelink-system/docs/FINAL_RUNBOOK.md'] += b'```powershell\ncd dist/CafeLink-Web-V9.3\n```'
+        self.files['cafelink-system/docs/RUNBOOK.md'] += b'```powershell\ncd dist/CafeLink-Web-V9.3\n```'
         self.fails('stale version')
 
     def test_old_release_candidate_launch_fails(self):
-        self.files['cafelink-system/docs/FINAL_RUNBOOK.md'] += b'```powershell\ncd dist/CafeLink-Web-V9.4-RC3\n```'
+        self.files['cafelink-system/docs/RUNBOOK.md'] += b'```powershell\ncd dist/CafeLink-Web-V9.4-RC3\n```'
         self.fails('expected CafeLink-Web-V9.4-RC4')
 
     def test_stale_phase_fails(self):
-        self.files['cafelink-system/docs/FINAL_RUNBOOK.md'] += b'```powershell\ntest-web.ps1 -Phase V9.3\n```'
+        self.files['cafelink-system/docs/RUNBOOK.md'] += b'```powershell\ntest-web.ps1 -Phase V9.3\n```'
         self.fails('stale phase')
 
     def test_old_heading_fails(self):
         self.files['cafelink-system/README.md'] = b'# CafeLink V9.3'
         self.fails('stale guide heading')
 
+    def test_unlisted_upgrade_guide_is_rejected(self):
+        self.files['cafelink-system/docs/UPGRADE_V10.md'] = b'# Upgrade notes\n'
+        self.fails('Unlisted project guide')
+
+    def test_old_version_in_the_body_is_rejected(self):
+        self.files['cafelink-system/docs/RUNBOOK.md'] += b'\nSource: V9.3.\n'
+        self.fails('historical version reference')
+
+    def test_pending_rollout_checklist_is_not_a_product_guide(self):
+        self.files['cafelink-system/docs/RUNBOOK.md'] += b'\n| Case | Result |\n|---|---|\n| U01 | NOT_RUN |\n'
+        self.fails('unfinished rollout checklist')
+
+    def test_change_history_is_not_a_product_guide(self):
+        self.files['cafelink-system/docs/RUNBOOK.md'] += '\n## Bổ sung V9.4\nThay đổi từ bản trước.\n'.encode()
+        self.fails('change-history heading')
+
     def test_missing_package_guide_fails(self):
         self.change_policy(lambda p: p['guides'].append('REMOVED.md'))
         self.fails('Unpublished portable guide')
 
     def test_duplicate_package_guide_fails(self):
-        self.change_policy(lambda p: p['guides'].append('FINAL_RUNBOOK.md'))
+        self.change_policy(lambda p: p['guides'].append('RUNBOOK.md'))
         self.fails('duplicate portable guide')
 
     def test_version_must_match_the_application(self):
@@ -120,7 +136,7 @@ class PublicationTest(unittest.TestCase):
         self.fails('Frontend package/lock version')
 
     def test_missing_heading_fails(self):
-        self.files['cafelink-system/README.md'] = b'# CafeLink\n[run](docs/FINAL_RUNBOOK.md#deleted)'
+        self.files['cafelink-system/README.md'] = b'# CafeLink\n[run](docs/RUNBOOK.md#deleted)'
         self.fails('missing heading')
 
     def test_machine_local_document_link_fails(self):
@@ -131,12 +147,20 @@ class PublicationTest(unittest.TestCase):
         self.files['report/tools/private.py'] = b'# authoring only'
         self.fails('Local-only content')
 
+    def test_private_report_figure_is_not_publishable(self):
+        self.files['report/assets/draft/plot.svg'] = b'<svg/>'
+        self.fails('Local-only content')
+
+    def test_private_study_document_is_not_publishable(self):
+        self.files['report/CafeLink_Giao_Trinh_Tu_Hoc.md'] = b'# Study document'
+        self.fails('Local-only content')
+
     def test_old_report_markdown_is_not_publishable(self):
         self.files['report/CafeLink_Final_Report.md'] = b'# old report'
         self.fails('Superseded report')
 
     def test_typo_in_a_script_command_is_rejected(self):
-        self.files['cafelink-system/docs/FINAL_RUNBOOK.md'] += b'```powershell\npowershell -File scripts/nonexistent.ps1\n```'
+        self.files['cafelink-system/docs/RUNBOOK.md'] += b'```powershell\npowershell -File scripts/nonexistent.ps1\n```'
         self.fails('unpublished script')
 
     def test_runtime_database_is_rejected(self):
@@ -189,14 +213,14 @@ class PackageDocumentationTest(unittest.TestCase):
         self.policy = json.loads(fixture()[POLICY])
         (self.root / 'docs/DOCUMENTATION.json').write_text(json.dumps(self.policy))
         (self.root / 'RELEASE.json').write_text(json.dumps({'release': 'V9.4', 'schema': 11}))
-        (self.root / 'START-HERE.md').write_text('# CafeLink V9.4\n[run](docs/FINAL_RUNBOOK.md#start)')
-        (self.root / 'docs/FINAL_RUNBOOK.md').write_text('# CafeLink V9.4\n## Start\n[Source](https://github.com/example/repo)')
+        (self.root / 'START-HERE.md').write_text('# CafeLink V9.4\n[run](docs/RUNBOOK.md#start)')
+        (self.root / 'docs/RUNBOOK.md').write_text('# CafeLink V9.4\n## Start\n[Source](https://github.com/example/repo)')
 
     def test_self_contained_portable_navigation_passes(self):
         self.assertEqual('PASS', package_checks(self.root)['status'])
 
     def test_repo_only_relative_link_fails_in_portable_package(self):
-        (self.root / 'docs/FINAL_RUNBOOK.md').write_text('# CafeLink V9.4\n## Start\n[Source](../README.md)')
+        (self.root / 'docs/RUNBOOK.md').write_text('# CafeLink V9.4\n## Start\n[Source](../README.md)')
         result = package_checks(self.root)
         self.assertEqual('FAIL', result['status'])
         self.assertTrue(any('missing link' in x for x in result['errors']))
@@ -226,8 +250,8 @@ class DocumentationCopyTest(unittest.TestCase):
         self.policy_path = self.project / 'release/documentation.json'
         self.policy_path.write_text(json.dumps(self.policy))
         (self.project / 'README.md').write_text('# source')
-        (self.project / 'release/windows/START-HERE.md').write_text('[run](docs/FINAL_RUNBOOK.md#start)')
-        self.guide = self.project / 'docs/FINAL_RUNBOOK.md'
+        (self.project / 'release/windows/START-HERE.md').write_text('[run](docs/RUNBOOK.md#start)')
+        self.guide = self.project / 'docs/RUNBOOK.md'
         self.guide.write_text('# CafeLink V9.4\n## Start\n[Source](../README.md)')
         self.driver = self.base / 'copy.ps1'
         self.driver.write_text('''param($ProjectRoot, $WorkspaceRoot, $Destination, $Helper)
@@ -249,8 +273,8 @@ Copy-PackageDocumentation -ProjectRoot $ProjectRoot -WorkspaceRoot $WorkspaceRoo
         result = self.run_copy()
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
         self.assertIn('https://github.com/hieupham03/Cafe-link/blob/main/cafelink-system/README.md',
-                      (self.package / 'docs/FINAL_RUNBOOK.md').read_text(encoding='utf-8'))
-        self.assertIn('(docs/FINAL_RUNBOOK.md#start)', (self.package / 'START-HERE.md').read_text(encoding='utf-8'))
+                      (self.package / 'docs/RUNBOOK.md').read_text(encoding='utf-8'))
+        self.assertIn('(docs/RUNBOOK.md#start)', (self.package / 'START-HERE.md').read_text(encoding='utf-8'))
 
     def test_real_repository_guides_have_valid_portable_navigation(self):
         # A docs-only contract fixture; runtime behavior is checked by release-smoke.mjs.

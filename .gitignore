@@ -1,15 +1,21 @@
-# Local agent/editor configuration and private cleanup backups.
+# Private workspace and authoring material.
 /.agents/
 /.cleanup/
 /.vscode/
 /menu/
+/viet-bao-cao-lt-mang/
+/final-project-2/
+/final-project/
+/*.pdf
+/report/**
+!/report/README.md
 
-# Keep the sealed E0 baseline required by tests; runtime/submission bundles stay local.
+# Test fixture and repository guide are the only distributed dist files.
 /dist/*
 !/dist/CafeLink-Original-1.0.0-Baseline.zip
 !/dist/README.md
 
-# Generated build outputs and dependency caches.
+# Build outputs, dependencies and test runs.
 **/target/
 **/node_modules/
 **/.tools/
@@ -19,10 +25,12 @@
 **/playwright-report/
 /cafelink-system/web/dist/
 /cafelink-system/web/experiment-dist/
-/cafelink-system/docs/WEB_V9_3.md
-/report/evidence/
+/cafelink-system/docs/WEB_*.md
+/cafelink-system/docs/FINAL_*.md
+/cafelink-system/docs/UPGRADE_*.md
+/cafelink-system/docs/architecture/
 
-# Runtime profiles, uploaded media, local secrets and backup archives.
+# Runtime data, media, keys and archives.
 /cafelink-system/data/
 /cafelink-system/backups/
 /cafelink-system/logs/
@@ -40,46 +48,9 @@
 *.p12
 *.log
 ~$*
-
-# Reference documents from teachers/other groups remain local.
-/*.pdf
 ._*
-/viet-bao-cao-lt-mang/references/*.pdf
-/viet-bao-cao-lt-mang/references/lecturer-transcript-and-guidance.txt
 
-# Keep report binaries and private drafts local.
-/report/NhomXX_CafeLink_Report_*.docx
-/report/NhomXX_CafeLink_Report_*.pdf
-!/report/NhomXX_CafeLink_Report_Current_20261030.docx
-!/report/NhomXX_CafeLink_Report_Current_20261030.pdf
-/report/NhomXX_CafeLink_Report.docx
-/report/NhomXX_CafeLink_Report.pdf
-/report/CafeLink_Final_Report.md
-/report/CafeLink_Final_Handoff.md
-/report/CafeLink_Group23_Sample_Review.md
-/report/CafeLink_Report_30_vs_58_Review.md
-/report/CafeLink_Report_Academic_Review.md
-/report/CafeLink_Report_Formatting_Review.md
-/report/CafeLink_Report_Layout.md
-/report/CafeLink_Report_Reviewed13_Changes.md
-
-# Authoring workspace is not part of the runnable project/submission.
-/viet-bao-cao-lt-mang/
-/report/tools/
-/report/templates/
-/report/CafeLink_Technical_Paper_*.md
-/report/CafeLink_Report_*.md
-/report/assets/cafelink-student-paper/README.md
-/report/assets/cafelink-student-paper/provenance.json
-/report/assets/cafelink-final/
-/report/assets/cafelink-student-paper/business-flow.*
-/report/assets/cafelink-student-paper/recovery-decision.*
-/report/assets/cafelink-student-paper/ptit-logo-reference.png
-
-# Private report drafts and paused experiment remain local.
-/report/Nhom11_CafeLink_Report*.docx
-/report/Nhom11_CafeLink_Report*.pdf
-/report/NgoVanQuyen_ResearchMethods_2.pdf
+# Paused local prototype.
 /cafelink-system/docs/CAFE_LIVE.md
 /cafelink-system/web/src/CafeLive*.tsx
 /cafelink-system/web/src/cafe-live.css

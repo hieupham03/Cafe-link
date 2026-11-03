@@ -78,8 +78,9 @@ def prepare(archive, proof_path, destination, resources, checklist):
     with zipfile.ZipFile(archive) as package:
         files = entries(package)
         release = json.loads(package.read("RELEASE.json").decode("utf-8-sig"))
-        if release.get("release") != "V9.4" or release.get("schema") != 11:
-            raise ValueError("This checkpoint requires V9.4 schema 11")
+        policy = read_json(PROJECT / "release/documentation.json")
+        if release.get("release") != policy["version"] or release.get("schema") != policy["schema"]:
+            raise ValueError(f"This kit requires {policy['version']} schema {policy['schema']}")
         if "SHA256-MANIFEST.json" not in package.namelist():
             raise ValueError("Missing package integrity manifest")
         destination.mkdir(parents=True, exist_ok=False)
@@ -103,7 +104,7 @@ def prepare(archive, proof_path, destination, resources, checklist):
     record = {
         "format": "CafeLinkDeviceAcceptance/1",
         "createdAt": datetime.now(timezone.utc).isoformat(),
-        "release": "V9.4", "archiveSha256": sha256(archive),
+        "release": release["release"], "schema": release["schema"], "archiveSha256": sha256(archive),
         "softwareVerification": "See AUTOMATED_BASELINE.json; not physical acceptance",
         "physicalPhone": "NOT_RUN", "physicalLan": "NOT_RUN", "audibleSpeakerOutput": "NOT_RUN",
         "reviewer": "", "devices": [],
@@ -111,7 +112,7 @@ def prepare(archive, proof_path, destination, resources, checklist):
                    "device": "", "browser": "", "network": "", "observations": ""} for key, text in CASES],
     }
     (destination / "RESULTS.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
-    return {"status": "PREPARED", "directory": str(destination), "release": "V9.4",
+    return {"status": "PREPARED", "directory": str(destination), "release": release["release"],
             "archiveSha256": record["archiveSha256"], "humanCases": len(CASES),
             "physicalPhone": "NOT_RUN", "physicalLan": "NOT_RUN", "audibleSpeakerOutput": "NOT_RUN"}
 
@@ -124,7 +125,7 @@ def main():
     args = parser.parse_args()
     archive = args.archive or WORKSPACE / read_json(args.proof)["archive"]
     result = prepare(archive, args.proof, args.output, PROJECT / "release/device-acceptance",
-                     PROJECT / "docs/WEB_DEVICE_ACCEPTANCE.md")
+                     PROJECT / "release/device-acceptance/CHECKLIST.md")
     print(json.dumps(result))
 
 

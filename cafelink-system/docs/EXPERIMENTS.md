@@ -1,6 +1,6 @@
 # CafeLink - Thực nghiệm phục hồi và tải
 
-Source hiện hành V9.4. Tên script/thư mục V8 giữ cho tương thích công cụ. Kết quả gần nhất thuộc V9.4/RC3 ngày 30/10; kiểm cuối RC4 nằm ở [TESTING](TESTING.md). Các lần chạy tạo thư mục mới, không ghi đè dữ liệu đã chốt.
+Harness đánh giá phục hồi và tải trên source được build cho từng lần chạy. Mỗi run giữ source manifest, cấu hình, raw và oracle riêng, không ghi đè kết quả. [Kiểm hồi quy](TESTING.md) được thực hiện trước phép đo.
 
 Đây là công cụ đo phục vụ báo cáo CafeLink. Demo khách/quản lý tiếp tục dùng `scripts/public-demo.ps1` hoặc `scripts/run-web.ps1`; không cần bật trang thực nghiệm.
 
@@ -10,10 +10,11 @@ Từ thư mục `cafelink-system`, cần JDK 17+, Node.js theo `web/package.json
 
 ```powershell
 python -m pip install -r tools/requirements-v8.txt
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-v8.ps1 -Quick
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-web.ps1 -Phase V10.1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/experiment-web.ps1 -Quick -OutputPath target/experiments/quick-run
 ```
 
-Lệnh trên kiểm cấu hình workflow, chạy Java verify, build hai loại assets, toàn bộ E2E, kiểm bộ phân tích, campaign ngắn và xuất biểu đồ. Lần đầu có `npm ci` và tải Chromium. Bỏ `-Quick` để chạy campaign đầy đủ. Nếu đã có dependencies/browser, thêm `-SkipInstall -SkipBrowserInstall`.
+Gate kiểm Java và Browser trước; lệnh thực nghiệm tạo campaign ngắn và phân tích kết quả. Bỏ `-Quick` và chọn output khác để đo đầy đủ. Chỉ thêm `-SkipInstall -SkipBrowserInstall` cho gate khi dependencies/browser đã có.
 
 Nếu vừa có regression PASS và chỉ muốn chạy thực nghiệm:
 
@@ -52,13 +53,13 @@ Tám tình huống × ba policy × năm lần = **120 ca**, seed `20261023`. M�
 
 "Lời gọi thừa nhu cầu" chỉ có nghĩa trong ca **đã quy định nhu cầu hết**. Campaign không khảo sát khách thật. `recoveryMs` đo từ bắt đầu đối chiếu đến đọc lại state/journal trên cùng đồng hồ browser; trạng thái chờ xác nhận vẫn là kết quả đối chiếu, không phải đã hoàn tất mong muốn khách.
 
-Sau cập nhật phiên/bàn ở PR #4, riêng `VISIT_ENDED` kiểm trường hợp quyền bị thu hồi: `recoveryMs` là thời gian nhận từ chối phục hồi, ghi kèm `recoveryBlockedBy=SESSION_REVOKED`. Ca này không yêu cầu hay chứng minh receipt DISCARD vì Client đã mất quyền gửi lệnh. Hai ca lời gọi chưa nhận/đến muộn vẫn bắt buộc kiểm barrier bền của R2. Không so trực tiếp thời gian ca thu hồi quyền với ca đóng lượt còn giữ quyền trong kết quả V9.4 đã lưu.
+Với `VISIT_ENDED`, ca kiểm xét trường hợp quyền bị thu hồi: `recoveryMs` là thời gian nhận từ chối phục hồi, ghi kèm `recoveryBlockedBy=SESSION_REVOKED`. Ca này không yêu cầu hay chứng minh receipt DISCARD vì Client đã mất quyền gửi lệnh. Hai ca lời gọi chưa nhận/đến muộn vẫn bắt buộc kiểm barrier bền của R2. Thời gian bị từ chối phục hồi khác thời gian hoàn tất một ý định còn đủ quyền; không gộp hai loại kết quả.
 
 SQLite oracle mở read-only và chỉ xuất cột cho phép theo visit/membership. Nó đếm đơn/ticket/payment/receipt/event, không tạo ACK và không sửa nghiệp vụ. Teardown xử lý dữ liệu fixture sau đo. DB, khóa, cookie, grant và log JVM nằm dưới `target/v8-private`, không đưa vào artifact công khai.
 
 ## Đo tải
 
-Full: **1/5/10/14 khách + một admin**, warmup 3 giây, đo 15 giây, ba lần mỗi mức. Quick: 1/5 khách, warmup 1 giây, đo 3 giây, một lần. Không nâng session limit 16 để chạy mức 20 khách của đề xuất ban đầu.
+Full: **1/5/10/14 khách + một admin**, warmup 3 giây, đo 15 giây, ba lần mỗi mức. Quick: 1/5 khách, warmup 1 giây, đo 3 giây, một lần. Giữ nguyên giới hạn tài nguyên của sản phẩm trong lúc đo.
 
 Mỗi guest là một context Chromium riêng, mở React `/guest` thật và nhận cập nhật. Mỗi slot một giây bắt đầu nhiều nhất một luồng: chọn một cà phê sữa 30.000đ → ghi journal → PLACE_ORDER → quầy ACCEPT_ORDER → START_ORDER_PAYMENT → SIMULATE_PAYMENT SUCCESS. Mỗi actor chạy tuần tự; lỡ slot được đếm, không xếp thêm tác vụ chồng nhau để che quá tải. Giữ các đơn đã trả tiền ở SUBMITTED trong thời gian đo, không đưa công đoạn pha chế/giao đồ vào workload này. DB oracle gồm cả warmup và đo, yêu cầu đúng số đơn, một payment PAID/đơn và đúng tổng tiền.
 
@@ -77,4 +78,4 @@ Nguồn phát tải, browser và Server chung máy. Tắt các bộ benchmark/te
 
 Nếu có lỗi, giữ raw/status FAIL và sửa nguyên nhân rồi tạo **lần chạy mới**. Không bỏ ca lỗi để làm đẹp p95. `tools/analyze_web.py` từ chối campaign thiếu ca, metadata sai trạng thái hoặc lỗi chưa xử lý. Các lần diagnostic không gộp vào campaign nghiệm thu chính thức.
 
-Chưa đo CPU/RAM/queue depth/byte TCP theo từng chặng, commit→render chính xác, gián đoạn 2/10/60 giây trên web, UPS/mất điện, nghiệm thu LAN/camera, ngân hàng thật hoặc usability với người dùng thật. Coalescing chưa có đối chứng nên chưa thêm tối ưu dựa trên suy đoán.
+Campaign này không tự cung cấp CPU/RAM/queue depth theo thời gian, byte TCP từng chặng, commit→render chính xác, mất điện, camera hoặc usability thực tế. Những kết luận đó cần thiết kế phép đo riêng. Không kết luận một tối ưu hiệu quả nếu chưa có đối chứng phù hợp.
